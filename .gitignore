@@ -23,8 +23,7 @@ hs_err_pid*
 
 #eclipse profile
 .metadata/
-.project
-.classpath
+
 
 #code dir
 classes/

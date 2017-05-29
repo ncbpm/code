@@ -11,7 +11,6 @@
 	<classpathentry kind="src" output="m30/classes" path="m30/src/test"/>
 	<classpathentry kind="src" output="m30/classes" path="m30/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ufesbexpress"/>
 	<classpathentry kind="con" path="com.yonyou.studio.udt.core.container/Ant_Library"/>
 	<classpathentry kind="con" path="com.yonyou.studio.udt.core.container/Product_Common_Library"/>
 	<classpathentry kind="con" path="com.yonyou.studio.udt.core.container/Middleware_Library"/>

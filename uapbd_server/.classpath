@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" output="supplier/classes" path="supplier/src/public"/>
-	<classpathentry kind="src" output="supplier/classes" path="supplier/src/client"/>
 	<classpathentry kind="src" output="supplier/classes" path="supplier/src/private"/>
+	<classpathentry kind="src" output="supplier/classes" path="supplier/src/client"/>
 	<classpathentry kind="src" output="supplier/classes" path="supplier/src/test"/>
 	<classpathentry kind="src" output="supplier/classes" path="supplier/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>

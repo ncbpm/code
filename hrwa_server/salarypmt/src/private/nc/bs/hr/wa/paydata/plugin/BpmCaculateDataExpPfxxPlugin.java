@@ -162,7 +162,7 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 		waLoginVO = WADelegator.getWaPubService().getWaclassVOWithState(
 				waLoginVO);
 		context.setWaLoginVO(waLoginVO);
-		context.setNodeCode("60130payslipaly");
+		context.setNodeCode("60130paydata");
 		return context;
 	}
 

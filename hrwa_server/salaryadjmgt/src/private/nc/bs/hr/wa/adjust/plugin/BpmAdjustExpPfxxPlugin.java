@@ -21,14 +21,7 @@ import nc.vo.wa.adjust.PsnappaproveVO;
 
 
 /**
- * <b> 在此处简要描述此类的功能 </b>
- *
- * <p>
- *     在此处添加此类的描述信息
- * </p>
- *
- * @author ufsoft
- * @version Your Project V60
+ * 定调资申请
  */
 public class BpmAdjustExpPfxxPlugin< T extends AggPsnappaproveVO> extends
 nc.bs.pfxx.plugin.AbstractPfxxPlugin {	
@@ -46,7 +39,7 @@ nc.bs.pfxx.plugin.AbstractPfxxPlugin {
 	 *            各种交换参数，组织，接受方，发送方，帐套等等
 	 * @param aggxsysvo
 	 *            辅助信息vo
-	 * @return定调资申请
+	 * @return
 	 * @throws BusinessException
 	 */
 	protected Object processBill(Object vo, ISwapContext swapContext, AggxsysregisterVO aggxsysvo) throws BusinessException {
@@ -63,6 +56,10 @@ nc.bs.pfxx.plugin.AbstractPfxxPlugin {
 		}
 		if (head.getPk_org() == null) {
 			throw new BusinessException("单据的财务组织字段不能为空，请输入值");
+		}
+		
+		if (head.getBillcode() == null) {
+			throw new BusinessException("单据的单据编号字段不能为空，请输入值");
 		}
 
 		// 2.查询此单据是否已经被导入过

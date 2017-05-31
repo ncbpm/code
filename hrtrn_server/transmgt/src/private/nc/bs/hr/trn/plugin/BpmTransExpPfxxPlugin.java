@@ -1,7 +1,5 @@
 package nc.bs.hr.trn.plugin;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import nc.bs.framework.common.NCLocator;
@@ -32,7 +30,6 @@ import nc.vo.pubapp.pflow.PfUserObject;
 import nc.vo.pubapp.util.NCPfServiceUtils;
 import nc.vo.trn.pub.BeanUtil;
 import nc.vo.trn.pub.TRNConst;
-import nc.vo.trn.regmng.RegapplyVO;
 import nc.vo.trn.transmng.AggStapply;
 import nc.vo.trn.transmng.StapplyVO;
 
@@ -40,6 +37,9 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
+/**
+ * 调配 离职申请
+ */
 public class BpmTransExpPfxxPlugin<T extends AggStapply> extends
 		nc.bs.pfxx.plugin.AbstractPfxxPlugin {
 
@@ -56,7 +56,7 @@ public class BpmTransExpPfxxPlugin<T extends AggStapply> extends
 	 *            各种交换参数，组织，接受方，发送方，帐套等等
 	 * @param aggxsysvo
 	 *            辅助信息vo
-	 * @return 调配 离职申请
+	 * @return
 	 * @throws BusinessException
 	 */
 	@SuppressWarnings("unchecked")
@@ -77,6 +77,9 @@ public class BpmTransExpPfxxPlugin<T extends AggStapply> extends
 			throw new BusinessException("单据的财务组织字段不能为空，请输入值");
 		}
 
+		if (head.getBill_code() == null) {
+			throw new BusinessException("单据的单据编号字段不能为空，请输入值");
+		}
 		// 2.查询此单据是否已经被导入过
 		String oldPk = PfxxPluginUtils.queryBillPKBeforeSaveOrUpdate(
 				swapContext.getBilltype(), swapContext.getDocID());
@@ -99,9 +102,9 @@ public class BpmTransExpPfxxPlugin<T extends AggStapply> extends
 			}
 		}
 
-		SimpleDateFormat formatter = new SimpleDateFormat("yyMMddHHmmssSSS");
-		String strCode = formatter.format(new Date());
-		head.setBill_code(strCode); //
+		// SimpleDateFormat formatter = new SimpleDateFormat("yyMMddHHmmssSSS");
+		// String strCode = formatter.format(new Date());
+		// head.setBill_code(strCode); //
 
 		AggStapply newBill = this.insertBill(bill, head);
 

@@ -35,12 +35,7 @@ import org.apache.commons.lang.StringUtils;
 /**
  * <b> 在此处简要描述此类的功能 </b>
  * 
- * <p>
- * 在此处添加此类的描述信息
- * </p>
- *应收应付单
- * @author zhaoruic
- * @version Your Project V60
+ * 应付 付款单
  */
 public class BpmArapExpPfxxPlugin<T extends BaseAggVO> extends
 		nc.bs.pfxx.plugin.AbstractPfxxPlugin {
@@ -229,10 +224,10 @@ public class BpmArapExpPfxxPlugin<T extends BaseAggVO> extends
 			res = (AggReceivableBillVO) ArrayUtil
 					.getFirstInArrays((Object[]) NCPfServiceUtils.processBatch(
 							ArapFlowUtil.getApproveActionCode(res.getHeadVO()
-									.getPk_org(), IArapBillTypeCons.F0), res
-									.getHeadVO().getPk_billtype(),
+									.getPk_org(), IArapBillTypeCons.F0),
+							res.getHeadVO().getPk_billtype(),
 							new AggReceivableBillVO[] { (AggReceivableBillVO) res },
-							getUserObj(),null));
+							getUserObj(), null));
 		} else if (bill.getHeadVO().getPk_billtype()
 				.equals(IArapBillTypeCons.F1)) {
 			res = (AggPayableBillVO) ArrayUtil
@@ -248,7 +243,7 @@ public class BpmArapExpPfxxPlugin<T extends BaseAggVO> extends
 									.getPk_org(), IArapBillTypeCons.F1), res
 									.getHeadVO().getPk_billtype(),
 							new AggPayableBillVO[] { (AggPayableBillVO) res },
-							getUserObj(),null));
+							getUserObj(), null));
 		} else if (bill.getHeadVO().getPk_billtype()
 				.equals(IArapBillTypeCons.F2)) {
 			res = (AggGatheringBillVO) ArrayUtil
@@ -261,10 +256,10 @@ public class BpmArapExpPfxxPlugin<T extends BaseAggVO> extends
 			res = (AggGatheringBillVO) ArrayUtil
 					.getFirstInArrays((Object[]) NCPfServiceUtils.processBatch(
 							ArapFlowUtil.getApproveActionCode(res.getHeadVO()
-									.getPk_org(), IArapBillTypeCons.F2), res
-									.getHeadVO().getPk_billtype(),
+									.getPk_org(), IArapBillTypeCons.F2),
+							res.getHeadVO().getPk_billtype(),
 							new AggGatheringBillVO[] { (AggGatheringBillVO) res },
-							getUserObj(),null));
+							getUserObj(), null));
 		} else if (bill.getHeadVO().getPk_billtype()
 				.equals(IArapBillTypeCons.F3)) {
 			res = (AggPayBillVO) ArrayUtil
@@ -280,7 +275,7 @@ public class BpmArapExpPfxxPlugin<T extends BaseAggVO> extends
 									.getPk_org(), IArapBillTypeCons.F3), res
 									.getHeadVO().getPk_billtype(),
 							new AggPayBillVO[] { (AggPayBillVO) res },
-							getUserObj(),null));
+							getUserObj(), null));
 		}
 
 		return res;

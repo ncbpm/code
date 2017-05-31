@@ -1,7 +1,5 @@
 package nc.bs.hr.trn.plugin;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import nc.bs.framework.common.NCLocator;
@@ -42,8 +40,6 @@ import org.apache.commons.lang.StringUtils;
  * 在此处添加此类的描述信息
  * </p>//转正申请
  * 
- * @author zhaoruic
- * @version Your Project V60
  */
 public class BpmRegmngExpPfxxPlugin<T extends AggRegapplyVO> extends
 		nc.bs.pfxx.plugin.AbstractPfxxPlugin {
@@ -81,7 +77,10 @@ public class BpmRegmngExpPfxxPlugin<T extends AggRegapplyVO> extends
 		if (head.getPk_org() == null) {
 			throw new BusinessException("单据的财务组织字段不能为空，请输入值");
 		}
-
+		if (head.getBill_code() == null) {
+			throw new BusinessException("单据的单据编号字段不能为空，请输入值");
+		}
+		
 		// 2.查询此单据是否已经被导入过
 		String oldPk = PfxxPluginUtils.queryBillPKBeforeSaveOrUpdate(
 				swapContext.getBilltype(), swapContext.getDocID());
@@ -104,9 +103,9 @@ public class BpmRegmngExpPfxxPlugin<T extends AggRegapplyVO> extends
 		}
 
 		
-		SimpleDateFormat formatter = new SimpleDateFormat("yyMMddHHmmssSSS");
-		String strCode = formatter.format(new Date());
-		head.setBill_code(strCode); //
+//		SimpleDateFormat formatter = new SimpleDateFormat("yyMMddHHmmssSSS");
+//		String strCode = formatter.format(new Date());
+//		head.setBill_code(strCode); //
 
 		AggRegapplyVO newBill = this.insertBill(bill, head);
 

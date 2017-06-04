@@ -56,7 +56,7 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 			throw new BusinessException("单据的薪资方案字段不能为空，请输入值");
 		}
 
-		String waPeriod = bill.getCperiod();// 薪资期间
+		String waPeriod = bill.getCyear()+bill.getCperiod();// 薪资期间
 		String pk_wa_class = bill.getPk_wa_class();// 薪资方案
 
 		String pk_group = bill.getPk_group();

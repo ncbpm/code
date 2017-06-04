@@ -20,6 +20,7 @@ import nc.vo.pfxx.auxiliary.AggxsysregisterVO;
 import nc.vo.pfxx.util.ArrayUtils;
 import nc.vo.pub.BusinessException;
 import nc.vo.pub.lang.UFDouble;
+import nc.vo.pub.lang.UFLiteralDate;
 import nc.vo.pub.pf.IPfRetCheckInfo;
 import nc.vo.pub.pf.workflow.IPFActionName;
 import nc.vo.pub.workflownote.WorkflownoteVO;
@@ -32,6 +33,7 @@ import nc.vo.wa.payfile.PayfileVO;
 import nc.vo.wa.payroll.AggPayrollVO;
 import nc.vo.wa.payroll.PayrollVO;
 import nc.vo.wa.pub.PeriodStateVO;
+import nc.vo.wa.pub.WaClassStateHelper;
 import nc.vo.wa.pub.WaLoginContext;
 import nc.vo.wa.pub.WaLoginVO;
 import nc.vo.wa.pub.YearPeriodSeperatorVO;
@@ -75,7 +77,7 @@ public class BpmPayDataExpPfxxPlugin<T extends AggPsnappaproveVO> extends
 			throw new BusinessException("单据的薪资方案字段不能为空，请输入值");
 		}
 
-		String waPeriod = bill.getCperiod();// 薪资期间
+		String waPeriod = bill.getCyear()+bill.getCperiod();// 薪资期间
 		String pk_wa_class = bill.getPk_wa_class();// 薪资方案
 
 		String pk_group = bill.getPk_group();
@@ -139,6 +141,7 @@ public class BpmPayDataExpPfxxPlugin<T extends AggPsnappaproveVO> extends
 		head.setPk_wa_class(pk_wa_class);
 		head.setPk_group(pk_group);
 		head.setPk_org(pk_org);
+		head.setApplydate(new UFLiteralDate());
 
 		AggPayDataVO aggPayDataVO = null;
 		Map<String, AggPayDataVO> aggVOMap = null;
@@ -177,6 +180,8 @@ public class BpmPayDataExpPfxxPlugin<T extends AggPsnappaproveVO> extends
 				.lookup(IPFBusiAction.class)
 				.processAction(IPFActionName.APPROVE, head.getBilltype(), null,
 						vo1, getUserObj(), null);
+		WaLoginVO waLoginVO = WaClassStateHelper.getWaclassVOWithState(loginContext.getWaLoginVO());
+		loginContext.setWaLoginVO(waLoginVO);
 		getManageService().onPay(loginContext);
 		return null;
 	}

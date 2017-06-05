@@ -44,6 +44,10 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 			throw new BusinessException("单据的财务组织字段不能为空，请输入值");
 		}
 
+		if (bill.getCyear() == null) {
+			throw new BusinessException("单据的薪资年度字段不能为空，请输入值");
+		}
+
 		if (bill.getCperiod() == null) {
 			throw new BusinessException("单据的薪资期间字段不能为空，请输入值");
 		}
@@ -52,7 +56,7 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 			throw new BusinessException("单据的薪资方案字段不能为空，请输入值");
 		}
 
-		String waPeriod = bill.getCperiod();// 薪资期间
+		String waPeriod = bill.getCyear()+bill.getCperiod();// 薪资期间
 		String pk_wa_class = bill.getPk_wa_class();// 薪资方案
 
 		String pk_group = bill.getPk_group();
@@ -62,23 +66,22 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 		caculateTypeVO.setRange(UFBoolean.TRUE);
 		caculateTypeVO.setType(UFBoolean.TRUE);
 
-		WaLoginContext loginContext = new WaLoginContext();
-		WaLoginContext waContext = createContext(waPeriod, pk_wa_class,
+		WaLoginContext loginContext = createContext(waPeriod, pk_wa_class,
 				pk_group, pk_org);
-		WaLoginVO waLoginVO = waContext.getWaLoginVO();
-		String where = null;
-		String condition = addStopFlag(where);
-		condition += " and wa_data.pk_psndoc in(select pk_psndoc from wa_data "
-				+ "where pk_wa_class = '" + waLoginVO.getPk_wa_class()
-				+ "' and cyear = '" + waLoginVO.getCyear()
-				+ "' and cperiod = '" + waLoginVO.getCperiod() + "' "
-				// 20151106 shenliangc NCdp205536216
-				// 薪资补发生成补发期间的档案没有对当前期间停发人员进行过滤。
-				+ " and wa_data.stopflag = 'N')";
+//		WaLoginVO waLoginVO = loginContext.getWaLoginVO();
+//		String where = null;
+//		String condition = addStopFlag(where);
+//		condition += " and wa_data.pk_psndoc in(select pk_psndoc from wa_data "
+//				+ "where pk_wa_class = '" + waLoginVO.getPk_wa_class()
+//				+ "' and cyear = '" + waLoginVO.getCyear()
+//				+ "' and cperiod = '" + waLoginVO.getCperiod() + "' "
+//				// 20151106 shenliangc NCdp205536216
+//				// 薪资补发生成补发期间的档案没有对当前期间停发人员进行过滤。
+//				+ " and wa_data.stopflag = 'N')";
 		AggPayDataVO aggPayDataVO = getPaydataQuery()
-				.queryAggPayDataVOByCondition(loginContext, condition, null);
+				.queryAggPayDataVOByCondition(loginContext, null, null);
 
-		getManageService().onCaculate(loginContext, caculateTypeVO, condition,
+		getManageService().onCaculate(loginContext, caculateTypeVO, null,
 				aggPayDataVO.getDataVOs());
 
 		String ss = null;

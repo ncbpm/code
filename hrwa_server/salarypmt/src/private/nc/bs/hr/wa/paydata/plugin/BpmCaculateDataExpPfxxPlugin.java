@@ -1,27 +1,33 @@
 package nc.bs.hr.wa.paydata.plugin;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import nc.bs.dao.BaseDAO;
+import nc.bs.framework.common.InvocationInfoProxy;
 import nc.bs.framework.common.NCLocator;
-import nc.bs.logging.Logger;
 import nc.bs.pfxx.ISwapContext;
+import nc.hr.utils.InSQLCreator;
 import nc.itf.hr.wa.IPaydataManageService;
 import nc.itf.hr.wa.IPaydataQueryService;
+import nc.jdbc.framework.SQLParameter;
 import nc.ui.wa.pub.WADelegator;
 import nc.vo.hr.caculate.CaculateTypeVO;
+import nc.vo.hrwa.impwadata.AggImpWaDataVO;
+import nc.vo.hrwa.impwadata.WaDataBodyVO;
+import nc.vo.hrwa.impwadata.WaDataHeadVO;
 import nc.vo.pfxx.auxiliary.AggxsysregisterVO;
 import nc.vo.pub.BusinessException;
 import nc.vo.pub.lang.UFBoolean;
-import nc.vo.wa.func.WherePartUtil;
+import nc.vo.pub.lang.UFDouble;
+import nc.vo.wa.classitem.WaClassItemVO;
 import nc.vo.wa.paydata.AggPayDataVO;
 import nc.vo.wa.payfile.PayfileVO;
 import nc.vo.wa.pub.PeriodStateVO;
 import nc.vo.wa.pub.WaLoginContext;
 import nc.vo.wa.pub.WaLoginVO;
 import nc.vo.wa.pub.YearPeriodSeperatorVO;
-
-import com.alibaba.fastjson.serializer.JSONSerializer;
-import com.alibaba.fastjson.serializer.SerializeConfig;
-import com.alibaba.fastjson.serializer.SerializeWriter;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 
 /**
  * 薪资计算
@@ -32,101 +38,79 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 	private IPaydataManageService manageService;
 	private IPaydataQueryService paydataQuery;
 
+	private WaClassItemVO[] items = null;
+
+	private Map<String, String> map = null;
+
 	@Override
 	protected Object processBill(Object vo, ISwapContext swapContext,
 			AggxsysregisterVO aggvo) throws BusinessException {
-		PayfileVO bill = (PayfileVO) vo;
+		AggImpWaDataVO bill = (AggImpWaDataVO) vo;
 
-		if (bill.getPk_group() == null) {
+		if (bill == null || bill.getParentVO() == null
+				|| bill.getChildrenVO() == null
+				|| bill.getChildrenVO().length == 0)
+			throw new BusinessException("传入数据出错");
+
+		WaDataHeadVO headvo = (WaDataHeadVO) bill.getParentVO();
+		if (headvo.getPk_group() == null) {
 			throw new BusinessException("单据的所属集团字段不能为空，请输入值");
 		}
-		if (bill.getPk_org() == null) {
+		if (headvo.getPk_org() == null) {
 			throw new BusinessException("单据的财务组织字段不能为空，请输入值");
 		}
 
-		if (bill.getCyear() == null) {
+		if (headvo.getCyear() == null) {
 			throw new BusinessException("单据的薪资年度字段不能为空，请输入值");
 		}
 
-		if (bill.getCperiod() == null) {
+		if (headvo.getCperiod() == null) {
 			throw new BusinessException("单据的薪资期间字段不能为空，请输入值");
 		}
 
-		if (bill.getPk_wa_class() == null) {
+		if (headvo.getPk_wa_class() == null) {
 			throw new BusinessException("单据的薪资方案字段不能为空，请输入值");
 		}
 
-		String waPeriod = bill.getCyear()+bill.getCperiod();// 薪资期间
-		String pk_wa_class = bill.getPk_wa_class();// 薪资方案
+		String waPeriod = headvo.getCyear() + headvo.getCperiod();// 薪资期间
+		String pk_wa_class = headvo.getPk_wa_class();// 薪资方案
 
-		String pk_group = bill.getPk_group();
-		String pk_org = bill.getPk_org();
+		String pk_group = headvo.getPk_group();
+		String pk_org = headvo.getPk_org();
 
 		CaculateTypeVO caculateTypeVO = new CaculateTypeVO();
 		caculateTypeVO.setRange(UFBoolean.TRUE);
 		caculateTypeVO.setType(UFBoolean.TRUE);
 
-		WaLoginContext loginContext = createContext(waPeriod, pk_wa_class,
-				pk_group, pk_org);
-//		WaLoginVO waLoginVO = loginContext.getWaLoginVO();
-//		String where = null;
-//		String condition = addStopFlag(where);
-//		condition += " and wa_data.pk_psndoc in(select pk_psndoc from wa_data "
-//				+ "where pk_wa_class = '" + waLoginVO.getPk_wa_class()
-//				+ "' and cyear = '" + waLoginVO.getCyear()
-//				+ "' and cperiod = '" + waLoginVO.getCperiod() + "' "
-//				// 20151106 shenliangc NCdp205536216
-//				// 薪资补发生成补发期间的档案没有对当前期间停发人员进行过滤。
-//				+ " and wa_data.stopflag = 'N')";
-		AggPayDataVO aggPayDataVO = getPaydataQuery()
-				.queryAggPayDataVOByCondition(loginContext, null, null);
+		WaDataBodyVO[] bodyvos = (WaDataBodyVO[]) bill.getChildrenVO();
 
-		getManageService().onCaculate(loginContext, caculateTypeVO, null,
-				aggPayDataVO.getDataVOs());
-
-		String ss = null;
-		SerializeWriter out = null;
-		try {
-
-			SerializeConfig config = SerializeConfig.getGlobalInstance();
-			JSONSerializer serializer = new JSONSerializer(out, config);
-			SerializerFeature aserializerfeature[] = new SerializerFeature[] {
-					SerializerFeature.WriteDateUseDateFormat,
-					SerializerFeature.DisableCircularReferenceDetect,
-					SerializerFeature.BrowserCompatible };
-			int j = aserializerfeature.length;
-			for (int i = 0; i < j; i++) {
-				SerializerFeature feature = aserializerfeature[i];
-				serializer.config(feature, true);
-			}
-
-			serializer.config(SerializerFeature.WriteDateUseDateFormat, true);
-			serializer.write(aggPayDataVO);
-			out = new SerializeWriter();
-			ss = out.toString();
-		} catch (Exception e) {
-			Logger.error(e.getMessage(), e);
-		} finally {
-			try {
-				if (out != null)
-					out.close();
-			} catch (Exception e) {
-				Logger.error(e.getMessage(), e);
+		ArrayList<String> list = new ArrayList<>();
+		for (WaDataBodyVO body : bodyvos) {
+			if (body.getPk_psndoc() != null) {
+				list.add(body.getPk_psndoc());
 			}
 		}
-		return ss;
-	}
 
-	/**
-	 * 停发人员不进行薪资补发。
-	 * 
-	 * @param where
-	 * @return
-	 */
-	private String addStopFlag(String where) {
-		// addStopflag;
-		String stopFlagConditon = "  wa_data.stopflag = 'N' ";
-		return WherePartUtil.concatConditon(where, stopFlagConditon);
+		if (list == null || list.size() == 0)
+			throw new BusinessException("人员信息不能为空");
+
+		WaLoginContext loginContext = createContext(waPeriod, pk_wa_class,
+				pk_group, pk_org);
+
+		updateDataVO(headvo, bodyvos, loginContext);
+
+		InvocationInfoProxy.getInstance().setUserId(
+				InvocationInfoProxy.getInstance().getUserId());
+		InSQLCreator inSQLCreator = new InSQLCreator();
+		String pks = inSQLCreator
+				.getInSQL(list.toArray(new String[list.size()]));
+		String conditon = "pk_psndoc  in (" + pks + ")";
+		AggPayDataVO aggPayDataVO = getPaydataQuery()
+				.queryAggPayDataVOByCondition(loginContext, conditon, null);
+
+		getManageService().onCaculate(loginContext, caculateTypeVO, conditon,
+				aggPayDataVO.getDataVOs());
+		return null;
 	}
 
 	protected IPaydataManageService getManageService() {
@@ -169,4 +153,87 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 		return context;
 	}
 
+	private void updateDataVO(WaDataHeadVO headvo, WaDataBodyVO[] bodyvos,
+			WaLoginContext loginContext) throws BusinessException {
+
+		if (headvo == null)
+			throw new BusinessException("传入数据出错");
+
+		if (bodyvos == null || bodyvos.length == 0)
+			throw new BusinessException("传入数据出错");
+
+		// 更新wa_datas中的计算值
+
+		StringBuffer sqlBuffer = new StringBuffer();
+
+		BaseDAO baseDao = new BaseDAO();
+		UFDouble value = UFDouble.ZERO_DBL;
+		for (WaDataBodyVO data : bodyvos) {
+			sqlBuffer.setLength(0);
+			sqlBuffer.append(" update wa_data set caculateflag ='N'"); // 1
+			for (String key : getMap().keySet()) {
+				if (data.getAttributeValue(key) != null) {
+					value = (UFDouble) data.getAttributeValue(key);
+				}
+				String name = getMap().get(key);
+				String itemkey = getItemKey(name, loginContext);
+
+				if (itemkey == null)
+					continue;
+				sqlBuffer.append(",");
+				sqlBuffer.append(itemkey);
+				sqlBuffer.append("=");
+				sqlBuffer.append(value);
+			}
+			sqlBuffer
+					.append(" where cperiod =? and cyear =? and pk_group =?  and  pk_org =?   and  pk_wa_class  =?  and pk_psndoc  =? ");
+			SQLParameter param = new SQLParameter();
+
+			param.addParam(headvo.getCperiod());
+			param.addParam(headvo.getCyear());
+			param.addParam(headvo.getPk_group());
+			param.addParam(headvo.getPk_org());
+			param.addParam(headvo.getPk_wa_class());
+			param.addParam(data.getPk_psndoc());
+			baseDao.executeUpdate(sqlBuffer.toString(), param);
+
+		}
+	}
+
+	private WaClassItemVO[] getWaClassItemVO(WaLoginContext loginContext)
+			throws BusinessException {
+		if (items == null || items.length == 0) {
+			items = getPaydataQuery().getUserClassItemVOs(loginContext);
+		}
+		return items;
+	}
+
+	private String getItemKey(String name, WaLoginContext loginContext)
+			throws BusinessException {
+		WaClassItemVO[] items1 = getWaClassItemVO(loginContext);
+
+		for (WaClassItemVO item : items1) {
+			if (item.getName() == null)
+				continue;
+			if (item.getName().equalsIgnoreCase(name)) {
+				return item.getItemkey();
+			}
+		}
+		return null;
+	}
+
+	private Map<String, String> getMap() {
+		if (map == null || map.size() == 0) {
+			map = new HashMap<>();
+			map.put("f_1", "制度天数");
+			map.put("f_2", "制度出勤");
+			map.put("f_3", "计时出勤");
+			map.put("f_4", "计时出勤天数");
+			map.put("f_5", "换休");
+			map.put("f_6", "日常值班");
+			map.put("f_7", "法定节日值班");
+		}
+
+		return map;
+	}
 }

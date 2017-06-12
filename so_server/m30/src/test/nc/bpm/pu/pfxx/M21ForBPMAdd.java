@@ -1,5 +1,10 @@
 package nc.bpm.pu.pfxx;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import nc.bs.framework.common.NCLocator;
 import nc.bs.pfxx.ISwapContext;
 import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
@@ -15,10 +20,13 @@ import nc.impl.pu.m21.action.rule.approve.FillNcaninnumRule;
 import nc.impl.pu.m21.action.rule.approve.FilterOrderByStatusRule;
 import nc.impl.pu.m21.action.rule.approve.InsertPayPlanRule;
 import nc.impl.pu.m21.action.rule.approve.InsertStatusOnWayRule;
+import nc.impl.pubapp.pattern.data.bill.BillQuery;
 import nc.impl.pubapp.pattern.rule.processer.AroundProcesser;
+import nc.itf.pu.m21.IOrderRevise;
 import nc.itf.scmpub.reference.uap.bd.material.MaterialPubService;
 import nc.itf.scmpub.reference.uap.bd.vat.BuySellFlagEnum;
 import nc.itf.uap.pf.IplatFormEntry;
+import nc.pubitf.pu.m21.pub.IOrderClosePubService;
 import nc.vo.pfxx.auxiliary.AggxsysregisterVO;
 import nc.vo.pu.m21.context.OrderContext;
 import nc.vo.pu.m21.entity.OrderHeaderVO;
@@ -37,11 +45,16 @@ import nc.vo.pub.SuperVOUtil;
 import nc.vo.pub.VOStatus;
 import nc.vo.pub.lang.UFBoolean;
 import nc.vo.pub.lang.UFDate;
+import nc.vo.pub.lang.UFDouble;
 import nc.vo.pubapp.pattern.exception.ExceptionUtils;
+import nc.vo.pubapp.util.VORowNoUtils;
+
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * 
- * @author zhw
+ * @author liyf
  * 
  */
 
@@ -54,17 +67,296 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 
 		// 1.得到转换后的VO数据,取决于向导第一步注册的VO信息
 		AggregatedValueObject resvo = (AggregatedValueObject) vo;
-		// 2. 校验数据的合法性:1.数据结构完整 2.根据组织+单据号校验是否重复.
-		checkData(resvo);
-		// 3.补全数据,并且调整单据状态
-		fillData(resvo);
-		//
-		AggregatedValueObject bill2 = insert(resvo);
+		OrderVO order = (OrderVO) resvo;
+		String vopk = order.getPrimaryKey();
+		if (StringUtils.isEmpty(vopk)) {
+			// 2. 校验数据的合法性:1.数据结构完整 2.根据组织+单据号校验是否重复.
+			checkData(resvo);
+			// 3.补全数据,并且调整单据状态
+			fillData(resvo);
+			//
+			AggregatedValueObject bill2 = insert(resvo);
 
-		return bill2.getParentVO().getPrimaryKey();
+			return bill2.getParentVO().getPrimaryKey();
+		} else {
+			// 如果存在，则执行采购订单修订或者关闭打开
+			OrderVO queryVo = this.queryVOByPk(vopk);
+			if (queryVo == null) {
+				throw new BusinessException("根据主键：" + vopk + "  在NC未查询对应的采购订单.");
+			}
+
+			// 判断是否整单关闭或者打开
+			if ("关闭".equalsIgnoreCase(order.getHVO().getVmemo())) {
+				NCLocator.getInstance().lookup(IOrderClosePubService.class)
+						.finalClose(new OrderVO[] { queryVo });
+				return vopk;
+
+			}
+			if ("打开".equalsIgnoreCase(order.getHVO().getVmemo())) {
+				NCLocator.getInstance().lookup(IOrderClosePubService.class)
+						.finalOpen(new OrderVO[] { queryVo });
+				return vopk;
+			}
+			// 有行操作 --行关闭或者行打开，执行
+			Map<String, OrderItemVO> map = new HashMap<String, OrderItemVO>();
+			for (OrderItemVO body : queryVo.getBVO()) {
+				if (body.getVbdef1() != null) {
+					map.put(body.getVbdef1(), body);
+				}
+			}
+			// 关闭的行
+			List<OrderItemVO> close_row = new ArrayList<OrderItemVO>();
+			// 打开的行
+			List<OrderItemVO> open_row = new ArrayList<OrderItemVO>();
+			// 修改的行
+			List<OrderItemVO> update_row = new ArrayList<OrderItemVO>();
+			// 删除的行
+			List<OrderItemVO> del_row = new ArrayList<OrderItemVO>();
+			// 新增的行
+			List<OrderItemVO> add_row = new ArrayList<OrderItemVO>();
+
+			for (OrderItemVO body : order.getBVO()) {
+				if ("关闭".equalsIgnoreCase(body.getVbmemo())) {
+					if (map.containsKey(body.getVbdef1())) {
+						close_row.add(map.get(body.getVbdef1()));
+					} else {
+						throw new BusinessException("根据BPM采购合同表体主键："
+								+ body.getVbdef1() + " 在NC未匹配到对应的行.");
+					}
+				} else if ("打开".equalsIgnoreCase(body.getVbmemo())) {
+					if (map.containsKey(body.getVbdef1())) {
+						open_row.add(map.get(body.getVbdef1()));
+					} else {
+						throw new BusinessException("根据BPM采购合同表体主键："
+								+ body.getVbdef1() + " 在NC未匹配到对应的行.");
+					}
+				} else if ("变更".equalsIgnoreCase(body.getVbmemo())) {
+					if (map.containsKey(body.getVbdef1())) {
+						update_row.add(body);
+					} else {
+						throw new BusinessException("根据BPM采购合同表体主键："
+								+ body.getVbdef1() + " 在NC未匹配到对应的行.");
+					}
+				} else if ("删除".equalsIgnoreCase(body.getVbmemo())) {
+					if (map.containsKey(body.getVbdef1())) {
+						del_row.add(body);
+					} else {
+						throw new BusinessException("根据BPM采购合同表体主键："
+								+ body.getVbdef1() + " 在NC未匹配到对应的行.");
+					}
+				} else if ("新增".equalsIgnoreCase(body.getVbmemo())) {
+					if (map.containsKey(body.getVbdef1())) {
+						throw new BusinessException("新增的行，指定的BPM表体行ID "
+								+ body.getVbdef1() + " 在NC当前采购订单已经存在，请检查.");
+					} else {
+						add_row.add(body);
+					}
+				} else {
+//					throw new BusinessException("采购订单变更，未支持的变更行操作类:"
+//							+ body.getVbmemo());
+				}
+			}
+			boolean requry = false;
+			if (close_row.size() > 0) {
+				OrderVO bill = new OrderVO();
+				bill.setHVO(queryVo.getHVO());
+				bill.setChildrenVO(close_row.toArray(new OrderItemVO[0]));
+				NCLocator.getInstance().lookup(IOrderClosePubService.class)
+						.rowClose(new OrderVO[] { bill });
+				requry = true;
+			}
+
+			if (open_row.size() > 0) {
+				OrderVO bill = new OrderVO();
+				bill.setHVO(queryVo.getHVO());
+				bill.setChildrenVO(open_row.toArray(new OrderItemVO[0]));
+				NCLocator.getInstance().lookup(IOrderClosePubService.class)
+						.rowOpen(new OrderVO[] { bill });
+				requry = true;
+			}
+			//重新执行查询，防止操作并发
+			if(requry){
+				queryVo = queryVOByPk(vopk);
+			}
+			// 更新表头
+			updateHVO(queryVo, order);
+			if (update_row.size() > 0) {
+				updateBody(queryVo, update_row);
+			}
+			if (del_row.size() > 0) {
+				delBody(queryVo, update_row);
+			}
+			if (add_row.size() > 0) {
+				addBody(queryVo, add_row);
+			}
+			calculate(queryVo);
+
+			NCLocator.getInstance().lookup(IOrderRevise.class)
+					.reviseSave(new OrderVO[] { queryVo }, null);
+
+		
+			return vopk;
+		}
+
 	}
 
-	protected AggregatedValueObject insert(AggregatedValueObject vo) throws BusinessException {
+	private void addBody(OrderVO queryVo, List<OrderItemVO> add_row) {
+		// TODO 自动生成的方法存根
+		OrderHeaderVO parentVO = queryVo.getHVO();
+
+		// <vsourcetrantype>0001A510000000001SOR</vsourcetrantype>
+		// <vsourcecode>QG2017051000000014</vsourcecode>
+		// <vsourcerowno>10</vsourcerowno>
+		OrderItemVO[] vos = add_row.toArray(new OrderItemVO[0]);
+		if ("20".equalsIgnoreCase(add_row.get(0).getCsourcetypecode())) {
+			String[] formulas = new String[] {
+					"vsourcetrantype->getColValue(po_praybill,ctrantypeid ,pk_praybill ,csourceid)",
+					"vsourcecode->getColValue(po_praybill,vbillcode ,pk_praybill ,csourceid)",
+					"vsourcerowno->getColValue(po_praybill_b,crowno,  pk_praybill_b ,csourcebid)"
+
+			};
+			SuperVOUtil.execFormulaWithVOs(vos, formulas);
+
+		} else if ("30".equalsIgnoreCase(add_row.get(0).getCsourcetypecode())) {
+			String[] formulas = new String[] {
+					"vsourcetrantype->getColValue(so_saleorder,ctrantypeid,csaleorderid  ,csourceid)",
+					"vsourcecode->getColValue(so_saleorder,vbillcode ,csaleorderid  ,csourceid)",
+					"vsourcerowno->getColValue(so_saleorder_b,crowno,  csaleorderbid  ,csourcebid)"
+
+			};
+			SuperVOUtil.execFormulaWithVOs(vos, formulas);
+		}
+		List<OrderItemVO> asList = new ArrayList<OrderItemVO>();
+		for(OrderItemVO bvo:queryVo.getBVO()){
+			asList.add(bvo);
+		}
+
+		for (OrderItemVO bvo : vos) {
+			bvo.setStatus(VOStatus.NEW);
+			bvo.setPk_order(parentVO.getPk_order());
+			// --表体根据表头设置
+			// <dbilldate>2017-05-21 20:20:16</dbilldate>
+			// <pk_supplier>1001A5100000000008J1</pk_supplier>
+			// <corigcurrencyid>1002Z0100000000001K1</corigcurrencyid>
+			bvo.setDbilldate(parentVO.getDbilldate());
+			bvo.setPk_supplier(parentVO.getPk_supplier());
+			bvo.setCorigcurrencyid(parentVO.getCorigcurrencyid());
+
+			// 首先根据单位，计算报价单位
+			bvo.setCqtunitid(bvo.getCunitid());
+			bvo.setVqtunitrate(bvo.getVchangerate());
+			// --表体默认值
+			// <fisactive>0</fisactive>
+			bvo.setFisactive(0);
+			// <btriatradeflag>N</btriatradeflag>
+			bvo.setBtriatradeflag(UFBoolean.FALSE);
+			// <bborrowpur>N</bborrowpur>
+			bvo.setBborrowpur(UFBoolean.FALSE);
+			// <binvoiceclose>N</binvoiceclose>
+			bvo.setBinvoiceclose(UFBoolean.FALSE);
+			// <barriveclose>N</barriveclose>
+			bvo.setBarriveclose(UFBoolean.FALSE);
+			// <bpayclose>N</bpayclose>
+			bvo.setBpayclose(UFBoolean.FALSE);
+			// <breceiveplan>N</breceiveplan>
+			bvo.setBreceiveplan(UFBoolean.FALSE);
+			// <blargess>N</blargess>
+			bvo.setBlargess(UFBoolean.FALSE);
+			// <btransclosed>N</btransclosed>
+			bvo.setBtransclosed(UFBoolean.FALSE);
+
+			// 润丰同步的业务源只有请购和协同销售订单
+			// <vfirsttrantype>0001A510000000001SOR</vfirsttrantype>
+			bvo.setVfirsttrantype(bvo.getVsourcetrantype());
+			// <cfirsttypecode>20</cfirsttypecode>
+			bvo.setCfirsttypecode(bvo.getCsourcetypecode());
+			// <cfirstid>1001A41000000000BOZQ</cfirstid>
+			bvo.setCfirstid(bvo.getCsourceid());
+			// <cfirstbid>1001A41000000000BOZR</cfirstbid>
+			bvo.setCfirstbid(bvo.getCsourcebid());
+			// <vfirstcode>QG2017051000000014</vfirstcode>
+			bvo.setVfirstcode(bvo.getVsourcecode());
+			// <vfirstrowno>10</vfirstrowno>
+			bvo.setVfirstrowno(bvo.getVsourcerowno());
+			asList.add(bvo);
+		}
+		queryVo.setBVO(asList.toArray(new OrderItemVO[0]));
+		
+		//补全行号
+		fillupRowNo(queryVo);
+	}
+
+	private void updateBody(OrderVO queryVo, List<OrderItemVO> update_row) throws BusinessException {
+		// TODO 自动生成的方法存根
+		Map<String, OrderItemVO> map = new HashMap<String, OrderItemVO>();
+		for (OrderItemVO body : queryVo.getBVO()) {
+			if (body.getVbdef1() != null) {
+				map.put(body.getVbdef1(), body);
+			}
+		}
+		String[] attributeNames = queryVo.getBVO()[0].getAttributeNames();
+		for (OrderItemVO bpm : update_row) {
+			OrderItemVO orderItemVO = map.get(bpm.getVbdef1());
+			//校验修订后的数量，是否小于累计到货数量
+			UFDouble bpm_nnum = bpm.getNnum() == null ? UFDouble.ZERO_DBL:bpm.getNnum();
+			UFDouble bpm_naccumarrvnum = orderItemVO.getNaccumarrvnum() == null ? UFDouble.ZERO_DBL:orderItemVO.getNaccumarrvnum();
+			if(bpm_nnum.sub(bpm_naccumarrvnum).doubleValue() <0){
+				throw new BusinessException("操作不合法 :行"+bpm.getVbdef1()+" 本次修订后的数量:"+bpm_nnum+ ".不能小于已累计到货:"+bpm_naccumarrvnum);
+			}
+			for (String attr : attributeNames) {
+				if("ts".equalsIgnoreCase(attr)){
+					continue;
+				}
+				orderItemVO.setAttributeValue(attr,
+						bpm.getAttributeValue(attr));
+			}
+			orderItemVO.setStatus(VOStatus.UPDATED);
+		}
+	}
+
+	private void delBody(OrderVO queryVo, List<OrderItemVO> update_row) {
+		// TODO 自动生成的方法存根
+		Map<String, OrderItemVO> map = new HashMap<String, OrderItemVO>();
+		for (OrderItemVO body : queryVo.getBVO()) {
+			if (body.getVbdef1() != null) {
+				map.put(body.getVbdef1(), body);
+			}
+		}
+		for (OrderItemVO bpm : update_row) {
+			OrderItemVO orderItemVO = map.get(bpm.getVbdef1());
+			orderItemVO.setStatus(VOStatus.DELETED);
+		}
+	}
+
+	private void updateHVO(OrderVO queryVo, OrderVO order) {
+		// TODO 自动生成的方法存根
+		String[] attributeNames = queryVo.getHVO().getAttributeNames();
+		OrderHeaderVO hvo = queryVo.getHVO();
+		Integer nversion = hvo.getNversion();
+		OrderHeaderVO hvo_bpm = order.getHVO();
+		for (String attr : attributeNames) {
+			if("ts".equalsIgnoreCase(attr)){
+				continue;
+			}
+			hvo.setAttributeValue(attr, hvo_bpm.getAttributeValue(attr));
+		}
+		
+		hvo.setNversion(++nversion);
+		hvo.setBislatest(UFBoolean.TRUE);
+	}
+
+	protected OrderVO queryVOByPk(String voPk) {
+		BillQuery<OrderVO> billquery = new BillQuery<OrderVO>(OrderVO.class);
+		OrderVO[] vos = billquery.query(new String[] { voPk });
+
+		if (ArrayUtils.isEmpty(vos)) {
+			return null;
+		}
+		return vos[0];
+	}
+
+	protected AggregatedValueObject insert(AggregatedValueObject vo)
+			throws BusinessException {
 		OrderVO order = (OrderVO) vo;
 		OrderHeaderVO hvo = order.getHVO();
 		String approver = hvo.getApprover();
@@ -90,22 +382,22 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 		AroundProcesser<OrderVO> processer = new AroundProcesser<OrderVO>(
 				OrderPluginPoint.APPROVE);
 		OrderVO order = (OrderVO) vo;
-		OrderVO [] vos = new OrderVO[] { order };
+		OrderVO[] vos = new OrderVO[] { order };
 		this.addBeforeRule(processer);
 		this.addAfterRule(processer);
 		// 前规则
 		processer.before(vos);
-		
+
 		OrderHeaderVO hvo = order.getHVO();
 		hvo.setApprover(approver);
 		hvo.setTaudittime(taudittime);
-		
+
 		IplatFormEntry iIplatFormEntry = (IplatFormEntry) NCLocator
 				.getInstance().lookup(IplatFormEntry.class.getName());
 		Object retObj = iIplatFormEntry.processAction("APPROVE", "21", null,
 				order, null, null);
-		
-//		approveImpl.approve(vos, null);
+
+		// approveImpl.approve(vos, null);
 		processer.after(vos);
 		return order;
 	}
@@ -193,8 +485,8 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 			bvo.setDbilldate(parentVO.getDbilldate());
 			bvo.setPk_supplier(parentVO.getPk_supplier());
 			bvo.setCorigcurrencyid(parentVO.getCorigcurrencyid());
-			
-			//首先根据单位，计算报价单位
+
+			// 首先根据单位，计算报价单位
 			bvo.setCqtunitid(bvo.getCunitid());
 			bvo.setVqtunitrate(bvo.getVchangerate());
 			// --表体默认值
@@ -231,17 +523,36 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 			// <vfirstrowno>10</vfirstrowno>
 			bvo.setVfirstrowno(bvo.getVsourcerowno());
 
-			
 		}
+		
 		// --表体所有的单价和以金额信息
-		for (int i = 0; i < bvos.length; i++) {
-			calculate(bill, i);
-		}
-
+		calculate(bill);
 		// 根据表头的付款协议主键，补全表体的付款协议
 		paymentInfor(bill);
+		
+		//补全行号
+		fillupRowNo(bill);
 	}
 
+
+	  private void fillupRowNo(OrderVO bill) {
+
+	    // 为行号为空的行补充行号。
+	    OrderItemVO[] items = bill.getBVO();
+	    List<OrderItemVO> bvos = new ArrayList<OrderItemVO>();
+	    for (OrderItemVO item : items) {
+	      int vostatus = item.getStatus();
+	      if (vostatus == VOStatus.DELETED) {
+	        // 不包含删除的行
+	        continue;
+	      }
+	      bvos.add(item);
+	    }
+	    items = bvos.toArray(new OrderItemVO[0]);
+	    VORowNoUtils.setVOsRowNoByRule(items, OrderItemVO.CROWNO);
+
+	  }
+	
 	private void paymentInfor(OrderVO bill) {
 		// TODO 自动生成的方法存根
 		OrderHeaderVO hvo = bill.getHVO();
@@ -253,7 +564,7 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 		}
 	}
 
-	private void calculate(OrderVO vo, int row) {
+	private void calculate(OrderVO vo) {
 		RelationCalculate cal = new RelationCalculate();
 		//
 		cal.calculate(vo, "nnum");

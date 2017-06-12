@@ -8,7 +8,9 @@ import nc.bs.framework.common.NCLocator;
 import nc.bs.pfxx.ISwapContext;
 import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
 import nc.bs.uap.bd.supplier.ISupplierConst;
+import nc.itf.bd.supplier.assign.ISupplierAssignService;
 import nc.itf.bd.supplier.baseinfo.ISupplierBaseInfoService;
+import nc.itf.bd.supplier.suporg.ISupOrgService;
 import nc.md.persist.framework.IMDPersistenceQueryService;
 import nc.md.persist.framework.IMDPersistenceService;
 import nc.md.persist.framework.MDPersistenceService;
@@ -19,6 +21,8 @@ import nc.vo.pfxx.util.ArrayUtils;
 import nc.vo.pub.BusinessException;
 import nc.vo.pub.SuperVO;
 import nc.vo.pub.VOStatus;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * 支持BPM供应商导入 1.带联系人信息 2.支持新增或者修改
@@ -46,20 +50,50 @@ public class SupplierForBpmAdd extends AbstractPfxxPlugin {
 																	 * @res
 																	 * "供应商默认联系人必须唯一。"
 																	 */);
+		//rainbow 全部是集团的供应商, 使用pk_org记录需要分配到的组织
+		String assign_orgs = supplierVO.getPk_org();
+		supplierVO.setPk_org(supplierVO.getPk_group());
 		String voPk = supplierVO.getPk_supplier();
 		setVOStatus(supplierVO.getSuplinkman(), VOStatus.NEW);  
 		if (voPk == null) {
 			supplierVO.setStatus(VOStatus.NEW);
-			supplierVO = getBasesService().pfxxInsertSupplierVO(supplierVO,
+			supplierVO = getBasesService().insertSupplierVOForCreate(supplierVO,
 					false);
 			voPk = supplierVO.getPk_supplier();
+			//执行供应商分配
+			if(!StringUtils.isEmpty(assign_orgs)){
+				String [] pks = new String[]{voPk};
+				String[] targets = assign_orgs.split(",");			
+				ISupplierAssignService assignService2 = NCLocator.getInstance().lookup(ISupplierAssignService.class);
+				assignService2.assignSupplierByPks(pks, targets,new String[]{"GLOBLE00000000000000", "0001A51000000000078A"});
+				
+				assignService2.assignByPks(pks, targets, false);
+			
+				
+			}
 		} else {
 			supplierVO.setStatus(VOStatus.UPDATED);
 			setUpdateValues(supplierVO, voPk);
-			getBasesService().pfxxUpdateSupplierVO(supplierVO, false);
+			getBasesService().updateSupplierVO(supplierVO, false);
+			//执行供应商分配
+			if(!StringUtils.isEmpty(assign_orgs)){
+				String [] pks = new String[]{voPk};
+				String[] targets = assign_orgs.split(",");			
+				ISupplierAssignService assignService2 = NCLocator.getInstance().lookup(ISupplierAssignService.class);
+				
+				assignService2.assignSupplierByPks(pks, targets,new String[]{"GLOBLE00000000000000", "0001A51000000000078A"});
+				
+				assignService2.assignByPks(pks, targets, true);
+			}
 		}
+		//重新执行一次查询，
+		
+		
+		
 		return voPk;
 	}
+	
+
 
 	private boolean hasUniqueDefaultLinkMan(SupplierVO supplier) {
 		if (supplier.getSuplinkman() == null
@@ -94,6 +128,7 @@ public class SupplierForBpmAdd extends AbstractPfxxPlugin {
 																	 * "单据已被删除"
 																	 */);
 		SupplierVO oldDocVO = (SupplierVO) objs[0];
+		updateDocVO.setCode(oldDocVO.getCode());
 		updateDocVO.setCreator(oldDocVO.getCreator());
 		updateDocVO.setCreationtime(oldDocVO.getCreationtime());
 		updateDocVO.setModifier(oldDocVO.getModifier());

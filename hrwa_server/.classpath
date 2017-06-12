@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" output="salarypmt/classes" path="salarypmt/src/public"/>
-	<classpathentry kind="src" output="salarypmt/classes" path="salarypmt/src/client"/>
 	<classpathentry kind="src" output="salarypmt/classes" path="salarypmt/src/private"/>
+	<classpathentry kind="src" output="salarypmt/classes" path="salarypmt/src/client"/>
 	<classpathentry kind="src" output="salarypmt/classes" path="salarypmt/src/test"/>
 	<classpathentry kind="src" output="salarypmt/classes" path="salarypmt/resources"/>
 	<classpathentry kind="src" output="salaryadjmgt/classes" path="salaryadjmgt/src/public"/>

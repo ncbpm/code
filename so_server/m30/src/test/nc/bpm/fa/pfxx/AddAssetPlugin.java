@@ -1,11 +1,7 @@
 package nc.bpm.fa.pfxx;
 
-import nc.bs.framework.common.NCLocator;
 import nc.bs.pfxx.ISwapContext;
 import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
-import nc.bs.xml.out.tool.XmlOutTool;
-import nc.impl.pfxx.plugins.AssetPfxxImpl;
-import nc.itf.fa.prv.INewAsset;
 import nc.itf.fa.service.INewAssetService;
 import nc.vo.am.proxy.AMProxy;
 import nc.vo.fa.newasset.AggNewAssetVO;

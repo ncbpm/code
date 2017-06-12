@@ -8,18 +8,21 @@ import nc.bs.framework.common.NCLocator;
 import nc.bs.pfxx.ISwapContext;
 import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
 import nc.bs.xml.out.tool.XmlOutTool;
+import nc.impl.pubapp.pattern.data.bill.BillQuery;
 import nc.itf.so.m30.ref.credit.CreditServicesUtil;
 import nc.itf.so.m30.revise.ISaleOrderReviseMaintainApp;
 import nc.pubitf.org.IOrgRelationDataPubService;
 import nc.vo.credit.billcreditquery.entity.CreditInfoVO;
 import nc.vo.org.orgmodel.OrgRelationVO;
 import nc.vo.pfxx.auxiliary.AggxsysregisterVO;
+import nc.vo.pu.m21.entity.OrderVO;
 import nc.vo.pub.AggregatedValueObject;
 import nc.vo.pub.BeanHelper;
 import nc.vo.pub.BusinessException;
 import nc.vo.so.m30.entity.SaleOrderHVO;
 import nc.vo.so.m30.revise.entity.SaleOrderHistoryVO;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.codehaus.jettison.json.JSONObject;
 
 /**
@@ -31,26 +34,20 @@ import org.codehaus.jettison.json.JSONObject;
 
 public class McreditForBPMQuery extends AbstractPfxxPlugin {
 
+	protected OrderVO queryVOByPk(String voPk) {
+		BillQuery<OrderVO> billquery = new BillQuery<OrderVO>(OrderVO.class);
+		OrderVO[] vos = billquery.query(new String[] { voPk });
 
+		if (ArrayUtils.isEmpty(vos)) {
+			return null;
+		}
+		return vos[0];
+	}
 
 	@Override
 	protected Object processBill(Object vo, ISwapContext swapContext,
 			AggxsysregisterVO aggvo) throws BusinessException {
-		// TODO 自动生成的方法	
-		//查询销售订单修改VO
-		
-		ISaleOrderReviseMaintainApp service = NCLocator.getInstance().lookup(ISaleOrderReviseMaintainApp.class);
-	
-		SaleOrderHistoryVO[] historyVOs = service.queryM30ReviseApp(new String[]{"1001A41000000000CEOX"});
-		
-		try {
-			XmlOutTool.votoXmlFile("bpm_30_history",
-					historyVOs, historyVOs[0].getParentVO().getPk_org(), historyVOs[0].getParentVO().getVbillcode());
-		} catch (Exception e) {
-			// TODO 自动生成的 catch 块
-			e.printStackTrace();
-		}
-
+		// TODO 自动生成的方法
 		// 信用检查
 		// if (SysInitGroupQuery.isCREDITEnabled()) {
 		// throw new BusinessException("未启用信用管理模块");

@@ -2,11 +2,14 @@ package nc.bs.hr.wa.paydata.plugin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import nc.bs.dao.BaseDAO;
+import nc.bs.dao.DAOException;
 import nc.bs.framework.common.InvocationInfoProxy;
 import nc.bs.framework.common.NCLocator;
+import nc.bs.logging.Logger;
 import nc.bs.pfxx.ISwapContext;
 import nc.hr.utils.InSQLCreator;
 import nc.itf.hr.wa.IPaydataManageService;
@@ -21,6 +24,7 @@ import nc.vo.pfxx.auxiliary.AggxsysregisterVO;
 import nc.vo.pub.BusinessException;
 import nc.vo.pub.lang.UFBoolean;
 import nc.vo.pub.lang.UFDouble;
+import nc.vo.sm.UserVO;
 import nc.vo.wa.classitem.WaClassItemVO;
 import nc.vo.wa.paydata.AggPayDataVO;
 import nc.vo.wa.payfile.PayfileVO;
@@ -41,6 +45,8 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 	private WaClassItemVO[] items = null;
 
 	private Map<String, String> map = null;
+
+	private final String USERCODE = "kf01";
 
 	@Override
 	protected Object processBill(Object vo, ISwapContext swapContext,
@@ -99,8 +105,8 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 
 		updateDataVO(headvo, bodyvos, loginContext);
 
-		InvocationInfoProxy.getInstance().setUserId(
-				InvocationInfoProxy.getInstance().getUserId());
+		InvocationInfoProxy.getInstance().setUserId(getCuserid(USERCODE));
+		InvocationInfoProxy.getInstance().setUserCode(USERCODE);
 		InSQLCreator inSQLCreator = new InSQLCreator();
 		String pks = inSQLCreator
 				.getInSQL(list.toArray(new String[list.size()]));
@@ -235,5 +241,24 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 		}
 
 		return map;
+	}
+
+	private String getCuserid(String usercode) {
+		String sql = " user_code_q = ?";
+		SQLParameter sqlParam = new SQLParameter();
+		sqlParam.addParam(usercode.toUpperCase());
+
+		List<UserVO> retList;
+		try {
+			retList = (List<UserVO>) new BaseDAO().retrieveByClause(
+					UserVO.class, sql, sqlParam);
+			if (retList != null && retList.size() > 0 && retList.get(0) != null) {
+				return retList.get(0).getCuserid();
+			}
+		} catch (DAOException e) {
+			Logger.error(e);
+		}
+		return null;
+
 	}
 }

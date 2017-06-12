@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding='gb2312'?>
+<businessprocessors>
+    <businessprocessor baseclassname="" billtype="bpm_HF_addReduce" classname="nc.bpm.fa.pfxx.AddReducePlugin" locklevel="3" metadataid="ac7bd927-8af1-453b-8315-f7511b8b1b34" name="增加资产减少">
+    </businessprocessor>
+	 <businessprocessor baseclassname="" billtype="bpm_HG_modify_dept" classname="nc.bpm.fa.pfxx.ModDeptPlugin" locklevel="3" metadataid="3f32e1fd-660a-4d9e-8497-b0c01a5d2654" name="资产使用部门变动">
+    </businessprocessor>
+	 <businessprocessor baseclassname="" billtype="bpm_HG_modify_usage" classname="nc.bpm.fa.pfxx.ModUsagePlugin" locklevel="3" metadataid="3f32e1fd-660a-4d9e-8497-b0c01a5d2654" name="资产使用情况变动">
+    </businessprocessor>
+	 <businessprocessor baseclassname="" billtype="bpm_add_asset" classname="nc.bpm.fa.pfxx.AddAssetPlugin" locklevel="3" metadataid="8a1677c1-20f7-42ce-8798-24c74b7752de" name="新增资产审批">
+    </businessprocessor>
+</businessprocessors>

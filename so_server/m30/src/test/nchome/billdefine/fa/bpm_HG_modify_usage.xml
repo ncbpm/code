@@ -1,0 +1,3430 @@
+<?xml version="1.0" encoding='gb2312'?>
+<ufinterface roottag="bill">
+    <vars>
+    </vars>
+    <record displayName="变动单" metadataid="3f32e1fd-660a-4d9e-8497-b0c01a5d2654" stabletag="header" tablename="billhead" tabletag="billhead" tabletype="head" typeName="表头">
+        <field desc="变动单">
+            <matchtag>pk_alter</matchtag>
+            <name>pk_alter</name>
+            <type>UFID</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="集团">
+            <matchtag>pk_group</matchtag>
+            <name>pk_group</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>3b6dd171-2900-47f3-bfbe-41e4483a2a65</basdoc>
+            <translator>1001Z01000000000R5MJ</translator>
+            <variablename>pk_group</variablename>
+        </field>
+        <field desc="财务组织最新版本">
+            <matchtag>pk_org</matchtag>
+            <name>pk_org</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>2cfe13c5-9757-4ae8-9327-f5c2d34bcb46</basdoc>
+            <translator>1001Z01000000000R5MK</translator>
+            <translatorParams>pk_group</translatorParams>
+            <variablename>fa_pk_org</variablename>
+        </field>
+        <field desc="财务组织">
+            <matchtag>pk_org_v</matchtag>
+            <name>pk_org_v</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>31736d3d-3626-46c5-b5d0-e10b4ed33dce</basdoc>
+            <translator>1001Z01000000000R5MK</translator>
+            <translatorParams>pk_group</translatorParams>
+        </field>
+        <field desc="利润中心最新版本">
+            <matchtag>pk_raorg</matchtag>
+            <name>pk_raorg</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>5461ada1-ef2a-419a-af14-656cf0641d34</basdoc>
+            <translator>1001Z01000000000R5MK</translator>
+        </field>
+        <field desc="利润中心">
+            <matchtag>pk_raorg_v</matchtag>
+            <name>pk_raorg_v</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>0b9ea16e-7650-47dc-9912-fd0bd351f124</basdoc>
+            <translator>1001Z01000000000R5MJ</translator>
+        </field>
+        <field desc="业务日期">
+            <matchtag>business_date</matchtag>
+            <name>business_date</name>
+            <type>UFDate</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>19</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="资产账簿">
+            <matchtag>pk_accbook</matchtag>
+            <name>pk_accbook</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>fb4da7d4-77b0-4cb8-81c3-db65e32d63af</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>fa_pk_org</translatorParams>
+            <variablename>fa_pk_accbook</variablename>
+        </field>
+        <field desc="单据类型">
+            <matchtag>bill_type</matchtag>
+            <name>bill_type</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>4</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动单号">
+            <matchtag>bill_code</matchtag>
+            <name>bill_code</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>40</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="交易类型编码">
+            <matchtag>transi_type</matchtag>
+            <name>transi_type</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>30</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="交易类型">
+            <matchtag>pk_transitype</matchtag>
+            <name>pk_transitype</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>b0fa41cd-a649-4309-b685-d341a5d1b0ed</basdoc>
+            <translator>1001Z01000000000R5MK</translator>
+        </field>
+        <field desc="单据状态">
+            <matchtag>bill_status</matchtag>
+            <name>bill_status</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>0</maxLength>
+            <needexport>yes</needexport>
+            <enumid>6ccf0711-e9b7-4ad0-8322-f23ef148b512</enumid>
+        </field>
+        <field desc="备注">
+            <matchtag>remark</matchtag>
+            <name>remark</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>200</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="创建人">
+            <matchtag>creator</matchtag>
+            <name>creator</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>f6f9a473-56c0-432f-8bc7-fbf8fde54fee</basdoc>
+             <translator>1001Z01000000000R5MK</translator>
+            <translatorParams>pk_group</translatorParams>
+        </field>
+        <field desc="创建时间">
+            <matchtag>creationtime</matchtag>
+            <name>creationtime</name>
+            <type>UFDateTime</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>19</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="最后修改人">
+            <matchtag>modifier</matchtag>
+            <name>modifier</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>f6f9a473-56c0-432f-8bc7-fbf8fde54fee</basdoc>
+             <translator>1001Z01000000000R5MK</translator>
+            <translatorParams>pk_group</translatorParams>
+        </field>
+        <field desc="最后修改时间">
+            <matchtag>modifiedtime</matchtag>
+            <name>modifiedtime</name>
+            <type>UFDateTime</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>19</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="制单人">
+            <matchtag>billmaker</matchtag>
+            <name>billmaker</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>f6f9a473-56c0-432f-8bc7-fbf8fde54fee</basdoc>
+	    <translator>1001Z01000000000R5MK</translator>
+            <translatorParams>pk_group</translatorParams>
+        </field>
+        <field desc="制单时间">
+            <matchtag>billmaketime</matchtag>
+            <name>billmaketime</name>
+            <type>UFDateTime</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>19</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="审批人">
+            <matchtag>auditor</matchtag>
+            <name>auditor</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>f6f9a473-56c0-432f-8bc7-fbf8fde54fee</basdoc>
+             <translator>1001Z01000000000R5MK</translator>
+            <translatorParams>pk_group</translatorParams>
+        </field>
+        <field desc="审批时间">
+            <matchtag>audittime</matchtag>
+            <name>audittime</name>
+            <type>UFDateTime</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>19</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="审批意见">
+            <matchtag>check_opinion</matchtag>
+            <name>check_opinion</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>200</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项1">
+            <matchtag>def1</matchtag>
+            <name>def1</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项2">
+            <matchtag>def2</matchtag>
+            <name>def2</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项3">
+            <matchtag>def3</matchtag>
+            <name>def3</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项4">
+            <matchtag>def4</matchtag>
+            <name>def4</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项5">
+            <matchtag>def5</matchtag>
+            <name>def5</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项6">
+            <matchtag>def6</matchtag>
+            <name>def6</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项7">
+            <matchtag>def7</matchtag>
+            <name>def7</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项8">
+            <matchtag>def8</matchtag>
+            <name>def8</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项9">
+            <matchtag>def9</matchtag>
+            <name>def9</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项10">
+            <matchtag>def10</matchtag>
+            <name>def10</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项11">
+            <matchtag>def11</matchtag>
+            <name>def11</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项12">
+            <matchtag>def12</matchtag>
+            <name>def12</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项13">
+            <matchtag>def13</matchtag>
+            <name>def13</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项14">
+            <matchtag>def14</matchtag>
+            <name>def14</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项15">
+            <matchtag>def15</matchtag>
+            <name>def15</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项16">
+            <matchtag>def16</matchtag>
+            <name>def16</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项17">
+            <matchtag>def17</matchtag>
+            <name>def17</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项18">
+            <matchtag>def18</matchtag>
+            <name>def18</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项19">
+            <matchtag>def19</matchtag>
+            <name>def19</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项20">
+            <matchtag>def20</matchtag>
+            <name>def20</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项pk">
+            <matchtag>defpk</matchtag>
+            <name>defpk</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>256</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="明细">
+            <matchtag>bodyvos</matchtag>
+            <name>bodyvos</name>
+            <type>ref(item)</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <refitem>80ee5d85-9a16-40bf-abc2-c8261e7281cf</refitem>
+        </field>
+        <field desc="来源单据主键">
+            <matchtag>pk_bill_src</matchtag>
+            <name>pk_bill_src</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="来源单据类型">
+            <matchtag>bill_type_src</matchtag>
+            <name>bill_type_src</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>4</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="来源交易类型">
+            <matchtag>transi_type_src</matchtag>
+            <name>transi_type_src</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>30</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="来源交易类型主键">
+            <matchtag>pk_transitype_src</matchtag>
+            <name>pk_transitype_src</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>b0fa41cd-a649-4309-b685-d341a5d1b0ed</basdoc>
+        </field>
+    </record>
+    <record classname="nc.vo.fa.alter.AlterBodyVO[]" displayName="明细" entitytag="item" metadataid="80ee5d85-9a16-40bf-abc2-c8261e7281cf" recordtype="vos" sentitytag="item" tablename="bodyvos" tabletype="embed" typeName="内嵌结构">
+        <field desc="变动前计算累计折旧">
+            <matchtag>accudep_cal_before</matchtag>
+            <name>accudep_cal_before</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前计算本币原值">
+            <matchtag>originvalue_cal_before</matchtag>
+            <name>originvalue_cal_before</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前计算已计提月份">
+            <matchtag>usedmonth_cal_before</matchtag>
+            <name>usedmonth_cal_before</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>0</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前计算使用月限">
+            <matchtag>servicemonth_cal_before</matchtag>
+            <name>servicemonth_cal_before</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>0</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="集团">
+            <matchtag>pk_group</matchtag>
+            <name>pk_group</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>3b6dd171-2900-47f3-bfbe-41e4483a2a65</basdoc>
+            <translator>1001Z01000000000R5MJ</translator>
+            <variablename>pk_group_b</variablename>
+        </field>
+        <field desc="财务组织最新版本">
+            <matchtag>pk_org</matchtag>
+            <name>pk_org</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>2cfe13c5-9757-4ae8-9327-f5c2d34bcb46</basdoc>
+            <translator>1001Z01000000000R5MK</translator>
+            <translatorParams>pk_group</translatorParams>
+        </field>
+        <field desc="财务组织">
+            <matchtag>pk_org_v</matchtag>
+            <name>pk_org_v</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>31736d3d-3626-46c5-b5d0-e10b4ed33dce</basdoc>
+            <translator>1001Z01000000000R5MK</translator>
+            <translatorParams>pk_group_b</translatorParams>
+        </field>
+        <field desc="账簿主键">
+            <matchtag>pk_accbook</matchtag>
+            <name>pk_accbook</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>fb4da7d4-77b0-4cb8-81c3-db65e32d63af</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>fa_pk_org</translatorParams>
+        </field>
+        <field desc="变动单子表标识">
+            <matchtag>pk_alter_b</matchtag>
+            <name>pk_alter_b</name>
+            <type>UFID</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="币种主键">
+            <matchtag>pk_currency</matchtag>
+            <name>pk_currency</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>b498bc9a-e5fd-4613-8da8-bdae2a05704a</basdoc>
+            <translator>1001Z01000000000R5MK</translator>
+            <translatorParams>pk_group</translatorParams>
+        </field>
+        <field desc="主币汇率">
+            <matchtag>localcurr_rate</matchtag>
+            <name>localcurr_rate</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>16</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动原因">
+            <matchtag>pk_reason</matchtag>
+            <name>pk_reason</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>bee60e50-e504-46e8-a0ad-02d2b6147554</basdoc>
+            <translator>1001Z01000000000R5MK</translator>
+	    <translatorParams>pk_group</translatorParams>
+        </field>
+        <field desc="是否追溯">
+            <matchtag>istrace</matchtag>
+            <name>istrace</name>
+            <type>UFBoolean</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="追溯日期">
+            <matchtag>tracedate</matchtag>
+            <name>tracedate</name>
+            <type>UFDate</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>19</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="影响本期折旧额">
+            <matchtag>dep_value_current</matchtag>
+            <name>dep_value_current</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="影响前期折旧额">
+            <matchtag>dep_value_before</matchtag>
+            <name>dep_value_before</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="备注">
+            <matchtag>remark</matchtag>
+            <name>remark</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>200</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项1">
+            <matchtag>def1</matchtag>
+            <name>def1</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项2">
+            <matchtag>def2</matchtag>
+            <name>def2</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项3">
+            <matchtag>def3</matchtag>
+            <name>def3</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项4">
+            <matchtag>def4</matchtag>
+            <name>def4</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项5">
+            <matchtag>def5</matchtag>
+            <name>def5</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项6">
+            <matchtag>def6</matchtag>
+            <name>def6</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项7">
+            <matchtag>def7</matchtag>
+            <name>def7</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项8">
+            <matchtag>def8</matchtag>
+            <name>def8</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项9">
+            <matchtag>def9</matchtag>
+            <name>def9</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项10">
+            <matchtag>def10</matchtag>
+            <name>def10</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项11">
+            <matchtag>def11</matchtag>
+            <name>def11</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项12">
+            <matchtag>def12</matchtag>
+            <name>def12</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项13">
+            <matchtag>def13</matchtag>
+            <name>def13</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项14">
+            <matchtag>def14</matchtag>
+            <name>def14</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项15">
+            <matchtag>def15</matchtag>
+            <name>def15</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项16">
+            <matchtag>def16</matchtag>
+            <name>def16</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项17">
+            <matchtag>def17</matchtag>
+            <name>def17</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项18">
+            <matchtag>def18</matchtag>
+            <name>def18</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项19">
+            <matchtag>def19</matchtag>
+            <name>def19</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项20">
+            <matchtag>def20</matchtag>
+            <name>def20</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="自定义项主键">
+            <matchtag>defpk</matchtag>
+            <name>defpk</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>256</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="卡片编号">
+            <matchtag>pk_card</matchtag>
+            <name>pk_card</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>8a1677c1-20f7-42ce-8798-24c74b7752de</basdoc>
+            <translator>1001Z91000000002PI2N</translator>
+            <translatorParams>fa_pk_org;fa_pk_accbook</translatorParams>
+        </field>
+        <field desc="变动单明细">
+            <matchtag>altersheetvos</matchtag>
+            <name>altersheetvos</name>
+            <type>ref(item)</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <refitem>3fa3770d-d8d2-4268-9857-c01a84e13fa4</refitem>
+        </field>
+        <field desc="变动前原币原值">
+            <matchtag>originvalue_before</matchtag>
+            <name>originvalue_before</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动部分原币原值">
+            <matchtag>originvalue_alter</matchtag>
+            <name>originvalue_alter</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后原币原值">
+            <matchtag>originvalue_after</matchtag>
+            <name>originvalue_after</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前折旧方法">
+            <matchtag>pk_depmethod_before</matchtag>
+            <name>pk_depmethod_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>f36f9570-db1f-4746-af56-67850c4f4675</basdoc>
+<translator>1001Z01000000000R5ML</translator>
+            <translatorParams>fa_pk_org</translatorParams>
+        </field>
+        <field desc="变动后折旧方法">
+            <matchtag>pk_depmethod_after</matchtag>
+            <name>pk_depmethod_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>f36f9570-db1f-4746-af56-67850c4f4675</basdoc>
+<translator>1001Z01000000000R5ML</translator>
+            <translatorParams>fa_pk_org</translatorParams>
+        </field>
+        <field desc="变动前使用部门">
+            <matchtag>usedept_before</matchtag>
+            <name>usedept_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后使用部门">
+            <matchtag>usedept_after</matchtag>
+            <name>usedept_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前净残值率(%)">
+            <matchtag>salvagerate_before</matchtag>
+            <name>salvagerate_before</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后净残值率(%)">
+            <matchtag>salvagerate_after</matchtag>
+            <name>salvagerate_after</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前本币原值">
+            <matchtag>localoriginvalue_before</matchtag>
+            <name>localoriginvalue_before</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前本币原值(集团)">
+            <matchtag>localoriginvalue_before_group</matchtag>
+            <name>localoriginvalue_before_group</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前本币原值(全局)">
+            <matchtag>localoriginvalue_before_global</matchtag>
+            <name>localoriginvalue_before_global</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动部分本币原值">
+            <matchtag>localoriginvalue_alter</matchtag>
+            <name>localoriginvalue_alter</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动部分本币原值(集团)">
+            <matchtag>localoriginvalue_alter_group</matchtag>
+            <name>localoriginvalue_alter_group</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动部分本币原值(全局)">
+            <matchtag>localoriginvalue_alter_global</matchtag>
+            <name>localoriginvalue_alter_global</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后本币原值">
+            <matchtag>localoriginvalue_after</matchtag>
+            <name>localoriginvalue_after</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后本币原值(集团)">
+            <matchtag>localoriginvalue_after_group</matchtag>
+            <name>localoriginvalue_after_group</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后本币原值(全局)">
+            <matchtag>localoriginvalue_after_global</matchtag>
+            <name>localoriginvalue_after_global</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前累计折旧">
+            <matchtag>accudep_before</matchtag>
+            <name>accudep_before</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前累计折旧(集团)">
+            <matchtag>accudep_before_group</matchtag>
+            <name>accudep_before_group</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前累计折旧(全局)">
+            <matchtag>accudep_before_global</matchtag>
+            <name>accudep_before_global</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动部分累计折旧">
+            <matchtag>accudep_alter</matchtag>
+            <name>accudep_alter</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动部分累计折旧(集团)">
+            <matchtag>accudep_alter_group</matchtag>
+            <name>accudep_alter_group</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动部分累计折旧(全局)">
+            <matchtag>accudep_alter_global</matchtag>
+            <name>accudep_alter_global</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后累计折旧">
+            <matchtag>accudep_after</matchtag>
+            <name>accudep_after</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后累计折旧(集团)">
+            <matchtag>accudep_after_group</matchtag>
+            <name>accudep_after_group</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后累计折旧(全局)">
+            <matchtag>accudep_after_global</matchtag>
+            <name>accudep_after_global</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前净残值">
+            <matchtag>salvage_before</matchtag>
+            <name>salvage_before</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前净残值(集团)">
+            <matchtag>salvage_before_group</matchtag>
+            <name>salvage_before_group</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前净残值(全局)">
+            <matchtag>salvage_before_global</matchtag>
+            <name>salvage_before_global</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后净残值">
+            <matchtag>salvage_after</matchtag>
+            <name>salvage_after</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后净残值(集团)">
+            <matchtag>salvage_after_group</matchtag>
+            <name>salvage_after_group</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后净残值(全局)">
+            <matchtag>salvage_after_global</matchtag>
+            <name>salvage_after_global</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前数量">
+            <matchtag>card_num_before</matchtag>
+            <name>card_num_before</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>0</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动部分数量">
+            <matchtag>card_num_alter</matchtag>
+            <name>card_num_alter</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>0</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后数量">
+            <matchtag>card_num_after</matchtag>
+            <name>card_num_after</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>0</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前购买价款">
+            <matchtag>currmoney_before</matchtag>
+            <name>currmoney_before</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动部分购买价款">
+            <matchtag>currmoney_alter</matchtag>
+            <name>currmoney_alter</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后购买价款">
+            <matchtag>currmoney_after</matchtag>
+            <name>currmoney_after</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前类别">
+            <matchtag>pk_category_before</matchtag>
+            <name>pk_category_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>e681473c-5fb5-4aad-b14d-5a3db593bd64</basdoc>
+ <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>fa_pk_org</translatorParams>
+        </field>
+        <field desc="变动后类别">
+            <matchtag>pk_category_after</matchtag>
+            <name>pk_category_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>e681473c-5fb5-4aad-b14d-5a3db593bd64</basdoc>
+ <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>fa_pk_org</translatorParams>
+        </field>
+        <field desc="变动前管理部门最新版本">
+            <matchtag>pk_mandept_before</matchtag>
+            <name>pk_mandept_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>b26fa3cb-4087-4027-a3b6-c83ab2a086a9</basdoc>
+	   <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>fa_pk_org</translatorParams>
+        </field>
+        <field desc="变动后管理部门最新版本">
+            <matchtag>pk_mandept_after</matchtag>
+            <name>pk_mandept_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>b26fa3cb-4087-4027-a3b6-c83ab2a086a9</basdoc>
+	    <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>fa_pk_org</translatorParams>
+        </field>
+        <field desc="变动前存放地点">
+            <matchtag>position_before</matchtag>
+            <name>position_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后存放地点">
+            <matchtag>position_after</matchtag>
+            <name>position_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前资产组">
+            <matchtag>pk_assetgroup_before</matchtag>
+            <name>pk_assetgroup_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>e5881d7d-589c-48dd-bcb2-b25caa2c7402</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>fa_pk_org</translatorParams>
+        </field>
+        <field desc="变动后资产组">
+            <matchtag>pk_assetgroup_after</matchtag>
+            <name>pk_assetgroup_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>e5881d7d-589c-48dd-bcb2-b25caa2c7402</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>fa_pk_org</translatorParams>
+        </field>
+        <field desc="变动前折旧承担部门">
+            <matchtag>paydept_flag_before</matchtag>
+            <name>paydept_flag_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+            <enumid>013076ad-04fc-488a-8b66-f73a929706c7</enumid>
+        </field>
+        <field desc="变动后折旧承担部门">
+            <matchtag>paydept_flag_after</matchtag>
+            <name>paydept_flag_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+            <enumid>013076ad-04fc-488a-8b66-f73a929706c7</enumid>
+        </field>
+        <field desc="变动前使用状况">
+            <matchtag>pk_usingstatus_before</matchtag>
+            <name>pk_usingstatus_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>a3fa0451-d1d7-4068-ac54-a37156ee8b4c</basdoc>
+        </field>
+        <field desc="变动后使用状况">
+            <matchtag>pk_usingstatus_after</matchtag>
+            <name>pk_usingstatus_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>a3fa0451-d1d7-4068-ac54-a37156ee8b4c</basdoc>
+        </field>
+        <field desc="变动前使用月限">
+            <matchtag>servicemonth_before</matchtag>
+            <name>servicemonth_before</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>0</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后使用月限">
+            <matchtag>servicemonth_after</matchtag>
+            <name>servicemonth_after</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>0</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前工作总量">
+            <matchtag>allworkloan_before</matchtag>
+            <name>allworkloan_before</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后工作总量">
+            <matchtag>allworkloan_after</matchtag>
+            <name>allworkloan_after</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前累计工作量">
+            <matchtag>accuworkloan_before</matchtag>
+            <name>accuworkloan_before</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后累计工作量">
+            <matchtag>accuworkloan_after</matchtag>
+            <name>accuworkloan_after</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前安装调试费用">
+            <matchtag>install_fee_before</matchtag>
+            <name>install_fee_before</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动部分安装调试费用">
+            <matchtag>install_fee_alter</matchtag>
+            <name>install_fee_alter</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后安装调试费用">
+            <matchtag>install_fee_after</matchtag>
+            <name>install_fee_after</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前工作量单位">
+            <matchtag>workloanunit_before</matchtag>
+            <name>workloanunit_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后工作量单位">
+            <matchtag>workloanunit_after</matchtag>
+            <name>workloanunit_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前增加方式">
+            <matchtag>pk_addreducestyle_before</matchtag>
+            <name>pk_addreducestyle_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>286df5c2-da48-4e6d-b4e5-5e1c8c63977e</basdoc>
+	    <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>fa_pk_org</translatorParams>
+        </field>
+        <field desc="变动后增加方式">
+            <matchtag>pk_addreducestyle_after</matchtag>
+            <name>pk_addreducestyle_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>286df5c2-da48-4e6d-b4e5-5e1c8c63977e</basdoc>
+	    <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>fa_pk_org</translatorParams>
+        </field>
+        <field desc="变动前项目档案">
+            <matchtag>pk_jobmngfil_before</matchtag>
+            <name>pk_jobmngfil_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>2ee58f9b-781b-469f-b1d8-1816842515c3</basdoc>
+        </field>
+        <field desc="变动后项目档案">
+            <matchtag>pk_jobmngfil_after</matchtag>
+            <name>pk_jobmngfil_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>2ee58f9b-781b-469f-b1d8-1816842515c3</basdoc>
+        </field>
+        <field desc="变动前使用人">
+            <matchtag>pk_assetuser_before</matchtag>
+            <name>pk_assetuser_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>40d39c26-a2b6-4f16-a018-45664cac1a1f</basdoc>
+        </field>
+        <field desc="变动后使用人">
+            <matchtag>pk_assetuser_after</matchtag>
+            <name>pk_assetuser_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>40d39c26-a2b6-4f16-a018-45664cac1a1f</basdoc>
+        </field>
+        <field desc="变动前规格">
+            <matchtag>spec_before</matchtag>
+            <name>spec_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后规格">
+            <matchtag>spec_after</matchtag>
+            <name>spec_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前型号">
+            <matchtag>card_model_before</matchtag>
+            <name>card_model_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后型号">
+            <matchtag>card_model_after</matchtag>
+            <name>card_model_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前车辆牌照号">
+            <matchtag>license_before</matchtag>
+            <name>license_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后车辆牌照号">
+            <matchtag>license_after</matchtag>
+            <name>license_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前净吨位">
+            <matchtag>nettonnage_before</matchtag>
+            <name>nettonnage_before</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后净吨位">
+            <matchtag>nettonnage_after</matchtag>
+            <name>nettonnage_after</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前资金来源">
+            <matchtag>fundorigin_before</matchtag>
+            <name>fundorigin_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后资金来源">
+            <matchtag>fundorigin_after</matchtag>
+            <name>fundorigin_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前土地级别">
+            <matchtag>soillevel_before</matchtag>
+            <name>soillevel_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后土地级别">
+            <matchtag>soillevel_after</matchtag>
+            <name>soillevel_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前计量单位">
+            <matchtag>measureunit_before</matchtag>
+            <name>measureunit_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后计量单位">
+            <matchtag>measureunit_after</matchtag>
+            <name>measureunit_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前土地面积">
+            <matchtag>soilarea_before</matchtag>
+            <name>soilarea_before</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动部分土地面积">
+            <matchtag>soilarea_alter</matchtag>
+            <name>soilarea_alter</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后土地面积">
+            <matchtag>soilarea_after</matchtag>
+            <name>soilarea_after</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前建筑面积">
+            <matchtag>archarea_before</matchtag>
+            <name>archarea_before</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动部分建筑面积">
+            <matchtag>archarea_alter</matchtag>
+            <name>archarea_alter</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后建筑面积">
+            <matchtag>archarea_after</matchtag>
+            <name>archarea_after</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前间(座)数">
+            <matchtag>quantity_before</matchtag>
+            <name>quantity_before</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>0</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动部分间(座)数">
+            <matchtag>quantity_alter</matchtag>
+            <name>quantity_alter</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>0</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后间(座)数">
+            <matchtag>quantity_after</matchtag>
+            <name>quantity_after</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>0</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前建筑承包商">
+            <matchtag>contrator_before</matchtag>
+            <name>contrator_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后建筑承包商">
+            <matchtag>contrator_after</matchtag>
+            <name>contrator_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前电机功率">
+            <matchtag>machinepower_before</matchtag>
+            <name>machinepower_before</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动部分电机功率">
+            <matchtag>machinepower_alter</matchtag>
+            <name>machinepower_alter</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后电机功率">
+            <matchtag>machinepower_after</matchtag>
+            <name>machinepower_after</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前电机数量">
+            <matchtag>machinequan_before</matchtag>
+            <name>machinequan_before</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>0</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动部分电机数量">
+            <matchtag>machinequan_alter</matchtag>
+            <name>machinequan_alter</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>0</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后电机数量">
+            <matchtag>machinequan_after</matchtag>
+            <name>machinequan_after</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>0</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前出厂日期">
+            <matchtag>leave_date_before</matchtag>
+            <name>leave_date_before</name>
+            <type>UFDate</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>19</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后出厂日期">
+            <matchtag>leave_date_after</matchtag>
+            <name>leave_date_after</name>
+            <type>UFDate</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>19</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前生产厂商">
+            <matchtag>producer_before</matchtag>
+            <name>producer_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后生产厂商">
+            <matchtag>producer_after</matchtag>
+            <name>producer_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前资产套号">
+            <matchtag>assetsuit_code_before</matchtag>
+            <name>assetsuit_code_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后资产套号">
+            <matchtag>assetsuit_code_after</matchtag>
+            <name>assetsuit_code_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前供应商">
+            <matchtag>provider_before</matchtag>
+            <name>provider_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>720dcc7c-ff19-48f4-b9c5-b90906682f45</basdoc>
+	    <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>fa_pk_org</translatorParams>
+        </field>
+        <field desc="变动后供应商">
+            <matchtag>provider_after</matchtag>
+            <name>provider_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>720dcc7c-ff19-48f4-b9c5-b90906682f45</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>fa_pk_org</translatorParams>
+        </field>
+        <field desc="变动前工作中心">
+            <matchtag>workcenter_before</matchtag>
+            <name>workcenter_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后工作中心">
+            <matchtag>workcenter_after</matchtag>
+            <name>workcenter_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项1">
+            <matchtag>def1_before</matchtag>
+            <name>def1_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项1">
+            <matchtag>def1_after</matchtag>
+            <name>def1_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项2">
+            <matchtag>def2_before</matchtag>
+            <name>def2_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项2">
+            <matchtag>def2_after</matchtag>
+            <name>def2_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项3">
+            <matchtag>def3_before</matchtag>
+            <name>def3_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项3">
+            <matchtag>def3_after</matchtag>
+            <name>def3_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项4">
+            <matchtag>def4_before</matchtag>
+            <name>def4_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项4">
+            <matchtag>def4_after</matchtag>
+            <name>def4_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项5">
+            <matchtag>def5_before</matchtag>
+            <name>def5_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项5">
+            <matchtag>def5_after</matchtag>
+            <name>def5_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项6">
+            <matchtag>def6_before</matchtag>
+            <name>def6_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项6">
+            <matchtag>def6_after</matchtag>
+            <name>def6_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项7">
+            <matchtag>def7_before</matchtag>
+            <name>def7_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项7">
+            <matchtag>def7_after</matchtag>
+            <name>def7_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项8">
+            <matchtag>def8_before</matchtag>
+            <name>def8_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项8">
+            <matchtag>def8_after</matchtag>
+            <name>def8_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项9">
+            <matchtag>def9_before</matchtag>
+            <name>def9_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项9">
+            <matchtag>def9_after</matchtag>
+            <name>def9_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项10">
+            <matchtag>def10_before</matchtag>
+            <name>def10_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项10">
+            <matchtag>def10_after</matchtag>
+            <name>def10_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项11">
+            <matchtag>def11_before</matchtag>
+            <name>def11_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项11">
+            <matchtag>def11_after</matchtag>
+            <name>def11_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项12">
+            <matchtag>def12_before</matchtag>
+            <name>def12_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项12">
+            <matchtag>def12_after</matchtag>
+            <name>def12_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项13">
+            <matchtag>def13_before</matchtag>
+            <name>def13_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项13">
+            <matchtag>def13_after</matchtag>
+            <name>def13_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项14">
+            <matchtag>def14_before</matchtag>
+            <name>def14_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项14">
+            <matchtag>def14_after</matchtag>
+            <name>def14_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项15">
+            <matchtag>def15_before</matchtag>
+            <name>def15_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项15">
+            <matchtag>def15_after</matchtag>
+            <name>def15_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项16">
+            <matchtag>def16_before</matchtag>
+            <name>def16_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项16">
+            <matchtag>def16_after</matchtag>
+            <name>def16_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项17">
+            <matchtag>def17_before</matchtag>
+            <name>def17_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项17">
+            <matchtag>def17_after</matchtag>
+            <name>def17_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项18">
+            <matchtag>def18_before</matchtag>
+            <name>def18_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项18">
+            <matchtag>def18_after</matchtag>
+            <name>def18_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项19">
+            <matchtag>def19_before</matchtag>
+            <name>def19_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项19">
+            <matchtag>def19_after</matchtag>
+            <name>def19_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项20">
+            <matchtag>def20_before</matchtag>
+            <name>def20_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项20">
+            <matchtag>def20_after</matchtag>
+            <name>def20_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项21">
+            <matchtag>def21_before</matchtag>
+            <name>def21_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项21">
+            <matchtag>def21_after</matchtag>
+            <name>def21_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项22">
+            <matchtag>def22_before</matchtag>
+            <name>def22_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项22">
+            <matchtag>def22_after</matchtag>
+            <name>def22_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项23">
+            <matchtag>def23_before</matchtag>
+            <name>def23_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项23">
+            <matchtag>def23_after</matchtag>
+            <name>def23_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项24">
+            <matchtag>def24_before</matchtag>
+            <name>def24_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项24">
+            <matchtag>def24_after</matchtag>
+            <name>def24_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项25">
+            <matchtag>def25_before</matchtag>
+            <name>def25_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项25">
+            <matchtag>def25_after</matchtag>
+            <name>def25_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项26">
+            <matchtag>def26_before</matchtag>
+            <name>def26_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项26">
+            <matchtag>def26_after</matchtag>
+            <name>def26_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项27">
+            <matchtag>def27_before</matchtag>
+            <name>def27_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项27">
+            <matchtag>def27_after</matchtag>
+            <name>def27_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项28">
+            <matchtag>def28_before</matchtag>
+            <name>def28_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项28">
+            <matchtag>def28_after</matchtag>
+            <name>def28_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项29">
+            <matchtag>def29_before</matchtag>
+            <name>def29_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项29">
+            <matchtag>def29_after</matchtag>
+            <name>def29_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项30">
+            <matchtag>def30_before</matchtag>
+            <name>def30_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项30">
+            <matchtag>def30_after</matchtag>
+            <name>def30_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项31">
+            <matchtag>def31_before</matchtag>
+            <name>def31_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项31">
+            <matchtag>def31_after</matchtag>
+            <name>def31_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项32">
+            <matchtag>def32_before</matchtag>
+            <name>def32_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项32">
+            <matchtag>def32_after</matchtag>
+            <name>def32_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项33">
+            <matchtag>def33_before</matchtag>
+            <name>def33_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项33">
+            <matchtag>def33_after</matchtag>
+            <name>def33_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项34">
+            <matchtag>def34_before</matchtag>
+            <name>def34_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项34">
+            <matchtag>def34_after</matchtag>
+            <name>def34_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项35">
+            <matchtag>def35_before</matchtag>
+            <name>def35_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项35">
+            <matchtag>def35_after</matchtag>
+            <name>def35_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项36">
+            <matchtag>def36_before</matchtag>
+            <name>def36_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项36">
+            <matchtag>def36_after</matchtag>
+            <name>def36_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项37">
+            <matchtag>def37_before</matchtag>
+            <name>def37_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项37">
+            <matchtag>def37_after</matchtag>
+            <name>def37_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项38">
+            <matchtag>def38_before</matchtag>
+            <name>def38_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项38">
+            <matchtag>def38_after</matchtag>
+            <name>def38_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项39">
+            <matchtag>def39_before</matchtag>
+            <name>def39_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项39">
+            <matchtag>def39_after</matchtag>
+            <name>def39_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项40">
+            <matchtag>def40_before</matchtag>
+            <name>def40_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项40">
+            <matchtag>def40_after</matchtag>
+            <name>def40_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项41">
+            <matchtag>def41_before</matchtag>
+            <name>def41_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项41">
+            <matchtag>def41_after</matchtag>
+            <name>def41_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项42">
+            <matchtag>def42_before</matchtag>
+            <name>def42_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项42">
+            <matchtag>def42_after</matchtag>
+            <name>def42_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项43">
+            <matchtag>def43_before</matchtag>
+            <name>def43_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项43">
+            <matchtag>def43_after</matchtag>
+            <name>def43_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项44">
+            <matchtag>def44_before</matchtag>
+            <name>def44_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项44">
+            <matchtag>def44_after</matchtag>
+            <name>def44_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项45">
+            <matchtag>def45_before</matchtag>
+            <name>def45_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项45">
+            <matchtag>def45_after</matchtag>
+            <name>def45_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项46">
+            <matchtag>def46_before</matchtag>
+            <name>def46_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项46">
+            <matchtag>def46_after</matchtag>
+            <name>def46_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项47">
+            <matchtag>def47_before</matchtag>
+            <name>def47_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项47">
+            <matchtag>def47_after</matchtag>
+            <name>def47_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项48">
+            <matchtag>def48_before</matchtag>
+            <name>def48_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项48">
+            <matchtag>def48_after</matchtag>
+            <name>def48_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项49">
+            <matchtag>def49_before</matchtag>
+            <name>def49_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项49">
+            <matchtag>def49_after</matchtag>
+            <name>def49_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项50">
+            <matchtag>def50_before</matchtag>
+            <name>def50_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项50">
+            <matchtag>def50_after</matchtag>
+            <name>def50_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项51">
+            <matchtag>def51_before</matchtag>
+            <name>def51_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项51">
+            <matchtag>def51_after</matchtag>
+            <name>def51_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项52">
+            <matchtag>def52_before</matchtag>
+            <name>def52_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项52">
+            <matchtag>def52_after</matchtag>
+            <name>def52_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项53">
+            <matchtag>def53_before</matchtag>
+            <name>def53_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项53">
+            <matchtag>def53_after</matchtag>
+            <name>def53_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项54">
+            <matchtag>def54_before</matchtag>
+            <name>def54_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项54">
+            <matchtag>def54_after</matchtag>
+            <name>def54_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项55">
+            <matchtag>def55_before</matchtag>
+            <name>def55_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项55">
+            <matchtag>def55_after</matchtag>
+            <name>def55_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项56">
+            <matchtag>def56_before</matchtag>
+            <name>def56_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项56">
+            <matchtag>def56_after</matchtag>
+            <name>def56_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项57">
+            <matchtag>def57_before</matchtag>
+            <name>def57_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项57">
+            <matchtag>def57_after</matchtag>
+            <name>def57_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项58">
+            <matchtag>def58_before</matchtag>
+            <name>def58_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项58">
+            <matchtag>def58_after</matchtag>
+            <name>def58_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项59">
+            <matchtag>def59_before</matchtag>
+            <name>def59_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项59">
+            <matchtag>def59_after</matchtag>
+            <name>def59_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项60">
+            <matchtag>def60_before</matchtag>
+            <name>def60_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项60">
+            <matchtag>def60_after</matchtag>
+            <name>def60_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项61">
+            <matchtag>def61_before</matchtag>
+            <name>def61_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项61">
+            <matchtag>def61_after</matchtag>
+            <name>def61_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项62">
+            <matchtag>def62_before</matchtag>
+            <name>def62_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项62">
+            <matchtag>def62_after</matchtag>
+            <name>def62_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项63">
+            <matchtag>def63_before</matchtag>
+            <name>def63_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项63">
+            <matchtag>def63_after</matchtag>
+            <name>def63_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项64">
+            <matchtag>def64_before</matchtag>
+            <name>def64_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项64">
+            <matchtag>def64_after</matchtag>
+            <name>def64_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项65">
+            <matchtag>def65_before</matchtag>
+            <name>def65_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项65">
+            <matchtag>def65_after</matchtag>
+            <name>def65_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项66">
+            <matchtag>def66_before</matchtag>
+            <name>def66_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项66">
+            <matchtag>def66_after</matchtag>
+            <name>def66_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项67">
+            <matchtag>def67_before</matchtag>
+            <name>def67_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项67">
+            <matchtag>def67_after</matchtag>
+            <name>def67_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项68">
+            <matchtag>def68_before</matchtag>
+            <name>def68_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项68">
+            <matchtag>def68_after</matchtag>
+            <name>def68_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项69">
+            <matchtag>def69_before</matchtag>
+            <name>def69_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项69">
+            <matchtag>def69_after</matchtag>
+            <name>def69_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项70">
+            <matchtag>def70_before</matchtag>
+            <name>def70_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项70">
+            <matchtag>def70_after</matchtag>
+            <name>def70_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项71">
+            <matchtag>def71_before</matchtag>
+            <name>def71_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项71">
+            <matchtag>def71_after</matchtag>
+            <name>def71_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项72">
+            <matchtag>def72_before</matchtag>
+            <name>def72_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项72">
+            <matchtag>def72_after</matchtag>
+            <name>def72_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项73">
+            <matchtag>def73_before</matchtag>
+            <name>def73_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项73">
+            <matchtag>def73_after</matchtag>
+            <name>def73_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项74">
+            <matchtag>def74_before</matchtag>
+            <name>def74_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项74">
+            <matchtag>def74_after</matchtag>
+            <name>def74_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项75">
+            <matchtag>def75_before</matchtag>
+            <name>def75_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项75">
+            <matchtag>def75_after</matchtag>
+            <name>def75_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项76">
+            <matchtag>def76_before</matchtag>
+            <name>def76_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项76">
+            <matchtag>def76_after</matchtag>
+            <name>def76_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项77">
+            <matchtag>def77_before</matchtag>
+            <name>def77_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项77">
+            <matchtag>def77_after</matchtag>
+            <name>def77_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项78">
+            <matchtag>def78_before</matchtag>
+            <name>def78_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项78">
+            <matchtag>def78_after</matchtag>
+            <name>def78_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项79">
+            <matchtag>def79_before</matchtag>
+            <name>def79_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项79">
+            <matchtag>def79_after</matchtag>
+            <name>def79_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前卡片自定义项80">
+            <matchtag>def80_before</matchtag>
+            <name>def80_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后卡片自定义项80">
+            <matchtag>def80_after</matchtag>
+            <name>def80_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前使用权">
+            <matchtag>pk_equiporg_before</matchtag>
+            <name>pk_equiporg_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>985be8a4-3a36-4778-8afe-2d8ed3902659</basdoc>
+	    <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>fa_pk_org</translatorParams>
+        </field>
+        <field desc="变动后使用权">
+            <matchtag>pk_equiporg_after</matchtag>
+            <name>pk_equiporg_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>985be8a4-3a36-4778-8afe-2d8ed3902659</basdoc>
+	    <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>fa_pk_org</translatorParams>
+        </field>
+        <field desc="变动前设备使用部门">
+            <matchtag>pk_equip_usedept_before</matchtag>
+            <name>pk_equip_usedept_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>b26fa3cb-4087-4027-a3b6-c83ab2a086a9</basdoc>
+	    <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>fa_pk_org</translatorParams>
+        </field>
+        <field desc="变动后设备使用部门">
+            <matchtag>pk_equip_usedept_after</matchtag>
+            <name>pk_equip_usedept_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>b26fa3cb-4087-4027-a3b6-c83ab2a086a9</basdoc>
+	    <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>fa_pk_org</translatorParams>
+        </field>
+        <field desc="来源单据标识">
+            <matchtag>pk_bill_src</matchtag>
+            <name>pk_bill_src</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="来源单据表体标识">
+            <matchtag>pk_bill_b_src</matchtag>
+            <name>pk_bill_b_src</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前资产编码">
+            <matchtag>asset_code_before</matchtag>
+            <name>asset_code_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后资产编码">
+            <matchtag>asset_code_after</matchtag>
+            <name>asset_code_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="减值准备">
+            <matchtag>predevaluate</matchtag>
+            <name>predevaluate</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="已计提月份">
+            <matchtag>usedmonth</matchtag>
+            <name>usedmonth</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>0</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="累计工作量">
+            <matchtag>accuworkloan</matchtag>
+            <name>accuworkloan</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="表体的来源币种">
+            <matchtag>pk_src_currency</matchtag>
+            <name>pk_src_currency</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前本月工作量">
+            <matchtag>monthworkloan_before</matchtag>
+            <name>monthworkloan_before</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后本月工作量">
+            <matchtag>monthworkloan_after</matchtag>
+            <name>monthworkloan_after</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="使用部门(会计平台)">
+            <matchtag>pk_dept</matchtag>
+            <name>pk_dept</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前相关税费">
+            <matchtag>tax_cost_before</matchtag>
+            <name>tax_cost_before</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动部分相关税费">
+            <matchtag>tax_cost_alter</matchtag>
+            <name>tax_cost_alter</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后相关税费">
+            <matchtag>tax_cost_after</matchtag>
+            <name>tax_cost_after</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前评估值">
+            <matchtag>revalued_amount_before</matchtag>
+            <name>revalued_amount_before</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动部分评估值">
+            <matchtag>revalued_amount_alter</matchtag>
+            <name>revalued_amount_alter</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后评估值">
+            <matchtag>revalued_amount_after</matchtag>
+            <name>revalued_amount_after</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前弃置费用">
+            <matchtag>dismant_cost_before</matchtag>
+            <name>dismant_cost_before</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动部分弃置费用">
+            <matchtag>dismant_cost_alter</matchtag>
+            <name>dismant_cost_alter</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后弃置费用">
+            <matchtag>dismant_cost_after</matchtag>
+            <name>dismant_cost_after</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前其他费用">
+            <matchtag>other_cost_before</matchtag>
+            <name>other_cost_before</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动部分其他费用">
+            <matchtag>other_cost_alter</matchtag>
+            <name>other_cost_alter</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后其他费用">
+            <matchtag>other_cost_after</matchtag>
+            <name>other_cost_after</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前进项税">
+            <matchtag>tax_input_before</matchtag>
+            <name>tax_input_before</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前进项税(集团)">
+            <matchtag>tax_input_before_group</matchtag>
+            <name>tax_input_before_group</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前进项税(全局)">
+            <matchtag>tax_input_before_global</matchtag>
+            <name>tax_input_before_global</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动部分进项税">
+            <matchtag>tax_input_alter</matchtag>
+            <name>tax_input_alter</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动部分进项税(集团)">
+            <matchtag>tax_input_alter_group</matchtag>
+            <name>tax_input_alter_group</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动部分进项税(全局)">
+            <matchtag>tax_input_alter_global</matchtag>
+            <name>tax_input_alter_global</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后进项税">
+            <matchtag>tax_input_after</matchtag>
+            <name>tax_input_after</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后进项税(集团)">
+            <matchtag>tax_input_after_group</matchtag>
+            <name>tax_input_after_group</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后进项税(全局)">
+            <matchtag>tax_input_after_global</matchtag>
+            <name>tax_input_after_global</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前管理部门">
+            <matchtag>pk_mandept_v_before</matchtag>
+            <name>pk_mandept_v_before</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>66ed0cf6-e260-4f39-8fbb-172260efd677</basdoc>
+        </field>
+        <field desc="变动后管理部门">
+            <matchtag>pk_mandept_v_after</matchtag>
+            <name>pk_mandept_v_after</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>66ed0cf6-e260-4f39-8fbb-172260efd677</basdoc>
+        </field>
+    </record>
+    <record classname="nc.vo.fa.alter.AlterSheetVO[]" displayName="变动单明细" entitytag="item" metadataid="3fa3770d-d8d2-4268-9857-c01a84e13fa4" recordtype="vos" sentitytag="item" tablename="altersheetvos" tabletype="embed" typeName="内嵌结构">
+        <field desc="变动单明细标识">
+            <matchtag>pk_altersheet</matchtag>
+            <name>pk_altersheet</name>
+            <type>UFID</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动类型">
+            <matchtag>altertype</matchtag>
+            <name>altertype</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>0</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动的卡片项目">
+            <matchtag>item_code</matchtag>
+            <name>item_code</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前的值">
+            <matchtag>old_value</matchtag>
+            <name>old_value</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后的值">
+            <matchtag>new_value</matchtag>
+            <name>new_value</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="本币原值差额">
+            <matchtag>local_differ</matchtag>
+            <name>local_differ</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="原币原值差额">
+            <matchtag>differ</matchtag>
+            <name>differ</name>
+            <type>UFMoney</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前内容">
+            <matchtag>old_content</matchtag>
+            <name>old_content</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前内容(集团)">
+            <matchtag>old_content_group</matchtag>
+            <name>old_content_group</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动前内容(全局)">
+            <matchtag>old_content_global</matchtag>
+            <name>old_content_global</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后内容">
+            <matchtag>new_content</matchtag>
+            <name>new_content</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后内容(集团)">
+            <matchtag>new_content_group</matchtag>
+            <name>new_content_group</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动后内容(全局)">
+            <matchtag>new_content_global</matchtag>
+            <name>new_content_global</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="财务组织最新版本">
+            <matchtag>pk_org</matchtag>
+            <name>pk_org</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="财务组织">
+            <matchtag>pk_org_v</matchtag>
+            <name>pk_org_v</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="集团">
+            <matchtag>pk_group</matchtag>
+            <name>pk_group</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+        </field>
+        <field desc="变动单表头标识">
+            <matchtag>pk_alter</matchtag>
+            <name>pk_alter</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+        </field>
+    </record>
+</ufinterface>

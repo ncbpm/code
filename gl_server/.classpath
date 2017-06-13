@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" output="voucher/classes" path="voucher/src/public"/>
-	<classpathentry kind="src" output="voucher/classes" path="voucher/src/client"/>
 	<classpathentry kind="src" output="voucher/classes" path="voucher/src/private"/>
+	<classpathentry kind="src" output="voucher/classes" path="voucher/src/client"/>
 	<classpathentry kind="src" output="voucher/classes" path="voucher/src/test"/>
 	<classpathentry kind="src" output="voucher/classes" path="voucher/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>

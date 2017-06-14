@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding='gb2312'?>
+
+<businessprocessors>
+    
+	<businessprocessor baseclassname="nc.vo.gl.pubvoucher.QcVoucherVO" billtype="qcvoucher" classname="nc.bs.gl.pfxx.QcVoucherPlugin" locklevel="3" metadataid="" name="期初凭证">
+    </businessprocessor>
+    
+	<businessprocessor baseclassname="nc.vo.gl.pubvoucher.VoucherVO" billtype="voucherU8" classname="nc.bs.gl.pfxx.VoucherPlugin" locklevel="3" metadataid="" name="U8凭证">
+    </businessprocessor>
+   
+ 	<businessprocessor baseclassname="nc.vo.gl.pubvoucher.VoucherVO" billtype="vouchergl" classname="nc.bs.gl.pfxx.VoucherPlugin" locklevel="3" metadataid="" name="凭证">
+    </businessprocessor>
+   
+	<businessprocessor baseclassname="nc.vo.gl.pubvoucher.VoucherVO" billtype="voucherdel" classname="nc.bs.gl.pfxx.VoucherDelPlugin" locklevel="3" metadataid="" name="凭证删除">
+    </businessprocessor>
+
+	<businessprocessor baseclassname="nc.vo.gl.pubvoucher.VoucherVO" billtype="bpm_vouchergl_add" classname="nc.bs.gl.pfxx.BpmVoucherPlugin" locklevel="3" metadataid="" name="BPM凭证增加">
+    </businessprocessor>
+
+</businessprocessors>

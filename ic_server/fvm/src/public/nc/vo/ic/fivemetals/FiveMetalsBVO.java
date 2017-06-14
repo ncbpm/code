@@ -14,6 +14,7 @@ import nc.vo.pubapp.pattern.model.meta.entity.vo.VOMetaFactory;
  */
 public class FiveMetalsBVO extends nc.vo.pub.SuperVO{
 	
+    private java.lang.String pk_fivemetals_h;
     private java.lang.String rowno;
     private java.lang.String nmny;
     private nc.vo.ic.fivemetals.CostTypeEnum itype;
@@ -30,12 +31,13 @@ public class FiveMetalsBVO extends nc.vo.pub.SuperVO{
     private nc.vo.pub.lang.UFBoolean def8;
     private nc.vo.pub.lang.UFDate def9;
     private nc.vo.pub.lang.UFDate def10;
-    private java.lang.String pk_fivemetals_h;
     private java.lang.String pk_fivemetals_b;
+    private nc.vo.pub.lang.UFDateTime createtime;
     private java.lang.Integer dr = 0;
     private nc.vo.pub.lang.UFDateTime ts;    
 	
 	
+    public static final String PK_FIVEMETALS_H = "pk_fivemetals_h";
     public static final String ROWNO = "rowno";
     public static final String NMNY = "nmny";
     public static final String ITYPE = "itype";
@@ -52,8 +54,8 @@ public class FiveMetalsBVO extends nc.vo.pub.SuperVO{
     public static final String DEF8 = "def8";
     public static final String DEF9 = "def9";
     public static final String DEF10 = "def10";
-    public static final String PK_FIVEMETALS_H = "pk_fivemetals_h";
     public static final String PK_FIVEMETALS_B = "pk_fivemetals_b";
+    public static final String CREATETIME = "createtime";
 
 	/**
 	 * 属性 pk_fivemetals_h的Getter方法.属性名：parentPK
@@ -359,6 +361,23 @@ public class FiveMetalsBVO extends nc.vo.pub.SuperVO{
 	 */
 	public void setPk_fivemetals_b (java.lang.String newPk_fivemetals_b ) {
 	 	this.pk_fivemetals_b = newPk_fivemetals_b;
+	} 	 
+	
+	/**
+	 * 属性 createtime的Getter方法.属性名：创建事件
+	 *  创建日期:2017-6-14
+	 * @return nc.vo.pub.lang.UFDateTime
+	 */
+	public nc.vo.pub.lang.UFDateTime getCreatetime () {
+		return createtime;
+	}   
+	/**
+	 * 属性createtime的Setter方法.属性名：创建事件
+	 * 创建日期:2017-6-14
+	 * @param newCreatetime nc.vo.pub.lang.UFDateTime
+	 */
+	public void setCreatetime (nc.vo.pub.lang.UFDateTime newCreatetime ) {
+	 	this.createtime = newCreatetime;
 	} 	 
 	
 	/**

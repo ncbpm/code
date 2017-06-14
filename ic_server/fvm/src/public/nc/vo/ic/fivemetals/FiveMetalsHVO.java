@@ -38,6 +38,8 @@ public class FiveMetalsHVO extends nc.vo.pub.SuperVO{
     private nc.vo.pub.lang.UFBoolean def8;
     private nc.vo.pub.lang.UFDate def9;
     private nc.vo.pub.lang.UFDate def10;
+    private nc.vo.pub.lang.UFDate dbilldate;
+    private java.lang.String pk_billtype;
     private java.lang.Integer dr = 0;
     private nc.vo.pub.lang.UFDateTime ts;    
 	
@@ -67,6 +69,8 @@ public class FiveMetalsHVO extends nc.vo.pub.SuperVO{
     public static final String DEF8 = "def8";
     public static final String DEF9 = "def9";
     public static final String DEF10 = "def10";
+    public static final String DBILLDATE = "dbilldate";
+    public static final String PK_BILLTYPE = "pk_billtype";
 
 	/**
 	 * 属性 pk_group的Getter方法.属性名：集团
@@ -494,6 +498,40 @@ public class FiveMetalsHVO extends nc.vo.pub.SuperVO{
 	} 	 
 	
 	/**
+	 * 属性 dbilldate的Getter方法.属性名：单据日期
+	 *  创建日期:2017-6-14
+	 * @return nc.vo.pub.lang.UFDate
+	 */
+	public nc.vo.pub.lang.UFDate getDbilldate () {
+		return dbilldate;
+	}   
+	/**
+	 * 属性dbilldate的Setter方法.属性名：单据日期
+	 * 创建日期:2017-6-14
+	 * @param newDbilldate nc.vo.pub.lang.UFDate
+	 */
+	public void setDbilldate (nc.vo.pub.lang.UFDate newDbilldate ) {
+	 	this.dbilldate = newDbilldate;
+	} 	 
+	
+	/**
+	 * 属性 pk_billtype的Getter方法.属性名：单据类型
+	 *  创建日期:2017-6-14
+	 * @return java.lang.String
+	 */
+	public java.lang.String getPk_billtype () {
+		return pk_billtype;
+	}   
+	/**
+	 * 属性pk_billtype的Setter方法.属性名：单据类型
+	 * 创建日期:2017-6-14
+	 * @param newPk_billtype java.lang.String
+	 */
+	public void setPk_billtype (java.lang.String newPk_billtype ) {
+	 	this.pk_billtype = newPk_billtype;
+	} 	 
+	
+	/**
 	 * 属性 dr的Getter方法.属性名：dr
 	 *  创建日期:2017-6-14
 	 * @return java.lang.Integer
@@ -556,7 +594,7 @@ public class FiveMetalsHVO extends nc.vo.pub.SuperVO{
 	 * @return java.lang.String
 	 */
 	public java.lang.String getTableName() {
-		return "ic_FiveMetalsHVO";
+		return "ic_fivemetals_h";
 	}    
 	
 	/**
@@ -566,7 +604,7 @@ public class FiveMetalsHVO extends nc.vo.pub.SuperVO{
 	 * @return java.lang.String
 	 */
 	public static java.lang.String getDefaultTableName() {
-		return "ic_FiveMetalsHVO";
+		return "ic_fivemetals_h";
 	}    
     
     /**

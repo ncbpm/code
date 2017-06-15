@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding='gb2312'?>
+<businessprocessors>
+
+ <businessprocessor baseclassname="" billtype="bpm_30_add" classname="nc.bpm.so.m30.M30ForBPMAdd" locklevel="3" metadataid="b4bde646-3f4d-4b95-919f-8ebe03c5f849" name="销售订单">
+  </businessprocessor>
+<businessprocessor baseclassname="" billtype="bpm_credit_query" classname="nc.bpm.so.mcredit.McreditForBPMQuery" locklevel="3" metadataid="b4bde646-3f4d-4b95-919f-8ebe03c5f849" name="信用查询">
+</businessprocessor>
+ <businessprocessor baseclassname="" billtype="bpm_30_history" classname="nc.bpm.so.pfxx.M30HistoryForBPMAdd" level="0" locklevel="3" metadataid="341d953a-dbdc-4e64-bf60-2acc478fbd9f" name="销售订单修订">
+  </businessprocessor>
+</businessprocessors>

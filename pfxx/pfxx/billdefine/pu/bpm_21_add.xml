@@ -1,0 +1,2687 @@
+<?xml version="1.0" encoding='gb2312'?>
+<ufinterface roottag="bill">
+    <vars>
+    </vars>
+    <record displayName="采购订单" displayNameResid="2UC000-000983" metadataid="8a2b1c3f-0185-40f6-b4a1-eb9d1733ebcf" stabletag="header" tablename="billhead" tabletag="billhead" tabletype="head" typeName="表头" >
+        <field desc="采购订单" descResid="2UC000-000983">
+            <matchtag>pk_order</matchtag>
+            <name>pk_order</name>
+            <type>UFID</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="所属集团" descResid="2UC000-000367">
+            <matchtag>pk_group</matchtag>
+            <name>pk_group</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>3b6dd171-2900-47f3-bfbe-41e4483a2a65</basdoc>
+            <translator>1001Z01000000000R5MJ</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+            <variablename>pk_group</variablename>
+        </field>
+        <field desc="采购组织版本信息" descResid="2400403002-x178">
+            <matchtag>pk_org</matchtag>
+            <name>pk_org</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>5d69ee35-57d0-4f7b-b454-deff4fc73689</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+            <variablename>pk_org</variablename>
+        </field>
+        <field desc="采购组织" descResid="2UC000-000980">
+            <matchtag>pk_org_v</matchtag>
+            <name>pk_org_v</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>eda9f476-357f-4ff7-ac09-6766bc29de29</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+            <variablename>pk_org_v</variablename>
+        </field>
+        <field desc="订单编号" descResid="2400403002-x180">
+            <matchtag>vbillcode</matchtag>
+            <name>vbillcode</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>40</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="订单日期" descResid="2400403002-x113">
+            <matchtag>dbilldate</matchtag>
+            <name>dbilldate</name>
+            <type>UFDate</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>19</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="散户" descResid="2UC000-000454">
+            <matchtag>pk_freecust</matchtag>
+            <name>pk_freecust</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>20d2ca8b-c9da-4def-a9a1-4b11b85bba54</basdoc>
+            <translator>1001Z01000000000R5MK</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="供应商" descResid="2UC000-000089">
+            <matchtag>pk_supplier</matchtag>
+            <name>pk_supplier</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>720dcc7c-ff19-48f4-b9c5-b90906682f45</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+            <variablename>pk_supplier</variablename>
+        </field>
+        <field desc="开户银行" descResid="2UC000-000339">
+            <matchtag>pk_bankdoc</matchtag>
+            <name>pk_bankdoc</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>cd1f9a1c-eb08-493f-88ff-bcd1c134dee1</basdoc>
+            <translator>1001Z01000000000R5MK</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="采购部门" descResid="2UC000-000984">
+            <matchtag>pk_dept_v</matchtag>
+            <name>pk_dept_v</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>66ed0cf6-e260-4f39-8fbb-172260efd677</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_org</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="采购部门最新版本" descResid="2UC000-000985">
+            <matchtag>pk_dept</matchtag>
+            <name>pk_dept</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>b26fa3cb-4087-4027-a3b6-c83ab2a086a9</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_org</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+            <variablename>pk_dept</variablename>
+        </field>
+        <field desc="采购员" descResid="2UC000-000977">
+            <matchtag>cemployeeid</matchtag>
+            <name>cemployeeid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>40d39c26-a2b6-4f16-a018-45664cac1a1f</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_org</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="订单类型编码" descResid="2400403002-x056">
+            <matchtag>vtrantypecode</matchtag>
+            <name>vtrantypecode</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="收货客户" descResid="2UC000-000451">
+            <matchtag>pk_recvcustomer</matchtag>
+            <name>pk_recvcustomer</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>e4f48eaf-5567-4383-a370-a59cb3e8a451</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="开票供应商" descResid="2400403002-x061">
+            <matchtag>pk_invcsupllier</matchtag>
+            <name>pk_invcsupllier</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>720dcc7c-ff19-48f4-b9c5-b90906682f45</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="供应商发货地址" descResid="2400403002-x176">
+            <matchtag>pk_deliveradd</matchtag>
+            <name>pk_deliveradd</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>e991779c-faa3-42a6-960f-c38f68dfe204</basdoc>
+            <translator>1001Z01000000003P3PG</translator>
+            <translatorParams>pk_supplier</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="运输方式" descResid="2UC000-000962">
+            <matchtag>pk_transporttype</matchtag>
+            <name>pk_transporttype</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>c1221067-82ba-4df4-8337-82f6d26aa622</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="付款协议" descResid="2UC000-000055">
+            <matchtag>pk_payterm</matchtag>
+            <name>pk_payterm</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>3b240da8-8722-47ec-a557-97c63dd7aa2d</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="制单人" descResid="2UC000-000165">
+            <matchtag>billmaker</matchtag>
+            <name>billmaker</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>f6f9a473-56c0-432f-8bc7-fbf8fde54fee</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="单据状态" descResid="2UC000-000192">
+            <matchtag>forderstatus</matchtag>
+            <name>forderstatus</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>0</maxLength>
+            <defaultvalue>0</defaultvalue>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="审批人" descResid="2UC000-000271">
+            <matchtag>approver</matchtag>
+            <name>approver</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>f6f9a473-56c0-432f-8bc7-fbf8fde54fee</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="备注" descResid="2UC000-000258">
+            <matchtag>vmemo</matchtag>
+            <name>vmemo</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>181</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="合同附件" descResid="2400403002-x070">
+            <matchtag>ccontracttextpath</matchtag>
+            <name>ccontracttextpath</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>181</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="预付款限额" descResid="2400403002-x171">
+            <matchtag>norgprepaylimit</matchtag>
+            <name>norgprepaylimit</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="版本号" descResid="2UC000-000590">
+            <matchtag>nversion</matchtag>
+            <name>nversion</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>0</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="最新版本" descResid="2400403002-x145">
+            <matchtag>bislatest</matchtag>
+            <name>bislatest</name>
+            <type>UFBoolean</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <defaultvalue>Y</defaultvalue>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="补货" descResid="2400403002-x135">
+            <matchtag>bisreplenish</matchtag>
+            <name>bisreplenish</name>
+            <type>UFBoolean</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <defaultvalue>N</defaultvalue>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="退货" descResid="2400403002-x001">
+            <matchtag>breturn</matchtag>
+            <name>breturn</name>
+            <type>UFBoolean</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <defaultvalue>N</defaultvalue>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="打印次数" descResid="2UC000-000368">
+            <matchtag>iprintcount</matchtag>
+            <name>iprintcount</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>0</maxLength>
+            <defaultvalue>0</defaultvalue>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项1" descResid="2UC000-000749">
+            <matchtag>vdef1</matchtag>
+            <name>vdef1</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项2" descResid="2UC000-000760">
+            <matchtag>vdef2</matchtag>
+            <name>vdef2</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项3" descResid="2UC000-000771">
+            <matchtag>vdef3</matchtag>
+            <name>vdef3</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项4" descResid="2UC000-000782">
+            <matchtag>vdef4</matchtag>
+            <name>vdef4</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项5" descResid="2UC000-000784">
+            <matchtag>vdef5</matchtag>
+            <name>vdef5</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项6" descResid="2UC000-000785">
+            <matchtag>vdef6</matchtag>
+            <name>vdef6</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项7" descResid="2UC000-000786">
+            <matchtag>vdef7</matchtag>
+            <name>vdef7</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项8" descResid="2UC000-000787">
+            <matchtag>vdef8</matchtag>
+            <name>vdef8</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项9" descResid="2UC000-000788">
+            <matchtag>vdef9</matchtag>
+            <name>vdef9</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项10" descResid="2UC000-000750">
+            <matchtag>vdef10</matchtag>
+            <name>vdef10</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项11" descResid="2UC000-000751">
+            <matchtag>vdef11</matchtag>
+            <name>vdef11</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项12" descResid="2UC000-000752">
+            <matchtag>vdef12</matchtag>
+            <name>vdef12</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项13" descResid="2UC000-000753">
+            <matchtag>vdef13</matchtag>
+            <name>vdef13</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项14" descResid="2UC000-000754">
+            <matchtag>vdef14</matchtag>
+            <name>vdef14</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项15" descResid="2UC000-000755">
+            <matchtag>vdef15</matchtag>
+            <name>vdef15</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项16" descResid="2UC000-000756">
+            <matchtag>vdef16</matchtag>
+            <name>vdef16</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项17" descResid="2UC000-000757">
+            <matchtag>vdef17</matchtag>
+            <name>vdef17</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项18" descResid="2UC000-000758">
+            <matchtag>vdef18</matchtag>
+            <name>vdef18</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项19" descResid="2UC000-000759">
+            <matchtag>vdef19</matchtag>
+            <name>vdef19</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项20" descResid="2UC000-000761">
+            <matchtag>vdef20</matchtag>
+            <name>vdef20</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="制单时间" descResid="2UC000-000157">
+            <matchtag>creationtime</matchtag>
+            <name>creationtime</name>
+            <type>UFDateTime</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>19</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="审批时间" descResid="2UC000-000274">
+            <matchtag>taudittime</matchtag>
+            <name>taudittime</name>
+            <type>UFDateTime</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>19</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="最后修改时间" descResid="2UC000-000491">
+            <matchtag>modifiedtime</matchtag>
+            <name>modifiedtime</name>
+            <type>UFDateTime</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>19</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="修订人" descResid="2UC000-000103">
+            <matchtag>crevisepsn</matchtag>
+            <name>crevisepsn</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>f6f9a473-56c0-432f-8bc7-fbf8fde54fee</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="修订时间" descResid="2400403002-x013">
+            <matchtag>trevisiontime</matchtag>
+            <name>trevisiontime</name>
+            <type>UFDateTime</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>19</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="已协同生成销售订单" descResid="2400403002-x073">
+            <matchtag>bcooptoso</matchtag>
+            <name>bcooptoso</name>
+            <type>UFBoolean</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="由销售订单协同生成" descResid="2400403002-x125">
+            <matchtag>bsocooptome</matchtag>
+            <name>bsocooptome</name>
+            <type>UFBoolean</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <defaultvalue>N</defaultvalue>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="对方订单号" descResid="2400403002-x015">
+            <matchtag>vcoopordercode</matchtag>
+            <name>vcoopordercode</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>40</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="总数量" descResid="2UC000-000349">
+            <matchtag>ntotalastnum</matchtag>
+            <name>ntotalastnum</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="价税合计" descResid="2UC000-000069">
+            <matchtag>ntotalorigmny</matchtag>
+            <name>ntotalorigmny</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="最后修改人" descResid="2UC000-000490">
+            <matchtag>modifier</matchtag>
+            <name>modifier</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>f6f9a473-56c0-432f-8bc7-fbf8fde54fee</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="冻结人" descResid="2400403002-x146">
+            <matchtag>pk_freezepsndoc</matchtag>
+            <name>pk_freezepsndoc</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>f6f9a473-56c0-432f-8bc7-fbf8fde54fee</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="冻结时间" descResid="2400403002-x067">
+            <matchtag>tfreezetime</matchtag>
+            <name>tfreezetime</name>
+            <type>UFDateTime</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>19</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="冻结" descResid="2400403002-x035">
+            <matchtag>bfrozen</matchtag>
+            <name>bfrozen</name>
+            <type>UFBoolean</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <defaultvalue>N</defaultvalue>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="冻结原因" descResid="2400403002-x009">
+            <matchtag>vfrozenreason</matchtag>
+            <name>vfrozenreason</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>100</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="业务流程" descResid="2UC000-000016">
+            <matchtag>pk_busitype</matchtag>
+            <name>pk_busitype</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>7717f1a3-b777-454e-abb5-ef8705a0f0c2</basdoc>
+            <translator>1007Z810000000003NYB</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="整单扣税类别" descResid="2400403002-x130">
+            <matchtag>fhtaxtypeflag</matchtag>
+            <name>fhtaxtypeflag</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>0</maxLength>
+            <defaultvalue>1</defaultvalue>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="整单税率" descResid="2400403002-x172">
+            <matchtag>nhtaxrate</matchtag>
+            <name>nhtaxrate</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="币种" descResid="2UC000-000315">
+            <matchtag>corigcurrencyid</matchtag>
+            <name>corigcurrencyid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>b498bc9a-e5fd-4613-8da8-bdae2a05704a</basdoc>
+            <translator>1001Z01000000000R5MJ</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="退货/库基于原订单补货" descResid="2400403002-x010">
+            <matchtag>brefwhenreturn</matchtag>
+            <name>brefwhenreturn</name>
+            <type>UFBoolean</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <defaultvalue>N</defaultvalue>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="总重量" descResid="2UC000-000351">
+            <matchtag>ntotalweight</matchtag>
+            <name>ntotalweight</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="总体积" descResid="2UC000-000347">
+            <matchtag>ntotalvolume</matchtag>
+            <name>ntotalvolume</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="总件数" descResid="2UC000-000346">
+            <matchtag>ntotalpiece</matchtag>
+            <name>ntotalpiece</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="最终关闭" descResid="2400403002-x000">
+            <matchtag>bfinalclose</matchtag>
+            <name>bfinalclose</name>
+            <type>UFBoolean</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <defaultvalue>N</defaultvalue>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="创建人" descResid="2UC000-000155">
+            <matchtag>creator</matchtag>
+            <name>creator</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>f6f9a473-56c0-432f-8bc7-fbf8fde54fee</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="项目" descResid="2UC000-001021">
+            <matchtag>pk_project</matchtag>
+            <name>pk_project</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>2ee58f9b-781b-469f-b1d8-1816842515c3</basdoc>
+            <translator>1001Z01000000000R5MK</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="最终关闭日期" descResid="2400403002-x094">
+            <matchtag>dclosedate</matchtag>
+            <name>dclosedate</name>
+            <type>UFDate</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>19</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="订单类型" descResid="2UC000-000880">
+            <matchtag>ctrantypeid</matchtag>
+            <name>ctrantypeid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>b0fa41cd-a649-4309-b685-d341a5d1b0ed</basdoc>
+            <translator>1007Z810000000003NYC</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="响应状态" descResid="2400403002-x106">
+            <matchtag>irespstatus</matchtag>
+            <name>irespstatus</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>0</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="拒绝/变更理由" descResid="2400403002-x097">
+            <matchtag>vreason</matchtag>
+            <name>vreason</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>181</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="发布" descResid="2400403002-x164">
+            <matchtag>bpublish</matchtag>
+            <name>bpublish</name>
+            <type>UFBoolean</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <defaultvalue>N</defaultvalue>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="发布人" descResid="2UC000-000219">
+            <matchtag>pk_pubpsn</matchtag>
+            <name>pk_pubpsn</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>f6f9a473-56c0-432f-8bc7-fbf8fde54fee</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="发布时间" descResid="2400403002-x129">
+            <matchtag>tpubtime</matchtag>
+            <name>tpubtime</name>
+            <type>UFDateTime</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>19</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="响应人" descResid="2400403002-x031">
+            <matchtag>pk_resppsn</matchtag>
+            <name>pk_resppsn</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>f6f9a473-56c0-432f-8bc7-fbf8fde54fee</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="响应时间" descResid="2400403002-x140">
+            <matchtag>tresptime</matchtag>
+            <name>tresptime</name>
+            <type>UFDateTime</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>19</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="贸易术语" descResid="2SCMPUB-000011">
+            <matchtag>ctradewordid</matchtag>
+            <name>ctradewordid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>1069197c-49ce-4457-b64c-0a693859763c</basdoc>
+            <translator>1001Z01000000000R5MJ</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="采购订单明细" descResid="2400403002-x158">
+            <matchtag>pk_order_b</matchtag>
+            <name>pk_order_b</name>
+            <type>ref(item)</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+            <refitem>290ca875-3210-4bf4-a1b5-d8f47fff36f8</refitem>
+        </field>
+    </record>
+    <record classname="nc.vo.pu.m21.entity.OrderItemVO[]" displayName="采购订单明细" displayNameResid="2400403002-x158" entitytag="item" metadataid="290ca875-3210-4bf4-a1b5-d8f47fff36f8" recordtype="vos" sentitytag="item" tablename="pk_order_b" tabletype="embed" typeName="内嵌结构">
+        <field desc="采购订单明细" descResid="2400403002-x158">
+            <matchtag>pk_order_b</matchtag>
+            <name>pk_order_b</name>
+            <type>UFID</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="所属集团" descResid="2UC000-000367">
+            <matchtag>pk_group</matchtag>
+            <name>pk_group</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>3b6dd171-2900-47f3-bfbe-41e4483a2a65</basdoc>
+            <translator>1001Z01000000000R5MK</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+            <variablename>pk_group</variablename>
+        </field>
+        <field desc="采购组织版本信息" descResid="2400403002-x178">
+            <matchtag>pk_org</matchtag>
+            <name>pk_org</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>5d69ee35-57d0-4f7b-b454-deff4fc73689</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+            <variablename>pk_org</variablename>
+        </field>
+        <field desc="采购组织" descResid="2UC000-000980">
+            <matchtag>pk_org_v</matchtag>
+            <name>pk_org_v</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>eda9f476-357f-4ff7-ac09-6766bc29de29</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="需求公司" descResid="2400403002-x086">
+            <matchtag>pk_reqcorp</matchtag>
+            <name>pk_reqcorp</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>4d514224-de70-44dd-bf70-f14a02f29d10</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="需求库存组织最新版本" descResid="2400403002-x008">
+            <matchtag>pk_reqstoorg</matchtag>
+            <name>pk_reqstoorg</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>46c4bfba-0b40-4855-87f8-c2ac8647f039</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+            <variablename>pk_reqstoorg</variablename>
+        </field>
+        <field desc="需求库存组织" descResid="2400403002-x170">
+            <matchtag>pk_reqstoorg_v</matchtag>
+            <name>pk_reqstoorg_v</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>34869061-84cb-4bc7-a052-12b1522620a3</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="需求仓库" descResid="2400403002-x169">
+            <matchtag>pk_reqstordoc</matchtag>
+            <name>pk_reqstordoc</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>5489bda0-d876-4db2-9568-02954f240cc8</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_reqstoorg</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="收货库存组织最新版本" descResid="2400403002-x117">
+            <matchtag>pk_arrvstoorg</matchtag>
+            <name>pk_arrvstoorg</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>46c4bfba-0b40-4855-87f8-c2ac8647f039</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+            <variablename>pk_arrvstoorg</variablename>
+        </field>
+        <field desc="收货库存组织" descResid="2UC000-000452">
+            <matchtag>pk_arrvstoorg_v</matchtag>
+            <name>pk_arrvstoorg_v</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>34869061-84cb-4bc7-a052-12b1522620a3</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="需求部门最新版本" descResid="2400403002-x092">
+            <matchtag>pk_reqdept</matchtag>
+            <name>pk_reqdept</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>b26fa3cb-4087-4027-a3b6-c83ab2a086a9</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_reqstoorg</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="需求部门" descResid="2400403002-x134">
+            <matchtag>pk_reqdept_v</matchtag>
+            <name>pk_reqdept_v</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>66ed0cf6-e260-4f39-8fbb-172260efd677</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_reqstoorg</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="物流组织最新版本" descResid="2UC000-000613">
+            <matchtag>pk_flowstockorg</matchtag>
+            <name>pk_flowstockorg</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>9a1a1816-b2de-4bae-a295-78fcebd080fb</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="物流组织" descResid="2UC000-000612">
+            <matchtag>pk_flowstockorg_v</matchtag>
+            <name>pk_flowstockorg_v</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>42b60b87-a06f-4db6-8cf5-cedd952aae64</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="行号" descResid="2UC000-000810">
+            <matchtag>crowno</matchtag>
+            <name>crowno</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="物料版本信息" descResid="2400403002-x156">
+            <matchtag>pk_material</matchtag>
+            <name>pk_material</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>c7dc0ccd-8872-4eee-8882-160e8f49dfad</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_org</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="物料信息" descResid="2400403002-x128">
+            <matchtag>pk_srcmaterial</matchtag>
+            <name>pk_srcmaterial</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>eae040f4-3c88-413d-abc9-b15774463d46</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_org</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="主单位" descResid="2UC000-000018">
+            <matchtag>cunitid</matchtag>
+            <name>cunitid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>8e668e99-3c0e-401a-8f55-3d192e055c3c</basdoc>
+            <translator>1001Z01000000000R5MJ</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="主数量" descResid="2UC000-000021">
+            <matchtag>nnum</matchtag>
+            <name>nnum</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="单位" descResid="2UC000-000176">
+            <matchtag>castunitid</matchtag>
+            <name>castunitid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>8e668e99-3c0e-401a-8f55-3d192e055c3c</basdoc>
+            <translator>1001Z01000000000R5MJ</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="数量" descResid="2UC000-000459">
+            <matchtag>nastnum</matchtag>
+            <name>nastnum</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="换算率" descResid="2UC000-000419">
+            <matchtag>vchangerate</matchtag>
+            <name>vchangerate</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>60</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="报价单位" descResid="2UC000-000409">
+            <matchtag>cqtunitid</matchtag>
+            <name>cqtunitid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>8e668e99-3c0e-401a-8f55-3d192e055c3c</basdoc>
+            <translator>1001Z01000000000R5MJ</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="报价数量" descResid="2UC000-000415">
+            <matchtag>nqtunitnum</matchtag>
+            <name>nqtunitnum</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="报价换算率" descResid="2UC000-000414">
+            <matchtag>vqtunitrate</matchtag>
+            <name>vqtunitrate</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>60</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="无税单价" descResid="2UC000-000465">
+            <matchtag>nqtorigprice</matchtag>
+            <name>nqtorigprice</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="含税单价" descResid="2UC000-000246">
+            <matchtag>nqtorigtaxprice</matchtag>
+            <name>nqtorigtaxprice</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="无税净价" descResid="2UC000-000464">
+            <matchtag>nqtorignetprice</matchtag>
+            <name>nqtorignetprice</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="含税净价" descResid="2UC000-000245">
+            <matchtag>nqtorigtaxnetprc</matchtag>
+            <name>nqtorigtaxnetprc</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="本币无税净价" descResid="2UC000-000508">
+            <matchtag>nqtnetprice</matchtag>
+            <name>nqtnetprice</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="本币含税净价" descResid="2UC000-000504">
+            <matchtag>nqttaxnetprice</matchtag>
+            <name>nqttaxnetprice</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="折扣" descResid="2400403002-x149">
+            <matchtag>nitemdiscountrate</matchtag>
+            <name>nitemdiscountrate</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="无税金额" descResid="2UC000-000466">
+            <matchtag>norigmny</matchtag>
+            <name>norigmny</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="价税合计" descResid="2UC000-000069">
+            <matchtag>norigtaxmny</matchtag>
+            <name>norigtaxmny</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="本币无税金额" descResid="2UC000-000510">
+            <matchtag>nmny</matchtag>
+            <name>nmny</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="本币价税合计" descResid="2UC000-000503">
+            <matchtag>ntaxmny</matchtag>
+            <name>ntaxmny</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="本币税额" descResid="2UC000-000671">
+            <matchtag>ntax</matchtag>
+            <name>ntax</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="主无税单价" descResid="2UC000-000023">
+            <matchtag>norigprice</matchtag>
+            <name>norigprice</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="主含税单价" descResid="2UC000-000020">
+            <matchtag>norigtaxprice</matchtag>
+            <name>norigtaxprice</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="主无税净价" descResid="2UC000-000022">
+            <matchtag>norignetprice</matchtag>
+            <name>norignetprice</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="主含税净价" descResid="2UC000-000019">
+            <matchtag>norigtaxnetprice</matchtag>
+            <name>norigtaxnetprice</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="主本币无税净价" descResid="2UC000-000026">
+            <matchtag>nnetprice</matchtag>
+            <name>nnetprice</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="主本币含税净价" descResid="2UC000-000024">
+            <matchtag>ntaxnetprice</matchtag>
+            <name>ntaxnetprice</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="累计到货主数量" descResid="2400403002-x040">
+            <matchtag>naccumarrvnum</matchtag>
+            <name>naccumarrvnum</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="累计入库主数量" descResid="2400403002-x114">
+            <matchtag>naccumstorenum</matchtag>
+            <name>naccumstorenum</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="累计开票主数量" descResid="2400403002-x069">
+            <matchtag>naccuminvoicenum</matchtag>
+            <name>naccuminvoicenum</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="累计途耗主数量" descResid="2400403002-x153">
+            <matchtag>naccumwastnum</matchtag>
+            <name>naccumwastnum</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="计划到货日期" descResid="2UC000-000859">
+            <matchtag>dplanarrvdate</matchtag>
+            <name>dplanarrvdate</name>
+            <type>UFDateEnd</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>19</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="收货仓库" descResid="2UC000-000447">
+            <matchtag>pk_recvstordoc</matchtag>
+            <name>pk_recvstordoc</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>5489bda0-d876-4db2-9568-02954f240cc8</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_arrvstoorg</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="收货地址" descResid="2UC000-000449">
+            <matchtag>pk_receiveaddress</matchtag>
+            <name>pk_receiveaddress</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>e991779c-faa3-42a6-960f-c38f68dfe204</basdoc>
+            <translator>1001Z01000000003P3PG</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="修正日期" descResid="2400403002-x083">
+            <matchtag>dcorrectdate</matchtag>
+            <name>dcorrectdate</name>
+            <type>UFDate</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>19</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="操作员" descResid="2UC000-000429">
+            <matchtag>chandler</matchtag>
+            <name>chandler</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>f6f9a473-56c0-432f-8bc7-fbf8fde54fee</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="激活" descResid="2400403002-x116">
+            <matchtag>fisactive</matchtag>
+            <name>fisactive</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>0</maxLength>
+            <defaultvalue>0</defaultvalue>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="来源单据类型" descResid="2UC000-000535">
+            <matchtag>csourcetypecode</matchtag>
+            <name>csourcetypecode</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>b0fa41cd-a649-4309-b685-d341a5d1b0ed</basdoc>
+            <translator>1007Z810000000003NYC</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="来源单据" descResid="2UC000-000524">
+            <matchtag>csourceid</matchtag>
+            <name>csourceid</name>
+            <type>UFID</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="来源单据明细" descResid="2UC000-000533">
+            <matchtag>csourcebid</matchtag>
+            <name>csourcebid</name>
+            <type>UFID</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="源头单据类型" descResid="2UC000-000581">
+            <matchtag>cfirsttypecode</matchtag>
+            <name>cfirsttypecode</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>b0fa41cd-a649-4309-b685-d341a5d1b0ed</basdoc>
+            <translator>1007Z810000000003NYC</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="源头单据" descResid="2UC000-000573">
+            <matchtag>cfirstid</matchtag>
+            <name>cfirstid</name>
+            <type>UFID</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="源头单据明细" descResid="2UC000-000580">
+            <matchtag>cfirstbid</matchtag>
+            <name>cfirstbid</name>
+            <type>UFID</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="备注" descResid="2UC000-000258">
+            <matchtag>vbmemo</matchtag>
+            <name>vbmemo</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>181</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="批次号主键" descResid="2400403002-x137">
+            <matchtag>pk_batchcode</matchtag>
+            <name>pk_batchcode</name>
+            <type>UFID</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="批次号" descResid="2UC000-000375">
+            <matchtag>vbatchcode</matchtag>
+            <name>vbatchcode</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>40</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="累计退货主数量" descResid="2400403002-x064">
+            <matchtag>nbackarrvnum</matchtag>
+            <name>nbackarrvnum</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="累计退库主数量" descResid="2400403002-x098">
+            <matchtag>nbackstorenum</matchtag>
+            <name>nbackstorenum</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="优质优价方案" descResid="2400403002-x177">
+            <matchtag>cqpbaseschemeid</matchtag>
+            <name>cqpbaseschemeid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>e962ed9d-4977-45a1-b05b-25c864b7156f</basdoc>
+            <translator>1007Z810000000003NY9</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="合同明细" descResid="2400403002-x104">
+            <matchtag>ccontractrowid</matchtag>
+            <name>ccontractrowid</name>
+            <type>UFID</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="合同信息" descResid="2400403002-x148">
+            <matchtag>ccontractid</matchtag>
+            <name>ccontractid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>5a300bf9-2157-4fc6-8255-d7538356fd90</basdoc>
+            <translator>1007Z810000000003NYA</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="合同号" descResid="2UC000-000234">
+            <matchtag>vcontractcode</matchtag>
+            <name>vcontractcode</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>40</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="价格审批单号" descResid="2400403002-x167">
+            <matchtag>vpriceauditcode</matchtag>
+            <name>vpriceauditcode</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>30</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="价格审批单" descResid="2400403002-x007">
+            <matchtag>cpriceauditid</matchtag>
+            <name>cpriceauditid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>44670e44-b80d-48d5-81c6-385f1455df51</basdoc>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="价格审批单存货明细" descResid="2400403002-x039">
+            <matchtag>cpriceaudit_bid</matchtag>
+            <name>cpriceaudit_bid</name>
+            <type>UFID</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="价格审批单存货子子表" descResid="2400403002-x123">
+            <matchtag>cpriceaudit_bb1id</matchtag>
+            <name>cpriceaudit_bb1id</name>
+            <type>UFID</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="存在到货计划" descResid="2400403002-x044">
+            <matchtag>breceiveplan</matchtag>
+            <name>breceiveplan</name>
+            <type>UFBoolean</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <defaultvalue>N</defaultvalue>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="累计到货计划主数量" descResid="2400403002-x115">
+            <matchtag>naccumrpnum</matchtag>
+            <name>naccumrpnum</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="是否赠品" descResid="2UC000-000482">
+            <matchtag>blargess</matchtag>
+            <name>blargess</name>
+            <type>UFBoolean</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <defaultvalue>N</defaultvalue>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="供应商发货地区" descResid="2400403002-x024">
+            <matchtag>cvenddevareaid</matchtag>
+            <name>cvenddevareaid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>7f91af95-154e-43f9-995e-da76a192be15</basdoc>
+            <translator>1001Z01000000000R5MK</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="供应商发货地点" descResid="2400403002-x071">
+            <matchtag>cvenddevaddrid</matchtag>
+            <name>cvenddevaddrid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>8eeaabfe-7644-4bd0-a954-f8971a14f079</basdoc>
+            <translator>1001Z01000000000R5MK</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="供应商发货地址" descResid="2400403002-x176">
+            <matchtag>vvenddevaddr</matchtag>
+            <name>vvenddevaddr</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>e991779c-faa3-42a6-960f-c38f68dfe204</basdoc>
+            <translator>1001Z01000000003P3PG</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="收货地区" descResid="2UC000-000448">
+            <matchtag>cdevareaid</matchtag>
+            <name>cdevareaid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>7f91af95-154e-43f9-995e-da76a192be15</basdoc>
+            <translator>1001Z01000000000R5MK</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="收货地点" descResid="2UC000-000450">
+            <matchtag>cdevaddrid</matchtag>
+            <name>cdevaddrid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>8eeaabfe-7644-4bd0-a954-f8971a14f079</basdoc>
+            <translator>1001Z01000000000R5MK</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="累计运输主数量" descResid="2400403002-x131">
+            <matchtag>naccumdevnum</matchtag>
+            <name>naccumdevnum</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自由辅助属性1" descResid="2UC000-000789">
+            <matchtag>vfree1</matchtag>
+            <name>vfree1</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自由辅助属性2" descResid="2UC000-000791">
+            <matchtag>vfree2</matchtag>
+            <name>vfree2</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自由辅助属性3" descResid="2UC000-000792">
+            <matchtag>vfree3</matchtag>
+            <name>vfree3</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自由辅助属性4" descResid="2UC000-000793">
+            <matchtag>vfree4</matchtag>
+            <name>vfree4</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自由辅助属性5" descResid="2UC000-000794">
+            <matchtag>vfree5</matchtag>
+            <name>vfree5</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项1" descResid="2UC000-000749">
+            <matchtag>vbdef1</matchtag>
+            <name>vbdef1</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项2" descResid="2UC000-000760">
+            <matchtag>vbdef2</matchtag>
+            <name>vbdef2</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项3" descResid="2UC000-000771">
+            <matchtag>vbdef3</matchtag>
+            <name>vbdef3</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项4" descResid="2UC000-000782">
+            <matchtag>vbdef4</matchtag>
+            <name>vbdef4</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项5" descResid="2UC000-000784">
+            <matchtag>vbdef5</matchtag>
+            <name>vbdef5</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项6" descResid="2UC000-000785">
+            <matchtag>vbdef6</matchtag>
+            <name>vbdef6</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项7" descResid="2UC000-000786">
+            <matchtag>vbdef7</matchtag>
+            <name>vbdef7</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项8" descResid="2UC000-000787">
+            <matchtag>vbdef8</matchtag>
+            <name>vbdef8</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项9" descResid="2UC000-000788">
+            <matchtag>vbdef9</matchtag>
+            <name>vbdef9</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项10" descResid="2UC000-000750">
+            <matchtag>vbdef10</matchtag>
+            <name>vbdef10</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项11" descResid="2UC000-000751">
+            <matchtag>vbdef11</matchtag>
+            <name>vbdef11</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项12" descResid="2UC000-000752">
+            <matchtag>vbdef12</matchtag>
+            <name>vbdef12</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项13" descResid="2UC000-000753">
+            <matchtag>vbdef13</matchtag>
+            <name>vbdef13</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项14" descResid="2UC000-000754">
+            <matchtag>vbdef14</matchtag>
+            <name>vbdef14</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项15" descResid="2UC000-000755">
+            <matchtag>vbdef15</matchtag>
+            <name>vbdef15</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项16" descResid="2UC000-000756">
+            <matchtag>vbdef16</matchtag>
+            <name>vbdef16</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项17" descResid="2UC000-000757">
+            <matchtag>vbdef17</matchtag>
+            <name>vbdef17</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项18" descResid="2UC000-000758">
+            <matchtag>vbdef18</matchtag>
+            <name>vbdef18</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项19" descResid="2UC000-000759">
+            <matchtag>vbdef19</matchtag>
+            <name>vbdef19</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自定义项20" descResid="2UC000-000761">
+            <matchtag>vbdef20</matchtag>
+            <name>vbdef20</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="对应物料编码" descResid="2400403002-x041">
+            <matchtag>vvendinventorycode</matchtag>
+            <name>vvendinventorycode</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>30</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="对应物料名称" descResid="2400403002-x120">
+            <matchtag>vvendinventoryname</matchtag>
+            <name>vvendinventoryname</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>60</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="是否运输关闭" descResid="2400403002-x081">
+            <matchtag>btransclosed</matchtag>
+            <name>btransclosed</name>
+            <type>UFBoolean</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <defaultvalue>N</defaultvalue>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="费用累计开票金额" descResid="2400403002-x075">
+            <matchtag>nfeemny</matchtag>
+            <name>nfeemny</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="结算财务组织最新版本" descResid="2UC000-000716">
+            <matchtag>pk_psfinanceorg</matchtag>
+            <name>pk_psfinanceorg</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>2cfe13c5-9757-4ae8-9327-f5c2d34bcb46</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="结算财务组织" descResid="2UC000-000715">
+            <matchtag>pk_psfinanceorg_v</matchtag>
+            <name>pk_psfinanceorg_v</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>31736d3d-3626-46c5-b5d0-e10b4ed33dce</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="应付组织最新版本" descResid="2400403002-x103">
+            <matchtag>pk_apfinanceorg</matchtag>
+            <name>pk_apfinanceorg</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>2cfe13c5-9757-4ae8-9327-f5c2d34bcb46</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="应付组织" descResid="2400403002-x005">
+            <matchtag>pk_apfinanceorg_v</matchtag>
+            <name>pk_apfinanceorg_v</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>31736d3d-3626-46c5-b5d0-e10b4ed33dce</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="利润中心最新版本" descResid="2UC000-000162">
+            <matchtag>pk_apliabcenter</matchtag>
+            <name>pk_apliabcenter</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>5461ada1-ef2a-419a-af14-656cf0641d34</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="利润中心" descResid="2UC000-000161">
+            <matchtag>pk_apliabcenter_v</matchtag>
+            <name>pk_apliabcenter_v</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>0b9ea16e-7650-47dc-9912-fd0bd351f124</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自由辅助属性6" descResid="2UC000-000795">
+            <matchtag>vfree6</matchtag>
+            <name>vfree6</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自由辅助属性7" descResid="2UC000-000796">
+            <matchtag>vfree7</matchtag>
+            <name>vfree7</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自由辅助属性8" descResid="2UC000-000797">
+            <matchtag>vfree8</matchtag>
+            <name>vfree8</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自由辅助属性9" descResid="2UC000-000798">
+            <matchtag>vfree9</matchtag>
+            <name>vfree9</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="自由辅助属性10" descResid="2UC000-000790">
+            <matchtag>vfree10</matchtag>
+            <name>vfree10</name>
+            <type>CUSTOM</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>101</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="借入转采购" descResid="2400403002-x111">
+            <matchtag>bborrowpur</matchtag>
+            <name>bborrowpur</name>
+            <type>UFBoolean</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <defaultvalue>N</defaultvalue>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="源头交易类型" descResid="2UC000-000572">
+            <matchtag>vfirsttrantype</matchtag>
+            <name>vfirsttrantype</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>b0fa41cd-a649-4309-b685-d341a5d1b0ed</basdoc>
+            <translator>1007Z810000000003NYC</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="源头单据号" descResid="2UC000-000578">
+            <matchtag>vfirstcode</matchtag>
+            <name>vfirstcode</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>40</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="源头单据行号" descResid="2UC000-000583">
+            <matchtag>vfirstrowno</matchtag>
+            <name>vfirstrowno</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="来源交易类型" descResid="2UC000-000522">
+            <matchtag>vsourcetrantype</matchtag>
+            <name>vsourcetrantype</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>b0fa41cd-a649-4309-b685-d341a5d1b0ed</basdoc>
+            <translator>1007Z810000000003NYC</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="来源单据号" descResid="2UC000-000531">
+            <matchtag>vsourcecode</matchtag>
+            <name>vsourcecode</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>40</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="来源单据行号" descResid="2UC000-000539">
+            <matchtag>vsourcerowno</matchtag>
+            <name>vsourcerowno</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="累计本币开票金额" descResid="2400403002-x082">
+            <matchtag>naccuminvoicemny</matchtag>
+            <name>naccuminvoicemny</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <defaultvalue>0</defaultvalue>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="累计已核销本币开票金额" descResid="2400403002-x059">
+            <matchtag>nacccancelinvmny</matchtag>
+            <name>nacccancelinvmny</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <defaultvalue>0</defaultvalue>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="重量" descResid="2UC000-000986">
+            <matchtag>nweight</matchtag>
+            <name>nweight</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="体积" descResid="2UC000-000078">
+            <matchtag>nvolumn</matchtag>
+            <name>nvolumn</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="件数" descResid="2UC000-000065">
+            <matchtag>npacknum</matchtag>
+            <name>npacknum</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="入库关闭" descResid="2400403002-x099">
+            <matchtag>bstockclose</matchtag>
+            <name>bstockclose</name>
+            <type>UFBoolean</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <defaultvalue>N</defaultvalue>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="开票关闭" descResid="2400403002-x096">
+            <matchtag>binvoiceclose</matchtag>
+            <name>binvoiceclose</name>
+            <type>UFBoolean</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <defaultvalue>N</defaultvalue>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="到货关闭" descResid="2400403002-x037">
+            <matchtag>barriveclose</matchtag>
+            <name>barriveclose</name>
+            <type>UFBoolean</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <defaultvalue>N</defaultvalue>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="付款关闭" descResid="2400403002-x102">
+            <matchtag>bpayclose</matchtag>
+            <name>bpayclose</name>
+            <type>UFBoolean</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <defaultvalue>N</defaultvalue>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="扣税类别" descResid="2UC000-000369">
+            <matchtag>ftaxtypeflag</matchtag>
+            <name>ftaxtypeflag</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>0</maxLength>
+            <defaultvalue>1</defaultvalue>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="税率" descResid="2UC000-000670">
+            <matchtag>ntaxrate</matchtag>
+            <name>ntaxrate</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="本币币种" descResid="2UC000-000506">
+            <matchtag>ccurrencyid</matchtag>
+            <name>ccurrencyid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>b498bc9a-e5fd-4613-8da8-bdae2a05704a</basdoc>
+            <translator>1001Z01000000000R5MJ</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="折本汇率" descResid="2UC000-000407">
+            <matchtag>nexchangerate</matchtag>
+            <name>nexchangerate</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="集团本位币汇率" descResid="2UC000-001011">
+            <matchtag>ngroupexchgrate</matchtag>
+            <name>ngroupexchgrate</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="全局本位币汇率" descResid="2UC000-000114">
+            <matchtag>nglobalexchgrate</matchtag>
+            <name>nglobalexchgrate</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="集团本币无税金额" descResid="2UC000-001015">
+            <matchtag>ngroupmny</matchtag>
+            <name>ngroupmny</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="集团本币价税合计" descResid="2UC000-001013">
+            <matchtag>ngrouptaxmny</matchtag>
+            <name>ngrouptaxmny</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="全局本币无税金额" descResid="2UC000-000118">
+            <matchtag>nglobalmny</matchtag>
+            <name>nglobalmny</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="全局本币价税合计" descResid="2UC000-000116">
+            <matchtag>nglobaltaxmny</matchtag>
+            <name>nglobaltaxmny</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="项目" descResid="2UC000-001021">
+            <matchtag>cprojectid</matchtag>
+            <name>cprojectid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>2ee58f9b-781b-469f-b1d8-1816842515c3</basdoc>
+            <translator>1001Z01000000000R5MK</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="生产厂商" descResid="2UC000-000619">
+            <matchtag>cproductorid</matchtag>
+            <name>cproductorid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>1002ZZ1000000000066Q</basdoc>
+            <translator>1001Z01000000000R5MK</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="订单日期" descResid="2400403002-x113">
+            <matchtag>dbilldate</matchtag>
+            <name>dbilldate</name>
+            <type>UFDate</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>19</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="供应商" descResid="2UC000-000089">
+            <matchtag>pk_supplier</matchtag>
+            <name>pk_supplier</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>720dcc7c-ff19-48f4-b9c5-b90906682f45</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="币种" descResid="2UC000-000315">
+            <matchtag>corigcurrencyid</matchtag>
+            <name>corigcurrencyid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>b498bc9a-e5fd-4613-8da8-bdae2a05704a</basdoc>
+            <translator>1001Z01000000000R5MJ</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="质量等级" descResid="2UC000-000926">
+            <matchtag>cqualitylevelid</matchtag>
+            <name>cqualitylevelid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>c924893f-f850-415c-8f94-0d4f119589ac</basdoc>
+            <translator>1007Z810000000003NY3</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="被预留数量" descResid="2400403002-x121">
+            <matchtag>nsuprsnum</matchtag>
+            <name>nsuprsnum</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="修订来源订单明细" descResid="2400403002-x012">
+            <matchtag>pk_srcorder_b</matchtag>
+            <name>pk_srcorder_b</name>
+            <type>UFID</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="报价本币无税单价" descResid="2UC000-000509">
+            <matchtag>nqtprice</matchtag>
+            <name>nqtprice</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="报价本币含税单价" descResid="2UC000-000505">
+            <matchtag>nqttaxprice</matchtag>
+            <name>nqttaxprice</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="主本币无税单价" descResid="2UC000-000027">
+            <matchtag>nprice</matchtag>
+            <name>nprice</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="主本币含税单价" descResid="2UC000-000025">
+            <matchtag>ntaxprice</matchtag>
+            <name>ntaxprice</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="电子商务单据" descResid="2400403002-x157">
+            <matchtag>cecbillid</matchtag>
+            <name>cecbillid</name>
+            <type>UFID</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="电子商务单据明细" descResid="2400403002-x093">
+            <matchtag>cecbillbid</matchtag>
+            <name>cecbillbid</name>
+            <type>UFID</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="电子商务单据号" descResid="2400403002-x166">
+            <matchtag>vecbillcode</matchtag>
+            <name>vecbillcode</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>40</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="电子商务单据类型" descResid="2400403002-x080">
+            <matchtag>cectypecode</matchtag>
+            <name>cectypecode</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>b0fa41cd-a649-4309-b685-d341a5d1b0ed</basdoc>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="原始订单数量" descResid="2400403002-x163">
+            <matchtag>norigordernum</matchtag>
+            <name>norigordernum</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="原始订单净含税单价" descResid="2400403002-x109">
+            <matchtag>norigorderprice</matchtag>
+            <name>norigorderprice</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="原始计划到货日期" descResid="2400403002-x100">
+            <matchtag>dorigplanarrvdate</matchtag>
+            <name>dorigplanarrvdate</name>
+            <type>UFDate</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>19</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="供应商交货状态" descResid="2400403002-x089">
+            <matchtag>istorestatus</matchtag>
+            <name>istorestatus</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>0</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="客户" descResid="24004000-0001">
+            <matchtag>casscustid</matchtag>
+            <name>casscustid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>e4f48eaf-5567-4383-a370-a59cb3e8a451</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_org</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+            <variablename>casscustid</variablename>
+        </field>
+        <field desc="项目任务" descResid="24004000-0002">
+            <matchtag>cprojecttaskid</matchtag>
+            <name>cprojecttaskid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>e0cc2c7c-4274-4844-a55d-08ad5d1ff81c</basdoc>
+            <translator>1001ZP1000000002O69M</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="发货国家/地区" descResid="2SCMPUB-000002">
+            <matchtag>csendcountryid</matchtag>
+            <name>csendcountryid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>e0f51d3e-b8c4-4abb-bd3b-cd6e6d09d0f8</basdoc>
+            <translator>1001Z01000000000R5MJ</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="收货国家/地区" descResid="2SCMPUB-000001">
+            <matchtag>crececountryid</matchtag>
+            <name>crececountryid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>e0f51d3e-b8c4-4abb-bd3b-cd6e6d09d0f8</basdoc>
+            <translator>1001Z01000000000R5MJ</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="报税国家/地区" descResid="2SCMPUB-000006">
+            <matchtag>ctaxcountryid</matchtag>
+            <name>ctaxcountryid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>e0f51d3e-b8c4-4abb-bd3b-cd6e6d09d0f8</basdoc>
+            <translator>1001Z01000000000R5MJ</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="购销类型" descResid="2SCMPUB-000009">
+            <matchtag>fbuysellflag</matchtag>
+            <name>fbuysellflag</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>0</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+            <enumid>7c7bb56e-e851-4a62-81d3-dc96ae944762</enumid>
+        </field>
+        <field desc="三角贸易" descResid="2SCMPUB-000010">
+            <matchtag>btriatradeflag</matchtag>
+            <name>btriatradeflag</name>
+            <type>UFBoolean</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="税码" descResid="2SCMPUB-000019">
+            <matchtag>ctaxcodeid</matchtag>
+            <name>ctaxcodeid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>f758785c-a056-4f65-a551-ac05c3ac09cd</basdoc>
+            <translator>1001Z01000000000R5MJ</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+            <variablename>ctaxcodeid</variablename>
+        </field>
+        <field desc="不可抵扣税率" descResid="2SCMPUB-000023">
+            <matchtag>nnosubtaxrate</matchtag>
+            <name>nnosubtaxrate</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="不可抵扣税额" descResid="2SCMPUB-000024">
+            <matchtag>nnosubtax</matchtag>
+            <name>nnosubtax</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="计税金额" descResid="2SCMPUB-000021">
+            <matchtag>ncaltaxmny</matchtag>
+            <name>ncaltaxmny</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="计成本金额" descResid="2SCMPUB-000025">
+            <matchtag>ncalcostmny</matchtag>
+            <name>ncalcostmny</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="原产国" descResid="2SCMPUB-000013">
+            <matchtag>corigcountryid</matchtag>
+            <name>corigcountryid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>e0f51d3e-b8c4-4abb-bd3b-cd6e6d09d0f8</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_org</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="原产地区" descResid="2SCMPUB-000014">
+            <matchtag>corigareaid</matchtag>
+            <name>corigareaid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>988d7c0e-d94e-4c45-ac8e-1bce109a343a</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_org</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="目的地国" descResid="2SCMPUB-000007">
+            <matchtag>cdesticountryid</matchtag>
+            <name>cdesticountryid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>e0f51d3e-b8c4-4abb-bd3b-cd6e6d09d0f8</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_org</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="目的地地区" descResid="2SCMPUB-000008">
+            <matchtag>cdestiareaid</matchtag>
+            <name>cdestiareaid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>988d7c0e-d94e-4c45-ac8e-1bce109a343a</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_org</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="来源单据主数量" descResid="24004000-0004">
+            <matchtag>nsourcenum</matchtag>
+            <name>nsourcenum</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>28</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+    </record>
+</ufinterface>

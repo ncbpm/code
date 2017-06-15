@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding='utf-8'?>
+<businessprocessors>
+    <businessprocessor baseclassname="" billtype="bpm_bankacc_add" classname="nc.bpm.bd.pfxx.BankaccbasForBpmAdd" locklevel="3" metadataid="611652ad-177f-4d3e-9ae7-ef8f96930b78" name="BPM银行账户新增修改">
+    </businessprocessor>
+    <businessprocessor baseclassname="" billtype="bpm_supplier_add" classname="nc.bpm.bd.pfxx.SupplierForBpmAdd" locklevel="3" metadataid="720dcc7c-ff19-48f4-b9c5-b90906682f45" name="BPM供应商新增修改分配">
+    </businessprocessor>
+    <businessprocessor baseclassname="" billtype="bpm_bank_add" classname="nc.bpm.bd.pfxx.BankdocForBpmAdd" locklevel="3" metadataid="bf5aeed4-6b35-4a2e-b750-b9aabce59e21" name="BPM银行档案新增修改">
+    </businessprocessor>
+    <businessprocessor baseclassname="" billtype="bpm_supplier_merge" classname="nc.bpm.bd.pfxx.SupplierMergeForBpmAdd"  locklevel="3" metadataid="039db4c6-d049-453c-a158-fc43ccb8b1a0" name="">
+    </businessprocessor>
+</businessprocessors>

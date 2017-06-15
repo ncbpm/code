@@ -1,23 +1,13 @@
 <?xml version="1.0" encoding='gb2312'?>
 <ufinterface roottag="bill">
-    <record displayName="薪资发放导入主表" metadataid="64e90e0e-5318-4857-a928-6f9847a25b1e" stabletag="header" tablename="billhead" tabletag="billhead" tabletype="head" typeName="表头">
-        <field desc="主表主键">
-            <matchtag>pk_impwadata</matchtag>
-            <name>pk_impwadata</name>
+    <record displayName="薪资计算" metadataid="c982f4fa-f2df-4522-b11e-e0fae01ed1e7" stabletag="header" tablename="billhead" tabletag="billhead" tabletype="head" typeName="表头">
+        <field desc="薪资方案">
+            <matchtag>pk_wa_class</matchtag>
+            <name>pk_wa_class</name>
             <type>UFID</type>
             <nullallowed>yes</nullallowed>
             <maxLength>20</maxLength>
             <needexport>yes</needexport>
-            <checkTranslatedPK>no</checkTranslatedPK>
-        </field>       
-	   <field desc="薪资方案">
-            <matchtag>pk_wa_class</matchtag>
-            <name>pk_wa_class</name>
-            <type>String</type>
-            <nullallowed>yes</nullallowed>
-            <maxLength>20</maxLength>
-            <needexport>yes</needexport>
-            <basdoc>3faa851b-c428-46fd-af37-c7d3b1531537</basdoc>
             <checkTranslatedPK>no</checkTranslatedPK>
         </field>
         <field desc="会计年度">
@@ -56,146 +46,6 @@
             <maxLength>20</maxLength>
             <needexport>yes</needexport>
             <basdoc>985be8a4-3a36-4778-8afe-2d8ed3902659</basdoc>
-            <checkTranslatedPK>no</checkTranslatedPK>
-        </field>
-       <field desc="子表主键">
-            <matchtag>pk_impwadata_b</matchtag>
-            <name>pk_impwadata_b</name>
-            <type>ref(item)</type>
-            <nullallowed>yes</nullallowed>
-            <maxLength>0</maxLength>
-            <needexport>yes</needexport>
-            <checkTranslatedPK>no</checkTranslatedPK>
-            <refitem>b620ddb0-bee4-4495-b32c-a0e2a68b22f3</refitem>
-        </field>
-    </record>
-    <record classname="nc.vo.hrwa.impwadata.WaDataBodyVO[]" displayName="薪资发放导入子表" entitytag="item" metadataid="b620ddb0-bee4-4495-b32c-a0e2a68b22f3" recordtype="vos" sentitytag="item" tablename="pk_impwadata_b" tabletype="embed" typeName="内嵌结构">
-        <field desc="子表主键">
-            <matchtag>pk_impwadata_b</matchtag>
-            <name>pk_impwadata_b</name>
-            <type>UFID</type>
-            <nullallowed>yes</nullallowed>
-            <maxLength>20</maxLength>
-            <needexport>yes</needexport>
-            <checkTranslatedPK>no</checkTranslatedPK>
-        </field>
-		<field desc="主表主键">
-            <matchtag>pk_impwadata</matchtag>
-            <name>pk_impwadata</name>
-            <type>UFID</type>
-            <nullallowed>yes</nullallowed>
-            <maxLength>20</maxLength>
-            <needexport>yes</needexport>
-            <checkTranslatedPK>no</checkTranslatedPK>
-        </field>
-		<field desc="制度天数">
-            <matchtag>f_1</matchtag>
-            <name>f_1</name>
-            <type>UFDouble</type>
-            <nullallowed>yes</nullallowed>
-            <maxLength>28</maxLength>
-            <needexport>yes</needexport>
-            <checkTranslatedPK>no</checkTranslatedPK>
-        </field>
-        <field desc="制度天数">
-            <matchtag>f_2</matchtag>
-            <name>f_2</name>
-            <type>UFDouble</type>
-            <nullallowed>yes</nullallowed>
-            <maxLength>28</maxLength>
-            <needexport>yes</needexport>
-            <checkTranslatedPK>no</checkTranslatedPK>
-        </field>
-        <field desc="计时出勤">
-            <matchtag>f_3</matchtag>
-            <name>f_3</name>
-            <type>UFDouble</type>
-            <nullallowed>yes</nullallowed>
-            <maxLength>28</maxLength>
-            <needexport>yes</needexport>
-            <checkTranslatedPK>no</checkTranslatedPK>
-        </field>
-        <field desc="计时出勤天数">
-            <matchtag>f_4</matchtag>
-            <name>f_4</name>
-            <type>UFDouble</type>
-            <nullallowed>yes</nullallowed>
-            <maxLength>28</maxLength>
-            <needexport>yes</needexport>
-            <checkTranslatedPK>no</checkTranslatedPK>
-        </field>
-        <field desc="换休">
-            <matchtag>f_5</matchtag>
-            <name>f_5</name>
-            <type>UFDouble</type>
-            <nullallowed>yes</nullallowed>
-            <maxLength>28</maxLength>
-            <needexport>yes</needexport>
-            <checkTranslatedPK>no</checkTranslatedPK>
-        </field>
-        <field desc="日常值班">
-            <matchtag>f_6</matchtag>
-            <name>f_6</name>
-            <type>UFDouble</type>
-            <nullallowed>yes</nullallowed>
-            <maxLength>28</maxLength>
-            <needexport>yes</needexport>
-            <checkTranslatedPK>no</checkTranslatedPK>
-        </field>
-        <field desc="法定节日值班">
-            <matchtag>f_7</matchtag>
-            <name>f_7</name>
-            <type>UFDouble</type>
-            <nullallowed>yes</nullallowed>
-            <maxLength>28</maxLength>
-            <needexport>yes</needexport>
-            <checkTranslatedPK>no</checkTranslatedPK>
-        </field>
-        <field desc="考勤信息8">
-            <matchtag>f_8</matchtag>
-            <name>f_8</name>
-            <type>UFDouble</type>
-            <nullallowed>yes</nullallowed>
-            <maxLength>28</maxLength>
-            <needexport>yes</needexport>
-            <checkTranslatedPK>no</checkTranslatedPK>
-        </field>
-        <field desc="考勤信息9">
-            <matchtag>f_9</matchtag>
-            <name>f_9</name>
-            <type>UFDouble</type>
-            <nullallowed>yes</nullallowed>
-            <maxLength>28</maxLength>
-            <needexport>yes</needexport>
-            <checkTranslatedPK>no</checkTranslatedPK>
-        </field>
-        <field desc="考勤信息10">
-            <matchtag>f_10</matchtag>
-            <name>f_10</name>
-            <type>UFDouble</type>
-            <nullallowed>yes</nullallowed>
-            <maxLength>28</maxLength>
-            <needexport>yes</needexport>
-            <checkTranslatedPK>no</checkTranslatedPK>
-        </field>
-        <field desc="人员工作记录">
-            <matchtag>pk_psnjob</matchtag>
-            <name>pk_psnjob</name>
-            <type>String</type>
-            <nullallowed>yes</nullallowed>
-            <maxLength>20</maxLength>
-            <needexport>yes</needexport>
-            <basdoc>7156d223-4531-4337-b192-492ab40098f1</basdoc>
-            <checkTranslatedPK>no</checkTranslatedPK>
-        </field>
-        <field desc="人员基本信息">
-            <matchtag>pk_psndoc</matchtag>
-            <name>pk_psndoc</name>
-            <type>String</type>
-            <nullallowed>yes</nullallowed>
-            <maxLength>20</maxLength>
-            <needexport>yes</needexport>
-            <basdoc>218971f0-e5dc-408b-9a32-56529dddd4db</basdoc>
             <checkTranslatedPK>no</checkTranslatedPK>
         </field>
     </record>

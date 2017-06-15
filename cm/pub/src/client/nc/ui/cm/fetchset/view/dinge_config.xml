@@ -43,4 +43,24 @@
 		</property>
 	</bean>
 	
+	<bean id="dingetMediator" class="nc.ui.pubapp.uif2app.model.AppEventHandlerMediator">
+		<property name="model" ref="dingeManageAppModel" />
+		<property name="handlerGroup">
+			<list>
+				<!-- 表体字段编辑前事件 -->
+				<bean class="nc.ui.pubapp.uif2app.event.EventHandlerGroup">
+					<property name="event"
+						value="nc.ui.pubapp.uif2app.event.card.CardBodyBeforeEditEvent" />
+					<property name="picky" ref="ChildrenPicky" />
+					<property name="handler">
+						<bean class="nc.ui.cm.fetchset.eventhandler.DingeCardBodyBeforEditHandler"
+							init-method="initMap" />
+					</property>
+				</bean>
+
+		
+			</list>
+		</property>
+	</bean>
+	
 </beans>

@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding='utf-8'?>
+<ufinterface cryptClassname="" docidname="" roottag="bill">
+    <vars>
+    </vars>
+    <record displayName="银行账户" metadataid="611652ad-177f-4d3e-9ae7-ef8f96930b78" stabletag="header" tablename="billhead" tabletag="billhead" tabletype="head">
+        <field desc="银行账户主键">
+            <matchtag>pk_bankaccbas</matchtag>
+            <name>pk_bankaccbas</name>
+            <type>UFID</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>no</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="是否内部账户">
+            <matchtag>isinneracc</matchtag>
+            <name>isinneracc</name>
+            <type>UFBoolean</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <defaultvalue>N</defaultvalue>
+            <needexport>no</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="账户分类">
+            <matchtag>accclass</matchtag>
+            <name>accclass</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+            <rule>个人=0;客户=1;公司=2;供应商=3;</rule>
+        </field>
+        <field desc="所属组织">
+            <matchtag>pk_org</matchtag>
+            <name>pk_org</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>985be8a4-3a36-4778-8afe-2d8ed3902659</basdoc>
+            <translator>1001Z01000000000R5MJ</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+            <variablename>pk_org</variablename>
+        </field>
+        <field desc="所属集团">
+            <matchtag>pk_group</matchtag>
+            <name>pk_group</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>3b6dd171-2900-47f3-bfbe-41e4483a2a65</basdoc>
+            <translator>1001Z01000000000R5MJ</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="账号">
+            <matchtag>accnum</matchtag>
+            <name>accnum</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>40</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="户名">
+            <matchtag>accname</matchtag>
+            <name>accname</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>200</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="账户编码">
+            <matchtag>code</matchtag>
+            <name>code</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>40</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="账户名称">
+            <matchtag>name</matchtag>
+            <name>name</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>200</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="开户银行">
+            <matchtag>pk_bankdoc</matchtag>
+            <name>pk_bankdoc</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>bf5aeed4-6b35-4a2e-b750-b9aabce59e21</basdoc>
+            <translator>1001Z01000000000R5MJ</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="银行类别">
+            <matchtag>pk_banktype</matchtag>
+            <name>pk_banktype</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>1d3d003d-0e8c-4283-9580-0ef81c93ba58</basdoc>
+            <translator>1001Z01000000000R5MJ</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="助记码">
+            <matchtag>mnecode</matchtag>
+            <name>mnecode</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="开户日期">
+            <matchtag>accopendate</matchtag>
+            <name>accopendate</name>
+            <type>UFDate</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>19</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="收付属性">
+            <matchtag>arapprop</matchtag>
+            <name>arapprop</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+            <rule>收入=0;支出=1;收支=2;</rule>
+        </field>
+        <field desc="网银开通状态">
+            <matchtag>netqueryflag</matchtag>
+            <name>netqueryflag</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+            <rule>未开通=0;开通查询=1;开通查询及支付=2;开通落地支付=3;</rule>
+        </field>
+        <field desc="账户属性">
+            <matchtag>accattribute</matchtag>
+            <name>accattribute</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+            <rule>基本=0;临时=1;一般=2;专用=3;</rule>
+        </field>
+        <field desc="总分属性">
+            <matchtag>genebranprop</matchtag>
+            <name>genebranprop</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <defaultvalue>2</defaultvalue>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+            <rule>总账户=0;分账户=1;独立账户=2;</rule>
+        </field>
+        <field desc="对应总账户">
+            <matchtag>corrgeneaccount</matchtag>
+            <name>corrgeneaccount</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>611652ad-177f-4d3e-9ae7-ef8f96930b78</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="集团账户">
+            <matchtag>groupaccount</matchtag>
+            <name>groupaccount</name>
+            <type>UFBoolean</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="账户状态">
+            <matchtag>accstate</matchtag>
+            <name>accstate</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+            <rule>正常=0;冻结=1;部分冻结=2;销户=3;</rule>
+        </field>
+        <field desc="账户性质">
+            <matchtag>accountproperty</matchtag>
+            <name>accountproperty</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+            <rule>公司=0;个人=1;</rule>
+        </field>
+        <field desc="所在地">
+            <matchtag>address</matchtag>
+            <name>address</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>200</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="联系人">
+            <matchtag>contactpsn</matchtag>
+            <name>contactpsn</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>25</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="联系电话">
+            <matchtag>tel</matchtag>
+            <name>tel</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>30</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="备注">
+            <matchtag>memo</matchtag>
+            <name>memo</name>
+            <type>MEMO</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>200</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="销户日期">
+            <matchtag>accxhdate</matchtag>
+            <name>accxhdate</name>
+            <type>UFDate</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>19</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="网银接口类别">
+            <matchtag>pk_netbankinftp</matchtag>
+            <name>pk_netbankinftp</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>257e617a-a1a1-420c-a74a-f0be414a7cd7</basdoc>
+            <translator>1001Z01000000000R5MJ</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="地区代码">
+            <matchtag>areacode</matchtag>
+            <name>areacode</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+			<basdoc>1001ZZ10000000009031</basdoc>
+            <translator>1001Z01000000000R5MJ</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="联行号">
+            <matchtag>combinenum</matchtag>
+            <name>combinenum</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>80</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="机构号/分行号">
+            <matchtag>orgnumber</matchtag>
+            <name>orgnumber</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>80</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="开户地区">
+            <matchtag>bankarea</matchtag>
+            <name>bankarea</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>80</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="省份">
+            <matchtag>province</matchtag>
+            <name>province</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>80</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="城市">
+            <matchtag>city</matchtag>
+            <name>city</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>80</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="客户编号">
+            <matchtag>customernumber</matchtag>
+            <name>customernumber</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>80</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="签约">
+            <matchtag>issigned</matchtag>
+            <name>issigned</name>
+            <type>UFBoolean</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="开户单位">
+            <matchtag>financeorg</matchtag>
+            <name>financeorg</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>2cfe13c5-9757-4ae8-9327-f5c2d34bcb46</basdoc>
+            <translator>1001Z01000000000R5MJ</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="核算归属组织">
+            <matchtag>controlorg</matchtag>
+            <name>controlorg</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>2cfe13c5-9757-4ae8-9327-f5c2d34bcb46</basdoc>
+            <translator>1001Z01000000000R5MJ</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="启用状态">
+            <matchtag>enablestate</matchtag>
+            <name>enablestate</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+            <rule>未启用=1;已启用=2;已停用=3;</rule>
+        </field>
+        <field desc="联行网点名称">
+            <matchtag>combineaccname</matchtag>
+            <name>combineaccname</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>200</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="查询余额接口">
+            <matchtag>qrybalanceitf</matchtag>
+            <name>qrybalanceitf</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <defaultvalue>0</defaultvalue>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+            <rule>独立户余额接口=0;归集户余额接口=1;</rule>
+        </field>
+        <field desc="银行账户子户">
+            <matchtag>bankaccsub</matchtag>
+            <name>bankaccsub</name>
+            <type>ref(item)</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>0</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+            <refitem>cd1f9a1c-eb08-493f-88ff-bcd1c134dee1</refitem>
+        </field>
+    </record>
+    <record classname="nc.vo.bd.bankaccount.BankAccSubVO[]" displayName="银行账户子户" entitytag="item" metadataid="cd1f9a1c-eb08-493f-88ff-bcd1c134dee1" recordtype="vos" sentitytag="item" tablename="bankaccsub" tabletype="embed">
+        <field desc="银行账户子户主键">
+            <matchtag>pk_bankaccsub</matchtag>
+            <name>pk_bankaccsub</name>
+            <type>UFID</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>no</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="币种">
+            <matchtag>pk_currtype</matchtag>
+            <name>pk_currtype</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>b498bc9a-e5fd-4613-8da8-bdae2a05704a</basdoc>
+            <translator>1001Z01000000000R5MJ</translator>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="编码">
+            <matchtag>code</matchtag>
+            <name>code</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>40</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="名称">
+            <matchtag>name</matchtag>
+            <name>name</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>200</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="账户类型">
+            <matchtag>acctype</matchtag>
+            <name>acctype</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+            <rule>活期=0;定期=1;通知=2;票据=3;保证金户=4;</rule>
+        </field>
+        <field desc="协定">
+            <matchtag>isconcerted</matchtag>
+            <name>isconcerted</name>
+            <type>UFBoolean</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="协定金额">
+            <matchtag>concertedmny</matchtag>
+            <name>concertedmny</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>16</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="冻结状态">
+            <matchtag>fronzenstate</matchtag>
+            <name>fronzenstate</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+            <rule>正常=0;冻结=1;部分冻结=2;销户=3;</rule>
+        </field>
+        <field desc="冻结金额">
+            <matchtag>fronzenmny</matchtag>
+            <name>fronzenmny</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>16</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="冻结日期">
+            <matchtag>frozendate</matchtag>
+            <name>frozendate</name>
+            <type>UFDate</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>19</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="解冻日期">
+            <matchtag>defrozendate</matchtag>
+            <name>defrozendate</name>
+            <type>UFDate</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>19</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="透支额度">
+            <matchtag>overdraftmny</matchtag>
+            <name>overdraftmny</name>
+            <type>UFDouble</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>16</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="透支控制方式">
+            <matchtag>overdrafttype</matchtag>
+            <name>overdrafttype</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+            <rule>控制=0;提示=1;不控制=2;</rule>
+        </field>
+		<field desc="付款范围">
+            <matchtag>payarea</matchtag>
+            <name>payarea</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+            <rule>不限制=0;全局内=1;集团内=2;</rule>
+        </field>
+        <field desc="交易账户">
+            <matchtag>istrade</matchtag>
+            <name>istrade</name>
+            <type>UFBoolean</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>1</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+    </record>
+</ufinterface>

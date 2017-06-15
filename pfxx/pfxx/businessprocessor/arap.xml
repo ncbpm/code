@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding='gb2312'?>
+<businessprocessors>
+    <businessprocessor baseclassname="" billtype="F0" classname="nc.bs.arap.plugin.ArapExpPfxxPlugin" locklevel="3" metadataid="ca162462-078f-46e8-af2d-05c4580c8af7" name="客户应收单">
+    </businessprocessor>
+    <businessprocessor baseclassname="" billtype="F1" classname="nc.bs.arap.plugin.ArapExpPfxxPlugin" locklevel="3" metadataid="6c8584f4-21d4-4ec9-9eac-96ad472acf2f" name="供应商应付单">
+    </businessprocessor>
+    <businessprocessor baseclassname="" billtype="F2" classname="nc.bs.arap.plugin.ArapExpPfxxPlugin" locklevel="3" metadataid="53e7cc81-a016-4d64-973b-d61fd647c7a2" name="客户收款单">
+    </businessprocessor>
+    <businessprocessor baseclassname="" billtype="F3" classname="nc.bs.arap.plugin.ArapExpPfxxPlugin" locklevel="3" metadataid="6ec38eda-3752-462a-bb29-2add1625f011" name="供应商付款单">
+    </businessprocessor>
+   <businessprocessor baseclassname="" billtype="bpm_yf_add" classname="nc.bs.arap.plugin.BpmArapExpPfxxPlugin" locklevel="3" metadataid="6c8584f4-21d4-4ec9-9eac-96ad472acf2f" name="BPM供应商应付单增加">
+    </businessprocessor>
+   <businessprocessor baseclassname="" billtype="bpm_fk_add" classname="nc.bs.arap.plugin.BpmArapExpPfxxPlugin" locklevel="3" metadataid="6ec38eda-3752-462a-bb29-2add1625f011" name="BPM供应商付款单增加">
+    </businessprocessor>
+</businessprocessors>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding='gb2312'?>
+<businessprocessors>
+    <businessprocessor baseclassname="" billtype="bpm_regapp_add" classname="nc.bs.hr.trn.plugin.BpmRegmngExpPfxxPlugin" locklevel="3" metadataid="05ec8321-49b2-49d4-8ffb-0356c12ea3af" name="BPM转正申请单增加">
+    </businessprocessor>
+    <businessprocessor baseclassname="" billtype="bpm_trandp_add" classname="nc.bs.hr.trn.plugin.BpmTransExpPfxxPlugin" locklevel="3" metadataid="cfdd0d50-138b-4011-bec6-a71f8a2d2e5d" name="BPM调配申请单增加">
+    </businessprocessor>
+    <businessprocessor baseclassname="" billtype="bpm_tranlz_add" classname="nc.bs.hr.trn.plugin.BpmTransExpPfxxPlugin" locklevel="3" metadataid="cfdd0d50-138b-4011-bec6-a71f8a2d2e5d" name="BPM离职申请单增加">
+    </businessprocessor>
+</businessprocessors>

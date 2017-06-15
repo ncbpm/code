@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding='gb2312'?>
+<businessprocessors>
+    <businessprocessor billtype="bpm_qcc001_add" classname="nc.bs.pu.m20.pfxx.M20PfxxPlugin" locklevel="3" metadataid="011c371b-cbed-4aa2-a2a3-1b80853eb030" name="BPM报检单增加">
+    </businessprocessor>
+</businessprocessors>

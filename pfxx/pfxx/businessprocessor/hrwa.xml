@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding='gb2312'?>
+<businessprocessors>
+    <businessprocessor baseclassname="" billtype="bpm_psnapp_add" classname="nc.bs.hr.wa.adjust.plugin.BpmAdjustExpPfxxPlugin" locklevel="3" metadataid="72fe118b-80f6-49aa-8292-b52061c9ea1e" name="定调资申请单增加">
+    </businessprocessor>
+    <businessprocessor baseclassname="" billtype="bpm_salary_caculate" classname="nc.bs.hr.wa.paydata.plugin.BpmCaculateDataExpPfxxPlugin" locklevel="3" metadataid="64e90e0e-5318-4857-a928-6f9847a25b1e" name="薪资计算">
+    </businessprocessor>
+    <businessprocessor baseclassname="" billtype="bpm_salary_paydata" classname="nc.bs.hr.wa.paydata.plugin.BpmPayDataExpPfxxPlugin" locklevel="3" metadataid="c982f4fa-f2df-4522-b11e-e0fae01ed1e7" name="薪资发放">
+    </businessprocessor>
+    <businessprocessor baseclassname="" billtype="bpm_psnapp_approve" classname="nc.bs.hr.wa.adjust.plugin.BpmAdjustApproveExpPfxxPlugin" locklevel="3" metadataid="72fe118b-80f6-49aa-8292-b52061c9ea1e" name="定调资申请单审批">
+    </businessprocessor>
+</businessprocessors>

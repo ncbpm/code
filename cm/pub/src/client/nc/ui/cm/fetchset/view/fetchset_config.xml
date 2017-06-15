@@ -1,0 +1,606 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans default-lazy-init="true">
+
+<!-- 2017-06-14 liyf  增加表体页签 -->
+	<import resource="dinge_config.xml"/>
+	<import resource="chuyun_config.xml"/>
+	<import resource="jianyan_config.xml"/>
+	<import resource="huanbao_config.xml"/>
+	
+<!-- 2017-06-14 liyf  增加表体页签 -->
+	
+	<!-- 环境变量 -->
+    <bean id="context" class="nc.vo.uif2.LoginContext" />
+    
+    <bean id="boAdatorFactory"
+		class="nc.ui.pubapp.uif2app.view.value.AggVOMetaBDObjectAdapterFactory" />
+		
+    <bean id="manageAppModelObservable" class="nc.ui.cm.fetchset.model.ManageAppModelObservable"></bean>
+   
+    <!-- 单据操作代理 -->
+	<bean id="maintainProxy" class="nc.ui.cm.fetchset.serviceproxy.FetchsetMaintainProxy" />
+	
+	<!--材料出库model-->
+	<bean id="manageAppModel" class="nc.ui.cm.fetchset.model.FetchSetBillModel"
+		init-method="init">
+		<property name="context" ref="context" />
+		<property name="businessObjectAdapterFactory" ref="boAdatorFactory" />
+		<property name="manageAppModelObservable" ref="manageAppModelObservable"/>
+	</bean>
+    
+	<!--完工入库model-->
+	<bean id="wgrkManageAppModel" class="nc.ui.cm.fetchset.model.FetchSetBillModel"
+		init-method="init">
+		<property name="context" ref="context" />
+		<property name="businessObjectAdapterFactory" ref="boAdatorFactory" />
+		<property name="manageAppModelObservable" ref="manageAppModelObservable"/>
+	</bean>
+	
+	<!--废品取数model-->
+	<bean id="spoilManageAppModel" class="nc.ui.cm.fetchset.model.FetchSetBillModel"
+		init-method="init">
+		<property name="context" ref="context" />
+		<property name="businessObjectAdapterFactory" ref="boAdatorFactory" />
+		<property name="manageAppModelObservable" ref="manageAppModelObservable"/>
+	</bean>
+
+	<!--作业model-->
+	<bean id="zyManageAppModel" class="nc.ui.cm.fetchset.model.FetchSetBillModel"
+		init-method="init">
+		<property name="context" ref="context" />
+		<property name="businessObjectAdapterFactory" ref="boAdatorFactory" />
+		<property name="manageAppModelObservable" ref="manageAppModelObservable"/>
+	</bean>
+	
+	<!--工序委外取数model-->
+	<bean id="gxwwManageAppModel" class="nc.ui.cm.fetchset.model.FetchSetBillModel"
+		init-method="init">
+		<property name="context" ref="context" />
+		<property name="businessObjectAdapterFactory" ref="boAdatorFactory" />
+		<property name="manageAppModelObservable" ref="manageAppModelObservable"/>
+	</bean>
+	
+	<!--其他出入库消耗单model-->
+	<bean id="iastuffManageAppModel" class="nc.ui.cm.fetchset.model.FetchSetBillModel"
+		init-method="init">
+		<property name="context" ref="context" />
+		<property name="businessObjectAdapterFactory" ref="boAdatorFactory" />
+		<property name="manageAppModelObservable" ref="manageAppModelObservable"/>
+	</bean>
+
+	<bean id="modelDataManager" class="nc.ui.cm.fetchset.model.FetchsetAppModel">
+		<property name="model" ref="manageAppModel"></property>
+		<property name="billFormEditor" ref="billFormEditor" />
+		<property name="spoilModel" ref="spoilManageAppModel"></property>
+		<property name="overinModel" ref="wgrkManageAppModel"></property>
+		<property name="taskModel" ref="zyManageAppModel"></property>
+		<property name="gxwwModel" ref="gxwwManageAppModel"></property>
+		<property name="iastuffModel" ref="iastuffManageAppModel"></property>
+		<property name="dingeModel" ref="dingeManageAppModel"></property>
+		<property name="chuyunModel" ref="chuyunManageAppModel"></property>
+		<property name="jianyanModel" ref="jianyanManageAppModel"></property>	
+		<property name="huanbaoModel" ref="huanbaoManageAppModel"></property>
+		
+		<!--各自的vo，请配置-->
+		<property name="clazz" value="nc.vo.cm.fetchset.entity.AggFetchSetVO"></property>
+	</bean>
+
+	<!-- 模板容器，负责对模板的统一装载 -->
+	<bean id="templateContainer" class="nc.ui.uif2.editor.TemplateContainer"
+		init-method="load">
+		<property name="context" ref="context" />
+		<property name="nodeKeies">
+			<list>
+				<value>clck</value>
+				<value>wgrk</value>
+				<value>zy</value>
+				<value>spoil</value>
+				<value>gxww</value>
+				<value>iastuff</value>
+				<value>dinge</value>
+				<value>chuyun</value>
+				<value>jianyan</value>
+				<value>huanbao</value>
+				
+			</list>
+		</property>
+	</bean>
+
+	<!--材料出库卡控件-->
+	<bean id="billFormEditor" class="nc.ui.cm.fetchset.view.FetchsetBillForm"
+		init-method="initUI">
+		<property name="model" ref="manageAppModel" />
+		<property name="templateContainer" ref="templateContainer" />
+		<!-- 是否自动增行 -->
+		<property name="autoAddLine" value="false" />
+		<!-- 空行过滤器，卡片界面根据此过滤器删除表体空行 -->
+		<property name="blankChildrenFilter">
+			<!-- 简单的根据一个字段是否为空的空行过滤器，因为多数情况下都是判断存货是否为空来过滤空行 -->
+			<bean
+				class="nc.ui.pubapp.uif2app.view.value.SingleFieldBlankChildrenFilter">
+				<!-- TODO 指定用来判断空行的字段名称 -->
+				<property name="fieldName" value="pk_billtypeid" />
+			</bean>
+		</property>
+		<property name="nodekey" value="clck" />
+		<property name="showOrgPanel" value="false"></property>
+		<property name="bodyLineActions">
+			<list>
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyAddLineAction" />
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyInsertLineAction" />								
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyDelLineAction" />
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyCopyLineAction" />
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyPasteLineAction" >
+				    <property name="clearItems">
+						          <list>
+									<value>cfetchset_bid</value>
+									<value>ts</value>
+						          </list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<!--完工入库卡片界面-->
+	<bean id="wgrkBillFormEditor" class="nc.ui.cm.fetchset.view.FetchsetBillForm"
+		init-method="initUI">
+		<property name="model" ref="wgrkManageAppModel" />
+		<property name="templateContainer" ref="templateContainer" />
+			<!-- 是否自动增行 -->
+		<property name="autoAddLine" value="false" />
+		<!-- 空行过滤器，卡片界面根据此过滤器删除表体空行 -->
+		<property name="blankChildrenFilter">
+			<!-- 简单的根据一个字段是否为空的空行过滤器，因为多数情况下都是判断存货是否为空来过滤空行 -->
+			<bean
+				class="nc.ui.pubapp.uif2app.view.value.SingleFieldBlankChildrenFilter">
+				<!-- TODO 指定用来判断空行的字段名称 -->
+				<property name="fieldName" value="pk_billtypeid" />
+			</bean>
+		</property>
+		<property name="nodekey" value="wgrk" />
+		<property name="showOrgPanel" value="false"></property>
+		<property name="bodyLineActions">
+			<list>
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyAddLineAction" />
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyInsertLineAction" />				
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyDelLineAction" />
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyCopyLineAction" />
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyPasteLineAction" >
+				   <property name="clearItems">
+						          <list>
+									<value>cfetchset_bid</value>
+									<value>ts</value>
+						          </list>
+				   </property>
+				 </bean>
+			</list>
+		</property>
+	</bean>
+	
+	<!--废品取数卡控件-->
+	<bean id="spoilBillFormEditor" class="nc.ui.cm.fetchset.view.FetchsetBillForm"
+		init-method="initUI">
+		<property name="model" ref="spoilManageAppModel" />
+		<property name="templateContainer" ref="templateContainer" />		
+		<property name="autoAddLine" value="false" />		
+		<property name="blankChildrenFilter">
+			<!-- 简单的根据一个字段是否为空的空行过滤器，因为多数情况下都是判断存货是否为空来过滤空行 -->
+			<bean
+				class="nc.ui.pubapp.uif2app.view.value.SingleFieldBlankChildrenFilter">
+				<!-- TODO 指定用来判断空行的字段名称 -->
+				<property name="fieldName" value="pk_billtypeid" />
+			</bean>
+		</property>
+		<property name="nodekey" value="spoil" />
+		<property name="showOrgPanel" value="false"></property>
+		<property name="bodyLineActions">
+			<list>
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyAddLineAction" />
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyInsertLineAction" />				
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyDelLineAction" />
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyCopyLineAction" />
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyPasteLineAction" >
+				  <property name="clearItems">
+				  	<list>
+						<value>cfetchset_bid</value>
+						<value>ts</value>
+				   	</list>
+				   </property>
+				 </bean>
+			</list>
+		</property>
+	</bean>
+
+	<!--作业卡片界面	-->
+	<bean id="zyBillFormEditor" class="nc.ui.cm.fetchset.view.FetchsetBillForm"
+		init-method="initUI">
+		<property name="model" ref="zyManageAppModel" />
+		<property name="templateContainer" ref="templateContainer" />
+		<property name="autoAddLine" value="false" />		
+		<property name="blankChildrenFilter">
+			<bean
+				class="nc.ui.pubapp.uif2app.view.value.SingleFieldBlankChildrenFilter">
+				<property name="fieldName" value="pk_costcenter" />
+			</bean>
+		</property>
+		<property name="nodekey" value="zy" />
+		<property name="showOrgPanel" value="false"></property>
+			<property name="bodyLineActions">
+			<list>
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyAddLineAction" />
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyInsertLineAction" />				
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyDelLineAction" />
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyCopyLineAction" />
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyPasteLineAction" >
+				  <property name="clearItems">
+				  	<list>
+						<value>cfetchset_bid</value>
+						<value>ts</value>
+				   	</list>
+				   </property>
+				 </bean>
+			</list>
+		</property>
+	</bean>
+	
+	<!--工序委外取数界面	-->
+	<bean id="gxwwBillFormEditor" class="nc.ui.cm.fetchset.view.FetchsetBillForm"
+		init-method="initUI">
+		<property name="model" ref="gxwwManageAppModel" />
+		<property name="templateContainer" ref="templateContainer" />
+		<property name="nodekey" value="gxww" />
+		<property name="showOrgPanel" value="false"></property>
+		<property name="blankChildrenFilter">
+			<!-- 简单的根据一个字段是否为空的空行过滤器，因为多数情况下都是判断存货是否为空来过滤空行 -->
+			<bean
+				class="nc.ui.pubapp.uif2app.view.value.SingleFieldBlankChildrenFilter">
+				<!-- TODO 指定用来判断空行的字段名称 -->
+				<property name="fieldName" value="pk_billtypeid" />
+			</bean>
+		</property>
+			<property name="bodyLineActions">
+			<list>
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyAddLineAction" />
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyInsertLineAction" />				
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyDelLineAction" />
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyCopyLineAction" />
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyPasteLineAction" >
+				   <property name="clearItems">
+						          <list>
+									<value>cfetchset_bid</value>
+									<value>ts</value>
+						          </list>
+				   </property>
+				 </bean>
+			</list>
+		</property>
+	</bean>
+	<!--其他出入库消耗单取数界面	-->
+	<bean id="iastuffBillFormEditor" class="nc.ui.cm.fetchset.view.FetchsetBillForm"
+		init-method="initUI">
+		<property name="model" ref="iastuffManageAppModel" />
+		<property name="templateContainer" ref="templateContainer" />
+		<property name="nodekey" value="iastuff" />
+		<property name="showOrgPanel" value="false"></property>
+		<property name="blankChildrenFilter">
+			<!-- 简单的根据一个字段是否为空的空行过滤器，因为多数情况下都是判断存货是否为空来过滤空行 -->
+			<bean
+				class="nc.ui.pubapp.uif2app.view.value.SingleFieldBlankChildrenFilter">
+				<!-- TODO 指定用来判断空行的字段名称 -->
+				<property name="fieldName" value="pk_billtypeid" />
+			</bean>
+		</property>
+			<property name="bodyLineActions">
+			<list>
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyAddLineAction" />
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyInsertLineAction" />				
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyDelLineAction" />
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyCopyLineAction" />
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyPasteLineAction" >
+				   <property name="clearItems">
+						          <list>
+									<value>cfetchset_bid</value>
+									<value>ts</value>
+						          </list>
+				   </property>
+				 </bean>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 组织面板 -->
+	<bean id="orgPanel" class="nc.ui.cm.fetchset.view.FetchSetOrgPanel"
+		init-method="initUI">
+		<property name="model" ref="manageAppModel" />
+		<property name="dataManager" ref="modelDataManager" />
+	</bean>
+
+	<bean id="container" class="nc.ui.uif2.TangramContainer"
+		init-method="initUI">
+		<property name="tangramLayout" ref="tangramLayout" />
+		<property name="tangramLayoutRoot">
+			<bean class="nc.ui.uif2.tangramlayout.node.VSNode">
+				<property name="up">
+					<bean class="nc.ui.uif2.tangramlayout.node.CNode">
+						<property name="component" ref="orgPanel"></property>
+					</bean>
+				</property>
+				<property name="down">
+					<bean class="nc.ui.uif2.tangramlayout.node.TBNode">
+						<property name="tabs">
+							<list>
+								<bean class="nc.ui.uif2.tangramlayout.node.CNode">
+									<property name="name">
+										<bean class="nc.ui.uif2.I18nFB">
+											<property name="resDir" value="38300112" />
+											<property name="resId" value="1383001120005" />
+											<property name="defaultValue" value="材料出库" />
+										</bean>
+									</property>
+									<property name="component" ref="billFormEditor" />
+								</bean>
+								<bean class="nc.ui.uif2.tangramlayout.node.CNode">
+									<property name="name">
+										<bean class="nc.ui.uif2.I18nFB">
+											<property name="resDir" value="38300112" />
+											<property name="resId" value="1383001120008" />
+											<property name="defaultValue" value="完工入库" />
+										</bean>
+									</property>
+									<property name="component" ref="wgrkBillFormEditor" />
+								</bean>
+								<bean class="nc.ui.uif2.tangramlayout.node.CNode">
+									<property name="name">
+										<bean class="nc.ui.uif2.I18nFB">
+											<property name="resDir" value="38300112" />
+											<property name="resId" value="1383001120017" />
+											<property name="defaultValue" value="废品取数" />
+										</bean>
+									</property>
+									<property name="component" ref="spoilBillFormEditor" />
+								</bean>
+								<bean class="nc.ui.uif2.tangramlayout.node.CNode">
+									<property name="name">
+										<bean class="nc.ui.uif2.I18nFB">
+											<property name="resDir" value="38300112" />
+											<property name="resId" value="1383001120011" />
+											<property name="defaultValue" value="作业" />
+										</bean>
+									</property>
+									<property name="component" ref="zyBillFormEditor" />
+								</bean>
+								<bean class="nc.ui.uif2.tangramlayout.node.CNode">
+									<property name="name">
+										<bean class="nc.ui.uif2.I18nFB">
+											<property name="resDir" value="38300112" />
+											<property name="resId" value="1383001120019" />
+											<property name="defaultValue" value="加工费结算单" />
+										</bean>
+									</property>
+									<property name="component" ref="gxwwBillFormEditor" />
+								</bean>
+								<bean class="nc.ui.uif2.tangramlayout.node.CNode">
+									<property name="name">
+										<bean class="nc.ui.uif2.I18nFB">
+											<property name="resDir" value="38300112" />
+											<property name="resId" value="1383001120020" />
+											<property name="defaultValue" value="其他出入库消耗单" />
+										</bean>
+									</property>
+									<property name="component" ref="iastuffBillFormEditor" />
+								</bean>
+								<!--  liyf 2017-06-12 增加表体页签 -->
+								<bean class="nc.ui.uif2.tangramlayout.node.CNode">
+									<property name="name" value="定额">
+									</property>
+									<property name="component" ref="dingeBillFormEditor" />
+								</bean>
+								<bean class="nc.ui.uif2.tangramlayout.node.CNode">
+									<property name="name" value="储运">
+									</property>
+									<property name="component" ref="chuyunBillFormEditor" />
+								</bean>
+									<bean class="nc.ui.uif2.tangramlayout.node.CNode">
+									<property name="name" value="检验">
+									</property>
+									<property name="component" ref="jianyanBillFormEditor" />
+								</bean>
+								<bean class="nc.ui.uif2.tangramlayout.node.CNode">
+									<property name="name" value="环保">
+									</property>
+									<property name="component" ref="huanbaoBillFormEditor" />
+								</bean>
+							<!--  liyf 2017-06-12 增加表体页签 -->
+								
+							</list>
+						 </property>
+					</bean>
+				</property>
+				<property name="dividerLocation" value="31"></property>
+			</bean>
+		</property>
+		<property name="actions">
+			<list>
+				<ref bean="editAction" />
+				<bean class="nc.funcnode.ui.action.SeparatorAction" />
+				<ref bean="refreshAction" />
+				<bean class="nc.funcnode.ui.action.SeparatorAction" />
+				<!--  <ref bean="mapAction" /> -->
+			</list>
+		</property>
+		<property name="editActions">
+			<list>
+				<ref bean="saveAction" />
+				<bean class="nc.funcnode.ui.action.SeparatorAction" />
+				<ref bean="cancelAction" />
+				<bean class="nc.funcnode.ui.action.SeparatorAction" />
+				<!-- <ref bean="mapAction" /> -->
+			</list>
+		</property>
+		<property name="model" ref="manageAppModel" />
+	</bean>
+
+	<bean id="tangramLayout" class="nc.ui.cmpub.framework.view.CMTangramLayout"
+		init-method="initUI">
+		<property name="selectedListenerList">
+			<list>
+				<bean class="nc.ui.cm.fetchset.view.FetchSetTabbedSelectedListener">
+					<property name="model" ref="manageAppModel" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="editAction" class="nc.ui.cm.fetchset.action.FetchsetEditAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="manageAppModelObservable" ref="manageAppModelObservable"/>
+		<property name="interceptor">
+			<bean class="nc.ui.cm.fetchset.interceptor.FetchSetEditInterceptor">
+				<property name="loginContext" ref="context"></property>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="saveAction" class="nc.ui.cm.fetchset.action.FetchsetSaveAction">
+        <property name="model" ref="manageAppModel"></property>
+		<property name="manageAppModelObservable" ref="manageAppModelObservable"/>
+		<property name="editor" ref="billFormEditor" />
+		<property name="dataManager" ref="modelDataManager" />
+		<property name="validationService" ref="validationService" />
+		<property name="service" ref="maintainProxy" />
+	</bean>
+    <!--7 刷新 -->
+	<bean id="refreshAction" class="nc.ui.cm.fetchset.action.FetchsetRefreshAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="dataManager" ref="modelDataManager" />
+	</bean>
+	<!--6 取消 -->
+	<bean id="cancelAction" class="nc.ui.cm.fetchset.action.FetchsetCancelAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="manageAppModelObservable" ref="manageAppModelObservable"/>
+	</bean>
+   <!-- 字段对照  按钮-->    
+	<bean id="mapAction" class="nc.ui.cm.fetchset.action.FetchsetMapAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="container" ref="container" /> 
+		<!-- add by shangzhm1 at 2011-9-6  字段对照按钮中注入用户自定义项 -->
+		<property name="userdefitemContainer" ref="userdefitemContainer" />
+		<!-- ******************* end *************************** -->
+		<property name="code" value="FieldMap" />
+	</bean>
+	<!-- add by shangzhm1 at 2011-9-6 -->
+	<!-- ******************* begin **********用户自定义项******** -->
+    <bean id="userdefitemContainer" class="nc.ui.uif2.userdefitem.UserDefItemContainer">
+	   <property name="context" ref="context" />
+	   <property name="params">
+		<list> 
+		  <bean class="nc.ui.uif2.userdefitem.QueryParam">
+			<property name="mdfullname" value="cm.cm_product" />
+		  </bean>
+		  <bean class="nc.ui.uif2.userdefitem.QueryParam">
+			<property name="mdfullname" value="cm.cm_product_b" />
+		  </bean>	
+		  <bean class="nc.ui.uif2.userdefitem.QueryParam">
+			<property name="mdfullname" value="cm.cm_stuff" />
+		  </bean>
+		  <bean class="nc.ui.uif2.userdefitem.QueryParam">
+			<property name="mdfullname" value="cm.cm_stuff_b" />
+		  </bean>	  
+		</list>
+	   </property>
+    </bean>
+	<!-- ******************* end ****************** -->
+
+	<!--  校验:元数据校验非null-->
+	<bean id="validationService"
+		class="nc.ui.pubapp.uif2app.validation.CompositeValidation">
+		<property name="validators">
+			<list>
+				<ref bean="outBillBodyUniqueValidator" />
+				<ref bean="wgrkBillBodyUniqueValidator" />
+				<ref bean="spoilBillBodyUniqueValidator" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- 保存时的表体唯一性校验  -->
+	<bean id="outBillBodyUniqueValidator" class="nc.ui.cmpub.framework.validation.CMBillBodyUniqueValidator">
+		<property name="editor" ref="billFormEditor" />	
+		<property name="singleValidateBodyMap">
+			<map>
+				<entry key="jylx">
+					<list>
+						<value>pk_billtypeid</value>
+					</list>
+				</entry>				
+			</map>
+		</property>
+	</bean>
+	<bean id="wgrkBillBodyUniqueValidator" class="nc.ui.cmpub.framework.validation.CMBillBodyUniqueValidator">
+		<property name="editor" ref="wgrkBillFormEditor" />	
+		<property name="singleValidateBodyMap">
+			<map>
+				<entry key="jylx">
+					<list>
+						<value>pk_billtypeid</value>
+					</list>
+				</entry>				
+			</map>
+		</property>
+	</bean>
+	<bean id="spoilBillBodyUniqueValidator" class="nc.ui.cmpub.framework.validation.CMBillBodyUniqueValidator">
+		<property name="editor" ref="spoilBillFormEditor" />	
+		<property name="singleValidateBodyMap">
+			<map>		
+				<entry key="item">
+					<list>
+						<value>pk_billtypeid</value>
+					</list>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	
+	<!-- 事件监听 -->
+	<bean id="ChildrenPicky" class="nc.ui.pubapp.uif2app.event.ChildrenPicky">
+		<property name="billform" ref="iastuffBillFormEditor" />
+		<property name="bodyVoClasses">
+			<list>
+				<value>nc.vo.cm.fetchset.entity.FetchSetItemVO</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="eventMediator" class="nc.ui.pubapp.uif2app.model.AppEventHandlerMediator">
+		<property name="model" ref="iastuffManageAppModel" />
+		<property name="handlerGroup">
+			<list>
+				<!-- 表体字段编辑前事件 -->
+				<bean class="nc.ui.pubapp.uif2app.event.EventHandlerGroup">
+					<property name="event"
+						value="nc.ui.pubapp.uif2app.event.card.CardBodyBeforeEditEvent" />
+					<property name="picky" ref="ChildrenPicky" />
+					<property name="handler">
+						<bean class="nc.ui.cm.fetchset.eventhandler.FetchSetCardBodyBeforEditHandler"
+							init-method="initMap" />
+					</property>
+				</bean>
+
+				<!-- 表体字段编辑后事件 -->
+				<bean class="nc.ui.pubapp.uif2app.event.EventHandlerGroup">
+					<property name="event"
+						value="nc.ui.pubapp.uif2app.event.card.CardBodyAfterEditEvent" />
+					<property name="picky" ref="ChildrenPicky" />
+					<property name="handler">
+						<bean class="nc.ui.cm.fetchset.eventhandler.FetchSetCardBodyAfterEditHandler"
+							init-method="initMap" />
+					</property>
+				</bean>
+
+			</list>
+		</property>
+	</bean>
+	
+</beans>

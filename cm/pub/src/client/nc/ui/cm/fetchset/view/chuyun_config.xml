@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans default-lazy-init="true">
+	
+	
+	<!--定额取数model-->
+	<bean id="chuyunManageAppModel" class="nc.ui.cm.fetchset.model.FetchSetBillModel"
+		init-method="init">
+		<property name="context" ref="context" />
+		<property name="businessObjectAdapterFactory" ref="boAdatorFactory" />
+		<property name="manageAppModelObservable" ref="manageAppModelObservable"/>
+	</bean>
+	<!--定额取数界面	-->
+	<bean id="chuyunBillFormEditor" class="nc.ui.cm.fetchset.view.FetchsetBillForm"
+		init-method="initUI">
+		<property name="model" ref="chuyunManageAppModel" />
+		<property name="templateContainer" ref="templateContainer" />
+		<property name="nodekey" value="chuyun" />
+		<property name="showOrgPanel" value="false"></property>
+		<property name="blankChildrenFilter">
+			<!-- 简单的根据一个字段是否为空的空行过滤器，因为多数情况下都是判断存货是否为空来过滤空行 -->
+			<bean
+				class="nc.ui.pubapp.uif2app.view.value.SingleFieldBlankChildrenFilter">
+				<!-- TODO 指定用来判断空行的字段名称 -->
+				<property name="fieldName" value="pk_billtypeid" />
+			</bean>
+		</property>
+			<property name="bodyLineActions">
+			<list>
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyAddLineAction" />
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyInsertLineAction" />				
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyDelLineAction" />
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyCopyLineAction" />
+				<bean class="nc.ui.pubapp.uif2app.actions.BodyPasteLineAction" >
+				   <property name="clearItems">
+						          <list>
+									<value>cfetchset_bid</value>
+									<value>ts</value>
+						          </list>
+				   </property>
+				 </bean>
+			</list>
+		</property>
+	</bean>
+	
+</beans>

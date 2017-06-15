@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding='gb2312'?>
 <businessprocessors>
 
-    <businessprocessor baseclassname="" billtype="JL_45_add" classname="nc.bs.ic.general.plugins.GeneralDefdocPlugin" locklevel="3" metadataid="108cea13-88ce-430c-a772-1b9ed397d401" name="计量同步采购入库单">
+    <businessprocessor baseclassname="" billtype="JL_45_add" classname="nc.bpm.ic.pfxx.M45ForJLAdd" locklevel="3" metadataid="108cea13-88ce-430c-a772-1b9ed397d401" name="计量同步采购入库单">
     </businessprocessor> 
 	
     <businessprocessor baseclassname="" billtype="JL_4C_add" classname="nc.bs.ic.general.plugins.GeneralDefdocPlugin" locklevel="3" metadataid="38a23a56-0686-4959-b094-16519b5bcb13" name="计量同步销售出库单">

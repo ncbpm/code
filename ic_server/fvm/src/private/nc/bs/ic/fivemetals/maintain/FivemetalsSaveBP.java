@@ -1,6 +1,7 @@
 package nc.bs.ic.fivemetals.maintain;
 
 import nc.bs.ic.fivemetals.maintain.rule.CardNoUniqueRule;
+import nc.bs.ic.fivemetals.maintain.rule.CheckNmny;
 import nc.bs.ic.fivemetals.maintain.rule.GetBillNORule;
 import nc.bs.ic.fivemetals.maintain.rule.RowNODealRule;
 import nc.bs.ic.fivemetals.maintain.rule.SaveVOValidateRule;
@@ -42,7 +43,8 @@ public class FivemetalsSaveBP {
 
 	private void addAfterRule(CompareAroundProcesser<AggFiveMetalsVO> processer) {
 
-		// 校验 不能小于零
+		// 校验余额不能小于零
+		processer.addAfterRule(new CheckNmny());
 
 	}
 

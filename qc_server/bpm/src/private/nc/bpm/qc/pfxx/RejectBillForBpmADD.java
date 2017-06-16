@@ -44,8 +44,13 @@ public class RejectBillForBpmADD extends AbstractPfxxPlugin{
 		IRejectBillMaintainApp queryService = AMProxy.lookup(IRejectBillMaintainApp.class);
 		//根据主键 查询origin VO
 		RejectBillVO[] originVOs = new RejectBillVO[1];
-		RejectBillVO originVO = queryService.queryMC004App(new String[]{headVO.getPk_rejectbill()})[0];
-		originVOs[0] = originVO;
+		RejectBillVO[] resultVOs = queryService.queryMC004App(new String[]{headVO.getPk_rejectbill()});
+		//检查不合格单pk合法性
+		if(resultVOs == null || resultVOs.length < 1){
+			throw new BusinessException("根据指定的主键，" + headVO.getPk_rejectbill()
+					+ "找不到对应的不合格处理单！");
+		}
+		originVOs[0] = resultVOs[0];
 		
 		RejectBillVO[] temps = new RejectBillVO[1];
 		temps[0] = queryService.queryMC004App(new String[]{headVO.getPk_rejectbill()})[0];	

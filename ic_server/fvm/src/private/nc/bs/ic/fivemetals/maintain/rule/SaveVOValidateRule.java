@@ -63,9 +63,10 @@ public class SaveVOValidateRule implements IRule<AggFiveMetalsVO> {
 						FiveMetalsBVO bvo = (FiveMetalsBVO) itemVO;
 
 						if (bvo.getVsourcebillno() == null
-								|| bvo.getVsourcetype() == null) {
+								|| bvo.getVsourcetype() == null
+								|| bvo.getVsourcebillid() == null) {
 							ExceptionUtils
-									.wrappBusinessException("传入的数据中存在来源单据号码或者来源单据类型为空的数据！");
+									.wrappBusinessException("传入的数据中存在来源信息为空的数据！");
 						}
 
 						if (bvo.getNmny() == null) {

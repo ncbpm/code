@@ -4,27 +4,38 @@ import nc.vo.pub.IVOMeta;
 import nc.vo.pub.SuperVO;
 import nc.vo.pub.lang.UFDate;
 import nc.vo.pub.lang.UFDateTime;
+import nc.vo.pub.lang.UFDouble;
 import nc.vo.pubapp.pattern.model.meta.entity.vo.VOMetaFactory;
 
+/**
+ * <b> 此处简要描述此类功能 </b>
+ * <p>
+ * 此处添加累的描述信息
+ * </p>
+ * 创建日期:2017-6-16
+ * 
+ * @author
+ * @version NCPrj ??
+ */
 
 public class FiveMetalsBVO extends SuperVO {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5169536230058131727L;
-/**
+	private static final long serialVersionUID = 2045938547046031854L;
+	/**
 	 * 行号
 	 */
 	public String rowno;
 	/**
 	 * 金额
 	 */
-	public String nmny;
+	public UFDouble nmny;
 	/**
 	 * 费用类型
 	 */
-	public String itype;
+	public Integer itype;
 	/**
 	 * 备注
 	 */
@@ -33,6 +44,10 @@ public class FiveMetalsBVO extends SuperVO {
 	 * 来源单据类型
 	 */
 	public String vsourcetype;
+	/**
+	 * 来源单据id
+	 */
+	public String vsourcebillid;
 	/**
 	 * 来源单据号
 	 */
@@ -90,6 +105,10 @@ public class FiveMetalsBVO extends SuperVO {
 	 */
 	public UFDateTime lastmaketime;
 	/**
+	 * 制单人
+	 */
+	public String creator;
+	/**
 	 * 上层单据主键
 	 */
 	public String pk_fivemetals_h;
@@ -99,7 +118,7 @@ public class FiveMetalsBVO extends SuperVO {
 	public UFDateTime ts;
 
 	/**
-	 * 属性 rowno的Getter方法.属性名：行号 创建日期:2017-6-14
+	 * 属性 rowno的Getter方法.属性名：行号 创建日期:2017-6-16
 	 * 
 	 * @return java.lang.String
 	 */
@@ -108,7 +127,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性rowno的Setter方法.属性名：行号 创建日期:2017-6-14
+	 * 属性rowno的Setter方法.属性名：行号 创建日期:2017-6-16
 	 * 
 	 * @param newRowno
 	 *            java.lang.String
@@ -118,45 +137,45 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性 nmny的Getter方法.属性名：金额 创建日期:2017-6-14
+	 * 属性 nmny的Getter方法.属性名：金额 创建日期:2017-6-16
 	 * 
-	 * @return java.lang.String
+	 * @return nc.vo.pub.lang.UFDouble
 	 */
-	public String getNmny() {
+	public UFDouble getNmny() {
 		return this.nmny;
 	}
 
 	/**
-	 * 属性nmny的Setter方法.属性名：金额 创建日期:2017-6-14
+	 * 属性nmny的Setter方法.属性名：金额 创建日期:2017-6-16
 	 * 
 	 * @param newNmny
-	 *            java.lang.String
+	 *            nc.vo.pub.lang.UFDouble
 	 */
-	public void setNmny(String nmny) {
+	public void setNmny(UFDouble nmny) {
 		this.nmny = nmny;
 	}
 
 	/**
-	 * 属性 itype的Getter方法.属性名：费用类型 创建日期:2017-6-14
+	 * 属性 itype的Getter方法.属性名：费用类型 创建日期:2017-6-16
 	 * 
-	 * @return nc.vo.ic.fivemetals.CostTypeEnum
+	 * @return java.lang.Integer
 	 */
-	public String getItype() {
+	public Integer getItype() {
 		return this.itype;
 	}
 
 	/**
-	 * 属性itype的Setter方法.属性名：费用类型 创建日期:2017-6-14
+	 * 属性itype的Setter方法.属性名：费用类型 创建日期:2017-6-16
 	 * 
 	 * @param newItype
-	 *            nc.vo.ic.fivemetals.CostTypeEnum
+	 *            java.lang.Integer
 	 */
-	public void setItype(String itype) {
+	public void setItype(Integer itype) {
 		this.itype = itype;
 	}
 
 	/**
-	 * 属性 vremark的Getter方法.属性名：备注 创建日期:2017-6-14
+	 * 属性 vremark的Getter方法.属性名：备注 创建日期:2017-6-16
 	 * 
 	 * @return java.lang.String
 	 */
@@ -165,7 +184,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性vremark的Setter方法.属性名：备注 创建日期:2017-6-14
+	 * 属性vremark的Setter方法.属性名：备注 创建日期:2017-6-16
 	 * 
 	 * @param newVremark
 	 *            java.lang.String
@@ -175,7 +194,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性 vsourcetype的Getter方法.属性名：来源单据类型 创建日期:2017-6-14
+	 * 属性 vsourcetype的Getter方法.属性名：来源单据类型 创建日期:2017-6-16
 	 * 
 	 * @return java.lang.String
 	 */
@@ -184,7 +203,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性vsourcetype的Setter方法.属性名：来源单据类型 创建日期:2017-6-14
+	 * 属性vsourcetype的Setter方法.属性名：来源单据类型 创建日期:2017-6-16
 	 * 
 	 * @param newVsourcetype
 	 *            java.lang.String
@@ -194,7 +213,26 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性 vsourcebillno的Getter方法.属性名：来源单据号 创建日期:2017-6-14
+	 * 属性 vsourcebillid的Getter方法.属性名：来源单据id 创建日期:2017-6-16
+	 * 
+	 * @return java.lang.String
+	 */
+	public String getVsourcebillid() {
+		return this.vsourcebillid;
+	}
+
+	/**
+	 * 属性vsourcebillid的Setter方法.属性名：来源单据id 创建日期:2017-6-16
+	 * 
+	 * @param newVsourcebillid
+	 *            java.lang.String
+	 */
+	public void setVsourcebillid(String vsourcebillid) {
+		this.vsourcebillid = vsourcebillid;
+	}
+
+	/**
+	 * 属性 vsourcebillno的Getter方法.属性名：来源单据号 创建日期:2017-6-16
 	 * 
 	 * @return java.lang.String
 	 */
@@ -203,7 +241,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性vsourcebillno的Setter方法.属性名：来源单据号 创建日期:2017-6-14
+	 * 属性vsourcebillno的Setter方法.属性名：来源单据号 创建日期:2017-6-16
 	 * 
 	 * @param newVsourcebillno
 	 *            java.lang.String
@@ -213,7 +251,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性 def1的Getter方法.属性名：自定义项1 创建日期:2017-6-14
+	 * 属性 def1的Getter方法.属性名：自定义项1 创建日期:2017-6-16
 	 * 
 	 * @return java.lang.String
 	 */
@@ -222,7 +260,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性def1的Setter方法.属性名：自定义项1 创建日期:2017-6-14
+	 * 属性def1的Setter方法.属性名：自定义项1 创建日期:2017-6-16
 	 * 
 	 * @param newDef1
 	 *            java.lang.String
@@ -232,7 +270,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性 def2的Getter方法.属性名：自定义项2 创建日期:2017-6-14
+	 * 属性 def2的Getter方法.属性名：自定义项2 创建日期:2017-6-16
 	 * 
 	 * @return java.lang.String
 	 */
@@ -241,7 +279,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性def2的Setter方法.属性名：自定义项2 创建日期:2017-6-14
+	 * 属性def2的Setter方法.属性名：自定义项2 创建日期:2017-6-16
 	 * 
 	 * @param newDef2
 	 *            java.lang.String
@@ -251,7 +289,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性 def3的Getter方法.属性名：自定义项3 创建日期:2017-6-14
+	 * 属性 def3的Getter方法.属性名：自定义项3 创建日期:2017-6-16
 	 * 
 	 * @return java.lang.String
 	 */
@@ -260,7 +298,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性def3的Setter方法.属性名：自定义项3 创建日期:2017-6-14
+	 * 属性def3的Setter方法.属性名：自定义项3 创建日期:2017-6-16
 	 * 
 	 * @param newDef3
 	 *            java.lang.String
@@ -270,7 +308,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性 def4的Getter方法.属性名：自定义项4 创建日期:2017-6-14
+	 * 属性 def4的Getter方法.属性名：自定义项4 创建日期:2017-6-16
 	 * 
 	 * @return nc.vo.pub.lang.UFDouble
 	 */
@@ -279,7 +317,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性def4的Setter方法.属性名：自定义项4 创建日期:2017-6-14
+	 * 属性def4的Setter方法.属性名：自定义项4 创建日期:2017-6-16
 	 * 
 	 * @param newDef4
 	 *            nc.vo.pub.lang.UFDouble
@@ -289,7 +327,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性 def5的Getter方法.属性名：自定义项5 创建日期:2017-6-14
+	 * 属性 def5的Getter方法.属性名：自定义项5 创建日期:2017-6-16
 	 * 
 	 * @return nc.vo.pub.lang.UFDouble
 	 */
@@ -298,7 +336,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性def5的Setter方法.属性名：自定义项5 创建日期:2017-6-14
+	 * 属性def5的Setter方法.属性名：自定义项5 创建日期:2017-6-16
 	 * 
 	 * @param newDef5
 	 *            nc.vo.pub.lang.UFDouble
@@ -308,7 +346,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性 def6的Getter方法.属性名：自定义项6 创建日期:2017-6-14
+	 * 属性 def6的Getter方法.属性名：自定义项6 创建日期:2017-6-16
 	 * 
 	 * @return nc.vo.pub.lang.UFDouble
 	 */
@@ -317,7 +355,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性def6的Setter方法.属性名：自定义项6 创建日期:2017-6-14
+	 * 属性def6的Setter方法.属性名：自定义项6 创建日期:2017-6-16
 	 * 
 	 * @param newDef6
 	 *            nc.vo.pub.lang.UFDouble
@@ -327,7 +365,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性 def7的Getter方法.属性名：自定义项7 创建日期:2017-6-14
+	 * 属性 def7的Getter方法.属性名：自定义项7 创建日期:2017-6-16
 	 * 
 	 * @return nc.vo.pub.lang.UFBoolean
 	 */
@@ -336,7 +374,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性def7的Setter方法.属性名：自定义项7 创建日期:2017-6-14
+	 * 属性def7的Setter方法.属性名：自定义项7 创建日期:2017-6-16
 	 * 
 	 * @param newDef7
 	 *            nc.vo.pub.lang.UFBoolean
@@ -346,7 +384,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性 def8的Getter方法.属性名：自定义项8 创建日期:2017-6-14
+	 * 属性 def8的Getter方法.属性名：自定义项8 创建日期:2017-6-16
 	 * 
 	 * @return nc.vo.pub.lang.UFBoolean
 	 */
@@ -355,7 +393,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性def8的Setter方法.属性名：自定义项8 创建日期:2017-6-14
+	 * 属性def8的Setter方法.属性名：自定义项8 创建日期:2017-6-16
 	 * 
 	 * @param newDef8
 	 *            nc.vo.pub.lang.UFBoolean
@@ -365,7 +403,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性 def9的Getter方法.属性名：自定义项9 创建日期:2017-6-14
+	 * 属性 def9的Getter方法.属性名：自定义项9 创建日期:2017-6-16
 	 * 
 	 * @return nc.vo.pub.lang.UFDate
 	 */
@@ -374,7 +412,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性def9的Setter方法.属性名：自定义项9 创建日期:2017-6-14
+	 * 属性def9的Setter方法.属性名：自定义项9 创建日期:2017-6-16
 	 * 
 	 * @param newDef9
 	 *            nc.vo.pub.lang.UFDate
@@ -384,7 +422,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性 def10的Getter方法.属性名：自定义项10 创建日期:2017-6-14
+	 * 属性 def10的Getter方法.属性名：自定义项10 创建日期:2017-6-16
 	 * 
 	 * @return nc.vo.pub.lang.UFDate
 	 */
@@ -393,7 +431,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性def10的Setter方法.属性名：自定义项10 创建日期:2017-6-14
+	 * 属性def10的Setter方法.属性名：自定义项10 创建日期:2017-6-16
 	 * 
 	 * @param newDef10
 	 *            nc.vo.pub.lang.UFDate
@@ -403,7 +441,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性 pk_fivemetals_b的Getter方法.属性名：子表主键 创建日期:2017-6-14
+	 * 属性 pk_fivemetals_b的Getter方法.属性名：子表主键 创建日期:2017-6-16
 	 * 
 	 * @return java.lang.String
 	 */
@@ -412,7 +450,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性pk_fivemetals_b的Setter方法.属性名：子表主键 创建日期:2017-6-14
+	 * 属性pk_fivemetals_b的Setter方法.属性名：子表主键 创建日期:2017-6-16
 	 * 
 	 * @param newPk_fivemetals_b
 	 *            java.lang.String
@@ -422,7 +460,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性 maketime的Getter方法.属性名：制单时间 创建日期:2017-6-14
+	 * 属性 maketime的Getter方法.属性名：制单时间 创建日期:2017-6-16
 	 * 
 	 * @return nc.vo.pub.lang.UFDateTime
 	 */
@@ -431,7 +469,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性maketime的Setter方法.属性名：制单时间 创建日期:2017-6-14
+	 * 属性maketime的Setter方法.属性名：制单时间 创建日期:2017-6-16
 	 * 
 	 * @param newMaketime
 	 *            nc.vo.pub.lang.UFDateTime
@@ -441,7 +479,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性 lastmaketime的Getter方法.属性名：最后修改时间 创建日期:2017-6-14
+	 * 属性 lastmaketime的Getter方法.属性名：最后修改时间 创建日期:2017-6-16
 	 * 
 	 * @return nc.vo.pub.lang.UFDateTime
 	 */
@@ -450,7 +488,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性lastmaketime的Setter方法.属性名：最后修改时间 创建日期:2017-6-14
+	 * 属性lastmaketime的Setter方法.属性名：最后修改时间 创建日期:2017-6-16
 	 * 
 	 * @param newLastmaketime
 	 *            nc.vo.pub.lang.UFDateTime
@@ -460,7 +498,26 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性 生成上层主键的Getter方法.属性名：上层主键 创建日期:2017-6-14
+	 * 属性 creator的Getter方法.属性名：制单人 创建日期:2017-6-16
+	 * 
+	 * @return nc.vo.sm.UserVO
+	 */
+	public String getCreator() {
+		return this.creator;
+	}
+
+	/**
+	 * 属性creator的Setter方法.属性名：制单人 创建日期:2017-6-16
+	 * 
+	 * @param newCreator
+	 *            nc.vo.sm.UserVO
+	 */
+	public void setCreator(String creator) {
+		this.creator = creator;
+	}
+
+	/**
+	 * 属性 生成上层主键的Getter方法.属性名：上层主键 创建日期:2017-6-16
 	 * 
 	 * @return String
 	 */
@@ -469,7 +526,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性生成上层主键的Setter方法.属性名：上层主键 创建日期:2017-6-14
+	 * 属性生成上层主键的Setter方法.属性名：上层主键 创建日期:2017-6-16
 	 * 
 	 * @param newPk_fivemetals_h
 	 *            String
@@ -479,7 +536,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性 生成时间戳的Getter方法.属性名：时间戳 创建日期:2017-6-14
+	 * 属性 生成时间戳的Getter方法.属性名：时间戳 创建日期:2017-6-16
 	 * 
 	 * @return nc.vo.pub.lang.UFDateTime
 	 */
@@ -488,7 +545,7 @@ public class FiveMetalsBVO extends SuperVO {
 	}
 
 	/**
-	 * 属性生成时间戳的Setter方法.属性名：时间戳 创建日期:2017-6-14
+	 * 属性生成时间戳的Setter方法.属性名：时间戳 创建日期:2017-6-16
 	 * 
 	 * @param newts
 	 *            nc.vo.pub.lang.UFDateTime

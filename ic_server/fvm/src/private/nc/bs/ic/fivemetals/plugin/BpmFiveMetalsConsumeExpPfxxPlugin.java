@@ -46,16 +46,16 @@ public class BpmFiveMetalsConsumeExpPfxxPlugin<T extends AggFiveMetalsVO>
 		}
 
 		if (headvo.getVproject() != null) {
-			headvo.setVcardtype(CardTypeEnum.项目卡.getName());
+			headvo.setVcardtype(CardTypeEnum.项目卡.getReturnType());
 		} else if (headvo.getVdepartment() != null) {
-			headvo.setVcardtype(CardTypeEnum.部门卡.getName());
+			headvo.setVcardtype(CardTypeEnum.部门卡.getReturnType());
 		}
 
 		FiveMetalsBVO[] bvos = (FiveMetalsBVO[]) bill.getChildrenVO();
 
 		for (FiveMetalsBVO bvo : bvos) {
-			bvo.setItype(CostTypeEnum.消费.getName());
-			bvo.setNmny("-" + bvo.getNmny());
+			bvo.setItype(CostTypeEnum.消费.getReturnType());
+			bvo.setNmny(bvo.getNmny());
 		}
 
 		IFivemetalsMaintain manageService = NCLocator.getInstance().lookup(

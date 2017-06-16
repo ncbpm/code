@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="gb2312"?>
+<module name="SCM_IC_EJB60">
+  	<public>
+    	    <!--五金预算-->
+	    <component priority="0" singleton="true" remote="true" tx="CMT" supportAlias="true">
+	      <interface>nc.itf.ic.fivemetals.IFivemetalsMaintain</interface>
+	      <implementation>nc.impl.ic.fivemetals.FivemetalsMaintainImpl</implementation>
+	    </component>
+	</public>
+</module>
+

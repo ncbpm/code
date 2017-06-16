@@ -46,15 +46,15 @@ public class BpmFiveMetalsRechargeExpPfxxPlugin<T extends AggFiveMetalsVO>
 		}
 
 		if (headvo.getVproject() != null) {
-			headvo.setVcardtype(CardTypeEnum.项目卡.getName());
+			headvo.setVcardtype(CardTypeEnum.项目卡.getReturnType());
 		} else if (headvo.getVdepartment() != null) {
-			headvo.setVcardtype(CardTypeEnum.部门卡.getName());
+			headvo.setVcardtype(CardTypeEnum.部门卡.getReturnType());
 		}
 
 		FiveMetalsBVO[] bvos = (FiveMetalsBVO[]) bill.getChildrenVO();
 
 		for (FiveMetalsBVO bvo : bvos) {
-			bvo.setItype(CostTypeEnum.充值.getName());
+			bvo.setItype(CostTypeEnum.充值.getReturnType());
 			bvo.setNmny(bvo.getNmny());
 		}
 

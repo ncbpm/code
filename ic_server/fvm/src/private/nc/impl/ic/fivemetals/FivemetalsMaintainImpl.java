@@ -100,13 +100,12 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 		Map<String, FiveMetalsBVO> map = new HashMap<>();
 
 		for (FiveMetalsBVO bvo : bvos1) {
-			map.put(bvo.getVsourcetype() + bvo.getVsourcebillno(), bvo);
+			map.put(bvo.getVsourcebillid(), bvo);
 		}
 
 		for (FiveMetalsBVO bvo : bvos) {
 
-			FiveMetalsBVO oldvo1 = map.get(bvo.getVsourcetype()
-					+ bvo.getVsourcebillno());
+			FiveMetalsBVO oldvo1 = map.get(bvo.getVsourcebillid());
 			if (oldvo1 == null) {
 				throw new BusinessException("来源单据号" + bvo.getVsourcebillno()
 						+ "不存在充值消费记录,无法删除！");
@@ -129,6 +128,8 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 				+ hvo.getVcardno() + "' and cperiod = '" + hvo.getCperiod()
 				+ "'";
 		FiveMetalsHVO[] hvos = (FiveMetalsHVO[]) query.query(condition, null);
+		if (hvos == null || hvos.length == 0)
+			return null;
 		return hvos[0];
 
 	}

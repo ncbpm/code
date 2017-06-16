@@ -30,7 +30,10 @@ public class FivemetalsDao {
 						.append(sql).append(")").toString(), null,
 				new ArrayProcessor());
 		if (objCodeAndDefkey != null && objCodeAndDefkey.length > 0) {
-			BigDecimal i = (BigDecimal) objCodeAndDefkey[0];
+			Integer i = (Integer) objCodeAndDefkey[0];
+			if (i == null) {
+				return false;
+			}
 			return i.intValue() > 0;
 		} else {
 			return false;
@@ -68,6 +71,40 @@ public class FivemetalsDao {
 				}
 			}
 		}
-		return String.format("FM-%s%04d", ym, flowno);
+		return String.format("FM%s%04d", ym, flowno);
+	}
+
+	public int getRowNo(String tableName, String condition, String itemkey)
+			throws BusinessException {
+		if (StringUtil.isEmpty(condition)) {
+			throw new BusinessException("查询条件不能为空");
+		}
+
+		if (StringUtil.isEmpty(tableName)) {
+			throw new BusinessException("表名不能为空");
+		}
+
+		if (StringUtil.isEmpty(itemkey)) {
+			throw new BusinessException("字段不能为空");
+		}
+
+		UFDate billdate = new UFDate();
+		String ym = billdate.getYear() + billdate.getStrMonth();
+		String sql = "select to_number(substr(" + itemkey + ",10,length("
+				+ itemkey + "))) as " + itemkey + " from " + tableName
+				+ " where nvl(dr,0)=0 and " + condition;
+		BaseDAO dao = new BaseDAO();
+		List<BigDecimal> nolist = (List<BigDecimal>) dao.executeQuery(sql,
+				null, new ColumnListProcessor());
+		int flowno = 1;
+		if (nolist != null && nolist.size() > 0) {// 缺号补号逻辑
+			for (int i = 1;; i++) {
+				if (!nolist.contains(new BigDecimal(i))) {
+					flowno = i;
+					break;
+				}
+			}
+		}
+		return flowno;
 	}
 }

@@ -26,9 +26,9 @@ public class RowNODealRule implements IRule<AggFiveMetalsVO> {
 		FiveMetalsHVO hvo = vo.getParentVO();
 		String condition = " pk_fivemetals_h = '" + hvo.getPk_fivemetals_h()
 				+ "'";
-		String billno = null;
+		int billno = 0;
 		try {
-			billno = dao.getNewBillNo("ic_fivemetals_b", condition, "rowno");
+			billno = dao.getRowNo("ic_fivemetals_b", condition, "rowno");
 
 		} catch (DAOException e) {
 			ExceptionUtils.wrappBusinessException("数据库查询异常");
@@ -50,8 +50,7 @@ public class RowNODealRule implements IRule<AggFiveMetalsVO> {
 		}
 
 		for (int i = 0; i < len; i++) {
-			vo.getChildrenVO()[i].setAttributeValue("rowno",
-					Integer.parseInt(billno) + i);
+			vo.getChildrenVO()[i].setAttributeValue("rowno", billno + i);
 		}
 	}
 

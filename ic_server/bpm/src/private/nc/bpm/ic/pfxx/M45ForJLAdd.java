@@ -21,6 +21,7 @@ public class M45ForJLAdd  extends AbstractPfxxPlugin{
 	protected Object processBill(Object vo, ISwapContext swapContext,
 			AggxsysregisterVO aggvo) throws BusinessException {
 		// TODO 自动生成的方法存根
+		/*
 		IPurchaseInQueryAPI queryService = AMProxy.lookup(IPurchaseInQueryAPI.class);
 		PurchaseInVO [] exportBillVOs = queryService.queryVOByIDs(new String[]{"1001A410000000001GIX"});
 		PurchaseInHeadVO headVO =  (PurchaseInHeadVO)(exportBillVOs[0].getParentVO());
@@ -30,6 +31,10 @@ public class M45ForJLAdd  extends AbstractPfxxPlugin{
 			// TODO 自动生成的 catch 块
 			e.printStackTrace();
 		}
+		*/
+		//计量系统会传入 到货单pk，库管员，仓库id，入库时间，多个{物料id，实收数量}
+		//nc需要根据到货单pk，抽出其他信息，填充全部字段
+		
 		return null;
 	}
 

@@ -39,6 +39,15 @@
              <translator>1001Z01000000000R5ML</translator>
             <translatorParams>pk_org</translatorParams>
         </field>
+		<field desc="入库单表体id">
+            <matchtag>cgeneralbid</matchtag>
+            <name>cgeneralbid</name>
+            <type>ref(item)</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>0</maxLength>
+            <needexport>yes</needexport>
+            <refitem>de6a25f4-4009-4181-8f68-a0edc10b3f03</refitem>
+        </field>
     </record>
     <record classname="nc.vo.ic.m45.entity.PurchaseInBodyVO[]" displayName="采购入库单表体" entitytag="item" metadataid="de6a25f4-4009-4181-8f68-a0edc10b3f03" recordtype="vos" sentitytag="item" tablename="cgeneralbid" tabletype="embed" typeName="内嵌结构">
         <field desc="物料编码">
@@ -68,5 +77,4 @@
             <needexport>yes</needexport>
         </field>
     </record>
-    
 </ufinterface>

@@ -2,6 +2,8 @@ package nc.impl.ic.fivemetals;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import nc.bs.ic.fivemetals.action.FivemetalsSaveAction;
 import nc.impl.pubapp.pattern.data.vo.VODelete;
@@ -93,14 +95,26 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 		if (bvos1 == null || bvos1.length == 0) {
 			throw new BusinessException("该卡号不存在充值消费记录");
 		}
-		
-		ArrayList<FiveMetalsBVO>  al  = new ArrayList<>();
-		
-//		for(){
-//			
-//		}
+
+		ArrayList<FiveMetalsBVO> al = new ArrayList<>();
+		Map<String, FiveMetalsBVO> map = new HashMap<>();
+
+		for (FiveMetalsBVO bvo : bvos1) {
+			map.put(bvo.getVsourcetype() + bvo.getVsourcebillno(), bvo);
+		}
+
+		for (FiveMetalsBVO bvo : bvos) {
+
+			FiveMetalsBVO oldvo1 = map.get(bvo.getVsourcetype()
+					+ bvo.getVsourcebillno());
+			if (oldvo1 == null) {
+				throw new BusinessException("来源单据号" + bvo.getVsourcebillno()
+						+ "不存在充值消费记录,无法删除！");
+			}
+			al.add(oldvo1);
+		}
 		VODelete<ISuperVO> bo = new VODelete<ISuperVO>();
-		bo.delete(bvos);
+		bo.delete(al.toArray(new FiveMetalsBVO[al.size()]));
 
 		AggFiveMetalsVO aggvo = new AggFiveMetalsVO();
 		aggvo.setParentVO(oldvo);

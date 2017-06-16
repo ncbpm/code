@@ -1,5 +1,7 @@
-<?xml version="1.0" encoding='gb2312'?>
+<?xml version="1.0" encoding='utf-8'?>
 <businessprocessors>
-    <businessprocessor billtype="bpm_qcc001_add" classname="nc.bs.pu.m20.pfxx.M20PfxxPlugin" locklevel="3" metadataid="011c371b-cbed-4aa2-a2a3-1b80853eb030" name="BPM报检单增加">
+    <businessprocessor baseclassname="" billtype="bpm_puqc_add" classname="nc.bpm.qc.pfxx.qcappForBpmAdd" level="-1" locklevel="3" metadataid="011c371b-cbed-4aa2-a2a3-1b80853eb030" name="閲囪喘鎶ユ姤妫�">
+    </businessprocessor>
+    <businessprocessor baseclassname="" billtype="bpm_rejcet_add" classname="nc.bpm.qc.pfxx.RejectBillForBpmADD" level="0" locklevel="3" metadataid="4fb5ba04-1b1a-4b5a-bdc0-f50768c58512" name="BPM涓嶅悎鏍煎搧澶勭悊鍗�">
     </businessprocessor>
 </businessprocessors>

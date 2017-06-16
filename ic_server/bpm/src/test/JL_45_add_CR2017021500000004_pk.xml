@@ -3,24 +3,21 @@
     <bill id="1001A410000000001GIX">
         <billhead>
             <cgeneralhid>1001A410000000001GIX</cgeneralhid>
+            <cwarehouseid>1001A410000000000YR5</cwarehouseid>
+            <cwhsmanagerid></cwhsmanagerid>
+            <dbilldate>2017-04-10 12:58:05</dbilldate>
             <cgeneralbid>
                 <item>
                     <cmaterialoid>1001A5100000000008DA</cmaterialoid>
-                    <vbatchcode>
-                    </vbatchcode>
+                    <vbatchcode></vbatchcode>
                     <nassistnum>168</nassistnum>
                 </item>
                 <item>
                     <cmaterialoid>1001A5100000000008B9</cmaterialoid>
-                    <vbatchcode>
-                    </vbatchcode>
+                    <vbatchcode></vbatchcode>
                     <nassistnum>270</nassistnum>
                 </item>
             </cgeneralbid>
-            <cwarehouseid>1001A410000000000YR5</cwarehouseid>
-            <cwhsmanagerid>
-            </cwhsmanagerid>
-            <creationtime>2017-02-15 19:42:14</creationtime>
         </billhead>
     </bill>
 </ufinterface>

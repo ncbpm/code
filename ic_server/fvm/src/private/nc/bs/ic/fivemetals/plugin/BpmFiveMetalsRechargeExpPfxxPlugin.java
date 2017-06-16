@@ -55,7 +55,7 @@ public class BpmFiveMetalsRechargeExpPfxxPlugin<T extends AggFiveMetalsVO>
 
 		for (FiveMetalsBVO bvo : bvos) {
 			bvo.setItype(CostTypeEnum.≥‰÷µ.getName());
-			bvo.setNmny("-" + bvo.getNmny());
+			bvo.setNmny(bvo.getNmny());
 		}
 
 		IFivemetalsMaintain manageService = NCLocator.getInstance().lookup(

@@ -3,10 +3,15 @@ package nc.vo.hrwa.impwadata;
 import nc.vo.trade.pub.HYBillVO;
 
 /**
- * 薪资发放导入
+ * <b>??????????????????? </b>
+ * <p>
+ *   ??????????????????
+ * </p>
+ *  ????????:2017-6-17
+ * @author 
+ * @version NCPrj ??
  */
-@SuppressWarnings("serial")
-@nc.vo.annotation.AggVoInfo(parentVO = "nc.vo.hrwa.impwadata.WaDataHeadVO")
-public class AggImpWaDataVO extends HYBillVO {
+ @SuppressWarnings("serial") @nc.vo.annotation.AggVoInfo(parentVO = "nc.vo.hrwa.impwadata.WaDataHeadVO") 
+public class AggImpWaDataVO extends HYBillVO{
 
 }

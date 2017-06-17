@@ -6,6 +6,7 @@ import nc.vo.ic.fivemetals.AggFiveMetalsVO;
 import nc.vo.pub.CircularlyAccessibleValueObject;
 import nc.vo.pub.SuperVO;
 import nc.vo.pub.VOStatus;
+import nc.vo.pub.lang.UFDate;
 import nc.vo.uap.rbac.constant.INCSystemUserConst;
 import nc.vo.util.AuditInfoUtil;
 
@@ -40,6 +41,8 @@ public class SetAuditInfoRule implements IRule<AggFiveMetalsVO> {
 			if (vo.getAttributeValue("creator") == null) {
 				vo.setAttributeValue("creator", INCSystemUserConst.NC_USER_PK);
 			}
+			vo.setAttributeValue("dbilldate", new UFDate());
+			vo.setAttributeValue("pk_billtype", "F230");
 			break;
 		case VOStatus.UPDATED:
 			AuditInfoUtil.updateData(vo);
@@ -58,6 +61,9 @@ public class SetAuditInfoRule implements IRule<AggFiveMetalsVO> {
 		}
 		switch (vo.getStatus()) {
 		case VOStatus.NEW:
+			if (vo.getAttributeValue("creator") == null) {
+				vo.setAttributeValue("creator", INCSystemUserConst.NC_USER_PK);
+			}
 			vo.setAttributeValue("maketime", AuditInfoUtil.getCurrentTime());
 			break;
 		case VOStatus.UPDATED:

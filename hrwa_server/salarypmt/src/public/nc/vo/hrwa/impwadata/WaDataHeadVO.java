@@ -4,20 +4,28 @@ import nc.vo.pub.IVOMeta;
 import nc.vo.pubapp.pattern.model.meta.entity.vo.VOMetaFactory;
 
 /**
- * <b> 此处简要描述此类功能 </b> </p> 创建日期:2017-6-11 薪资发放导入主表
+ * <b> 此处简要描述此类功能 </b>
+ * <p>
+ * 此处添加类的描述信息
+ * </p>
+ * 创建日期:2017-6-17
+ * 
+ * @author
+ * @version NCPrj ??
  */
 public class WaDataHeadVO extends nc.vo.pub.SuperVO {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5595917888894975105L;
+	private static final long serialVersionUID = -1582349754654322571L;
 	private java.lang.String pk_wa_class;
 	private java.lang.String cyear;
 	private java.lang.String cperiod;
 	private java.lang.String pk_group;
 	private java.lang.String pk_org;
 	private java.lang.String pk_impwadata;
+	private java.lang.String cuserid;
 	private java.lang.Integer dr = 0;
 	private nc.vo.pub.lang.UFDateTime ts;
 
@@ -29,9 +37,10 @@ public class WaDataHeadVO extends nc.vo.pub.SuperVO {
 	public static final String PK_GROUP = "pk_group";
 	public static final String PK_ORG = "pk_org";
 	public static final String PK_IMPWADATA = "pk_impwadata";
+	public static final String CUSERID = "cuserid";
 
 	/**
-	 * 属性 pk_wa_class的Getter方法.属性名：薪资方案 创建日期:2017-6-11
+	 * 属性 pk_wa_class的Getter方法.属性名：薪资方案 创建日期:2017-6-17
 	 * 
 	 * @return java.lang.String
 	 */
@@ -40,7 +49,7 @@ public class WaDataHeadVO extends nc.vo.pub.SuperVO {
 	}
 
 	/**
-	 * 属性pk_wa_class的Setter方法.属性名：薪资方案 创建日期:2017-6-11
+	 * 属性pk_wa_class的Setter方法.属性名：薪资方案 创建日期:2017-6-17
 	 * 
 	 * @param newPk_wa_class
 	 *            java.lang.String
@@ -50,7 +59,7 @@ public class WaDataHeadVO extends nc.vo.pub.SuperVO {
 	}
 
 	/**
-	 * 属性 cyear的Getter方法.属性名：会计年度 创建日期:2017-6-11
+	 * 属性 cyear的Getter方法.属性名：会计年度 创建日期:2017-6-17
 	 * 
 	 * @return java.lang.String
 	 */
@@ -59,7 +68,7 @@ public class WaDataHeadVO extends nc.vo.pub.SuperVO {
 	}
 
 	/**
-	 * 属性cyear的Setter方法.属性名：会计年度 创建日期:2017-6-11
+	 * 属性cyear的Setter方法.属性名：会计年度 创建日期:2017-6-17
 	 * 
 	 * @param newCyear
 	 *            java.lang.String
@@ -69,7 +78,7 @@ public class WaDataHeadVO extends nc.vo.pub.SuperVO {
 	}
 
 	/**
-	 * 属性 cperiod的Getter方法.属性名：会计月度 创建日期:2017-6-11
+	 * 属性 cperiod的Getter方法.属性名：会计月度 创建日期:2017-6-17
 	 * 
 	 * @return java.lang.String
 	 */
@@ -78,7 +87,7 @@ public class WaDataHeadVO extends nc.vo.pub.SuperVO {
 	}
 
 	/**
-	 * 属性cperiod的Setter方法.属性名：会计月度 创建日期:2017-6-11
+	 * 属性cperiod的Setter方法.属性名：会计月度 创建日期:2017-6-17
 	 * 
 	 * @param newCperiod
 	 *            java.lang.String
@@ -88,7 +97,7 @@ public class WaDataHeadVO extends nc.vo.pub.SuperVO {
 	}
 
 	/**
-	 * 属性 pk_group的Getter方法.属性名：所属集团 创建日期:2017-6-11
+	 * 属性 pk_group的Getter方法.属性名：所属集团 创建日期:2017-6-17
 	 * 
 	 * @return java.lang.String
 	 */
@@ -97,7 +106,7 @@ public class WaDataHeadVO extends nc.vo.pub.SuperVO {
 	}
 
 	/**
-	 * 属性pk_group的Setter方法.属性名：所属集团 创建日期:2017-6-11
+	 * 属性pk_group的Setter方法.属性名：所属集团 创建日期:2017-6-17
 	 * 
 	 * @param newPk_group
 	 *            java.lang.String
@@ -107,7 +116,7 @@ public class WaDataHeadVO extends nc.vo.pub.SuperVO {
 	}
 
 	/**
-	 * 属性 pk_org的Getter方法.属性名：所属组织 创建日期:2017-6-11
+	 * 属性 pk_org的Getter方法.属性名：所属组织 创建日期:2017-6-17
 	 * 
 	 * @return java.lang.String
 	 */
@@ -116,7 +125,7 @@ public class WaDataHeadVO extends nc.vo.pub.SuperVO {
 	}
 
 	/**
-	 * 属性pk_org的Setter方法.属性名：所属组织 创建日期:2017-6-11
+	 * 属性pk_org的Setter方法.属性名：所属组织 创建日期:2017-6-17
 	 * 
 	 * @param newPk_org
 	 *            java.lang.String
@@ -126,7 +135,7 @@ public class WaDataHeadVO extends nc.vo.pub.SuperVO {
 	}
 
 	/**
-	 * 属性 pk_impwadata_b的Getter方法.属性名：子表主键 创建日期:2017-6-11
+	 * 属性 pk_impwadata_b的Getter方法.属性名：子表主键 创建日期:2017-6-17
 	 * 
 	 * @return nc.vo.hrwa.impwadata.WaDataBodyVO[]
 	 */
@@ -135,7 +144,7 @@ public class WaDataHeadVO extends nc.vo.pub.SuperVO {
 	}
 
 	/**
-	 * 属性pk_impwadata_b的Setter方法.属性名：子表主键 创建日期:2017-6-11
+	 * 属性pk_impwadata_b的Setter方法.属性名：子表主键 创建日期:2017-6-17
 	 * 
 	 * @param newPk_impwadata_b
 	 *            nc.vo.hrwa.impwadata.WaDataBodyVO[]
@@ -146,7 +155,7 @@ public class WaDataHeadVO extends nc.vo.pub.SuperVO {
 	}
 
 	/**
-	 * 属性 pk_impwadata的Getter方法.属性名：主表主键 创建日期:2017-6-11
+	 * 属性 pk_impwadata的Getter方法.属性名：主表主键 创建日期:2017-6-17
 	 * 
 	 * @return java.lang.String
 	 */
@@ -155,7 +164,7 @@ public class WaDataHeadVO extends nc.vo.pub.SuperVO {
 	}
 
 	/**
-	 * 属性pk_impwadata的Setter方法.属性名：主表主键 创建日期:2017-6-11
+	 * 属性pk_impwadata的Setter方法.属性名：主表主键 创建日期:2017-6-17
 	 * 
 	 * @param newPk_impwadata
 	 *            java.lang.String
@@ -165,7 +174,26 @@ public class WaDataHeadVO extends nc.vo.pub.SuperVO {
 	}
 
 	/**
-	 * 属性 dr的Getter方法.属性名：dr 创建日期:2017-6-11
+	 * 属性 cuserid的Getter方法.属性名：操作员 创建日期:2017-6-17
+	 * 
+	 * @return java.lang.String
+	 */
+	public java.lang.String getCuserid() {
+		return cuserid;
+	}
+
+	/**
+	 * 属性cuserid的Setter方法.属性名：操作员 创建日期:2017-6-17
+	 * 
+	 * @param newCuserid
+	 *            java.lang.String
+	 */
+	public void setCuserid(java.lang.String newCuserid) {
+		this.cuserid = newCuserid;
+	}
+
+	/**
+	 * 属性 dr的Getter方法.属性名：dr 创建日期:2017-6-17
 	 * 
 	 * @return java.lang.Integer
 	 */
@@ -174,7 +202,7 @@ public class WaDataHeadVO extends nc.vo.pub.SuperVO {
 	}
 
 	/**
-	 * 属性dr的Setter方法.属性名：dr 创建日期:2017-6-11
+	 * 属性dr的Setter方法.属性名：dr 创建日期:2017-6-17
 	 * 
 	 * @param newDr
 	 *            java.lang.Integer
@@ -184,7 +212,7 @@ public class WaDataHeadVO extends nc.vo.pub.SuperVO {
 	}
 
 	/**
-	 * 属性 ts的Getter方法.属性名：ts 创建日期:2017-6-11
+	 * 属性 ts的Getter方法.属性名：ts 创建日期:2017-6-17
 	 * 
 	 * @return nc.vo.pub.lang.UFDateTime
 	 */
@@ -193,7 +221,7 @@ public class WaDataHeadVO extends nc.vo.pub.SuperVO {
 	}
 
 	/**
-	 * 属性ts的Setter方法.属性名：ts 创建日期:2017-6-11
+	 * 属性ts的Setter方法.属性名：ts 创建日期:2017-6-17
 	 * 
 	 * @param newTs
 	 *            nc.vo.pub.lang.UFDateTime
@@ -206,7 +234,7 @@ public class WaDataHeadVO extends nc.vo.pub.SuperVO {
 	 * <p>
 	 * 取得父VO主键字段.
 	 * <p>
-	 * 创建日期:2017-6-11
+	 * 创建日期:2017-6-17
 	 * 
 	 * @return java.lang.String
 	 */
@@ -218,7 +246,7 @@ public class WaDataHeadVO extends nc.vo.pub.SuperVO {
 	 * <p>
 	 * 取得表主键.
 	 * <p>
-	 * 创建日期:2017-6-11
+	 * 创建日期:2017-6-17
 	 * 
 	 * @return java.lang.String
 	 */
@@ -231,7 +259,7 @@ public class WaDataHeadVO extends nc.vo.pub.SuperVO {
 	 * <p>
 	 * 返回表名称
 	 * <p>
-	 * 创建日期:2017-6-11
+	 * 创建日期:2017-6-17
 	 * 
 	 * @return java.lang.String
 	 */
@@ -243,7 +271,7 @@ public class WaDataHeadVO extends nc.vo.pub.SuperVO {
 	 * <p>
 	 * 返回表名称.
 	 * <p>
-	 * 创建日期:2017-6-11
+	 * 创建日期:2017-6-17
 	 * 
 	 * @return java.lang.String
 	 */
@@ -254,7 +282,7 @@ public class WaDataHeadVO extends nc.vo.pub.SuperVO {
 	/**
 	 * 按照默认方式创建构造子.
 	 * 
-	 * 创建日期:2017-6-11
+	 * 创建日期:2017-6-17
 	 */
 	public WaDataHeadVO() {
 		super();

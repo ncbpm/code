@@ -49,6 +49,7 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 	@Override
 	public AggFiveMetalsVO operatebill(FiveMetalsHVO hvo, FiveMetalsBVO[] bvos,
 			boolean isdel) throws BusinessException {
+
 		AggFiveMetalsVO aggvo = null;
 		if (isdel) {
 			deletebill(hvo, bvos);
@@ -67,6 +68,7 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 			hvo.setStatus(VOStatus.NEW);
 			aggvo.setParentVO(hvo);
 		} else {
+			oldvo.setStatus(VOStatus.UPDATED);
 			aggvo.setParentVO(oldvo);
 		}
 

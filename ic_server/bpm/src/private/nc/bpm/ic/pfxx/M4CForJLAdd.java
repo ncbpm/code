@@ -59,7 +59,7 @@ public class M4CForJLAdd extends AbstractPfxxPlugin {
 	      double TotalWeight = 0;
 	      for(SaleOutBodyVO item : voArray[0].getBodys()){
 	    	  for(SaleOutBodyVO inItem : importVO.getBodys()){
-	    		  if(item.getCmaterialoid() == inItem.getCmaterialoid()){
+	    		  if(item.getCmaterialoid().equals(inItem.getCmaterialoid())){
 	    			  TotalWeight += inItem.getNassistnum().doubleValue();
 	    			  item.setNassistnum(inItem.getNassistnum());
 	    			  item.setDbizdate(importVO.getHead().getDbilldate());

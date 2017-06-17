@@ -69,7 +69,7 @@ public class M45ForJLAdd  extends AbstractPfxxPlugin{
 	      double TotalWeight = 0;
 	      for(PurchaseInBodyVO item : voArray[0].getBodys()){
 	    	  for(PurchaseInBodyVO inItem : importVO.getBodys()){
-	    		  if(item.getCmaterialoid() == inItem.getCmaterialoid()){
+	    		  if(item.getCmaterialoid().equals(inItem.getCmaterialoid())){
 	    			  TotalWeight += inItem.getNassistnum().doubleValue();
 	    			  item.setNassistnum(inItem.getNassistnum());
 	    			  item.setDbizdate(importVO.getHead().getDbilldate());
@@ -78,7 +78,7 @@ public class M45ForJLAdd  extends AbstractPfxxPlugin{
 	      }
 	      //设置总数量
 	      voArray[0].getHead().setNtotalnum(new UFDouble(TotalWeight));
-	      return action.pushSave(voArray, false);
+	      return action.pushSave(voArray, true);
 	}
 
 }

@@ -10,6 +10,7 @@ import nc.vo.am.proxy.AMProxy;
 import nc.vo.ic.m45.entity.PurchaseInBodyVO;
 import nc.vo.ic.m45.entity.PurchaseInVO;
 import nc.vo.pfxx.auxiliary.AggxsysregisterVO;
+import nc.vo.pu.m23.entity.ArriveItemVO;
 import nc.vo.pu.m23.entity.ArriveVO;
 import nc.vo.pub.BusinessException;
 import nc.vo.pub.lang.UFDouble;
@@ -65,6 +66,17 @@ public class M45ForJLAdd  extends AbstractPfxxPlugin{
 	      voArray[0].getHead().setCwhsmanagerid(importVO.getHead().getCwhsmanagerid());
 	      voArray[0].getHead().setDbilldate(importVO.getHead().getDbilldate());
 	      //遍历物料
+	      //先根据到货单-》更新 应收数量
+	      for(PurchaseInBodyVO item : voArray[0].getBodys()){
+	    	  for(ArriveItemVO inItem : vos[0].getBVO()){
+	    		  if(item.getCmaterialoid().equals(inItem.getPk_srcmaterial())){
+	    			  item.setNshouldassistnum(inItem.getNastnum());
+	    			  item.setNshouldnum(inItem.getNastnum());
+	    			  //item.setDbizdate(importVO.getHead().getDbilldate());
+	    			  break;
+	    		  }
+	    	  }
+	      }
 	      //同时计算总数量
 	      double TotalWeight = 0;
 	      for(PurchaseInBodyVO item : voArray[0].getBodys()){
@@ -72,7 +84,9 @@ public class M45ForJLAdd  extends AbstractPfxxPlugin{
 	    		  if(item.getCmaterialoid().equals(inItem.getCmaterialoid())){
 	    			  TotalWeight += inItem.getNassistnum().doubleValue();
 	    			  item.setNassistnum(inItem.getNassistnum());
+	    			  item.setNnum(inItem.getNassistnum());
 	    			  item.setDbizdate(importVO.getHead().getDbilldate());
+	    			  break;
 	    		  }
 	    	  }
 	      }

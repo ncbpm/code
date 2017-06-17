@@ -33,11 +33,23 @@ public class CheckNmny implements IRule<AggFiveMetalsVO> {
 			Object objCodeAndDefkey[] = (Object[]) dao.executeQuery(sql, null,
 					new ArrayProcessor());
 			if (objCodeAndDefkey != null && objCodeAndDefkey.length > 0) {
-//				BigDecimal i = (BigDecimal) objCodeAndDefkey[0];
-//				if (i.compareTo(BigDecimal.ZERO) < 0) {
-//					throw new BusinessException("卡号" + hvo.getVcardno()
-//							+ "的余额不能小于零！");
-//				}
+
+				Object nmny = objCodeAndDefkey[0];
+				if (nmny == null)
+					return;
+				if (nmny instanceof BigDecimal) {
+					BigDecimal i = (BigDecimal) objCodeAndDefkey[0];
+					if (i.compareTo(BigDecimal.ZERO) < 0) {
+						throw new BusinessException("卡号" + hvo.getVcardno()
+								+ "的余额不能小于零！");
+					}
+				} else if (nmny instanceof Integer) {
+					Integer i = (Integer) objCodeAndDefkey[0];
+					if (i.intValue() < 0) {
+						throw new BusinessException("卡号" + hvo.getVcardno()
+								+ "的余额不能小于零！");
+					}
+				}
 			}
 		} catch (DAOException e) {
 			ExceptionUtils.wrappBusinessException("数据库查询异常");

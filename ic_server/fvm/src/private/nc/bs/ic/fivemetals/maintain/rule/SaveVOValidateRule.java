@@ -58,10 +58,8 @@ public class SaveVOValidateRule implements IRule<AggFiveMetalsVO> {
 				for (CircularlyAccessibleValueObject itemVO : itemVOs) {
 					if (itemVO != null
 							&& VOStatus.DELETED != itemVO.getStatus()) {
-						list.add(itemVO);
-					} else {
 						FiveMetalsBVO bvo = (FiveMetalsBVO) itemVO;
-
+						list.add(itemVO);
 						if (bvo.getVsourcebillno() == null
 								|| bvo.getVsourcetype() == null
 								|| bvo.getVsourcebillid() == null) {

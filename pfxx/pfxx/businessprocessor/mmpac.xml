@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding='gb2312'?>
+<businessprocessors>
+    <businessprocessor baseclassname="" billtype="55A3" classname="nc.bs.mmpac.pickm.pfxx.plugin.MMPacPickmPfxxPlugin" locklevel="3" metadataid="b65364a4-d163-4879-a535-f9f3f83f9602" name="备料计划">
+    </businessprocessor>
+     <businessprocessor baseclassname="" billtype="55AC" classname="nc.bs.mmpac.repickm.pfxx.plugin.MMPacRepickmPfxxPlugin" locklevel="3" metadataid="9be01a7a-c697-4f55-b0d0-8afad4d35f96" name="备料申请单">
+    </businessprocessor>
+     <businessprocessor baseclassname="" billtype="55A4" classname="nc.bs.mmpac.wr.pfxx.plugin.MMPacWrPfxxPlugin" locklevel="3" metadataid="9c5489f5-46ae-49a1-9695-f26b6fe557ca" name="生产报告">
+    </businessprocessor>
+     <businessprocessor baseclassname="" billtype="55C2" classname="nc.bs.mmpac.dmo.pfxx.plugin.MMpacDmoPfxxPlugin" locklevel="3" metadataid="e664503f-2450-43a5-9399-9d5e1f433d51" name="离散生产订单维护">
+    </businessprocessor>
+    <businessprocessor baseclassname="" billtype="55A7" classname="nc.bs.mmpac.putplan.pfxx.plugin.MMpacPutplanPfxxPlugin" locklevel="3" metadataid="62e683d2-5155-466a-97d5-0889153cd135" name="流程投放计划维护">
+    </businessprocessor>
+    <businessprocessor baseclassname="" billtype="55A2" classname="nc.bs.mmpac.pmo.pfxx.plugin.MMpacPmoPfxxPlugin" locklevel="3" metadataid="d6b0556c-bae0-43e3-9b59-61a9510fd9b5" name="流程生产订单维护">
+    </businessprocessor>
+    <businessprocessor baseclassname="" billtype="bpm_55A3_add" classname="nc.bs.mmpac.pickm.pfxx.plugin.MMPacPickmPfxxPlugin" locklevel="3" metadataid="b65364a4-d163-4879-a535-f9f3f83f9602" name="备料计划">
+    </businessprocessor>
+</businessprocessors>

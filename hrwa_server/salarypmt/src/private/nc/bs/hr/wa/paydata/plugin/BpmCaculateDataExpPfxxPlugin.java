@@ -1,14 +1,19 @@
 package nc.bs.hr.wa.paydata.plugin;
 
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import nc.bs.dao.BaseDAO;
 import nc.bs.dao.DAOException;
 import nc.bs.framework.common.InvocationInfoProxy;
 import nc.bs.framework.common.NCLocator;
+import nc.bs.framework.common.RuntimeEnv;
 import nc.bs.logging.Logger;
 import nc.bs.pfxx.ISwapContext;
 import nc.hr.utils.InSQLCreator;
@@ -78,6 +83,10 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 			throw new BusinessException("单据的薪资方案字段不能为空，请输入值");
 		}
 
+		if (headvo.getCuserid() == null) {
+			throw new BusinessException("单据的操作人员字段不能为空，请输入值");
+		}
+
 		String waPeriod = headvo.getCyear() + headvo.getCperiod();// 薪资期间
 		String pk_wa_class = headvo.getPk_wa_class();// 薪资方案
 
@@ -105,8 +114,12 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 
 		updateDataVO(headvo, bodyvos, loginContext);
 
-		InvocationInfoProxy.getInstance().setUserId(getCuserid(USERCODE));
-		InvocationInfoProxy.getInstance().setUserCode(USERCODE);
+		if (headvo.getCuserid() == null) {
+			InvocationInfoProxy.getInstance().setUserId(getCuserid(USERCODE));
+			InvocationInfoProxy.getInstance().setUserCode(USERCODE);
+		} else {
+			InvocationInfoProxy.getInstance().setUserId(headvo.getCuserid());
+		}
 		InSQLCreator inSQLCreator = new InSQLCreator();
 		String pks = inSQLCreator
 				.getInSQL(list.toArray(new String[list.size()]));
@@ -228,16 +241,27 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 		return null;
 	}
 
-	private Map<String, String> getMap() {
-		if (map == null || map.size() == 0) {
-			map = new HashMap<>();
-			map.put("f_1", "制度天数");
-			map.put("f_2", "制度出勤");
-			map.put("f_3", "计时出勤");
-			map.put("f_4", "计时出勤天数");
-			map.put("f_5", "换休");
-			map.put("f_6", "日常值班");
-			map.put("f_7", "法定节日值班");
+	private Map<String, String> getMap() throws BusinessException {
+
+		try {
+			if (map == null || map.size() == 0) {
+				map = new HashMap<>();
+				String home = RuntimeEnv.getInstance().getNCHome();
+				String fileNme = home + "/pfxx/bpmpayitem.properties";
+				InputStreamReader  input = new InputStreamReader (new FileInputStream(
+						fileNme),"utf-8");
+				Properties properties = new Properties();
+				properties.load(input);
+				Iterator it = properties.entrySet().iterator();
+				while (it.hasNext()) {
+					Map.Entry entry = (Map.Entry) it.next();
+					String key = (String) entry.getKey();
+					String value = (String) entry.getValue();
+					map.put(key, value);
+				}
+			}
+		} catch (Exception e) {
+			throw new BusinessException(e.getMessage(), e);
 		}
 
 		return map;

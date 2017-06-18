@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<!-- 应用服务类，负责进行模型操作的处理 -->
+	<bean id="modelService" class="nc.ui.qc.checkitem.model.CheckItemModelService">
+		<property name="voClass" value="nc.vo.qc.checkitem.entity.CheckItemVO" />
+		<property name="serviceItf" value="nc.itf.qc.checkitem.ICheckItemService" />
+	</bean>
+
+	<!-- 树结构构造策略 -->
+	<bean id="treeCreateStrategy" class="nc.ui.qc.checkitem.model.CheckItemTreeCreateStrategy">
+		<property name="factory" ref="boadatorfactory" />
+		<property name="rootName">
+			<bean class="nc.ui.uif2.I18nFB">
+				<property name="resDir" value="c0101020" />
+				<property name="resId" value="1C01010200002" />
+				<property name="defaultValue" value="检验项目" />
+			</bean>
+		</property>
+	</bean>
+
+	<!-- 列表控件的取值策略 -->
+	<bean id="componentValueManager" class="nc.ui.uif2.editor.value.BillCardPanelHeadVOValueAdapter">
+		<property name="headVOName" value="nc.vo.qc.checkitem.entity.CheckItemVO" />
+	</bean>
+
+	<!-- 层次应用模型 -->
+	<bean id="HAppModel" class="nc.ui.qc.pub.model.QCHierachicalDataAppModel">
+		<property name="service">
+			<ref bean="modelService" />
+		</property>
+		<property name="treeCreateStrategy">
+			<ref bean="treeCreateStrategy" />
+		</property>
+		<property name="businessObjectAdapterFactory">
+			<ref bean="boadatorfactory" />
+		</property>
+		<property name="context">
+			<ref bean="context" />
+		</property>
+	</bean>
+
+	<!-- 数据模型管理器，主要负责各种方式的模型初始化     -->
+	<bean id="modelDataManager" class="nc.ui.qc.pub.model.QCModelDataManager">
+		<property name="model" ref="HAppModel"></property>
+		<property name="service" ref="modelService"></property>
+	</bean>
+
+	<!-- 界面元素-->
+	<!--树控件-->
+	<bean id="treePanel" class="nc.ui.uif2.components.TreePanel"
+		init-method="initUI">
+		<property name="model" ref="HAppModel"></property>
+	</bean>
+	<!--卡控件-->
+	<bean id="billFormEditor" class="nc.ui.qc.checkitem.view.CheckItemForm"
+		init-method="initUI">
+		<property name="model" ref="HAppModel"></property>
+		<property name="templateContainer" ref="templateContainer" />
+		<property name="componentValueManager" ref="componentValueManager" />
+		<property name="userdefitemPreparator" ref="userdefAndMarAsstCardPreparator" />
+	</bean>
+	
+	<property name="userdefitemPreparator" ref="userdefAndMarAsstCardPreparator" />
+
+	
+	<!-- 自由项、自定义项组件的卡片配置 -->
+	<bean id="userdefAndMarAsstCardPreparator" class="nc.ui.pubapp.uif2app.view.CompositeBillDataPrepare">
+		<property name="billDataPrepares">
+			<list>
+				<ref bean="userdefitemPreparator" />
+			</list>
+		</property>
+	</bean>
+
+	
+		<!-- 卡片自定义项处理 -->
+	<bean name="userdefitemPreparator" class="nc.ui.uif2.editor.UserdefitemContainerPreparator">
+		<property name="container" ref="userdefitemContainer" />
+		<property name="params">
+			<list>
+				<bean class="nc.ui.uif2.editor.UserdefQueryParam">
+					<property name="mdfullname" value="qc.qc_checkitem" />
+					<property name="pos" value="0" />
+					<property name="prefix" value="vdef" />
+				</bean>
+				
+			</list>
+		</property>
+	</bean>
+
+</beans>

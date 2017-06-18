@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="src" output="checkitem/classes" path="checkitem/src/public"/>
+	<classpathentry kind="src" output="checkitem/classes" path="checkitem/src/client"/>
+	<classpathentry kind="src" output="checkitem/classes" path="checkitem/src/private"/>
+	<classpathentry kind="src" output="checkitem/classes" path="checkitem/src/test"/>
+	<classpathentry kind="src" output="checkitem/classes" path="checkitem/resources"/>
 	<classpathentry kind="src" output="bpm/classes" path="bpm/src/public"/>
 	<classpathentry kind="src" output="bpm/classes" path="bpm/src/private"/>
 	<classpathentry kind="src" output="bpm/classes" path="bpm/src/client"/>

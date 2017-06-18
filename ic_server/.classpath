@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="src" output="fvm/classes" path="fvm/src/private"/>
 	<classpathentry kind="src" output="fvm/classes" path="fvm/src/public"/>
 	<classpathentry kind="src" output="fvm/classes" path="fvm/src/client"/>
-	<classpathentry kind="src" output="fvm/classes" path="fvm/src/private"/>
 	<classpathentry kind="src" output="fvm/classes" path="fvm/src/test"/>
 	<classpathentry kind="src" output="fvm/classes" path="fvm/resources"/>
 	<classpathentry kind="src" output="bpm/classes" path="bpm/src/public"/>

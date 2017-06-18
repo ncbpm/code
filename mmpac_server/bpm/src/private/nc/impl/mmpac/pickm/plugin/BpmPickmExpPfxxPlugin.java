@@ -45,7 +45,7 @@ public class BpmPickmExpPfxxPlugin<T extends AggPickmVO> extends
 			throw new BusinessException("该备料计划不存在，请检查主键是否正确");
 
 		PickmHeadVO oldheadvo = (PickmHeadVO) oldbill.getParentVO();
-
+		// 非审批通过不可变更
 		if (oldheadvo.getFbillstatus() != null
 				&& oldheadvo.getFbillstatus().intValue() == 2)
 			throw new BusinessException("该备料计划已经完成，不能变更");
@@ -53,7 +53,7 @@ public class BpmPickmExpPfxxPlugin<T extends AggPickmVO> extends
 		oldheadvo.setStatus(VOStatus.UPDATED);
 		// 构造变更单表体
 		PickmItemVO[] items = createBvos((PickmItemVO[]) bill.getChildrenVO(),
-				(PickmItemVO[]) oldbill.getChildrenVO());
+				(PickmItemVO[]) oldbill.getChildrenVO(), headvo.getPrimaryKey());
 		oldbill.setParentVO(oldheadvo);
 		oldbill.setChildrenVO(items);
 		IPickmMaintainService manageService = NCLocator.getInstance().lookup(
@@ -66,7 +66,8 @@ public class BpmPickmExpPfxxPlugin<T extends AggPickmVO> extends
 		return returnvo[0].getPrimaryKey();
 	}
 
-	private PickmItemVO[] createBvos(PickmItemVO[] items, PickmItemVO[] olditems)
+	private PickmItemVO[] createBvos(PickmItemVO[] items,
+			PickmItemVO[] olditems, String newCpickmid)
 			throws BusinessException {
 
 		ArrayList<PickmItemVO> al = new ArrayList<>();
@@ -76,15 +77,17 @@ public class BpmPickmExpPfxxPlugin<T extends AggPickmVO> extends
 			map.put(bvo.getCpickm_bid(), bvo);
 		}
 
+		// 数量字段调整 换算率调整
 		for (PickmItemVO bvo : items) {
 
 			PickmItemVO oldvo1 = map.get(bvo.getCpickm_bid());
 			if (oldvo1 == null) {
 				bvo.setStatus(VOStatus.NEW);
+				bvo.setCpickmid(newCpickmid);
 				al.add(bvo);
 			} else {
 				if (bvo.getNaccoutnum() == null
-						|| bvo.getNplanoutnum().compareTo(UFDouble.ZERO_DBL) == 0) {
+						|| bvo.getNaccoutnum().compareTo(UFDouble.ZERO_DBL) == 0) {
 					if (bvo.getNplanoutnum() != null
 							&& bvo.getNplanoutnum()
 									.compareTo(UFDouble.ZERO_DBL) < 0) {

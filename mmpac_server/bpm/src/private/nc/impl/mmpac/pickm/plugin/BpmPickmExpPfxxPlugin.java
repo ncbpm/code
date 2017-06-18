@@ -14,6 +14,7 @@ import nc.vo.mmpac.pickm.entity.PickmItemVO;
 import nc.vo.pfxx.auxiliary.AggxsysregisterVO;
 import nc.vo.pub.BusinessException;
 import nc.vo.pub.VOStatus;
+import nc.vo.pub.lang.UFBoolean;
 import nc.vo.pub.lang.UFDouble;
 
 public class BpmPickmExpPfxxPlugin<T extends AggPickmVO> extends
@@ -38,10 +39,17 @@ public class BpmPickmExpPfxxPlugin<T extends AggPickmVO> extends
 		IPickmQueryService queryService = NCLocator.getInstance().lookup(
 				IPickmQueryService.class);
 
-		AggPickmVO oldbill = queryService.querySingleBillByPk(headvo
-				.getPrimaryKey());
+		AggPickmVO[] oldbills = queryService
+				.queryBillsByPks(new String[] { headvo.getPrimaryKey() });
 
-		if (oldbill == null)
+		if (oldbills == null || oldbills.length == 0) {
+			throw new BusinessException("该备料计划不存在，请检查主键是否正确");
+		}
+
+		AggPickmVO oldbill = oldbills[0];
+		if (oldbill == null || oldbill.getParentVO() == null
+				|| oldbill.getChildrenVO() == null
+				|| oldbill.getChildrenVO().length == 0)
 			throw new BusinessException("该备料计划不存在，请检查主键是否正确");
 
 		PickmHeadVO oldheadvo = (PickmHeadVO) oldbill.getParentVO();
@@ -51,6 +59,7 @@ public class BpmPickmExpPfxxPlugin<T extends AggPickmVO> extends
 			throw new BusinessException("该备料计划已经完成，不能变更");
 
 		oldheadvo.setStatus(VOStatus.UPDATED);
+		oldheadvo.setIsUnCheckAtp(UFBoolean.TRUE);
 		// 构造变更单表体
 		PickmItemVO[] items = createBvos((PickmItemVO[]) bill.getChildrenVO(),
 				(PickmItemVO[]) oldbill.getChildrenVO(), headvo.getPrimaryKey());

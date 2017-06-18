@@ -42,5 +42,25 @@
 			</list>
 		</property>
 	</bean>
+
+<bean id="jianyanMediator" class="nc.ui.pubapp.uif2app.model.AppEventHandlerMediator">
+	<property name="model" ref="jianyanManageAppModel" />
+	<property name="handlerGroup">
+		<list>
+			<!-- 表体字段编辑前事件 -->
+			<bean class="nc.ui.pubapp.uif2app.event.EventHandlerGroup">
+				<property name="event"
+					value="nc.ui.pubapp.uif2app.event.card.CardBodyBeforeEditEvent" />
+				<property name="picky" ref="ChildrenPicky" />
+				<property name="handler">
+					<bean class="nc.ui.cm.fetchset.eventhandler.JianyanCardBodyBeforEditHandler"
+						init-method="initMap" />
+				</property>
+			</bean>
+
+	
+		</list>
+	</property>
+</bean>
 	
 </beans>

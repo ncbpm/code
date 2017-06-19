@@ -1,12 +1,9 @@
 package nc.bs.cm.fetchdata.checkandfetch;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import nc.bd.framework.base.CMStringUtil;
 import nc.bs.cm.fetchdata.fetchcheck.AbstractCheckStrategy;
@@ -14,7 +11,6 @@ import nc.bs.cm.fetchdata.fetchcheck.MMFetchCheckStrategy;
 import nc.bs.cm.fetchdata.groupdata.IGroupStrategy;
 import nc.bs.framework.common.NCLocator;
 import nc.cmpub.business.adapter.BDAdapter;
-import nc.cmpub.business.adapter.FIAdapter;
 import nc.cmpub.business.enumeration.CMAllocStatusEnum;
 import nc.cmpub.business.enumeration.CMSourceTypeEnum;
 import nc.cmpub.business.enumeration.CMStatusEnum;
@@ -26,7 +22,7 @@ import nc.vo.cm.activitynum.entity.ActivityNumHeadVO;
 import nc.vo.cm.activitynum.entity.ActivityNumItemVO;
 import nc.vo.cm.costobject.entity.CostObjectGenerateVO;
 import nc.vo.cm.costobject.enumeration.CostObjInStorageTypeEnum;
-import nc.vo.cm.costobject.enumeration.ProductTypeEnum;
+import nc.vo.cm.fetchdata.entity.ChuyunFetchDataVO;
 import nc.vo.cm.fetchdata.entity.FetchParamVO;
 import nc.vo.cm.fetchdata.entity.PullDataErroInfoVO;
 import nc.vo.cm.fetchdata.entity.PullDataStateVO;
@@ -36,7 +32,6 @@ import nc.vo.cm.fetchdata.entity.adapter.IMMFetchData;
 import nc.vo.cm.fetchdata.enumeration.CMMesTypeEnum;
 import nc.vo.cm.fetchdata.enumeration.FetchDataSchemaEnum;
 import nc.vo.ia.pub.util.ToArrayUtil;
-import nc.vo.mmpac.apply.task.param.MMFetchDataVO;
 import nc.vo.pub.BusinessException;
 import nc.vo.pub.CircularlyAccessibleValueObject;
 import nc.vo.pub.lang.UFDate;
@@ -70,7 +65,7 @@ public class ChuyunFIFetch extends AbstractCheckAndFetch<IMMFetchData> {
 	 * 
 	 * @param paramvo
 	 *            FetchParamVO 取数参数
-	 * @return wkidAndMMfetchDataVOMap 取数得到的vo
+	 * @return wkidAndChuyunFetchDataVOMap 取数得到的vo
 	 * @throws BusinessException
 	 *             BusinessException'
 	 */
@@ -98,10 +93,10 @@ public class ChuyunFIFetch extends AbstractCheckAndFetch<IMMFetchData> {
 		PullDataStateVO pullData = paramvo.getPullDataStateVOArr()[0];
 
 		// 进行取数:工作工作中心为空时,按照部门进行取数
-		CircularlyAccessibleValueObject[] mmfetchDataVOs = this
+		CircularlyAccessibleValueObject[] ChuyunFetchDataVOs = this
 				.getMMDataOfOutSystem(beginDay, endDay, this.pkOrg,
 						this.pkGroup,pullData);
-		return mmfetchDataVOs;
+		return ChuyunFetchDataVOs;
 	}
 
 	/**
@@ -132,22 +127,22 @@ public class ChuyunFIFetch extends AbstractCheckAndFetch<IMMFetchData> {
 		sql.append(" where nvl(dp.dr,0)=0 ");
 		sql.append(" and dp.pk_org", pullData.getPk_org());
 		sql.append(" and chuyun.ctrantypeid", pullData.getCtranstypeid());
-		sql.append(" and chuyun.dbilldate between '"+beginDay+"' and '"+endDay+"'");
+		sql.append(" and chuyun.taudittime  between '"+beginDay+"' and '"+endDay+"'");
 		sql.append(" GROUP BY dp.pk_org,  dp.pk_costcenter");
 		DataAccessUtils util = new DataAccessUtils();
 		IRowSet rowset = util.query(sql.toString());
-		MMFetchDataVO[] vos = constructVOs(pullData, rowset);
+		ChuyunFetchDataVO[] vos = constructVOs(pullData, rowset);
 		
 		return vos;
 
 	}
 	
-	private MMFetchDataVO[] constructVOs(PullDataStateVO pullData, IRowSet rowset) {
+	private ChuyunFetchDataVO[] constructVOs(PullDataStateVO pullData, IRowSet rowset) {
 		String[] groupfields = new String[] { "pk_org", "ccostcenterid"};
 		String[] sumFields = new String[] { "wknum" };
-		List<MMFetchDataVO> list = new ArrayList<MMFetchDataVO>();
+		List<ChuyunFetchDataVO> list = new ArrayList<ChuyunFetchDataVO>();
 		while (rowset.next()) {
-			MMFetchDataVO vo = new MMFetchDataVO();
+			ChuyunFetchDataVO vo = new ChuyunFetchDataVO();
 			int len = groupfields.length;
 			for (int i = 0; i < len; i++) {
 				String name = groupfields[i];
@@ -166,7 +161,7 @@ public class ChuyunFIFetch extends AbstractCheckAndFetch<IMMFetchData> {
 			}
 			list.add(vo);
 		}
-		MMFetchDataVO[] vos = ToArrayUtil.convert(list, MMFetchDataVO.class);
+		ChuyunFetchDataVO[] vos = ToArrayUtil.convert(list, ChuyunFetchDataVO.class);
 		return vos;
 	}
 
@@ -274,6 +269,8 @@ public class ChuyunFIFetch extends AbstractCheckAndFetch<IMMFetchData> {
 		return super.getErrorInfoAndFilteredData(datas,
 				new MMFetchCheckStrategy(this.pkOrg), cperiod, isCheckFlag);
 	}
+	
+	
 
 	/**
 	 * 组织成本对象参数
@@ -286,46 +283,7 @@ public class ChuyunFIFetch extends AbstractCheckAndFetch<IMMFetchData> {
 	protected CostObjectGenerateVO[] getAndSetCostOjbParam(IFetchData[] datas,
 			AbstractCheckStrategy strategy,
 			Map<IFetchData, PullDataErroInfoVO> vbFreeErrorVoMap) {
-		Set<String> matrPKs = new HashSet<String>();
-		for (IFetchData vo : datas) {
-			IMMFetchData data = (IMMFetchData) vo;
-			if (CMStringUtil.isNotEmpty(data.getMaterialid())) {
-				matrPKs.add(data.getMaterialid());
-			}
-		}
-		CostObjectGenerateVO[] costObjectGenerateVOs = new CostObjectGenerateVO[datas.length];
-		for (int i = 0; i < datas.length; i++) {
-			AggActNumVOAdapter data = (AggActNumVOAdapter) datas[i];
-			costObjectGenerateVOs[i] = new CostObjectGenerateVO();
-			costObjectGenerateVOs[i].setCmaterialid(data.getMaterialid());
-			costObjectGenerateVOs[i].setVmocode(data.getCmocode());
-			costObjectGenerateVOs[i].setCprojectid(data.getProjectId());
-			costObjectGenerateVOs[i]
-					.setFinstoragetype(data.getFinstoragetype());
-			costObjectGenerateVOs[i].setPk_org(this.pkOrg);
-			costObjectGenerateVOs[i].setPk_org_v(this.pkOrgv);
-			costObjectGenerateVOs[i].setPk_group(this.pkGroup);
-			costObjectGenerateVOs[i].setFproducttype(Integer
-					.valueOf(ProductTypeEnum.MAINPRODUCT.value().toString()));// 主产品标示
-			costObjectGenerateVOs[i].setCmainmaterialid(data.getMaterialid());// 对应主产品id
-			// 产品辅助属性
-			costObjectGenerateVOs[i].setCprojectid(data.getCprojectid());
-			costObjectGenerateVOs[i].setCproductorid(data.getCproductorid());
-			costObjectGenerateVOs[i].setCvendorid(data.getCvendorid());
-			costObjectGenerateVOs[i].setCcustomerid(data.getCcustomerid());
-			costObjectGenerateVOs[i].setVfree1(data.getVfree1());
-			costObjectGenerateVOs[i].setVfree2(data.getVfree2());
-			costObjectGenerateVOs[i].setVfree3(data.getVfree3());
-			costObjectGenerateVOs[i].setVfree4(data.getVfree4());
-			costObjectGenerateVOs[i].setVfree5(data.getVfree5());
-			costObjectGenerateVOs[i].setVfree6(data.getVfree6());
-			costObjectGenerateVOs[i].setVfree7(data.getVfree7());
-			costObjectGenerateVOs[i].setVfree8(data.getVfree8());
-			costObjectGenerateVOs[i].setVfree9(data.getVfree9());
-			costObjectGenerateVOs[i].setVfree10(data.getVfree10());
-			data.setCostObjectGenerateVO(costObjectGenerateVOs[i]);
-		}
-		return costObjectGenerateVOs;
+		return null;
 	}
 
 	/**
@@ -346,6 +304,7 @@ public class ChuyunFIFetch extends AbstractCheckAndFetch<IMMFetchData> {
 		ActivityNumHeadVO.setPk_org(paramvo.getPk_org()); // 组织
 		ActivityNumHeadVO.setPk_org_v(paramvo.getPk_org_v());
 		ActivityNumHeadVO.setCperiod(paramvo.getDaccountperiod()); // 会计期间
+		ActivityNumHeadVO.setVnote("储运");
 
 		// 来源类型完工报告
 		ActivityNumHeadVO.setIsourcetype(datavos[0].getResourcetype());
@@ -421,11 +380,11 @@ public class ChuyunFIFetch extends AbstractCheckAndFetch<IMMFetchData> {
 		List<AggActNumVOAdapter> aggActNumVOList = new ArrayList<AggActNumVOAdapter>();
 		PullDataStateVO vo2 = paramVo.getPullDataStateVOArr()[0];
 		for (CircularlyAccessibleValueObject cadata : datas) {
-			MMFetchDataVO data = (MMFetchDataVO) cadata;
+			ChuyunFetchDataVO data = (ChuyunFetchDataVO) cadata;
 			AggActNumVOAdapter vo = new AggActNumVOAdapter();
 			
 			 // 消耗成本中心
-			vo.setCcostcenterid((String)cadata.getAttributeValue("ccostcenterid"));
+			vo.setCcostcenterid( data.getCcostcenterid());
 			// 成本对象编码
 			vo.setCcostobjectid(vo2.getPk_costobject());
 			// 入库类型

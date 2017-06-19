@@ -67,17 +67,21 @@ public class PullDataQueryServImpl implements IPullDataQueryService {
     }
 
     private String getKeyForPullDataStateVO(PullDataStateVO vo) {
-        String key =
-                this.nullToEmpty(vo.getCbilltype()) + this.nullToEmpty(vo.getCtranstypeid())
-                + this.nullToEmpty(vo.getCcostcenterid());
-        return key;
+        String key =this.nullToEmpty(vo.getIfetchobjtype())+
+                this.nullToEmpty(vo.getCtranstypeid())
+                + this.nullToEmpty(vo.getCcostcenterid())+this.nullToEmpty(vo.getPk_workitem())
+                +this.nullToEmpty(vo.getPk_costobject())+this.nullToEmpty(vo.getPk_qcdept())
+                +this.nullToEmpty(vo.getPk_serverdept())+this.nullToEmpty(vo.getPk_largeritem())
+                +this.nullToEmpty(vo.getPk_factor()) ;
+                		
+        return key;	
     }
 
     private UFBoolean isExistInFetchSet(PullDataStateVO targetVO, List<PullDataStateVO> constructItemLst)
             throws BusinessException {
         UFBoolean isExist = UFBoolean.FALSE;
         if (CMCollectionUtil.isEmpty(constructItemLst)) {
-            return isExist;
+            return isExist;	
         }
         else {
             // 单据类型+交易类型+成本中心
@@ -95,13 +99,11 @@ public class PullDataQueryServImpl implements IPullDataQueryService {
 
     private List<PullDataStateVO> getPullDataStateVOByFetchSet(PullDataStateVO pullDataParamVos,
             AggFetchSetVO fetchSetAggVo, UFDate[] beginEndDate, FetchKeyVO keyVO) throws BusinessException {
-        // 根据取数对象得到外系统取数方案vo
-    	
+        // 根据取数对象得到外系统取数方案vo   	
     	pullDataParamVos.setAttributeValue("fetcheSetAggVO", null);
         if (fetchSetAggVo == null) {
             return null;
-        }
-        
+        }        
         //2017-06-15 设置对应的外系统取数方案VO，因为新增的几个单据，不是按照单据类型类控制唯一性
     	pullDataParamVos.setAttributeValue("fetcheSetAggVO", fetchSetAggVo);   	
         String pk_org = keyVO.getPk_org();
@@ -319,6 +321,15 @@ public class PullDataQueryServImpl implements IPullDataQueryService {
                 FetchKeyVO keyVO = new FetchKeyVO();
                 keyVO.setPk_org(vo.getPk_org());
                 keyVO.setIfetchobjtype(vo.getIfetchobjtype());
+            	keyVO.setFator1(vo.getCtranstypeid());
+                keyVO.setFator2(vo.getPk_qcdept());
+                keyVO.setFator3(vo.getPk_costobject());
+                keyVO.setFator4(vo.getPk_serverdept());
+                keyVO.setFator5(vo.getPk_largeritem());
+                keyVO.setFator6(vo.getPk_factor());
+                keyVO.setFator7(vo.getPk_workitem());
+
+
                 if (result.containsKey(keyVO)) {
                     result.get(keyVO).add(vo);
                 }

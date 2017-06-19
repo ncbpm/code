@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="gbk"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+<bean id="funcregister" class="nc.pubapp.pade.funcmodel.vo.FuncRegister"><property name="bmf_path" value="huanbao\METADATA\huanbao.bmf"/>
+<property name="busiActiveList">
+<list></list>
+</property>
+<property name="cfunid" value="0001ZZ1000000000DP8F"/>
+<property name="class_name" value="nc.ui.pubapp.uif2app.ToftPanelAdaptorEx"/>
+<property name="dr" value="0"/>
+<property name="fun_name" value="环保作业单"/>
+<property name="fun_property" value="0"/>
+<property name="funcRegisterButtonList">
+<list></list>
+</property>
+<property name="funcRegisterParamList">
+<list><bean class="nc.pubapp.pade.funcmodel.vo.FuncRegisterParam"><property name="dr" value="0"/>
+<property name="paramname" value="BeanConfigFilePath"/>
+<property name="paramvalue" value="nc/ui/mmpac/huanbao/ace/view/Huanbao_config.xml"/>
+<property name="parentid" value="0001ZZ1000000000DP8F"/>
+<property name="pk_param" value="0001ZZ1000000000DP8G"/>
+<property name="ts" value="2017-06-19 14:07:59"/>
+</bean>
+</list>
+</property>
+<property name="funcode" value="50081015"/>
+<property name="funnode_path" value="huanbao\designmodel\ace\client\50081015.fnf"/>
+<property name="funtype" value="0"/>
+<property name="isbuttonpower" value="false"/>
+<property name="isenable" value="true"/>
+<property name="isfunctype" value="false"/>
+<property name="menuModelFilePath" value="huanbao/designmodel/funcmodel/huanbao/menuitemregis/50081015.menu"/>
+<property name="metaDataID" value="2a4dccda-d990-4187-87e7-6758d6ebacf3"/>
+<property name="moduleName" value="mmpac"/>
+<property name="orgtypecode" value="FACTORYTYPE000000000"/>
+<property name="own_module" value="5008"/>
+<property name="pageList">
+<list></list>
+</property>
+<property name="parent_id" value="1001ZZ1000000000GDIB"/>
+<property name="pk_group" value="~"/>
+<property name="ts" value="2017-06-19 14:07:57"/>
+<property name="uif2model_path" value="huanbao\designmodel\ace\uif2model\50081015.umf"/>
+</bean>
+
+</beans>

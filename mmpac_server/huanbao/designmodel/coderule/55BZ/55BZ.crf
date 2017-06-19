@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="GBK"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+<bean id="billCodeRule" class="nc.pubapp.pade.billcode.vo.BillCodeRule">
+<property name="baseVO"><bean class="nc.pubapp.pade.billcode.vo.BillCodeBase">
+<property name="codelenth" value="20"/>
+<property name="codemode" value="pre"/>
+<property name="codescope" value="a"/>
+<property name="format" value="yyyyMMdd"/>
+<property name="isautofill" value="false"/>
+<property name="isdefault" value="false"/>
+<property name="iseditable" value="false"/>
+<property name="isgetpk" value="false"/>
+<property name="islenvar" value="true"/>
+<property name="isused" value="true"/>
+<property name="nbcrcode" value="55B1"/>
+<property name="pk_billcodebase" value="0001ZZ1000000000DOAB"/>
+<property name="pk_group" value="GLOBLE00000000000000"/>
+<property name="rulecode" value="55BZ"/>
+<property name="rulename" value="环保作业单"/>
+<property name="ts" value="2017-06-19 13:11:24"/>
+</bean>
+</property>
+
+<property name="elems">
+<list>
+<bean class="nc.pubapp.pade.billcode.vo.BillCodeElem">
+<property name="elemlenth" value="4"/>
+<property name="elemtype" value="0"/>
+<property name="elemvalue" value="55B1"/>
+<property name="eorder" value="0"/>
+<property name="isrefer" value="0"/>
+<property name="pk_billcodebase" value="0001ZZ1000000000DOAB"/>
+<property name="pk_billcodeelem" value="0001ZZ1000000000DOAG"/>
+<property name="pk_billcodeentity" value="~"/>
+<property name="ts" value="2017-06-19 13:11:24"/>
+</bean>
+<bean class="nc.pubapp.pade.billcode.vo.BillCodeElem">
+<property name="elemlenth" value="8"/>
+<property name="elemtype" value="2"/>
+<property name="elemvalue" value="2017-06-19 13:08:40"/>
+<property name="eorder" value="1"/>
+<property name="isrefer" value="0"/>
+<property name="pk_billcodebase" value="0001ZZ1000000000DOAB"/>
+<property name="pk_billcodeelem" value="0001ZZ1000000000DOAH"/>
+<property name="pk_billcodeentity" value="~"/>
+<property name="ts" value="2017-06-19 13:11:24"/>
+</bean>
+<bean class="nc.pubapp.pade.billcode.vo.BillCodeElem">
+<property name="elemlenth" value="8"/>
+<property name="elemtype" value="3"/>
+<property name="elemvalue" value="55B1"/>
+<property name="eorder" value="2"/>
+<property name="isrefer" value="0"/>
+<property name="pk_billcodebase" value="0001ZZ1000000000DOAB"/>
+<property name="pk_billcodeelem" value="0001ZZ1000000000DOAI"/>
+<property name="pk_billcodeentity" value="~"/>
+<property name="ts" value="2017-06-19 13:11:24"/>
+</bean>
+</list>
+</property>
+<property name="orgs">
+<list>
+</list>
+</property>
+</bean>
+
+</beans>

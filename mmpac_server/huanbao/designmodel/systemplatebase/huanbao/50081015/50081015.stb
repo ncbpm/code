@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="gbk"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+<bean id="stbTotal" class="nc.pubapp.pade.systemplatebase.vo.SystempletBaseTotal"><property name="funcNode" value="50081015"/>
+<property name="stbList">
+<list><bean class="nc.pubapp.pade.systemplatebase.vo.SystemplateBase"><property name="dr" value="0"/>
+<property name="funnode" value="50081015"/>
+<property name="layer" value="0"/>
+<property name="moduleid" value="5008"/>
+<property name="nodekey" value="bt"/>
+<property name="pk_systemplate" value="0001ZZ1000000000DPCV"/>
+<property name="templateid" value="0001ZZ1000000000DP8I"/>
+<property name="templatename" value="单据模板"/>
+<property name="tempstyle" value="0"/>
+</bean>
+<bean class="nc.pubapp.pade.systemplatebase.vo.SystemplateBase"><property name="dr" value="0"/>
+<property name="funnode" value="50081015"/>
+<property name="layer" value="0"/>
+<property name="moduleid" value="5008"/>
+<property name="nodekey" value="qt"/>
+<property name="pk_systemplate" value="0001ZZ1000000000DPEL"/>
+<property name="templateid" value="0001ZZ1000000000DPCW"/>
+<property name="templatename" value="查询模板"/>
+<property name="tempstyle" value="1"/>
+</bean>
+<bean class="nc.pubapp.pade.systemplatebase.vo.SystemplateBase"><property name="dr" value="0"/>
+<property name="funnode" value="50081015"/>
+<property name="layer" value="0"/>
+<property name="moduleid" value="5008"/>
+<property name="nodekey" value="ot"/>
+<property name="pk_systemplate" value="0001ZZ1000000000DQ63"/>
+<property name="templateid" value="0001ZZ1000000000DPEM"/>
+<property name="templatename" value="打印模板"/>
+<property name="tempstyle" value="3"/>
+</bean>
+</list>
+</property>
+</bean>
+
+</beans>

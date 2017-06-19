@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="gbk"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="general" class="nc.pubapp.pade.code.funnode.FunNodePara">
+        <property name="moduleName" value="mmpac" />
+	    <property name="bpfPath" value="test.bpf" />
+	    <property name="funcode" value="50081015"/>
+	    <property name="funNodeName" value="huanbao"/>
+	    <property name="clientPackName" value="nc.ui.mmpac.huanbao"/>
+			  		<property name="dbilldDate" value="Dbilldate" />
+			    <property name="metaData" value="huanbao\METADATA\huanbao.bmf" />
+	    <property name="xmlPath" value="huanbao\src\client\nc\ui\mmpac\huanbao\ace\view\Huanbao_config.xml" />
+	    <property name="metaDataType" value="multiType" />
+	    <property name="funcregispath" value="huanbao/designmodel/funcmodel/huanbao/funcregis/50081015.func" />
+	    <property name="quetempath" value="huanbao/designmodel/templet/huanbao/querytemplet/50081015.qtf" />
+	    <property name="printtempath" value="huanbao/designmodel/templet/huanbao/outtemplet/50081015.otf" />
+	    <property name="systembasepath" value="huanbao/designmodel/systemplatebase/huanbao/50081015/50081015.stb" />
+	    <property name="extendSuffix" value=""/>
+	    <property name="uif2ModelFilePath" value="huanbao\designmodel\ace\uif2model\50081015.umf"/>
+	    <property name="busiCompName" value="huanbao"/>
+	    <property name="metaDataId" value="2a4dccda-d990-4187-87e7-6758d6ebacf3"/>
+	</bean>
+	
+	<bean id="templet" class="nc.pubapp.pade.code.funnode.Templet">
+	    <property name="tempStyle" value="2" />
+	    <property name="nodeKey" value="" />
+		<property name="templetPath" value="huanbao/designmodel/templet/huanbao/billtemplet/50081015.btf" />
+	</bean>
+
+	<bean id="BAEHpara" class="nc.pubapp.pade.code.funnode.BodyAfterEditHandlerPara">
+		<property name="itemList">
+			<list>
+							</list>
+		</property>
+	</bean>
+
+	<bean id="BBEHpara" class="nc.pubapp.pade.code.funnode.BodyBeforeEditHandlerPara">
+		<property name="itemList">
+			<list>
+							</list>
+		</property>
+	</bean>
+	
+	<bean id="HTBEHpara" class="nc.pubapp.pade.code.funnode.HeadTailBeforeEditHandlerPara">
+	</bean>
+	
+	<bean id="HTAEHpara" class="nc.pubapp.pade.code.funnode.HeadTailAfterEditHandlerPara">
+	</bean>
+	
+	<bean id="SerPropara" class="nc.pubapp.pade.code.funnode.ServiceProxyPara">
+					<property name="queryByQueryScheme">
+			<bean class="nc.pubapp.pade.code.funnode.ServiceProxyItemPara">
+				<property name="fullClassName" value="nc.itf.mmpac.IHuanbaoMaintain" />
+				<property name="itmClassName" value=".IHuanbaoMaintain" />
+				<property name="methodName" value="query" />
+			</bean>
+		</property>
+				</bean>
+	
+	<bean id="FilePackNameBean" class="nc.pubapp.pade.code.engine.FilePackNamePara">
+    	<property name="filePackNameList">
+	    	<list>
+				     						       <value>nc.ui.mmpac.huanbao.handler.OrgChangedHandler.java</value>
+			       <value>nc.ui.mmpac.huanbao.ace.handler.AceAddHandler.java</value>
+			       <value>nc.ui.mmpac.huanbao.ace.handler.AceBodyAfterEditHandler.java</value>
+			       <value>nc.ui.mmpac.huanbao.ace.handler.AceBodyBeforeEditHandler.java</value>
+			       <value>nc.ui.mmpac.huanbao.ace.handler.AceHeadTailAfterEditHandler.java</value>
+			       <value>nc.ui.mmpac.huanbao.ace.handler.AceHeadTailBeforeEditHandler.java</value>
+			       <value>nc.ui.mmpac.huanbao.ace.handler.AceOrgChangedHandler.java</value>
+			       <value>nc.ui.mmpac.huanbao.ace.serviceproxy.AceHuanbaoMaintainProxy.java</value>
+			       <value>nc.ui.mmpac.huanbao.action.HuanbaoAddAction.java</value>
+			       <value>nc.ui.mmpac.huanbao.action.HuanbaoDeleteAction.java</value>
+			       <value>nc.ui.mmpac.huanbao.action.HuanbaoEditAction.java</value>
+			       <value>nc.ui.mmpac.huanbao.action.CopyActionProcessor.java</value>
+			     			       <value>nc.ui.mmpac.huanbao.query.HuanbaoQueryConditionInitializer.java</value>
+		     </list>
+	   </property>
+	</bean>
+
+</beans>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="GBK"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+<bean id="needBCR" class="nc.pubapp.pade.billcode.vo.NeedBCR">
+<property name="candiattrList">
+<list>
+</list>
+</property>
+<property name="code" value="55BZ"/>
+<property name="codelenth" value="40"/>
+<property name="codescope" value="both"/>
+<property name="codestyle" value="both"/>
+<property name="metaid" value="2a4dccda-d990-4187-87e7-6758d6ebacf3"/>
+<property name="name" value="55BZ"/>
+<property name="orgtype" value="GLOBLE00000000000000"/>
+<property name="pk_nbcr" value="0001ZZ1000000000DOAF"/>
+<property name="ts" value="2017-06-19 13:11:05"/>
+</bean>
+
+</beans>

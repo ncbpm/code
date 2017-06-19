@@ -5,14 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import nc.bs.framework.common.NCLocator;
 import nc.bs.pfxx.ISwapContext;
 import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
-import nc.bs.xml.out.tool.XmlOutTool;
-import nc.itf.fa.prv.IReduce;
 import nc.itf.fa.service.IAssetService;
 import nc.itf.fa.service.IReduceImport;
-import nc.itf.so.m30.revise.ISaleOrderReviseMaintainApp;
 import nc.pub.billcode.itf.IBillcodeManage;
 import nc.pub.fa.card.AssetFieldConst;
 import nc.pub.fa.common.consts.BillTypeConst;
@@ -38,7 +34,6 @@ import nc.vo.pub.BusinessException;
 import nc.vo.pub.lang.UFBoolean;
 import nc.vo.pub.lang.UFDateTime;
 import nc.vo.pub.lang.UFDouble;
-import nc.vo.so.m30.revise.entity.SaleOrderHistoryVO;
 
 /**
  * 

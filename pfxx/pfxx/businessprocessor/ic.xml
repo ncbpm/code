@@ -12,5 +12,8 @@
      
     <businessprocessor baseclassname="" billtype="bpm_fivemetals_add" classname="nc.bs.ic.fivemetals.plugin.BpmFiveMetalsRechargeExpPfxxPlugin" locklevel="3" metadataid="40a6baac-d943-4be1-9fe5-5c1736001ba8" name="五金预算充值增加">
     </businessprocessor>
+    
+    <businessprocessor baseclassname="" billtype="bpm_4D_add" classname="nc.bs.ic.bpm.plugins.BpmMaterialOutPlugin" locklevel="3" metadataid="1050e13a-a996-4b75-8abb-5a9eceab7ab1" name="条码回写库存材料出库单">
+    </businessprocessor>
  
 </businessprocessors>

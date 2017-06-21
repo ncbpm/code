@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding='gb2312'?>
+<module name="mmpac">
+  <public>
+	<component remote="true" singleton="true"  tx="CMT">
+	  <interface>nc.itf.mmpac.IHuanbaoMaintain</interface>
+	  <implementation>nc.impl.mmpac.HuanbaoMaintainImpl</implementation>
+	</component>
+
+  </public> 
+</module> 

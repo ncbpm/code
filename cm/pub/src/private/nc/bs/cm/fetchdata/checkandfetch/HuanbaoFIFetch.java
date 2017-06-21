@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+
 import nc.bd.framework.base.CMStringUtil;
 import nc.bs.cm.fetchdata.checkandfetch.AbstractCheckAndFetch.AbstractFetchStrategy;
 import nc.bs.cm.fetchdata.fetchcheck.AbstractCheckStrategy;
@@ -127,16 +129,23 @@ public class HuanbaoFIFetch extends  AbstractCheckAndFetch<IMMFetchData> {
 	public CircularlyAccessibleValueObject[] getMMDataOfOutSystem(
 			UFDate beginDay, UFDate endDay, String pkOrg, String pkGroup,
 			PullDataStateVO pullData ) throws BusinessException {
+		String pk_largeritem = pullData.getPk_largeritem();
+		if(StringUtils.isEmpty(pk_largeritem)){
+			return null;
+		}
+		DataAccessUtils util = new DataAccessUtils();
+		IRowSet query = util.query("select vactivityname  from bd_activity  where cactivityid='"+pk_largeritem+"");
+		
+		
 		SqlBuilder sql = new SqlBuilder();
 		sql.append(" select dp.pk_org,  dp.pk_costcenter as ccostcenterid,  sum(chuyun.nnum) wknum ");
-		sql.append(" from  view_nc_zuoyechuyun chuyun");
-		sql.append(" inner join  resa_ccdepts  dp on chuyun.cdptid = dp.pk_dept");
+		sql.append(" from  view_nc_zuoyehuanbao  huanbao");
+		sql.append(" inner join  resa_ccdepts  dp on huanbao.cdptid = dp.pk_dept");
 		sql.append(" where nvl(dp.dr,0)=0 ");
 		sql.append(" and dp.pk_org", pullData.getPk_org());
-		sql.append(" and chuyun.ctrantypeid", pullData.getCtranstypeid());
-		sql.append(" and chuyun.taudittime  between '"+beginDay+"' and '"+endDay+"'");
+		sql.append(" and huanbao.pk_largeitem", pullData.getPk_largeritem());
+		sql.append(" and huanbao.periodid",pullData.getCperiod());
 		sql.append(" GROUP BY dp.pk_org,  dp.pk_costcenter");
-		DataAccessUtils util = new DataAccessUtils();
 		IRowSet rowset = util.query(sql.toString());
 		ChuyunFetchDataVO[] vos = constructVOs(pullData, rowset);
 		

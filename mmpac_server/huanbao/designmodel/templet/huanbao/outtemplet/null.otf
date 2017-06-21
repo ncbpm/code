@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="gbk"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+<bean id="print" class="nc.pubapp.pade.templet.vo.Print"><property name="cellVOs">
+<list></list>
+</property>
+<property name="templateVO"><bean class="nc.pubapp.pade.templet.vo.PrintTemplate"><property name="itype" value="0"/>
+<property name="m_bdirector" value="false"/>
+<property name="m_bdispagenum" value="false"/>
+<property name="m_bdistotalpagenum" value="false"/>
+<property name="m_bnormalcolor" value="false"/>
+</bean>
+</property>
+
+</bean>
+
+</beans>

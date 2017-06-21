@@ -9,7 +9,7 @@ import java.util.Map;
 import nc.bs.framework.common.NCLocator;
 import nc.bs.pfxx.ISwapContext;
 import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
-import nc.bs.xml.out.tool.XmlOutTool;
+//import nc.bs.xml.out.tool.XmlOutTool;
 import nc.itf.fa.prv.IAlter;
 import nc.itf.fa.service.IAlterImport;
 import nc.itf.fa.service.IAssetService;

@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="src" output="huanbao/classes" path="huanbao/src/public"/>
+	<classpathentry kind="src" output="huanbao/classes" path="huanbao/src/client"/>
+	<classpathentry kind="src" output="huanbao/classes" path="huanbao/src/private"/>
+	<classpathentry kind="src" output="huanbao/classes" path="huanbao/src/test"/>
+	<classpathentry kind="src" output="huanbao/classes" path="huanbao/resources"/>
 	<classpathentry kind="src" output="bpm/classes" path="bpm/src/public"/>
 	<classpathentry kind="src" output="bpm/classes" path="bpm/src/private"/>
 	<classpathentry kind="src" output="bpm/classes" path="bpm/src/client"/>

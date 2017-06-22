@@ -11,13 +11,17 @@ import nc.bs.framework.common.NCLocator;
 import nc.bs.framework.common.RuntimeEnv;
 import nc.bs.ic.general.plugins.CheckMnyUtil;
 import nc.bs.ic.general.plugins.CheckScaleUtil;
+import nc.bs.ic.m4d.bpm.BpmServicePluginPoint;
 import nc.bs.ic.pub.env.ICBSContext;
 import nc.bs.logging.Logger;
 import nc.bs.pfxx.ISwapContext;
 import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
+import nc.bs.pub.pf.PfUtilTools;
 import nc.itf.scmpub.reference.uap.pf.PfServiceScmUtil;
-import nc.itf.uap.pf.IPFBusiAction;
+import nc.itf.uap.pf.busiflow.PfButtonClickContext;
+import nc.pubimpl.ic.m4d.m422x.action.PushSaveActionFor422X;
 import nc.pubitf.scmf.ic.mbatchcode.IBatchcodePubService;
+import nc.util.mmf.busi.service.PFPubService;
 import nc.vo.ic.general.deal.ICBillValueSetter;
 import nc.vo.ic.general.define.ICBillBodyVO;
 import nc.vo.ic.general.define.ICBillFlag;
@@ -26,6 +30,7 @@ import nc.vo.ic.general.define.ICBillVO;
 import nc.vo.ic.general.util.BasDocQueryUtil;
 import nc.vo.ic.general.util.BillVOUtil;
 import nc.vo.ic.m4d.entity.MaterialOutVO;
+import nc.vo.ic.m4k.entity.WhsTransBillVO;
 import nc.vo.ic.material.deal.UnitAndHslProc;
 import nc.vo.ic.material.define.InvBasVO;
 import nc.vo.ic.material.query.InvInfoQuery;
@@ -39,12 +44,13 @@ import nc.vo.ic.pub.define.ICPubMetaNameConst;
 import nc.vo.ic.pub.util.CollectionUtils;
 import nc.vo.ic.pub.util.VOEntityUtil;
 import nc.vo.ic.pub.util.ValueCheckUtil;
+import nc.vo.mmpac.pacpub.consts.MMPacBillTypeConstant;
+import nc.vo.mmpac.reqpickm.consts.ReqPickmConsts;
 import nc.vo.pfxx.auxiliary.AggxsysregisterVO;
 import nc.vo.pub.AggregatedValueObject;
 import nc.vo.pub.BusinessException;
 import nc.vo.pub.VOStatus;
 import nc.vo.pub.lang.UFBoolean;
-import nc.vo.pub.pf.workflow.IPFActionName;
 import nc.vo.pubapp.pattern.exception.ExceptionUtils;
 import nc.vo.pubapp.scale.ScaleUtils;
 import nc.vo.pubapp.util.VORowNoUtils;
@@ -71,20 +77,35 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 	@Override
 	protected Object processBill(Object vo, ISwapContext swapContext,
 			AggxsysregisterVO aggxsysvo) throws BusinessException {
+		ICBillVO[] icbills = null;
+		try {
+			MaterialOutVO[] mvos = (MaterialOutVO[]) PFPubService
+					.runChangeData(MMPacBillTypeConstant.WRCHANGE_BILLTYPE,
+							MMPacBillTypeConstant.BACKFLUSH_DEPOSIT_BILLTYPE,
+							null, null, PfButtonClickContext.ClassifyByItfdef);
 
-		if (vo == null)
-			throw new BusinessException("转换后的vo数据为空");
-		ICBSContext context = new ICBSContext();
-		this.context = context;
-		invQuery = context.getInvInfo();
-		icSysParam = context.getICSysParam();
-		orgInfoQry = context.getOrgInfo();
-		scale = new ScaleUtils(swapContext.getPk_group());
-		busiCalc = BusiCalculator.getBusiCalculatorAtBS();
-		ICBillVO icbill = (ICBillVO) vo;
+			WhsTransBillVO[] targetVOs;
 
-		ICBillVO[] icbills = this.doSave(swapContext, icbill);
+			targetVOs = (WhsTransBillVO[]) PfUtilTools.runChangeDataAry(
+					ReqPickmConsts.BILL_CODE, ReqPickmConsts.FORWARD_BILL_4D,
+					null);
 
+			if (vo == null)
+				throw new BusinessException("转换后的vo数据为空");
+			ICBSContext context = new ICBSContext();
+			this.context = context;
+			invQuery = context.getInvInfo();
+			icSysParam = context.getICSysParam();
+			orgInfoQry = context.getOrgInfo();
+			scale = new ScaleUtils(swapContext.getPk_group());
+			busiCalc = BusiCalculator.getBusiCalculatorAtBS();
+			ICBillVO icbill = (ICBillVO) vo;
+
+			icbills = this.doSave(swapContext, icbill);
+
+		} catch (BusinessException e) {
+			ExceptionUtils.wrappException(e);
+		}
 		return icbills[0].getHead().getCgeneralhid();
 	}
 
@@ -104,22 +125,12 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 		this.checkCanInster(icbill);
 
 		// TODO 单据设置有辅助信息，aggxsysvo为用户配置的具体辅助信息
-
+		MaterialOutVO[] bills = new MaterialOutVO[] { (MaterialOutVO) icbill };
 		Logger.info("保存新单据...");
-		IPFBusiAction service = NCLocator.getInstance().lookup(
-				IPFBusiAction.class);
-		ICBillVO[] icbills = (ICBillVO[]) service.processAction(
-				IPFActionName.WRITE, swapContext.getBilltype(), null, icbill,
-				null, null);
+		MaterialOutVO[] vos = new PushSaveActionFor422X(
+				BpmServicePluginPoint.pushSaveFor422X).pushSaveAndSign(bills);
 
-		Logger.info("保存新单据完成...");
-
-		Logger.info("保存新单据后处理...");
-		this.processAfterSave(icbill);
-
-		if (ValueCheckUtil.isNullORZeroLength(icbills))
-			return null;
-		return icbills;
+		return vos;
 	}
 
 	/**
@@ -146,64 +157,50 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 	}
 
 	/**
-	 * 单据保存后处理
-	 * 
-	 * @param vo
-	 */
-	protected void processAfterSave(ICBillVO vo) throws BusinessException {
-		if (null == vo)
-			throw new BusinessException(nc.vo.ml.NCLangRes4VoTransl
-					.getNCLangRes().getStrByID("4008001_0", "04008001-0140")/*
-																			 * @res
-																			 * "单据保存失败"
-																			 */);
-	}
-
-	/**
 	 * 获取批次号档案
 	 * 
 	 * @param vos
 	 * @return Map<String(vbatchcode), BatchcodeVO批次档案>
 	 */
 	private Map<String, BatchcodeVO> getBatchcodeVO(ICBillBodyVO[] vos) {
-		 List<String> cmaterialvidList = new ArrayList<String>();
-		    List<String> vbatchcodeList = new ArrayList<String>();
-		    Set<String> materialbatch = new HashSet<String>();
-		    for (ICBillBodyVO body : vos) {
-		      if (body.getCmaterialvid() != null && body.getVbatchcode() != null) {
-		        if (materialbatch.contains(body.getCmaterialvid()
-		            + body.getVbatchcode())) {
-		          continue;
-		        }
-		        cmaterialvidList.add(body.getCmaterialvid());
-		        vbatchcodeList.add(body.getVbatchcode());
-		        materialbatch.add(body.getCmaterialvid() + body.getVbatchcode());
-		      }
-		    }
-		    if (materialbatch.size() == 0) {
-		      return new HashMap<String, BatchcodeVO>();
-		    }
-		    IBatchcodePubService batchservice =
-		        NCLocator.getInstance().lookup(IBatchcodePubService.class);
-		    BatchcodeVO[] batchvos = null;
-		    try {
-		      batchvos =
-		          batchservice.queryBatchVOs(cmaterialvidList.toArray(new String[0]),
-		              vbatchcodeList.toArray(new String[0]));
-		    }
-		    catch (BusinessException e) {
-		      ExceptionUtils.wrappException(e);
-		    }
+		List<String> cmaterialvidList = new ArrayList<String>();
+		List<String> vbatchcodeList = new ArrayList<String>();
+		Set<String> materialbatch = new HashSet<String>();
+		for (ICBillBodyVO body : vos) {
+			if (body.getCmaterialvid() != null && body.getVbatchcode() != null) {
+				if (materialbatch.contains(body.getCmaterialvid()
+						+ body.getVbatchcode())) {
+					continue;
+				}
+				cmaterialvidList.add(body.getCmaterialvid());
+				vbatchcodeList.add(body.getVbatchcode());
+				materialbatch
+						.add(body.getCmaterialvid() + body.getVbatchcode());
+			}
+		}
+		if (materialbatch.size() == 0) {
+			return new HashMap<String, BatchcodeVO>();
+		}
+		IBatchcodePubService batchservice = NCLocator.getInstance().lookup(
+				IBatchcodePubService.class);
+		BatchcodeVO[] batchvos = null;
+		try {
+			batchvos = batchservice.queryBatchVOs(
+					cmaterialvidList.toArray(new String[0]),
+					vbatchcodeList.toArray(new String[0]));
+		} catch (BusinessException e) {
+			ExceptionUtils.wrappException(e);
+		}
 
-		    if (batchvos == null || batchvos.length == 0) {
-		      return new HashMap<String, BatchcodeVO>();
-		    }
-		    Map<String, BatchcodeVO> batchmap = new HashMap<String, BatchcodeVO>();
-		    for (BatchcodeVO batchvo : batchvos) {
-		      batchmap
-		          .put(batchvo.getCmaterialvid() + batchvo.getVbatchcode(), batchvo);
-		    }
-		    return batchmap;
+		if (batchvos == null || batchvos.length == 0) {
+			return new HashMap<String, BatchcodeVO>();
+		}
+		Map<String, BatchcodeVO> batchmap = new HashMap<String, BatchcodeVO>();
+		for (BatchcodeVO batchvo : batchvos) {
+			batchmap.put(batchvo.getCmaterialvid() + batchvo.getVbatchcode(),
+					batchvo);
+		}
+		return batchmap;
 	}
 
 	/**

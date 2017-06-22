@@ -148,7 +148,8 @@ public class CostAutoFIFetch extends AbstractFIFetch {
 	public CircularlyAccessibleValueObject[] getMMDataOfOutSystem(
 			 String pk_group,String pkOrg,String cperiod ,UFDate beginDay, UFDate endDay) throws BusinessException {
 		SqlBuilder sql = new SqlBuilder();
-		sql.append(" select pk_org, pk_costcenter AS ccostcenterid,  ccostobjectid,  pk_measdoc as cunitid,  nnum as nnum ");
+		sql.append(" select pk_org, pk_costcenter AS ccostcenterid,  ");
+		sql.append(" ccostobjectid as ccostobjid, cinventoryid as cinventoryid, pk_measdoc as cunitid,  nnum as nnum");
 		sql.append(" from  view_nc_zuoyeautocost cost"); 
 		sql.append(" where  ");
 		sql.append("  pk_group", pk_group);
@@ -163,7 +164,7 @@ public class CostAutoFIFetch extends AbstractFIFetch {
 	}
 	
 	private CostAutoVO[] constructVOs(IRowSet rowset) {
-		String[] groupfields = new String[] { "pk_org", "ccostcenterid","ccostobjectid","cunitid"};
+		String[] groupfields = new String[] { "pk_org", "ccostcenterid","ccostobjid","cinventoryid","cunitid"};
 		String[] sumFields = new String[] { "nnum" };
 		List<CostAutoVO> list = new ArrayList<CostAutoVO>();
 		while (rowset.next()) {
@@ -215,6 +216,12 @@ public class CostAutoFIFetch extends AbstractFIFetch {
         }
     }
     
+    @Override
+    protected void saveFetchStatus(FetchParamVO paramvo, boolean isCheckFlag)
+    		throws BusinessException {
+    	// TODO 自动生成的方法存根
+    	
+    }
     /**
      * 处理每个单据的数据
      *
@@ -309,7 +316,10 @@ public class CostAutoFIFetch extends AbstractFIFetch {
         // 每个单据类型的处理
         for (int i = 0; i < prodatas.length; i++) {
             // 设置完工单中有的字段
-            ProductVOAdapter adapter = new ProductVOAdapter(new ProductAggVO());
+        	ProductAggVO productAggVO = new ProductAggVO();
+        	productAggVO.setParentVO(new ProductHeadVO());
+        	productAggVO.setChildrenVO(new ProductItemVO[]{ new ProductItemVO()});
+            ProductVOAdapter adapter = new ProductVOAdapter(productAggVO);
             this.setVmainfrees(adapter, prodatas[i], FetchKeyConst.CM_IA_ForMainProd);
             this.setVmainfrees(adapter, prodatas[i], FetchKeyConst.CM_IA_ForProd);
             // 设置类型，区别错误信息和警告信息
@@ -345,7 +355,8 @@ public class CostAutoFIFetch extends AbstractFIFetch {
             // 单据类型
 //            adapter.setCbilltypecode(billType);
             // 设置成本对象
-            adapter.setCcostobjectid(prodatas[i].getCcostobjectid());
+            String ccostobjid = (String) prodatas[i].getAttributeValue("ccostobjid");
+            adapter.setCcostobjectid(ccostobjid);
             retList.add(adapter);
         }
         return retList.toArray(new ProductVOAdapter[0]);
@@ -395,9 +406,7 @@ public class CostAutoFIFetch extends AbstractFIFetch {
             public String getItemKey(ProductItemVO vo) {
                 StringBuilder key = new StringBuilder();
                 key.append(vo.getCcostobjectid()); // 成本对象编码
-                for (String itemKey : CostAutoFIFetch.PRODUCT_SELFDEFINE_ITEMS) {
-                    key.append(vo.getAttributeValue(itemKey));
-                }
+            
                 return key.toString();
             }
 
@@ -485,49 +494,20 @@ public class CostAutoFIFetch extends AbstractFIFetch {
         productHeadVO.setPk_org_v(this.pkOrgv);
         // 会计期间
         productHeadVO.setCperiod(paramvo.getDaccountperiod());
-        // 状态
-        if (vo.getCbilltypecode().equals(Integer.valueOf(CMBillEnum.PROCESSIN.getEnumValue().getValue()))) {
-            // 委外
-            productHeadVO.setIsourcetype(Integer.valueOf(String.valueOf(CMSourceTypeEnum.IA_OUTSOURCING.value())));
-
-        }
-        else {
-            // 产成品入库单
-            productHeadVO.setIsourcetype(Integer.valueOf(String.valueOf(CMSourceTypeEnum.IA_PRODUCT_IN.value())));
-
-        }
+        productHeadVO.setIsourcetype(Integer.valueOf(String.valueOf(CMSourceTypeEnum.HOME_MAKE.value())));
         // 末到成本中心
         productHeadVO.setClastcostcenter(productHeadVO.getCcostcenterid()); // 末到成本中心
         // 业务日期
         UFDate businessdate = super.getBusinessdate();
-        productHeadVO.setDbusinessdate(businessdate); // 业务日期
+        productHeadVO.setDbusinessdate(paramvo.getBeginEndDate()[1]); // 业务日期
+        
+        productHeadVO.setVdef20("费用入库制单");
     }
 
     @Override
     protected List<Map<IFetchData, PullDataErroInfoVO>> getErrorInfo(IFIFetchData[] datas, String cperiod,
             boolean isCheckFlag) throws BusinessException {
         List<Map<IFetchData, PullDataErroInfoVO>> list = new ArrayList<Map<IFetchData, PullDataErroInfoVO>>();
-        // 产产品入库
-        List<IFIFetchData> ccprkList = this.getDataByBillTypeFromAdapter(datas, CMBillEnum.PRODUCTIN.toIntValue());
-        // 委托加工入库-完工
-        List<IFIFetchData> wtjgrkList = this.getDataByBillTypeFromAdapter(datas, CMBillEnum.PROCESSIN.toIntValue());
-        // 存储所有的错误信息
-        Map<IFetchData, PullDataErroInfoVO> allMap = new HashMap<IFetchData, PullDataErroInfoVO>();
-
-        // 产成品入库
-        Map<IFetchData, PullDataErroInfoVO> ccprkMap =
-                super.getErrorInfoAndFilteredData(ccprkList.toArray(new IFIFetchData[0]),
-                        new CCPRKCheckStrategy(this.pkOrg, this.pkGroup, this.costDomain, this.acountBook), cperiod,
-                        isCheckFlag).get(0);
-        // 委托加工入库
-        Map<IFetchData, PullDataErroInfoVO> wtjgMap =
-                super.getErrorInfoAndFilteredData(wtjgrkList.toArray(new IFIFetchData[0]),
-                        new WTJGRKWGCheckStrtegy(this.pkOrg, this.pkGroup, this.costDomain, this.acountBook), cperiod,
-                        isCheckFlag).get(0);
-
-        allMap.putAll(ccprkMap);
-        allMap.putAll(wtjgMap);
-        list.add(allMap);
         return list;
     }
 

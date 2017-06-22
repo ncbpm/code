@@ -2,17 +2,19 @@ package nc.vo.cm.fetchdata.entity;
 
 import nc.vo.ia.detailledger.entity.DetailLedgerVO;
 import nc.vo.ia.detailledger.view.cm.CMDataVO;
+import nc.vo.ia.detailledger.view.cm.CMDataVOMeta;
 import nc.vo.ia.mi3.entity.I3ItemVO;
+import nc.vo.pub.IAttributeMeta;
 import nc.vo.pub.SuperVO;
 import nc.vo.pub.lang.UFBoolean;
 import nc.vo.pub.lang.UFDouble;
 import nc.vo.pubapp.pattern.model.entity.view.AbstractDataView;
+import nc.vo.pubapp.pattern.model.meta.entity.view.DataViewMetaFactory;
 import nc.vo.pubapp.pattern.model.meta.entity.view.IDataViewMeta;
 
 public class CostAutoVO  extends AbstractDataView {
 
-	
-	
+
     /**
      * 成本对象
      */
@@ -482,10 +484,12 @@ public class CostAutoVO  extends AbstractDataView {
     public void setCcostobjectid(String ccostobjectid) {
         this.ccostobjectid = ccostobjectid;
     }
+    
+    @Override
+    public IDataViewMeta getMetaData() {
+      return DataViewMetaFactory.getInstance()
+          .getDataViewMeta(CMDataVOMeta.class);
+    }
 
-	@Override
-	public IDataViewMeta getMetaData() {
-		// TODO 自动生成的方法存根
-		return null;
-	}
+
 }

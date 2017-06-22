@@ -135,6 +135,8 @@ public class CostInAction extends NCAction {
 					.fetchAllData(paramvo);
 			// 更新状态栏
 			// this.showMsg(errorStatusMap, fetchSelectDataMap);
+			MessageDialog.showHintDlg(this.listFetchDataMainPnl, "提示", "费用入库自动制单完成");
+				
 			ShowStatusBarMsgUtil.showStatusBarMsg("费用入库自动制单完成 ",
 					this.listFetchDataMainPnl.getModel().getContext());
 		} catch (BusinessException e) {

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding='gb2312'?>
+<module name="mapub">
+  <public>
+	<component remote="true" singleton="true"  tx="CMT">
+	  <interface>nc.itf.mapub.IAllocfacotorMaintain</interface>
+	  <implementation>nc.impl.mapub.AllocfacotorMaintainImpl</implementation>
+	</component>
+
+  </public> 
+</module> 

@@ -85,7 +85,10 @@ public class BomBillForm extends BillFormFacade {
         this.getBillCardPanel().getHeadItem(BomVO.HVERSION).setEdit(true);
         //2-17-06-13
         for(int i=1;i<=10;i++){
-            this.getBillCardPanel().getHeadItem("vfree"+i).setEdit(true);
+        	BillItem headItem = getBillCardPanel().getHeadItem("vfree"+i);
+        	if(headItem!=null && headItem.isShow()){
+                this.getBillCardPanel().getHeadItem("vfree"+i).setEdit(true);
+        	}
         }
         super.onAdd();
     }

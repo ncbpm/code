@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="gbk"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="general" class="nc.pubapp.pade.code.funnode.FunNodePara">
+        <property name="moduleName" value="mapub" />
+	    <property name="bpfPath" value="test.bpf"/>
+	    <property name="funcode" value="38100120"/>
+	    <property name="clientPackName" value="nc.ui.mapub.allocfacotor"/>
+			    <property name="metaData" value="constra\METADATA\allocfacotor.bmf"/>
+	    <property name="xmlPath" value="constra\src\client\nc\ui\mapub\allocfacotor\ace\view\Allocfacotor_config.xml"/>
+	    <property name="metaDataType" value="singleType" />
+		<property name="funcregispath" value="constra/designmodel/funcmodel/allocfacotor/funcregis/38100120.func" />
+		<property name="quetempath" value="${quetempath}" />
+		<property name="printtempath" value="${printtempath}" />
+		<property name="systembasepath" value="constra/designmodel/systemplatebase/allocfacotor/38100120/38100120.stb" />
+		<property name="extendSuffix" value=""/>
+		<property name="uif2ModelFilePath" value="constra\designmodel\ace\uif2model\38100120.umf"/>
+		<property name="busiCompName" value="constra"/>
+		<property name="metaDataId" value="1c068224-c004-4327-bdfe-c72b85d358d0"/>
+	</bean>
+
+	<bean id="templet" class="nc.pubapp.pade.code.funnode.Templet">
+		<property name="tempStyle" value="1" />
+		<property name="nodeKey" value="" />
+		<property name="templetPath" value="constra/designmodel/templet/allocfacotor/billtemplet/38100120.btf" />
+	</bean>
+	
+	<bean id="FilePackNameBean" class="nc.pubapp.pade.code.engine.FilePackNamePara">
+		<property name="filePackNameList">
+			 <list>
+				  <value>nc.ui.mapub.allocfacotor.action.AllocfacotorAddLineAction.java</value>
+				  <value>nc.ui.mapub.allocfacotor.handler.BodyAfterEditHandler.java</value>
+				  <value>nc.ui.mapub.allocfacotor.handler.BodyBeforeEditHandler.java</value>
+			 </list>
+		</property>
+	</bean>
+
+</beans>

@@ -1,24 +1,16 @@
 package nc.bs.cm.fetchdata.checkandfetch;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.lang.StringUtils;
 
 import nc.bd.framework.base.CMStringUtil;
-import nc.bs.cm.fetchdata.checkandfetch.AbstractCheckAndFetch.AbstractFetchStrategy;
 import nc.bs.cm.fetchdata.fetchcheck.AbstractCheckStrategy;
 import nc.bs.cm.fetchdata.fetchcheck.MMFetchCheckStrategy;
 import nc.bs.cm.fetchdata.groupdata.IGroupStrategy;
 import nc.bs.framework.common.NCLocator;
 import nc.cmpub.business.adapter.BDAdapter;
-import nc.cmpub.business.adapter.FIAdapter;
-import nc.cmpub.business.adapter.MMAdapter;
 import nc.cmpub.business.enumeration.CMAllocStatusEnum;
 import nc.cmpub.business.enumeration.CMSourceTypeEnum;
 import nc.cmpub.business.enumeration.CMStatusEnum;
@@ -30,7 +22,6 @@ import nc.vo.cm.activitynum.entity.ActivityNumHeadVO;
 import nc.vo.cm.activitynum.entity.ActivityNumItemVO;
 import nc.vo.cm.costobject.entity.CostObjectGenerateVO;
 import nc.vo.cm.costobject.enumeration.CostObjInStorageTypeEnum;
-import nc.vo.cm.costobject.enumeration.ProductTypeEnum;
 import nc.vo.cm.fetchdata.entity.ChuyunFetchDataVO;
 import nc.vo.cm.fetchdata.entity.FetchParamVO;
 import nc.vo.cm.fetchdata.entity.PullDataErroInfoVO;
@@ -41,7 +32,6 @@ import nc.vo.cm.fetchdata.entity.adapter.IMMFetchData;
 import nc.vo.cm.fetchdata.enumeration.CMMesTypeEnum;
 import nc.vo.cm.fetchdata.enumeration.FetchDataSchemaEnum;
 import nc.vo.ia.pub.util.ToArrayUtil;
-import nc.vo.mmpac.apply.task.param.MMFetchDataVO;
 import nc.vo.pub.BusinessException;
 import nc.vo.pub.CircularlyAccessibleValueObject;
 import nc.vo.pub.lang.UFDate;
@@ -50,6 +40,8 @@ import nc.vo.pubapp.pattern.exception.ExceptionUtils;
 import nc.vo.pubapp.pattern.pub.Constructor;
 import nc.vo.pubapp.pattern.pub.SqlBuilder;
 import nc.vo.util.AuditInfoUtil;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  *环保取数
@@ -135,20 +127,38 @@ public class HuanbaoFIFetch extends  AbstractCheckAndFetch<IMMFetchData> {
 		}
 		DataAccessUtils util = new DataAccessUtils();
 		IRowSet query = util.query("select vactivityname  from bd_activity  where cactivityid='"+pk_largeritem+"");
-		
-		
-		SqlBuilder sql = new SqlBuilder();
-		sql.append(" select dp.pk_org,  dp.pk_costcenter as ccostcenterid,  sum(chuyun.nnum) wknum ");
-		sql.append(" from  view_nc_zuoyehuanbao  huanbao");
-		sql.append(" inner join  resa_ccdepts  dp on huanbao.cdptid = dp.pk_dept");
-		sql.append(" where nvl(dp.dr,0)=0 ");
-		sql.append(" and dp.pk_org", pullData.getPk_org());
-		sql.append(" and huanbao.pk_largeitem", pullData.getPk_largeritem());
-		sql.append(" and huanbao.periodid",pullData.getCperiod());
-		sql.append(" GROUP BY dp.pk_org,  dp.pk_costcenter");
-		IRowSet rowset = util.query(sql.toString());
-		ChuyunFetchDataVO[] vos = constructVOs(pullData, rowset);
-		
+//		在进行崇杰费用取数时的计算规则为： 每个受益部门的废水量、折算废水量、新鲜水量*0.794三个数量中的最大值，生成的作业统计单作业为 崇杰水量。
+//		注：0.794这个系数最好能可配置！
+		String  vactivityname = null;
+		while (query.next()) {
+			vactivityname = query.getString(0);
+		}
+		ChuyunFetchDataVO[] vos  = null;
+		if("崇杰水量".equalsIgnoreCase(vactivityname)){
+			SqlBuilder sql = new SqlBuilder();
+			sql.append(" select dp.pk_org,  dp.pk_costcenter as ccostcenterid,  sum(chuyun.nnum) wknum ");
+			sql.append(" from  view_nc_zuoyechongjie  huanbao");
+			sql.append(" inner join  resa_ccdepts  dp on huanbao.cdptid = dp.pk_dept");
+			sql.append(" where nvl(dp.dr,0)=0 ");
+			sql.append(" and dp.pk_org", pullData.getPk_org());
+			sql.append(" and huanbao.periodid",pullData.getCperiod());
+			sql.append(" GROUP BY dp.pk_org,  dp.pk_costcenter");
+			IRowSet rowset = util.query(sql.toString());
+			constructVOs(pullData, rowset);
+			
+		}else{
+			SqlBuilder sql = new SqlBuilder();
+			sql.append(" select dp.pk_org,  dp.pk_costcenter as ccostcenterid,  sum(chuyun.nnum) wknum ");
+			sql.append(" from  view_nc_zuoyehuanbao  huanbao");
+			sql.append(" inner join  resa_ccdepts  dp on huanbao.cdptid = dp.pk_dept");
+			sql.append(" where nvl(dp.dr,0)=0 ");
+			sql.append(" and dp.pk_org", pullData.getPk_org());
+			sql.append(" and huanbao.pk_largeitem", pullData.getPk_largeritem());
+			sql.append(" and huanbao.periodid",pullData.getCperiod());
+			sql.append(" GROUP BY dp.pk_org,  dp.pk_costcenter");
+			IRowSet rowset = util.query(sql.toString());
+			vos = constructVOs(pullData, rowset);
+		}
 		return vos;
 
 	}

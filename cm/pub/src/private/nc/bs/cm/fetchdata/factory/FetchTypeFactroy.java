@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Set;
 
 import nc.bs.cm.fetchdata.checkandfetch.ChuyunFIFetch;
+import nc.bs.cm.fetchdata.checkandfetch.CostAutoCancleFIFetch;
+import nc.bs.cm.fetchdata.checkandfetch.CostAutoFIFetch;
 import nc.bs.cm.fetchdata.checkandfetch.CostTranReGetMaterial;
 import nc.bs.cm.fetchdata.checkandfetch.DingeFIFetch;
 import nc.bs.cm.fetchdata.checkandfetch.HuanbaoFIFetch;
@@ -70,6 +72,12 @@ public class FetchTypeFactroy {
         }else if (FetchDataObjEnum.HUANBAO.equalsValue(type)) {
             // 环保
             typeset = new HuanbaoFIFetch();
+        }else if(100.==type) {
+            // 费用入库自动制单
+            typeset = new CostAutoFIFetch();
+        }else if(101 ==type) {
+            //费用入库自动制单 取消
+            typeset = new CostAutoCancleFIFetch();
         }
         return typeset;
     }

@@ -1,0 +1,30 @@
+--外系统取数设置 节点改造
+select * from pub_billtemplet t where t.pk_billtypecode in (
+'3830011210','3830011212','3830011214','3830011216'
+);
+select * from pub_billtemplet_t t where t.pk_billtemplet in (
+select pk_billtemplet from pub_billtemplet t where t.pk_billtypecode in (
+'3830011210','3830011212','3830011214','3830011216'
+)
+)
+select * from pub_billtemplet_b t where t.pk_billtemplet in (
+select pk_billtemplet from pub_billtemplet t where t.pk_billtypecode in (
+'3830011210','3830011212','3830011214','3830011216'
+)
+);
+select * from pub_systemplate_base where funnode ='38300112'
+and nodekey in ('dinge','chuyun','jianyan','huanbao');
+
+
+---外系统取数
+SELECT *
+FROM pub_billtemplet_b t
+WHERE t.pk_billtemplet IN
+  (SELECT pk_billtemplet
+  FROM pub_billtemplet t
+  WHERE t.pk_billtypecode IN ( '38300304' )
+  )
+AND itemkey in ('pk_workitem','pk_costobject','pk_qcdept','pk_serverdept','pk_largeritem','pk_factor','pk_factorgroup');
+
+--功能节点：作业环保统计单
+50081015

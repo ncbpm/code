@@ -18,6 +18,7 @@ import nc.pubitf.org.IOrgUnitPubService;
 import nc.ui.bd.ref.model.AccperiodRefModel;
 import nc.ui.cm.fetchdata.action.AllCancelAction;
 import nc.ui.cm.fetchdata.action.CheckAciton;
+import nc.ui.cm.fetchdata.action.CostInAction;
 import nc.ui.cm.fetchdata.action.FetchDataAction;
 import nc.ui.cm.fetchdata.factory.FetchDataTypeFactory;
 import nc.ui.cm.fetchdata.uidataset.IFetchDataType;
@@ -81,8 +82,18 @@ public class ListFetchDataMainPnl extends JPanel implements ValueChangedListener
     private BillListView billListView;
 
     private BillManageModel model;
+    //2017-06-20 费用入库自动制单    
+    private CostInAction costinAction;
 
-    // 取数按钮
+    public CostInAction getCostinAction() {
+		return costinAction;
+	}
+
+	public void setCostinAction(CostInAction costinAction) {
+		this.costinAction = costinAction;
+	}
+
+	// 取数按钮
     private FetchDataAction fetchDataAction;
 
     // 检查按钮
@@ -207,6 +218,16 @@ public class ListFetchDataMainPnl extends JPanel implements ValueChangedListener
         else {
             this.allCancelAction.setEnabled(true);
         }
+        
+        //
+        Object[] accountPeriod = (Object[]) this.getAccountPeriod().getValueObj();
+        
+        if(accountPeriod == null || accountPeriod.length ==0){
+        	this.costinAction.setEnabled(false);
+        }else{
+        	this.costinAction.setEnabled(true);
+        }
+        
     }
 
     /***

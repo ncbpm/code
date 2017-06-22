@@ -19,7 +19,6 @@ public class FetchDataObjEnum extends MDEnum {
     public FetchDataObjEnum(IEnumValue enumvalue) {
         super(enumvalue);
     }
-
     /**
      * ²ÄÁÏ³ö¿â
      */

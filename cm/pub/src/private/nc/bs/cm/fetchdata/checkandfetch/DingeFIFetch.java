@@ -208,31 +208,6 @@ public class DingeFIFetch extends AbstractFIFetch {
 	
 	
 
-    // 设置物料的辅助属性
-    private void setVbfrees(StuffVOAdapter adapter, CMDataVO vo) {
-        // adapter.setCcustomerid((String) vo.getAttributeValue("ccustomerid"));
-        adapter.setCcustomerid(vo.getCasscustid());
-        adapter.setCprojectid(vo.getCprojectid());
-        adapter.setCvendorid(vo.getCvendorid());
-        adapter.setCproductorid(vo.getCproductorid());
-        adapter.setVbfree1(vo.getVfree1());
-        adapter.setVbfree2(vo.getVfree2());
-        adapter.setVbfree3(vo.getVfree3());
-        adapter.setVbfree4(vo.getVfree4());
-        adapter.setVbfree5(vo.getVfree5());
-        adapter.setVbfree6(vo.getVfree6());
-        adapter.setVbfree7(vo.getVfree7());
-        adapter.setVbfree8(vo.getVfree8());
-        adapter.setVbfree9(vo.getVfree9());
-        adapter.setVbfree10(vo.getVfree10());
-    }
-
-    // 置产品的辅助属性
-    private void setVmainfrees(StuffVOAdapter adapter, CMDataVO vo, String[][] strs) {
-        for (String[] str : strs) {
-            adapter.setAttributeValue(str[0], vo.getAttributeValue(str[1]));
-        }
-    }
 
 
 	private CMDataVO[] queryCMDataVO(GetDataPara para, FetchParamVO fetchPara) {

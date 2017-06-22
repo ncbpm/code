@@ -3,6 +3,8 @@ package nc.ui.mmpac.huanbao.action;
 import nc.ui.pubapp.uif2app.actions.intf.ICopyActionProcessor;
 import nc.vo.pub.BusinessException;
 import nc.vo.pub.CircularlyAccessibleValueObject;
+import nc.vo.pub.lang.UFDate;
+import nc.vo.pub.pf.BillStatusEnum;
 import nc.vo.mmpac.huanbao.AggHuanbaoHVO;
 import nc.vo.uif2.LoginContext;
 
@@ -17,6 +19,10 @@ public class CopyActionProcessor implements
 		paramT.getParentVO().setAttributeValue("modifiedtime", null);
 		paramT.getParentVO().setAttributeValue("creator", null);
 		paramT.getParentVO().setAttributeValue("creationtime", null);
+		paramT.getParentVO().setAttributeValue("billno", null);
+		// 设置单据状态、单据业务日期默认值
+		paramT.getParentVO().setAttributeValue("approvestatus", BillStatusEnum.FREE.value());
+		paramT.getParentVO().setAttributeValue("dbilldate",  new UFDate());
 		//TODO 根据需要业务自己补充处理清空
 		String[] codes =paramT.getTableCodes();
 		if (codes != null && codes.length>0) {

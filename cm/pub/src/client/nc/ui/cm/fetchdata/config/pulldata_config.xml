@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans default-lazy-init="true">
+	<bean id="context" class="nc.vo.uif2.LoginContext" />
+
+	<bean id="templateContainer" class="nc.ui.uif2.editor.TemplateContainer"
+		init-method="load">
+		<property name="context" ref="context" />
+		<property name="nodeKeies">
+			<list>
+				<value></value>
+				<value>errorinfo</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="manageAppModel" class="nc.ui.pubapp.uif2app.model.BillManageModel">
+		<property name="context" ref="context" />
+	</bean>
+
+	<bean id="container" class="nc.ui.uif2.TangramContainer"
+		init-method="initUI">
+		<property name="tangramLayoutRoot">
+			<bean class="nc.ui.uif2.tangramlayout.node.CNode">
+				<property name="component" ref="mainPanel" />
+			</bean>
+		</property>
+		<property name="actions">
+			<list>
+				<ref bean="fetchDataAction" />
+				<ref bean="checkAction" />
+				<ref bean="allCancelAction" />
+				<ref bean="costinAction" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- 面板:主界面 注入pullDataType = 1 存货核算取数，2 生产制造取数，4废品取数 -->
+	<bean id="mainPanel" class="nc.ui.cm.fetchdata.view.ListFetchDataMainPnl"
+		init-method="initUI">
+		<property name="model" ref="manageAppModel" />
+		<property name="billListView" ref="listView" />
+		<property name="fetchDataAction" ref="fetchDataAction" />
+		<property name="checkAciton" ref="checkAction" />
+		<property name="allCancelAction" ref="allCancelAction" />
+		<property name="costinAction" ref="costinAction" />
+
+	</bean>
+
+	<!-- 列表视图 -->
+	<bean id="listView" class="nc.ui.cmpub.framework.view.CMBillListView"
+		init-method="initUI">
+		<property name="model" ref="manageAppModel" />
+		<property name="multiSelectionMode" value="1" />
+		<property name="templateContainer" ref="templateContainer" />
+		<property name="nodekey" value="" />
+	</bean>
+
+	<!-- 费用入库自动制单 -->
+	<bean id="costinAction" class="nc.ui.cm.fetchdata.action.CostInAction">
+		<property name="listFetchDataMainPnl" ref="mainPanel" />
+		<property name="code" value="FetchData" />
+	</bean>
+
+
+	<!-- 1 取数 按钮动作 -->
+	<bean id="fetchDataAction" class="nc.ui.cm.fetchdata.action.FetchDataAction">
+		<property name="listFetchDataMainPnl" ref="mainPanel" />
+		<property name="code" value="FetchData" />
+	</bean>
+
+	<!-- 2 检查按钮动作 -->
+	<bean id="checkAction" class="nc.ui.cm.fetchdata.action.CheckAciton">
+		<property name="listFetchDataMainPnl" ref="mainPanel" />
+		<property name="dialog" ref="fetchDataCheckDlg" />
+		<property name="code" value="Check" />
+	</bean>
+
+	<!-- 3全部取消 按钮动作 -->
+	<bean id="allCancelAction" class="nc.ui.cm.fetchdata.action.AllCancelAction">
+		<property name="listFetchDataMainPnl" ref="mainPanel" />
+		<property name="code" value="FetchData" />
+	</bean>
+
+	<!-- 检查dlg -->
+	<bean id="fetchDataCheckDlg" class="nc.ui.cm.fetchdata.view.FetchDataCheckDlg">
+		<property name="listFetchDataMainPnl" ref="mainPanel" />
+		<property name="nodekey" value="errorinfo" />
+		<property name="model" ref="manageAppModel" />
+	</bean>
+	<!-- 打开节点监听 -->
+	<bean id="InitDataListener"
+		class="nc.ui.cmpub.framework.query.initDataListener.PubFuncNodeInitDataListener">
+		<property name="model" ref="manageAppModel" />
+		<property name="context" ref="context"></property>
+		<property name="processorMap">
+			<map>
+				<entry key="0">
+					<bean class="nc.ui.cm.fetchdata.handler.FetchDataInitDataProcessor">
+						<property name="orgPanel" ref="mainPanel" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+</beans>

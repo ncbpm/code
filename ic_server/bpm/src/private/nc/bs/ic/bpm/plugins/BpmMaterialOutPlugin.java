@@ -144,11 +144,12 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 			vo.setCbodywarehouseid(headvo.getCwarehouseid());
 			vo.setCfirstbillbid(sitem.getCfirstbid());
 			vo.setCfirstbillhid(sitem.getCfirstid());
+			vo.setCunitid(sitem.getCunitid());
 			// vo.setCfirsttranstype(cfirsttranstype);
 			vo.setCfirsttype(sitem.getCfirsttypecode());
 			vo.setCmaterialvid(sitem.getPk_material());
 			vo.setCprojectid(header.getPk_project());
-			vo.setCsourcetype(sitem.getCsourcetypecode());
+			vo.setCsourcetype("422X");
 			vo.setCsrcmaterialvid(sitem.getPk_material());
 			vo.setVsourcebillcode(header.getVbillcode());
 			vo.setVsourcerowno(sitem.getCrowno());

@@ -18,10 +18,12 @@ public class Push422Xto4DProcess extends ICRule<MaterialOutVO> {
 			icPFParameter = new ICPFParameter();
 		icPFParameter.setBSafetyStockCheckFlag(true);
 		context.setICPFParameter(icPFParameter);
-
+		
 		BillTransTo4DProcess proc = new BillTransTo4DProcess(true);
 		GenBsUtil.initTransBillBaseProcess(proc);
 		proc.setAutoPick(false);
 		proc.setFillNum(true);
+		proc.processBillVOs(vos);
+//		proc.processBillRule(vos)
 	}
 }

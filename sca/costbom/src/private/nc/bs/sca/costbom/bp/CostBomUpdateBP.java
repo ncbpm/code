@@ -26,6 +26,7 @@ import nc.bs.sca.costbom.rule.CostBomMaterialTypeCheckRule;
 import nc.bs.sca.costbom.rule.CostBomMaterialUniqueCheckRule;
 import nc.bs.sca.costbom.rule.CostBomNullElementdCheckRule;
 import nc.bs.sca.costbom.rule.CostBomStuffFactorRelateRule;
+import nc.bs.sca.costbom.rule.CostBomToFenpeiXiShukRule;
 import nc.bs.sca.costbom.rule.CostBomUniqueCheckRule;
 import nc.bs.sca.pub.business.rule.CheckLockRule;
 import nc.cmpub.business.adapter.BDAdapter;
@@ -139,6 +140,11 @@ public class CostBomUpdateBP {
 		processor.addBeforeRule(new CostBomFinstoragetypeCheck());
 		// 清除成本BOM上未启用的布尔型辅助属性默认值
 		//processor.addBeforeRule(new CostBomClearDisableBooleanAssValueRule());
+		
+		
+		//207-06-22 新增后规则 根据核算要素与成本系数对照，将成本BOM的产品同步到分配系数中
+		processor.addBeforeRule(new CostBomToFenpeiXiShukRule(factorMap));
+
 	}
 
 	/**

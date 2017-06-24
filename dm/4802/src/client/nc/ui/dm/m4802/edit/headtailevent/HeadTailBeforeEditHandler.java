@@ -21,7 +21,7 @@ public class HeadTailBeforeEditHandler implements
 	public void handleAppEvent(CardHeadTailBeforeEditEvent e) {
 		String key = e.getKey();
 
-		// 委托单位
+		// 部门
 		if (key.equals(DelivapplyHVO.VDEF1)) {
 			Pk_applydept_v handler = new Pk_applydept_v();
 			handler.beforeEdit(e);

@@ -153,8 +153,8 @@ public class CostBomInsertBP {
 		// 校验费用子项唯一性
 		processor.addAfterRule(new CostBomFeeUniqueCheckRule());
 		
-		//207-06-22 新增后规则
-		processor.addAfterRule(new CostBomToFenpeiXiShukRule());
+		//207-06-22 新增后规则 根据核算要素与成本系数对照，将成本BOM的产品同步到分配系数中
+		processor.addAfterRule(new CostBomToFenpeiXiShukRule(factorMap));
 
 
 	}

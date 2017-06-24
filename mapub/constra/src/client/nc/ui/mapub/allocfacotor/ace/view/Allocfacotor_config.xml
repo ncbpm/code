@@ -141,6 +141,13 @@
 		<property name="model" ref="batchModel" />
 		<property name="handlerGroup">
 			<list>
+			<bean class="nc.ui.pubapp.uif2app.event.EventHandlerGroup">
+					<property name="event" value="nc.ui.pubapp.uif2app.event.card.CardBodyBeforeEditEvent" />
+					<property name="handler">
+						<bean class="nc.ui.mapub.allocfacotor.event.FactorHandler" >
+						</bean>
+					</property>
+				</bean>
 			</list>
 		</property>
 	</bean>

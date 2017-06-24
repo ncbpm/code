@@ -51,7 +51,6 @@ public class CostBomInsertBP {
 	public CostBomAggVO[] insert(CostBomAggVO[] bills) {
 		// 解决重复sql问题
 		Set<String> factorAsoaList = new HashSet<String>();
-
 		if (bills != null && bills.length > 0) {
 			for (CostBomAggVO aggvo : bills) {
 				CircularlyAccessibleValueObject[] childrenVos = aggvo

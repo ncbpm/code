@@ -75,7 +75,7 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 		MaterialOutVO[] bills = new MaterialOutVO[] { (MaterialOutVO) icbill };
 		Logger.info("保存新单据...");
 		MaterialOutVO[] vos = new PushSaveActionFor422X(
-				BpmServicePluginPoint.pushSaveFor422X).pushSaveAndSign(bills);
+				BpmServicePluginPoint.pushSaveFor422X).pushSave(bills);
 
 		return vos;
 	}

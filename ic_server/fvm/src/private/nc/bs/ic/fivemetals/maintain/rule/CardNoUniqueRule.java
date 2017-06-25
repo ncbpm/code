@@ -27,8 +27,7 @@ public class CardNoUniqueRule implements IRule<AggFiveMetalsVO> {
 		FiveMetalsHVO hvo = vo.getParentVO();
 		String condition = " pk_group = '" + hvo.getPk_group()
 				+ "' and pk_org ='" + hvo.getPk_org() + "' and vcardno = '"
-				+ hvo.getVcardno() + "'  and cperiod = '" + hvo.getCperiod()
-				+ "'";
+				+ hvo.getVcardno() + "'";
 		boolean isexists = false;
 		try {
 			isexists = dao.isExists(hvo.getTableName(), condition);

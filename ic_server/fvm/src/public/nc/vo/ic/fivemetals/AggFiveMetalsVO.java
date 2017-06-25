@@ -5,23 +5,23 @@ import nc.vo.pubapp.pattern.model.meta.entity.bill.BillMetaFactory;
 import nc.vo.pubapp.pattern.model.meta.entity.bill.IBillMeta;
 
 @nc.vo.annotation.AggVoInfo(parentVO = "nc.vo.ic.fivemetals.FiveMetalsHVO")
-public class AggFiveMetalsVO extends AbstractBill {
 
-	/**
+public class AggFiveMetalsVO extends AbstractBill {
+	
+	  /**
 	 * 
 	 */
 	private static final long serialVersionUID = -6083931284225735258L;
 
 	@Override
-	public IBillMeta getMetaData() {
-		IBillMeta billMeta = BillMetaFactory.getInstance().getBillMeta(
-				AggFiveMetalsVOMeta.class);
-		return billMeta;
-	}
-
-	@Override
-	public FiveMetalsHVO getParentVO() {
-		return (FiveMetalsHVO) this.getParent();
-	}
-
+	  public IBillMeta getMetaData() {
+	  	IBillMeta billMeta =BillMetaFactory.getInstance().getBillMeta(AggFiveMetalsVOMeta.class);
+	  	return billMeta;
+	  }
+	    
+	  @Override
+	  public FiveMetalsHVO getParentVO(){
+	  	return (FiveMetalsHVO)this.getParent();
+	  }
+	  
 }

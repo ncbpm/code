@@ -45,9 +45,9 @@ public class SaveVOValidateRule implements IRule<AggFiveMetalsVO> {
 					ExceptionUtils.wrappBusinessException("传入的数据中存在卡号为空的数据！");
 				}
 
-				if (hvo.getCperiod() == null) {
-					ExceptionUtils.wrappBusinessException("传入的数据中存在月份为空的数据！");
-				}
+//				if (hvo.getCperiod() == null) {
+//					ExceptionUtils.wrappBusinessException("传入的数据中存在月份为空的数据！");
+//				}
 
 				if (hvo.getVdepartment() == null && hvo.getVproject() == null) {
 					ExceptionUtils

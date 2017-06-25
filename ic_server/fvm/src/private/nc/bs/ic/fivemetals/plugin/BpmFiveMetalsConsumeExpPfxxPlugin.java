@@ -37,9 +37,9 @@ public class BpmFiveMetalsConsumeExpPfxxPlugin<T extends AggFiveMetalsVO>
 			throw new BusinessException("单据的卡号字段不能为空，请输入值");
 		}
 
-		if (headvo.getCperiod() == null) {
-			throw new BusinessException("单据的月份字段不能为空，请输入值");
-		}
+//		if (headvo.getCperiod() == null) {
+//			throw new BusinessException("单据的月份字段不能为空，请输入值");
+//		}
 
 		if (headvo.getVproject() == null && headvo.getVdepartment() == null) {
 			throw new BusinessException("单据的项目字段或部门字段不能为空，请输入值");
@@ -47,7 +47,7 @@ public class BpmFiveMetalsConsumeExpPfxxPlugin<T extends AggFiveMetalsVO>
 
 		if (headvo.getVproject() != null) {
 			headvo.setVcardtype(CardTypeEnum.项目卡.getReturnType());
-		} else if (headvo.getVdepartment() != null) {
+		} else {
 			headvo.setVcardtype(CardTypeEnum.部门卡.getReturnType());
 		}
 

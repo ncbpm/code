@@ -127,8 +127,7 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 		VOQuery<ISuperVO> query = new VOQuery(FiveMetalsHVO.class);
 		String condition = " and pk_group = '" + hvo.getPk_group()
 				+ "' and pk_org ='" + hvo.getPk_org() + "' and vcardno = '"
-				+ hvo.getVcardno() + "' and cperiod = '" + hvo.getCperiod()
-				+ "'";
+				+ hvo.getVcardno() + "' ";
 		FiveMetalsHVO[] hvos = (FiveMetalsHVO[]) query.query(condition, null);
 		if (hvos == null || hvos.length == 0)
 			return null;

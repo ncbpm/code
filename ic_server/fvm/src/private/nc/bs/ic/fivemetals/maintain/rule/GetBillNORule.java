@@ -26,8 +26,7 @@ public class GetBillNORule implements IRule<AggFiveMetalsVO> {
 
 		FiveMetalsHVO hvo = vo.getParentVO();
 		String condition = " pk_group = '" + hvo.getPk_group()
-				+ "' and pk_org ='" + hvo.getPk_org() + "'  and cperiod = '"
-				+ hvo.getCperiod() + "'";
+				+ "' and pk_org ='" + hvo.getPk_org() + "'";
 		String billno = null;
 		try {
 			billno = dao.getNewBillNo(hvo.getTableName(), condition, "code");

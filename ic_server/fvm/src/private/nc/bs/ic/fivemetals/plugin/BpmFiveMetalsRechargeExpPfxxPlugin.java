@@ -11,6 +11,7 @@ import nc.vo.ic.fivemetals.FiveMetalsHVO;
 import nc.vo.pfxx.auxiliary.AggxsysregisterVO;
 import nc.vo.pub.BusinessException;
 
+//  充值
 public class BpmFiveMetalsRechargeExpPfxxPlugin<T extends AggFiveMetalsVO>
 		extends nc.bs.pfxx.plugin.AbstractPfxxPlugin {
 
@@ -37,9 +38,9 @@ public class BpmFiveMetalsRechargeExpPfxxPlugin<T extends AggFiveMetalsVO>
 			throw new BusinessException("单据的卡号字段不能为空，请输入值");
 		}
 
-		if (headvo.getCperiod() == null) {
-			throw new BusinessException("单据的月份字段不能为空，请输入值");
-		}
+//		if (headvo.getCperiod() == null) {
+//			throw new BusinessException("单据的月份字段不能为空，请输入值");
+//		}
 
 		if (headvo.getVproject() == null && headvo.getVdepartment() == null) {
 			throw new BusinessException("单据的项目字段或部门字段不能为空，请输入值");

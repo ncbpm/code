@@ -59,6 +59,10 @@ import org.apache.commons.lang.StringUtils;
  */
 
 public class M21ForBPMAdd extends AbstractPfxxPlugin {
+	
+	String[] bodyattributeNames = new String[]{"pk_group","pk_org","pk_org_v","vbdef1","vbmemo","pk_reqstoorg","pk_reqstoorg_v","pk_arrvstoorg","pk_arrvstoorg_v","pk_flowstockorg","pk_flowstockorg_v","crowno","pk_material","pk_srcmaterial","cunitid","nnum","castunitid","nastnum","vchangerate","norigtaxmny","norigtaxprice","dplanarrvdate","chandler","fisactive","breceiveplan","blargess","btransclosed","pk_psfinanceorg","pk_psfinanceorg_v","pk_apfinanceorg","pk_apfinanceorg_v","bborrowpur","nweight","nvolumn","bstockclose","binvoiceclose","barriveclose","bpayclose","ftaxtypeflag","ntaxrate","ccurrencyid","nexchangerate","dbilldate","pk_supplier","corigcurrencyid","csendcountryid","crececountryid","ctaxcountryid","fbuysellflag","btriatradeflag","ctaxcodeid","nnosubtaxrate","nnosubtax"};
+
+	String[] headattributeNames = new String[]{"pk_order","pk_group","vmemo","pk_org","pk_org_v","vbillcode","dbilldate","pk_supplier","pk_dept_v","pk_dept","vtrantypecode","pk_invcsupllier","pk_payterm","billmaker","forderstatus","approver","bisreplenish","breturn","iprintcount","creationtime","taudittime","bcooptoso","bsocooptome","ntotalastnum","ntotalorigmny","bfrozen","pk_busitype","fhtaxtypeflag","corigcurrencyid","brefwhenreturn","ntotalweight","ntotalvolume","ntotalpiece","bfinalclose","creator","ctrantypeid","bpublish"};
 
 	@Override
 	protected Object processBill(Object vo, ISwapContext swapContext,
@@ -294,7 +298,6 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 				map.put(body.getVbdef1(), body);
 			}
 		}
-		String[] attributeNames = queryVo.getBVO()[0].getAttributeNames();
 		for (OrderItemVO bpm : update_row) {
 			OrderItemVO orderItemVO = map.get(bpm.getVbdef1());
 			//校验修订后的数量，是否小于累计到货数量
@@ -303,10 +306,8 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 			if(bpm_nnum.sub(bpm_naccumarrvnum).doubleValue() <0){
 				throw new BusinessException("操作不合法 :行"+bpm.getVbdef1()+" 本次修订后的数量:"+bpm_nnum+ ".不能小于已累计到货:"+bpm_naccumarrvnum);
 			}
-			for (String attr : attributeNames) {
-				if("ts".equalsIgnoreCase(attr)){
-					continue;
-				}
+			for (String attr : bodyattributeNames) {
+				
 				orderItemVO.setAttributeValue(attr,
 						bpm.getAttributeValue(attr));
 			}
@@ -330,14 +331,11 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 
 	private void updateHVO(OrderVO queryVo, OrderVO order) {
 		// TODO 自动生成的方法存根
-		String[] attributeNames = queryVo.getHVO().getAttributeNames();
 		OrderHeaderVO hvo = queryVo.getHVO();
 		Integer nversion = hvo.getNversion();
 		OrderHeaderVO hvo_bpm = order.getHVO();
-		for (String attr : attributeNames) {
-			if("ts".equalsIgnoreCase(attr)){
-				continue;
-			}
+		for (String attr : headattributeNames) {
+			
 			hvo.setAttributeValue(attr, hvo_bpm.getAttributeValue(attr));
 		}
 		

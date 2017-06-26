@@ -12,7 +12,6 @@ import nc.vo.pu.m422x.entity.StoreReqAppVO;
 import nc.vo.pub.BusinessException;
 import nc.vo.pub.VOStatus;
 import nc.vo.pubapp.AppContext;
-import nc.vo.qc.pub.enumeration.QCBillStatusEnum;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -64,13 +63,13 @@ public class M422XForAudit extends AbstractPfxxPlugin {
 		StoreReqAppVO clientVO = clientVOS[0];
 		if(3 == bpmVO.getHVO().getFbillstatus() || 4 == bpmVO.getHVO().getFbillstatus()){
 			clientVO.getHVO().setApprover(bpmVO.getHVO().getApprover());
-			clientVO.getHVO().setFbillstatus(QCBillStatusEnum.APPROVE.toIntValue());
+			clientVO.getHVO().setFbillstatus(bpmVO.getHVO().getFbillstatus());
 			clientVO.getHVO().setTaudittime(AppContext.getInstance().getBusiDate());
 			clientVO.getParentVO().setStatus(VOStatus.UPDATED);
 			BillUpdate<StoreReqAppVO> update = new BillUpdate<StoreReqAppVO>();
 			StoreReqAppVO[] vos = update.update(new StoreReqAppVO[] { clientVO },
 					new StoreReqAppVO[] { originVO });
-		}else if(5 == bpmVO.getHVO().getFbillstatus() ){}{
+		}else if(5 == bpmVO.getHVO().getFbillstatus() ){
 			IStoreReqAppClose appClose = NCLocator.getInstance().lookup(
 					IStoreReqAppClose.class);
 			appClose.billClose(clientVOS);

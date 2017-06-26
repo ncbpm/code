@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding='gb2312'?>
+<module name="nc.itf.uap.pfxx.PfxxEJB">
+    <public>
+        <component remote="true" singleton="true" tx="CMT">
+            <interface>nc.itf.uapeai.sys.ISysDisPatcher</interface>            
+            <implementation>nc.bs.uapeai.sys.send.SysDisPatcher</implementation>
+        </component>
+    </public>
+</module>

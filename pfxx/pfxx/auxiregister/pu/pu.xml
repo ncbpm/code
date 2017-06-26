@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding='utf-8'?>
+<auxiregister>
+    <billtype editable="Yes" id="bpm_21_add">
+    </billtype>
+    <billtype editable="Yes" id="bpm_20_update">
+    </billtype>
+    <billtype editable="Yes" id="JL_23_qc">
+    </billtype>
+    <billtype editable="Yes" id="bpm_422X_audit">
+    </billtype>
+</auxiregister>

@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="src" output="422X/classes" path="422X/src/public"/>
+	<classpathentry kind="src" output="422X/classes" path="422X/src/client"/>
+	<classpathentry kind="src" output="422X/classes" path="422X/src/private"/>
+	<classpathentry kind="src" output="422X/classes" path="422X/src/test"/>
+	<classpathentry kind="src" output="422X/classes" path="422X/resources"/>
 	<classpathentry kind="src" output="bpm/classes" path="bpm/src/public"/>
 	<classpathentry kind="src" output="bpm/classes" path="bpm/src/private"/>
 	<classpathentry kind="src" output="bpm/classes" path="bpm/src/client"/>
@@ -24,5 +29,6 @@
 	</classpathentry>
 	<classpathentry kind="con" path="com.yonyou.studio.udt.core.container/Module_Lang_Library"/>
 	<classpathentry kind="con" path="com.yonyou.studio.udt.core.container/Generated_EJB"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ufesbexpress"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

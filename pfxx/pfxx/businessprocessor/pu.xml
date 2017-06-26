@@ -9,4 +9,7 @@
 <businessprocessor  billtype="JL_23_qc" classname="nc.bpm.pu.pfxx.M23ForJLAdd"  locklevel="3" metadataid="8fbe8162-4588-465e-9b07-78befaf383ce" name="到货单报检">
 </businessprocessor>
 
+   <businessprocessor baseclassname="" billtype="bpm_422X_audit" classname="nc.bpm.pu.pfxx.M422XForAudit" locklevel="3" metadataid="f8025fb7-1aa5-4de8-9c64-95e1cad22f6a" name="固定资产物资申请审批">
+    </businessprocessor>
+
 </businessprocessors>

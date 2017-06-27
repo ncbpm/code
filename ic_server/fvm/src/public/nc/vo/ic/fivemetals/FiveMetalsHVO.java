@@ -132,7 +132,7 @@ public class FiveMetalsHVO extends SuperVO {
 	 */
 	public UFDateTime modifiedtime;
 	/**
-	 * 状态
+	 * 状态 (建卡 充值 注销挂失 消费)
 	 */
 	public java.lang.Integer vbillstatus;
 	/**

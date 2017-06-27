@@ -31,7 +31,7 @@ public interface IFivemetalsMaintain {
 	 * @param isdel
 	 * @throws BusinessException
 	 */
-	AggFiveMetalsVO operatebill(FiveMetalsHVO hvo, FiveMetalsBVO[] bvos, boolean isdel)
+	AggFiveMetalsVO operatebill(AggFiveMetalsVO bill)
 			throws BusinessException;
 
 }

@@ -20,7 +20,6 @@ import nc.vo.pfxx.auxiliary.AggxsysregisterVO;
 import nc.vo.pu.m422x.entity.StoreReqAppHeaderVO;
 import nc.vo.pu.m422x.entity.StoreReqAppItemVO;
 import nc.vo.pub.BusinessException;
-import nc.vo.pub.lang.UFDate;
 import nc.vo.pubapp.pattern.exception.ExceptionUtils;
 
 public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
@@ -54,10 +53,13 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 	 */
 	private void checkNotNull(MaterialOutVO bill) throws BusinessException {
 
-		VOCheckUtil.checkHeadNotNullFields(bill,
-				new String[] { "cwarehouseid" });
+		VOCheckUtil
+				.checkHeadNotNullFields(bill, new String[] { "cwarehouseid",
+						"vtrantypecode", "dbilldate", "cdptid", "vdef20",
+						"billmaker" });
 		VOCheckUtil.checkBodyNotNullFields(bill, new String[] { "vbatchcode",
-				"nshouldnum", "csourcebillhid", "csourcebillbid" });
+				"nshouldnum", "csourcebillhid", "csourcebillbid", "ncostprice",
+				"cprojectid" });
 	}
 
 	/**
@@ -120,11 +122,11 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 
 	private void changeHeadVO(MaterialOutHeadVO headvo,
 			StoreReqAppHeaderVO header) {
-		headvo.setVtrantypecode("4D-01");
+		// headvo.setVtrantypecode("4D-01");
 		headvo.setPk_org(header.getPk_org());
 		headvo.setPk_group(header.getPk_group());
-		headvo.setDbilldate(new UFDate("2017-07-23"));
-		headvo.setCdptid(header.getPk_appdepth());
+		// headvo.setDbilldate(new UFDate("2017-07-23"));
+		// headvo.setCdptid(header.getPk_appdepth());
 	}
 
 	private void changeBodys(MaterialOutHeadVO headvo, MaterialOutBodyVO[] vos,
@@ -140,7 +142,7 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 			StoreReqAppItemVO sitem = map.get(vo.getCsourcebillbid());
 			if (sitem == null)
 				continue;
-			vo.setCbodytranstypecode("4D-01");
+			vo.setCbodytranstypecode(headvo.getVtrantypecode());
 			vo.setCbodywarehouseid(headvo.getCwarehouseid());
 			if (sitem.getCfirstbid() == null) {
 				vo.setCfirstbillbid(sitem.getPk_storereq_b());
@@ -153,12 +155,12 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 			}
 			vo.setCmaterialvid(sitem.getPk_material());
 			vo.setCunitid(sitem.getCunitid());
-			vo.setCprojectid(header.getPk_project());
+			// vo.setCprojectid(header.getPk_project());
 			vo.setCsourcetype("422X");
 			vo.setCsrcmaterialvid(sitem.getPk_material());
 			vo.setVsourcebillcode(header.getVbillcode());
 			vo.setVsourcerowno(sitem.getCrowno());
-			vo.setDbizdate(new UFDate("2017-07-23"));
+			// vo.setDbizdate(new UFDate("2017-07-23"));
 		}
 	}
 

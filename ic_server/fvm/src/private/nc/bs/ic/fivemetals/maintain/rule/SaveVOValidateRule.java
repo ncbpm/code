@@ -5,10 +5,10 @@ import java.util.List;
 
 import nc.impl.pubapp.pattern.rule.IRule;
 import nc.vo.ic.fivemetals.AggFiveMetalsVO;
-import nc.vo.ic.fivemetals.FiveMetalsBVO;
-import nc.vo.ic.fivemetals.FiveMetalsHVO;
+import nc.vo.ic.pub.check.VOCheckUtil;
 import nc.vo.pub.CircularlyAccessibleValueObject;
 import nc.vo.pub.VOStatus;
+import nc.vo.pub.ValidationException;
 import nc.vo.pubapp.pattern.exception.ExceptionUtils;
 import nc.vo.scmpub.util.VOFieldLengthChecker;
 
@@ -33,44 +33,22 @@ public class SaveVOValidateRule implements IRule<AggFiveMetalsVO> {
 					|| ArrayUtils.isEmpty(vo.getChildrenVO())) {
 				ExceptionUtils.wrappBusinessException("传入的数据中存在不完整的数据！");
 			} else {
-
-				FiveMetalsHVO hvo = vo.getParentVO();
-
-				if (hvo.getPk_group() == null || hvo.getPk_org() == null) {
-					ExceptionUtils
-							.wrappBusinessException("传入的数据中存在集团或者组织为空的数据！");
-				}
-
-				if (hvo.getVcardno() == null) {
-					ExceptionUtils.wrappBusinessException("传入的数据中存在卡号为空的数据！");
-				}
-
-//				if (hvo.getCperiod() == null) {
-//					ExceptionUtils.wrappBusinessException("传入的数据中存在月份为空的数据！");
-//				}
-
-				if (hvo.getVdepartment() == null && hvo.getVproject() == null) {
-					ExceptionUtils
-							.wrappBusinessException("传入的数据中存在部门或者项目为空的数据！");
+				try {
+					VOCheckUtil.checkHeadNotNullFields(vo, new String[] {
+							"pk_group", "pk_org", "vcardno", "vbillstatus",
+							"vdepartment", "vcardtype" });
+					VOCheckUtil.checkBodyNotNullFields(vo, new String[] {
+							"vsourcebillno", "vsourcetype", "vsourcebillid",
+							"nmny", "cperiod", "itype" });
+				} catch (ValidationException e) {
+					ExceptionUtils.wrappBusinessException(e.getMessage());
 				}
 				CircularlyAccessibleValueObject[] itemVOs = vo.getChildrenVO();
 				List<CircularlyAccessibleValueObject> list = new ArrayList<CircularlyAccessibleValueObject>();
 				for (CircularlyAccessibleValueObject itemVO : itemVOs) {
 					if (itemVO != null
 							&& VOStatus.DELETED != itemVO.getStatus()) {
-						FiveMetalsBVO bvo = (FiveMetalsBVO) itemVO;
 						list.add(itemVO);
-						if (bvo.getVsourcebillno() == null
-								|| bvo.getVsourcetype() == null
-								|| bvo.getVsourcebillid() == null) {
-							ExceptionUtils
-									.wrappBusinessException("传入的数据中存在来源信息为空的数据！");
-						}
-
-						if (bvo.getNmny() == null) {
-							ExceptionUtils
-									.wrappBusinessException("传入的数据中存在金额为空的数据！");
-						}
 					}
 				}
 

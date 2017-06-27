@@ -2,6 +2,7 @@ package nc.vo.ic.fivemetals;
 
 import nc.vo.pub.IVOMeta;
 import nc.vo.pub.SuperVO;
+import nc.vo.pub.lang.UFBoolean;
 import nc.vo.pub.lang.UFDate;
 import nc.vo.pub.lang.UFDateTime;
 import nc.vo.pubapp.pattern.model.meta.entity.vo.VOMetaFactory;
@@ -94,11 +95,11 @@ public class FiveMetalsHVO extends SuperVO {
 	/**
 	 * 自定义项7
 	 */
-	public Boolean def7;
+	public UFBoolean def7;
 	/**
 	 * 自定义项8
 	 */
-	public Boolean def8;
+	public UFBoolean def8;
 	/**
 	 * 自定义项9
 	 */
@@ -468,7 +469,7 @@ public class FiveMetalsHVO extends SuperVO {
 	 * 
 	 * @return nc.vo.pub.lang.UFBoolean
 	 */
-	public Boolean getDef7() {
+	public UFBoolean getDef7() {
 		return this.def7;
 	}
 
@@ -478,7 +479,7 @@ public class FiveMetalsHVO extends SuperVO {
 	 * @param newDef7
 	 *            nc.vo.pub.lang.UFBoolean
 	 */
-	public void setDef7(Boolean def7) {
+	public void setDef7(UFBoolean def7) {
 		this.def7 = def7;
 	}
 
@@ -487,7 +488,7 @@ public class FiveMetalsHVO extends SuperVO {
 	 * 
 	 * @return nc.vo.pub.lang.UFBoolean
 	 */
-	public Boolean getDef8() {
+	public UFBoolean getDef8() {
 		return this.def8;
 	}
 
@@ -497,7 +498,7 @@ public class FiveMetalsHVO extends SuperVO {
 	 * @param newDef8
 	 *            nc.vo.pub.lang.UFBoolean
 	 */
-	public void setDef8(Boolean def8) {
+	public void setDef8(UFBoolean def8) {
 		this.def8 = def8;
 	}
 

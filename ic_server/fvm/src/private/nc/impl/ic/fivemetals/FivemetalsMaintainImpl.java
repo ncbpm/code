@@ -1,5 +1,6 @@
 package nc.impl.ic.fivemetals;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -20,7 +21,6 @@ import nc.vo.ic.pub.check.VOCheckUtil;
 import nc.vo.pub.BusinessException;
 import nc.vo.pub.ISuperVO;
 import nc.vo.pub.VOStatus;
-import nc.vo.pub.ValidationException;
 import nc.vo.pub.lang.UFDate;
 import nc.vo.pub.lang.UFDouble;
 import nc.vo.trade.voutils.SafeCompute;
@@ -76,31 +76,32 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 			if (bvos == null || bvos.length == 0)
 				throw new BusinessException("传入表体信息不完整");
 			for (FiveMetalsBVO bvo : bvos) {
-				bvo.setItype(CostTypeEnum.消费.getReturnType());
+				bvo.setItype(Integer.parseInt(CostTypeEnum.消费.getEnumValue()
+						.getValue()));
 				bvo.setNmny(bvo.getNmny());
 			}
 			vo = savebill(bill, oldvo);
 			break;
 		case 4:
 			// 充值 卡号不存在 建卡 存在 直接充值
-
 			bvos = (FiveMetalsBVO[]) bill.getChildrenVO();
 			if (bvos == null || bvos.length == 0)
 				throw new BusinessException("传入表体信息不完整");
 			for (FiveMetalsBVO bvo : bvos) {
-				bvo.setItype(CostTypeEnum.充值.getReturnType());
+				bvo.setItype(Integer.parseInt(CostTypeEnum.充值.getEnumValue()
+						.getValue()));
 				bvo.setNmny(bvo.getNmny());
 			}
 			vo = savebill(bill, oldvo);
 			break;
 		case 5:
 			// 挂失 注销
-			checkFiveMetalsHVO(hvo);
+			checkFiveMetalsHVO(oldvo);
 			vo = disableAggFiveMetalsVO(oldvo);
 			break;
 		case 6:
 			// 结转
-			jzbill(bill, oldvo);
+			vo=jzbill(bill, oldvo);
 			break;
 		default:
 			throw new BusinessException("传入状态出错");
@@ -110,21 +111,25 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 	}
 
 	private AggFiveMetalsVO savebill(AggFiveMetalsVO bill, FiveMetalsHVO oldvo)
-			throws ValidationException {
+			throws BusinessException {
 
 		FiveMetalsHVO hvo = (FiveMetalsHVO) bill.getParentVO();
 
 		VOCheckUtil.checkBodyNotNullFields(bill, new String[] {
 				"vsourcebillno", "vsourcetype", "vsourcebillid", "nmny",
-				"cperiod", "cprojectid" });
+				"cperiod" });
 
 		AggFiveMetalsVO aggvo = new AggFiveMetalsVO();
 		if (oldvo == null) {
 			if (hvo.getVproject() != null) {
-				hvo.setVcardtype(CardTypeEnum.项目卡.getReturnType());
+				hvo.setVcardtype(Integer.parseInt(CardTypeEnum.项目卡
+						.getEnumValue().getValue()));
 			} else {
-				hvo.setVcardtype(CardTypeEnum.部门卡.getReturnType());
+				hvo.setVcardtype(Integer.parseInt(CardTypeEnum.部门卡
+						.getEnumValue().getValue()));
 			}
+			hvo.setVbillstatus(Integer.parseInt(CardStatusEnum.启用
+					.getEnumValue().getValue()));
 			hvo.setStatus(VOStatus.NEW);
 			aggvo.setParentVO(hvo);
 		} else {
@@ -135,6 +140,17 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 		for (FiveMetalsBVO bvo : bvos) {
 			bvo.setPk_fivemetals_h(aggvo.getParentVO().getPk_fivemetals_h());
 			bvo.setStatus(VOStatus.NEW);
+			try {
+				String vsourcetype = new String(bvo.getVsourcetype().getBytes(
+						"GBK"), "GB2312");
+//				String vsourcetype1 = new String(bvo.getVsourcetype().getBytes(
+//						"GB2312"), "ISO_8859_1");
+//				String vsourcetype2 = new String(bvo.getVsourcetype().getBytes(
+//						"UTF-8"), "GB2312");
+				bvo.setVsourcetype(vsourcetype);
+			} catch (UnsupportedEncodingException e) {
+				throw new BusinessException(e.getMessage());
+			}
 		}
 
 		aggvo.setChildrenVO(bvos);
@@ -152,7 +168,8 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 
 		VOUpdate<ISuperVO> update = new VOUpdate();
 		oldvo.setStatus(VOStatus.UPDATED);
-		oldvo.setVbillstatus(CardStatusEnum.停用.getReturnType());
+		oldvo.setVbillstatus(Integer.parseInt(CardStatusEnum.停用.getEnumValue()
+				.getValue()));
 		update.update(new FiveMetalsHVO[] { oldvo },
 				new String[] { "vbillstatus" });
 		AggFiveMetalsVO aggvo = queryByPk(oldvo.getPrimaryKey());
@@ -163,19 +180,20 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 	private AggFiveMetalsVO jzbill(AggFiveMetalsVO bill, FiveMetalsHVO oldvo)
 			throws BusinessException {
 
+		VOCheckUtil.checkBodyNotNullFields(bill, new String[] {
+				"vsourcebillno", "vsourcetype", "vsourcebillid", "nmny",
+				"cperiod" });
 		checkFiveMetalsHVO(oldvo);
 		FiveMetalsBVO[] bvos = (FiveMetalsBVO[]) bill.getChildrenVO();
 		if (bvos == null || bvos.length == 0)
 			throw new BusinessException("传入表体信息不完整");
 		for (FiveMetalsBVO bvo : bvos) {
-			bvo.setItype(CostTypeEnum.充值.getReturnType());
+			bvo.setItype(Integer.parseInt(CostTypeEnum.充值.getEnumValue()
+					.getValue()));
 			bvo.setNmny(bvo.getNmny());
 		}
 		bvos = createFiveMetalsBVO(bvos);
-		VOCheckUtil.checkBodyNotNullFields(bill, new String[] {
-				"vsourcebillno", "vsourcetype", "vsourcebillid", "nmny",
-				"cperiod", "cprojectid" });
-
+		
 		AggFiveMetalsVO aggvo = new AggFiveMetalsVO();
 		oldvo.setStatus(VOStatus.UPDATED);
 		aggvo.setParentVO(oldvo);
@@ -229,8 +247,8 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 			throw new BusinessException("该卡号没有建卡,请检查卡号是否正确 ！");
 		}
 
-		if (!(hvo.getVbillstatus() != null && hvo.getVbillstatus().intValue() == CardStatusEnum.启用
-				.getReturnType())) {
+		if (!(hvo.getVbillstatus() != null && hvo.getVbillstatus().intValue() == Integer
+				.parseInt(CardStatusEnum.启用.getEnumValue().getValue()))) {
 			throw new BusinessException("该卡号为非启用状态,请检查卡号状态是否正确 ！");
 		}
 

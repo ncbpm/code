@@ -56,7 +56,7 @@ public class FivemetalsDao {
 
 		UFDate billdate = new UFDate();
 		String ym = billdate.getYear() + billdate.getStrMonth();
-		String sql = "select to_number(substr(" + itemkey + ",10,length("
+		String sql = "select to_number(substr(" + itemkey + ",9,length("
 				+ itemkey + "))) as " + itemkey + " from " + tableName
 				+ " where nvl(dr,0)=0 and " + condition;
 		BaseDAO dao = new BaseDAO();
@@ -65,7 +65,7 @@ public class FivemetalsDao {
 		int flowno = 1;
 		if (nolist != null && nolist.size() > 0) {// È±ºÅ²¹ºÅÂß¼­
 			for (int i = 1;; i++) {
-				if (!nolist.contains(new BigDecimal(i))) {
+				if (!nolist.contains(i)) {
 					flowno = i;
 					break;
 				}
@@ -88,18 +88,15 @@ public class FivemetalsDao {
 			throw new BusinessException("×Ö¶Î²»ÄÜÎª¿Õ");
 		}
 
-		UFDate billdate = new UFDate();
-		String ym = billdate.getYear() + billdate.getStrMonth();
-		String sql = "select to_number(substr(" + itemkey + ",10,length("
-				+ itemkey + "))) as " + itemkey + " from " + tableName
-				+ " where nvl(dr,0)=0 and " + condition;
+		String sql = "select to_number(" + itemkey + ") as " + itemkey
+				+ " from " + tableName + " where nvl(dr,0)=0 and " + condition;
 		BaseDAO dao = new BaseDAO();
 		List<BigDecimal> nolist = (List<BigDecimal>) dao.executeQuery(sql,
 				null, new ColumnListProcessor());
 		int flowno = 1;
 		if (nolist != null && nolist.size() > 0) {// È±ºÅ²¹ºÅÂß¼­
 			for (int i = 1;; i++) {
-				if (!nolist.contains(new BigDecimal(i))) {
+				if (!nolist.contains(i)) {
 					flowno = i;
 					break;
 				}

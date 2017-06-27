@@ -78,7 +78,7 @@ public class ReportInsertBP {
 //    1. 保存判断表体合格品没有勾选，则认为是不合格品，需要自动将表头的需要不合格品处理 勾选
 //    2. 保存判断表体合格品没有勾选，则认为是不合格，自动生成不合格品处理单
 //    3. 需要考虑 推式保存， .后续 计量 报检--自动质检报告--自动不合格品处理单
-    processer.addAfterRule(new RejectAfterCheckRule());
+//    processer.addAfterRule(new RejectAfterCheckRule());
   }
 
   @SuppressWarnings({
@@ -138,6 +138,6 @@ public class ReportInsertBP {
     // 质检流程
     processer.addBeforeRule(new ReportCheckFlowRule());
     // 1. 保存判断表体合格品没有勾选，则认为是不合格品，需要自动将表头的需要不合格品处理 勾选
-    processer.addBeforeRule(new RejectBeforCheckRule());
+//    processer.addBeforeRule(new RejectBeforCheckRule());
   }
 }

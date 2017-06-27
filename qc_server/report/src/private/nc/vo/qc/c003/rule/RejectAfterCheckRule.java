@@ -104,17 +104,11 @@ public class RejectAfterCheckRule implements IRule<ReportVO> {
 					&& item.getBeligible().booleanValue()) {
 				continue;
 			}
-			if (StringUtils.isNotEmpty(item.getPk_qualitylv_b())
-					&& !(item.getFprocessjudge() == null)) {
-				list.add(item);
-			} else {
-				String msg = nc.vo.ml.NCLangRes4VoTransl.getNCLangRes()
-						.getStrByID("c010003_0", "0c010003-0001")/*
-																 * @res
-																 * "生成不合格品处理单时，表体中的质量等级或处理方式判定不能为空。"
-																 */;
-				ExceptionUtils.wrappBusinessException(msg);
-			}
+			if (StringUtils.isEmpty(item.getPk_qualitylv_b())
+					||(item.getFprocessjudge() == null)) {
+				continue;
+
+			} 
 			list.add(item);
 		}
 

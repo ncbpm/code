@@ -1,12 +1,16 @@
 package nc.bpm.so.m30;
 
+import java.util.Map;
+
 import nc.bs.framework.common.NCLocator;
 import nc.bs.pfxx.ISwapContext;
 import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
 import nc.impl.pubapp.pattern.data.bill.BillQuery;
 import nc.impl.pubapp.pattern.data.vo.VOQuery;
 import nc.impl.so.m30.action.main.InsertSaleOrderAction;
+import nc.itf.scmpub.reference.uap.pf.PfServiceScmUtil;
 import nc.itf.uap.pf.IplatFormEntry;
+import nc.vo.ic.pub.util.StringUtil;
 import nc.vo.pfxx.auxiliary.AggxsysregisterVO;
 import nc.vo.pub.AggregatedValueObject;
 import nc.vo.pub.BusinessException;
@@ -16,7 +20,7 @@ import nc.vo.so.m30.entity.SaleOrderVO;
 import nc.vo.so.m30.pub.SaleOrderVOCalculator;
 
 /**
- * 
+ * BPM销售订单导入
  * @author liyf
  *
  */
@@ -45,7 +49,7 @@ public class M30ForBPMAdd extends AbstractPfxxPlugin {
 		//重新查询，防止并发
 		
 		bill2 = query(bill2.getParentVO().getPrimaryKey());
-		
+		bill2.getParentVO().setApprover(approver);
 		approve(bill2);
 		
 		return bill2.getParentVO().getPrimaryKey();
@@ -61,11 +65,26 @@ public class M30ForBPMAdd extends AbstractPfxxPlugin {
 		SaleOrderVO bill = (SaleOrderVO)resvo;
 		SaleOrderHVO parentVO = bill.getParentVO();
 		SaleOrderBVO[] bvos = bill.getChildrenVO();
+		//审批流状态
+		parentVO.setFpfstatusflag(-1);
 		//单据状态，自由
 		parentVO.setFstatusflag(1);
 		
+		//
+		if (StringUtil.isSEmptyOrNull(parentVO.getCtrantypeid())) {
+			// uap不支持单据类型的翻译，暂时以交易类型code查询id的方式补交易类型
+			String vtrantypecode = parentVO.getVtrantypecode();
+			Map<String, String> map = PfServiceScmUtil
+					.getTrantypeidByCode(new String[] { vtrantypecode });
+			parentVO.setCtrantypeid(map == null ? null : map.get(vtrantypecode));
+		}
+		//报价信息
+		for(SaleOrderBVO bvo:bvos){
+			bvo.setCqtunitid(bvo.getCunitid());
+			bvo.setVqtunitrate(bvo.getVqtunitrate());
+		}
 		
-		///
+		///计算价格信息
 		int rows[] = new int[bvos.length];
 		for(int i=0;i<bvos.length;i++){
 			rows[i] = i;

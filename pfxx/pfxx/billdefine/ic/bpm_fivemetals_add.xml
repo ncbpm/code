@@ -67,15 +67,6 @@
             <needexport>yes</needexport>
             <checkTranslatedPK>no</checkTranslatedPK>
         </field>
-        <field desc="月份">
-            <matchtag>cperiod</matchtag>
-            <name>cperiod</name>
-            <type>String</type>
-            <nullallowed>yes</nullallowed>
-            <maxLength>50</maxLength>
-            <needexport>yes</needexport>
-            <checkTranslatedPK>no</checkTranslatedPK>
-        </field>
         <field desc="项目">
             <matchtag>vproject</matchtag>
             <name>vproject</name>
@@ -106,6 +97,15 @@
         <field desc="卡号类型">
             <matchtag>vcardtype</matchtag>
             <name>vcardtype</name>
+            <type>Integer</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>0</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="单据状态">
+            <matchtag>vbillstatus</matchtag>
+            <name>vbillstatus</name>
             <type>Integer</type>
             <nullallowed>yes</nullallowed>
             <maxLength>0</maxLength>
@@ -294,6 +294,15 @@
             <type>Integer</type>
             <nullallowed>yes</nullallowed>
             <maxLength>0</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="月份">
+            <matchtag>cperiod</matchtag>
+            <name>cperiod</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
             <needexport>yes</needexport>
             <checkTranslatedPK>no</checkTranslatedPK>
         </field>

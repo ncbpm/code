@@ -1,6 +1,5 @@
 package nc.impl.ic.fivemetals;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -62,11 +61,12 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 			throw new BusinessException("传入数据出错");
 
 		VOCheckUtil.checkHeadNotNullFields(bill, new String[] { "pk_group",
-				"pk_org", "vcardno", "vbillstatus" });
+				"pk_org", "vcardno", "vbillstatus","vdepartment" });
 
 		FiveMetalsHVO hvo = (FiveMetalsHVO) bill.getParentVO();
 		FiveMetalsHVO oldvo = getFiveMetalsHVO(hvo);
 		FiveMetalsBVO[] bvos = null;
+		String vsourcetype = null;
 		switch (hvo.getVbillstatus()) {
 		case 3:
 			// 消费
@@ -80,7 +80,8 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 						.getValue()));
 				bvo.setNmny(bvo.getNmny());
 			}
-			vo = savebill(bill, oldvo);
+			vsourcetype = "材料出库单";
+			vo = savebill(bill, oldvo, vsourcetype);
 			break;
 		case 4:
 			// 充值 卡号不存在 建卡 存在 直接充值
@@ -92,7 +93,8 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 						.getValue()));
 				bvo.setNmny(bvo.getNmny());
 			}
-			vo = savebill(bill, oldvo);
+			vsourcetype = "五金预算充值 ";
+			vo = savebill(bill, oldvo, vsourcetype);
 			break;
 		case 5:
 			// 挂失 注销
@@ -101,7 +103,8 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 			break;
 		case 6:
 			// 结转
-			vo=jzbill(bill, oldvo);
+			vsourcetype = "五金预算结转";
+			vo = jzbill(bill, oldvo, vsourcetype);
 			break;
 		default:
 			throw new BusinessException("传入状态出错");
@@ -110,14 +113,13 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 		return vo;
 	}
 
-	private AggFiveMetalsVO savebill(AggFiveMetalsVO bill, FiveMetalsHVO oldvo)
-			throws BusinessException {
+	private AggFiveMetalsVO savebill(AggFiveMetalsVO bill, FiveMetalsHVO oldvo,
+			String vsourcetype) throws BusinessException {
 
 		FiveMetalsHVO hvo = (FiveMetalsHVO) bill.getParentVO();
 
 		VOCheckUtil.checkBodyNotNullFields(bill, new String[] {
-				"vsourcebillno", "vsourcetype", "vsourcebillid", "nmny",
-				"cperiod" });
+				"vsourcebillno", "vsourcebillid", "nmny", "cperiod" });
 
 		AggFiveMetalsVO aggvo = new AggFiveMetalsVO();
 		if (oldvo == null) {
@@ -140,17 +142,7 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 		for (FiveMetalsBVO bvo : bvos) {
 			bvo.setPk_fivemetals_h(aggvo.getParentVO().getPk_fivemetals_h());
 			bvo.setStatus(VOStatus.NEW);
-			try {
-				String vsourcetype = new String(bvo.getVsourcetype().getBytes(
-						"GBK"), "GB2312");
-//				String vsourcetype1 = new String(bvo.getVsourcetype().getBytes(
-//						"GB2312"), "ISO_8859_1");
-//				String vsourcetype2 = new String(bvo.getVsourcetype().getBytes(
-//						"UTF-8"), "GB2312");
-				bvo.setVsourcetype(vsourcetype);
-			} catch (UnsupportedEncodingException e) {
-				throw new BusinessException(e.getMessage());
-			}
+			bvo.setVsourcetype(vsourcetype);
 		}
 
 		aggvo.setChildrenVO(bvos);
@@ -177,12 +169,11 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 		return aggvo;
 	}
 
-	private AggFiveMetalsVO jzbill(AggFiveMetalsVO bill, FiveMetalsHVO oldvo)
-			throws BusinessException {
+	private AggFiveMetalsVO jzbill(AggFiveMetalsVO bill, FiveMetalsHVO oldvo,
+			String vsourcetype) throws BusinessException {
 
 		VOCheckUtil.checkBodyNotNullFields(bill, new String[] {
-				"vsourcebillno", "vsourcetype", "vsourcebillid", "nmny",
-				"cperiod" });
+				"vsourcebillno", "vsourcebillid", "nmny", "cperiod" });
 		checkFiveMetalsHVO(oldvo);
 		FiveMetalsBVO[] bvos = (FiveMetalsBVO[]) bill.getChildrenVO();
 		if (bvos == null || bvos.length == 0)
@@ -193,7 +184,7 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 			bvo.setNmny(bvo.getNmny());
 		}
 		bvos = createFiveMetalsBVO(bvos);
-		
+
 		AggFiveMetalsVO aggvo = new AggFiveMetalsVO();
 		oldvo.setStatus(VOStatus.UPDATED);
 		aggvo.setParentVO(oldvo);
@@ -201,6 +192,7 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 		for (FiveMetalsBVO bvo : bvos) {
 			bvo.setPk_fivemetals_h(aggvo.getParentVO().getPk_fivemetals_h());
 			bvo.setStatus(VOStatus.NEW);
+			bvo.setVsourcetype(vsourcetype);
 		}
 
 		aggvo.setChildrenVO(bvos);

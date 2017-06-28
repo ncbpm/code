@@ -11,6 +11,8 @@ import nc.bs.pfxx.ISwapContext;
 import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
 import nc.impl.pubapp.pattern.data.vo.VOQuery;
 import nc.pubimpl.ic.m4d.m422x.action.PushSaveActionFor422X;
+import nc.vo.ic.fivemetals.CardStatusEnum;
+import nc.vo.ic.fivemetals.FiveMetalsHVO;
 import nc.vo.ic.general.define.ICBillVO;
 import nc.vo.ic.m4d.entity.MaterialOutBodyVO;
 import nc.vo.ic.m4d.entity.MaterialOutHeadVO;
@@ -20,6 +22,7 @@ import nc.vo.pfxx.auxiliary.AggxsysregisterVO;
 import nc.vo.pu.m422x.entity.StoreReqAppHeaderVO;
 import nc.vo.pu.m422x.entity.StoreReqAppItemVO;
 import nc.vo.pub.BusinessException;
+import nc.vo.pub.ISuperVO;
 import nc.vo.pubapp.pattern.exception.ExceptionUtils;
 
 public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
@@ -121,10 +124,12 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 	}
 
 	private void changeHeadVO(MaterialOutHeadVO headvo,
-			StoreReqAppHeaderVO header) {
+			StoreReqAppHeaderVO header) throws BusinessException {
 		// headvo.setVtrantypecode("4D-01");
 		headvo.setPk_org(header.getPk_org());
 		headvo.setPk_group(header.getPk_group());
+		FiveMetalsHVO hvo = getFiveMetalsHVO(headvo);
+		headvo.setVdef20(hvo.getPrimaryKey());
 		// headvo.setDbilldate(new UFDate("2017-07-23"));
 		// headvo.setCdptid(header.getPk_appdepth());
 	}
@@ -162,6 +167,24 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 			vo.setVsourcerowno(sitem.getCrowno());
 			// vo.setDbizdate(new UFDate("2017-07-23"));
 		}
+	}
+
+	private FiveMetalsHVO getFiveMetalsHVO(MaterialOutHeadVO hvo)
+			throws BusinessException {
+		VOQuery<ISuperVO> query = new VOQuery(FiveMetalsHVO.class);
+		String condition = " and pk_group = '" + hvo.getPk_group()
+				+ "' and pk_org ='" + hvo.getPk_org() + "' and vcardno = '"
+				+ hvo.getVdef20() + "' ";
+		FiveMetalsHVO[] hvos = (FiveMetalsHVO[]) query.query(condition, null);
+		if (hvos == null || hvos.length == 0)
+			throw new BusinessException("该卡号没有建卡,请检查卡号是否正确 ！");
+
+		if (!(hvos[0].getVbillstatus() != null && hvos[0].getVbillstatus()
+				.intValue() == Integer.parseInt(CardStatusEnum.启用
+				.getEnumValue().getValue()))) {
+			throw new BusinessException("该卡号为非启用状态,请检查卡号状态是否正确 ！");
+		}
+		return hvos[0];
 	}
 
 }

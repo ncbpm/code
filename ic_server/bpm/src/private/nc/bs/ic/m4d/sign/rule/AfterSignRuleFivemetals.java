@@ -31,7 +31,8 @@ public class AfterSignRuleFivemetals implements IRule<MaterialOutVO> {
 					IFivemetalsMaintain.class);
 			for (MaterialOutVO vo : vos) {
 				AggFiveMetalsVO bill = changeMaterialOutVO(vo);
-				mainimpl.operatebill(bill);
+				if (bill != null)
+					mainimpl.operatebill(bill);
 			}
 
 		} catch (BusinessException ex) {
@@ -44,6 +45,9 @@ public class AfterSignRuleFivemetals implements IRule<MaterialOutVO> {
 
 		if (vo == null || vo.getParentVO() == null)
 			throw new BusinessException("材料出库数据出错");
+
+		if (vo.getParentVO().getVdef20() == null)
+			return null;
 
 		AggFiveMetalsVO bill = new AggFiveMetalsVO();
 		String period = DateUtils.getPeriod(vo.getParentVO().getDbilldate());

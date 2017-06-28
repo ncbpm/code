@@ -35,7 +35,7 @@ public class SignBP implements ISignBP<MaterialOutVO>,
 		processor.addAfterRule(new UpdateSCOnhandRule(false));
 		processor.addAfterRule(new PushSaveIAandTOBill());
 		processor.addAfterRule(new AfterSignRuleForLiabilityProcess());
-		processor.addAfterRule(new AfterSignRuleFivemetals());
+//		processor.addAfterRule(new AfterSignRuleFivemetals());
 	}
 
 	@Override

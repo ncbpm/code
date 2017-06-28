@@ -21,88 +21,6 @@ pk_factor  char(20),
 pk_factorgroup char(20)
 );
 
----作业统计单取数--储运
-create or replace view  view_nc_zuoyechuyun as (
----采购入库
-select  pk_group,pk_org ,cdptid as  cdptid, ctrantypeid ,   dbilldate ,taudittime , abs(ntotalnum) as nnum from  ic_purchasein_h 
-where nvl(dr,0)=0 
-union all
----调拨入库
-select  pk_group,pk_org ,cdptid as  cdptid, ctrantypeid , dbilldate , taudittime , abs(ntotalnum) as nnum from  ic_transin_h 
-where nvl(dr,0)=0 
-union all
----产成品入库
-select  pk_group,pk_org ,cdptid as  cdptid, ctrantypeid , dbilldate , taudittime , abs(ntotalnum) as nnum from  ic_finprodin_h 
-where nvl(dr,0)=0 
-union all
----其他入库
-select  pk_group,pk_org ,cdptid as  cdptid, ctrantypeid , dbilldate , taudittime , abs(ntotalnum) as nnum from  ic_generalin_h 
-where nvl(dr,0)=0 
-union all
---委托加工入库
-select  pk_group,pk_org ,cdptid as  cdptid, ctrantypeid , dbilldate , taudittime , abs(ntotalnum) as nnum from  ic_subcontin_h 
-where nvl(dr,0)=0 
-union all
----生产报废入库
-select  pk_group,pk_org ,cdptid as  cdptid, ctrantypeid , dbilldate , taudittime , abs(ntotalnum) as nnum from  ic_discardin_h 
-where nvl(dr,0)=0 
-union all
---销售出库
-select  pk_group,pk_org ,   cdptid  as  cdptid ,  ctrantypeid ,  dbilldate , taudittime , abs(ntotalnum) as nnum  from  ic_saleout_h 
-where nvl(dr,0)=0 
-union all
---调拨出库
-select  pk_group,pk_org ,   cdptid  as  cdptid ,  ctrantypeid ,  dbilldate , taudittime , abs(ntotalnum) as nnum  from  ic_transout_h 
-where nvl(dr,0)=0
-
-union all
---材料出库
-select  pk_group,pk_org ,   cdptid  as  cdptid ,  ctrantypeid ,  dbilldate , taudittime , abs(ntotalnum) as nnum  from  ic_material_h 
-where nvl(dr,0)=0 
-union all
---其他出库
-select  pk_group,pk_org ,   cdptid  as  cdptid ,  ctrantypeid ,  dbilldate , taudittime , abs(ntotalnum) as nnum  from  ic_generalout_h 
-where nvl(dr,0)=0 
-);
-
----作业统计单取数--检验
-create or replace view view_nc_zuoyejianyan_price as (
-select rh.pk_reportbill, rh.pk_group, rh.pk_org ,rh.pk_applydept  as  cdptid, rh.ctrantypeid as ctrantypeid, rh.dapplydate as dbilldate, 
-rh.taudittime  as  taudittime , DECODE(rbody.vbdef1, '~', 0, rbody.vbdef1) as  pishu, bjd.price
---qc_applybill.pk_applybill ,qc_checkbill.cfirstid,  rh.pk_chkbatch ,qc_checkbill.pk_chkbatch
-from qc_reportbill_b rbody
-inner join qc_reportbill rh on rbody.pk_reportbill =rh.pk_reportbill 
---报检单 1:1--检验单--检验项目单价和
- inner join (
-select pk_applybill,pk_chkbatch, sum( DECODE(qc_checkitem.vbdef1, '~', 0, qc_checkitem.vbdef1)) as  price
- from qc_applybill 
---检验单
-inner join qc_checkbill on  qc_applybill.pk_applybill =qc_checkbill. cfirstid 
-inner JOIN qc_checkbill_b  ON qc_checkbill.pk_checkbill= qc_checkbill_b.pk_checkbill
---检验项目
-inner join  qc_checkitem   on qc_checkbill_b. pk_checkitem =qc_checkitem.pk_checkitem
-where 
- nvl(qc_applybill.dr,0)= 0
-AND nvl(qc_checkbill.dr,0)=0
-AND nvl(qc_checkbill_b.dr,0) = 0
-AND nvl(qc_checkbill.dr,0) = 0
-AND NVL ( qc_checkbill_b.buseless, 'N' ) = 'N'
-AND NVL ( qc_checkbill.blatest, 'N') = 'Y'
-group by pk_applybill,pk_chkbatch
-) bjd on rh.pk_applybill = bjd.pk_applybill and  rh.pk_chkbatch =bjd.pk_chkbatch
-WHERE 
-nvl(rbody.dr,0)= 0 
-and nvl(rh.dr,0)=0
-);
-
-
---。每张质检报告上（所有质检项目单价之和）*批数 + 0.69*批数
-create or replace view  view_nc_zuoyejianyan as (
----质检报告\
-select pk_group,pk_org,cdptid,ctrantypeid,dbilldate,taudittime, pishu*（price+ 0.69） as nnum from 
-view_nc_zuoyejianyan_price
-
-);
 
 
 ---检验项目 ，增加自定义项目20
@@ -296,52 +214,7 @@ vbdef20 varchar(101) default '~' NULL);
 	"TS" CHAR(19 BYTE), 
 	"DR" NUMBER(*,0) DEFAULT 0, 
 	 CONSTRAINT "PK_MMPAC_HUANBAO_B" PRIMARY KEY ("PK_BODY"));
-create or replace view  view_nc_zuoyehuanbao as (
----作业环保统计单
-select mmpac_huanbao_h. pk_group,  mmpac_huanbao_h. pk_org ,
---会计期间
-mmpac_huanbao_h.periodid as periodid,
- ---受益部门
-mmpac_huanbao_b.cdeptid as  cdptid,
---劳务项目
-mmpac_huanbao_b.pk_largeitem as pk_largeitem,
-bd_activity.vactivityname  as vactivityname ,
---注意：作业档案有一项为 折算废水量，折算废水量取数的时候只合计夜班的数量！
-case when 
-bd_activity.vactivityname='折算废水量' then ntotaldaynum
-else ntotalnum  end 
-as nnum  from  mmpac_huanbao_b 
-inner join mmpac_huanbao_h on mmpac_huanbao_b.pk_head = mmpac_huanbao_h.pk_head
-inner join bd_activity on mmpac_huanbao_b.pk_largeitem= bd_activity.cactivityid 
-where nvl( mmpac_huanbao_h. dr,0)=0
- and nvl( mmpac_huanbao_b. dr,0)=0 
-);
 
---在进行崇杰费用取数时的计算规则为： 每个受益部门的废水量、折算废水量、新鲜水量*0.794三个数量中的最大值，生成的作业统计单作业为 崇杰水量。
-create or replace view  view_nc_zuoyechongjie as (
-select  pk_group, pk_org,periodid,cdptid,max(nnum) as nnum from (
-select 
-mmpac_huanbao_h. pk_group,
-mmpac_huanbao_h. pk_org ,
---会计期间
-mmpac_huanbao_h.periodid as periodid,
- ---受益部门
-mmpac_huanbao_b.cdeptid as  cdptid,
---注意：作业档案有一项为 折算废水量，折算废水量取数的时候只合计夜班的数量！
-case 
-when bd_activity.vactivityname='折算废水量' then ntotaldaynum
-when bd_activity.vactivityname='新鲜水量' then ntotalnum*0.794
-else ntotalnum  end 
-as nnum  from  mmpac_huanbao_b 
-inner join mmpac_huanbao_h on mmpac_huanbao_b.pk_head = mmpac_huanbao_h.pk_head
-inner join bd_activity on mmpac_huanbao_b.pk_largeitem= bd_activity.cactivityid 
-where nvl( mmpac_huanbao_h. dr,0)=0
- and nvl( mmpac_huanbao_b. dr,0)=0 
- and bd_activity.vactivityname in ('新鲜水量','废水量','折算废水量')
- )
- group by pk_group, pk_org,periodid,cdptid
- 
-);
 --BOM匹配规则
 alter table bd_bom  add(
 	"VFREE1" VARCHAR2(101 BYTE), 
@@ -355,9 +228,72 @@ alter table bd_bom  add(
 	"VFREE8" VARCHAR2(101 BYTE), 
 	"VFREE9" VARCHAR2(101 BYTE)
 );
---功能节点 作业环保取数
 
 --功能节点 五金预算
+
+create table ic_fivemetals_h (
+pk_group varchar(20) NOT NULL,
+pk_org varchar(20) default '~' NULL,
+pk_org_v varchar(20) default '~' NULL,
+pk_fivemetals_h char(20) NOT NULL,
+code varchar(50) NULL,
+name varchar(50) NULL,
+vcardno varchar(50) NULL,
+cperiod varchar(50) NULL,
+vproject varchar(50) NULL,
+vdepartment varchar(50) NULL,
+vremark varchar(50) NULL,
+vcardtype int NULL,
+def1 varchar(100) NULL,
+def2 varchar(100) NULL,
+def3 varchar(100) NULL,
+def4 decimal(28,8) NULL,
+def5 decimal(28,8) NULL,
+def6 decimal(28,8) NULL,
+def7 char(1) NULL,
+def8 char(1) NULL,
+def9 char(19) NULL,
+def10 char(19) NULL,
+dbilldate char(19) NULL,
+pk_billtype varchar(50) NULL,
+creator varchar(20) default '~' NULL,
+creationtime char(19) NULL,
+modifier varchar(20) default '~' NULL,
+modifiedtime char(19) NULL,
+CONSTRAINT PK_IC_FIVEMETALS_H PRIMARY KEY (pk_fivemetals_h),
+ts char(19) NULL,
+dr smallint default 0 
+);
+
+
+create table ic_fivemetals_b (
+rowno varchar(50) NOT NULL,
+nmny decimal(28,8) NULL,
+itype int NULL,
+vremark varchar(50) NULL,
+vsourcetype varchar(50) NULL,
+vsourcebillid varchar(50) NULL,
+vsourcebillno varchar(50) NULL,
+def1 varchar(100) NULL,
+def2 varchar(100) NULL,
+def3 varchar(100) NULL,
+def4 decimal(28,8) NULL,
+def5 decimal(28,8) NULL,
+def6 decimal(28,8) NULL,
+def7 char(1) NULL,
+def8 char(1) NULL,
+def9 char(19) NULL,
+def10 char(19) NULL,
+pk_fivemetals_b char(20) NOT NULL,
+maketime char(19) NOT NULL,
+lastmaketime char(19) NULL,
+creator varchar(20) default '~' NULL,
+pk_fivemetals_h char(20) NOT NULL,
+CONSTRAINT PK_IC_FIVEMETALS_B PRIMARY KEY (pk_fivemetals_b),
+ts char(19) NULL,
+dr smallint default 0 
+);
+
 
 
 

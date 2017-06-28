@@ -12,4 +12,6 @@
    <businessprocessor baseclassname="" billtype="bpm_422X_audit" classname="nc.bpm.pu.pfxx.M422XForAudit" locklevel="3" metadataid="f8025fb7-1aa5-4de8-9c64-95e1cad22f6a" name="固定资产物资申请审批">
     </businessprocessor>
 
+  <businessprocessor billtype="bpm_marks_add" classname="nc.bpm.pu.pfxx.MarksForBpmAdd" locklevel="3" metadataid="faa17d57-f79a-49df-9958-b98c1ef4a976" name="唛头生成请购单">
+</businessprocessor>
 </businessprocessors>

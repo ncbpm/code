@@ -56,6 +56,7 @@ public class BpmAdjustApproveExpPfxxPlugin<T extends AggPsnappaproveVO> extends
 				.lookup(IPFBusiAction.class)
 				.processAction(IPFActionName.SAVE, head.getBilltype(),
 						new WorkflownoteVO(), preVO, getUserObj(), null);
+		res.getParentVO().setAttributeValue("sum_confim_money ", head.getSum_confim_money());
 		NCLocator
 				.getInstance()
 				.lookup(IPFBusiAction.class)

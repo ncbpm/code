@@ -50,6 +50,10 @@ public class BpmAdjustApproveExpPfxxPlugin<T extends AggPsnappaproveVO> extends
 				.getInstance().lookup(IWaAdjustQueryService.class.getName());
 		AggPsnappaproveVO preVO = voucherbo.queryPsnappaproveVOByPk(head
 				.getPrimaryKey());
+		
+		if (preVO == null) {
+			throw new BusinessException("单据的单据信息不存在，请检查单据主键");
+		}
 
 		AggPsnappaproveVO res = (AggPsnappaproveVO) NCLocator
 				.getInstance()

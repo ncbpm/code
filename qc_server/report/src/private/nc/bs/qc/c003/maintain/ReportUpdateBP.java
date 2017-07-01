@@ -37,8 +37,8 @@ import nc.vo.qc.pub.rule.NoPassUpdateRule;
  * @author hanbin
  * @time 2010-1-13 上午10:18:08
  */
-public class ReportUpdateBP {
-
+public class ReportUpdateBP{
+	--记得合并产品补丁
 	public ReportVO[] updateReport(ReportVO[] voArray, ReportVO[] originBills) {
 		CompareAroundProcesser<ReportVO> processer = new CompareAroundProcesser<ReportVO>(
 				ReportBPPlugInPoint.ReportUpdateBP);

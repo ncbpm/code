@@ -46,7 +46,7 @@ import nc.vo.scmpub.rule.QcCenterEnableCheckRule;
  * @time 2010-1-13 上午10:17:34
  */
 public class ReportInsertBP {
-
+	--记得合并产品补丁
   public ReportVO[] insertReport(ReportVO[] aggVO) {
     AroundProcesser<ReportVO> processer =
         new AroundProcesser<ReportVO>(ReportBPPlugInPoint.ReportInsertBP);

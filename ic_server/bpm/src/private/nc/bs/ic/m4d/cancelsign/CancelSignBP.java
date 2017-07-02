@@ -36,7 +36,7 @@ public class CancelSignBP implements ICancelSignBP<MaterialOutVO>,
 		processor.addAfterRule(new UpdateSCOnhandRule(true));
 		processor.addAfterRule(new PushDeleteIAandTOBills());
 		processor.addAfterRule(new AfterCancelSignRuleForLiabilityProcess());
-//		processor.addAfterRule(new AfterCancelSignRuleFivemetals());
+		processor.addAfterRule(new AfterCancelSignRuleFivemetals());
 	}
 
 	@Override

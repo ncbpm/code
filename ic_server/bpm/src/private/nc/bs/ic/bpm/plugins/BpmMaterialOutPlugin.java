@@ -59,7 +59,7 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 		VOCheckUtil
 				.checkHeadNotNullFields(bill, new String[] { "cwarehouseid",
 						"vtrantypecode", "dbilldate", "cdptid", "vdef20",
-						"billmaker" });
+						"creator" });
 		VOCheckUtil.checkBodyNotNullFields(bill, new String[] { "vbatchcode",
 				"nshouldnum", "csourcebillhid", "csourcebillbid", "ncostprice",
 				"cprojectid" });
@@ -80,7 +80,7 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 		MaterialOutVO[] bills = new MaterialOutVO[] { (MaterialOutVO) icbill };
 		Logger.info("保存新单据...");
 		MaterialOutVO[] vos = new PushSaveActionFor422X(
-				BpmServicePluginPoint.pushSaveFor422X).pushSave(bills);
+				BpmServicePluginPoint.pushSaveFor422X).pushSaveAndSign(bills);
 
 		return vos;
 	}
@@ -130,6 +130,7 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 		headvo.setPk_group(header.getPk_group());
 		FiveMetalsHVO hvo = getFiveMetalsHVO(headvo);
 		headvo.setVdef20(hvo.getPrimaryKey());
+		headvo.setBillmaker(headvo.getCreator());
 		// headvo.setDbilldate(new UFDate("2017-07-23"));
 		// headvo.setCdptid(header.getPk_appdepth());
 	}

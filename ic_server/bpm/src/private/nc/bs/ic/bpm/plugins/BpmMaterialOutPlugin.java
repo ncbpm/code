@@ -26,8 +26,7 @@ import nc.vo.ic.general.define.ICBillBodyVO;
 import nc.vo.ic.general.define.ICBillFlag;
 import nc.vo.ic.general.define.ICBillHeadVO;
 import nc.vo.ic.general.define.ICBillVO;
-import nc.vo.ic.m4c.entity.SaleOutBodyVO;
-import nc.vo.ic.m4d.entity.MaterialOutHeadVO;
+import nc.vo.ic.m4d.entity.MaterialOutBodyVO;
 import nc.vo.ic.pub.calc.BusiCalculator;
 import nc.vo.ic.pub.check.VOCheckUtil;
 import nc.vo.ic.pub.define.ICPubMetaNameConst;
@@ -38,7 +37,6 @@ import nc.vo.pu.m422x.entity.StoreReqAppItemVO;
 import nc.vo.pu.m422x.entity.StoreReqAppVO;
 import nc.vo.pub.AggregatedValueObject;
 import nc.vo.pub.BusinessException;
-import nc.vo.pub.ISuperVO;
 import nc.vo.pub.VOStatus;
 import nc.vo.pub.lang.UFBoolean;
 import nc.vo.pub.lang.UFDateTime;
@@ -67,29 +65,29 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 		checkData(bpmBill);
 		// 3.查询对应上的物资需求申请单：并且根据物资需求申请单明细过滤
 		StoreReqAppVO[] chgBillS = fillData(bpmBill);
-		
+
 		// 4数据交换:生成一张材料出库单场景处理
 		// 根据物资需求申请单的制单人同步到材料出库单
 		ICBillVO[] destVos = PfServiceScmUtil.executeVOChange(
-				POBillType.MRBill.getCode(),
-				ICBillType.MaterialOut.getCode(), chgBillS);
-		//合并生成一张材料出库单
+				POBillType.MRBill.getCode(), ICBillType.MaterialOut.getCode(),
+				chgBillS);
+		// 合并生成一张材料出库单
 		List<ICBillBodyVO> body_list = new ArrayList<ICBillBodyVO>();
-		for(ICBillVO bill:destVos){
+		for (ICBillVO bill : destVos) {
 			ICBillBodyVO[] bodys = bill.getBodys();
-			for(ICBillBodyVO body:bodys){
+			for (ICBillBodyVO body : bodys) {
 				body_list.add(body);
 			}
 		}
 		// 根据BPM回写的物资需求申请单信息更新
 		ICBillVO clientVO = destVos[0];
-		clientVO.setChildrenVO(body_list.toArray(new ICBillBodyVO[0]));
+		clientVO.setChildrenVO(body_list.toArray(new MaterialOutBodyVO[0]));
 		updateClientVO(bpmBill, clientVO);
 		// 保存
 		ICBillVO saveVO = doSave(clientVO);
 		// 审批
 		doSign(saveVO);
-		
+
 		return saveVO.getHead().getVbillcode();
 
 	}
@@ -141,7 +139,7 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 		Logger.info("签字新单据...");
 		IPFBusiAction service = NCLocator.getInstance().lookup(
 				IPFBusiAction.class);
-		ICBillVO[] icbills = (ICBillVO[]) service.processAction("SIGN", "4C",
+		ICBillVO[] icbills = (ICBillVO[]) service.processAction("SIGN", billtype,
 				null, icbill, null, null);
 
 		Logger.info("签字新单据完成...");
@@ -170,31 +168,34 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 	 */
 	private void updateClientVO(ICBillVO bpmBill, ICBillVO clientVO)
 			throws BusinessException {
-		SaleOutBodyVO[] clientbodys = (SaleOutBodyVO[]) clientVO.getBodys();
+		MaterialOutBodyVO[] clientbodys = (MaterialOutBodyVO[]) clientVO.getBodys();
 		ICBillBodyVO[] bodys = (ICBillBodyVO[]) bpmBill.getBodys();
 		Map<String, UFDouble> rownos = new HashMap<String, UFDouble>();
 		UFDouble setp = new UFDouble(0.1);
 		// 设置表头信息
 		String[] headKeys = new String[] { "cwarehouseid", "dbilldate",
-				"vtrantypecode", "cwhsmanagerid", "billmaker","vdef20" };
+				"vtrantypecode", "cwhsmanagerid", "billmaker", "vdef20" };
 		for (String key : headKeys) {
 			clientVO.getHead().setAttributeValue(key,
 					bpmBill.getHead().getAttributeValue(key));
 		}
+		// 五金卡信息
+		FiveMetalsHVO hvo = getFiveMetalsHVO(clientVO.getHead());
+		clientVO.getHead().setVdef20(hvo.getPrimaryKey());
 
-		List<SaleOutBodyVO> children = new ArrayList<SaleOutBodyVO>();
+		List<MaterialOutBodyVO> children = new ArrayList<MaterialOutBodyVO>();
 		children.addAll(Arrays.asList(clientbodys));
 		// 拆行的处理
 		for (ICBillBodyVO body : bodys) {
 			String csourcebillbid = body.getCsourcebillbid();
-			for (SaleOutBodyVO clientbody : clientbodys) {
+			for (MaterialOutBodyVO clientbody : clientbodys) {
 				if (!clientbody.getCsourcebillbid().equalsIgnoreCase(
 						csourcebillbid)) {
 					continue;
 				}
 				// 一行表体，可能回写多个批次
 				if (updateIndex.contains(csourcebillbid)) {
-					SaleOutBodyVO newBody = (SaleOutBodyVO) clientbody.clone();
+					MaterialOutBodyVO newBody = (MaterialOutBodyVO) clientbody.clone();
 					String crowno = newBody.getCrowno();
 					if (rownos.containsKey(crowno)) {
 						UFDouble max_rowno = rownos.get(crowno).add(setp);
@@ -219,7 +220,7 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 
 		processBeforeSave(clientVO);
 
-		SaleOutBodyVO[] new_bodys = children.toArray(new SaleOutBodyVO[0]);
+		MaterialOutBodyVO[] new_bodys = children.toArray(new MaterialOutBodyVO[0]);
 		// 数量
 		BusiCalculator.getBusiCalculatorAtBS().calcNum(new_bodys,
 				ICPubMetaNameConst.NNUM);
@@ -238,7 +239,7 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 		clientbody.setNshouldnum(nnum);
 		clientbody.setNshouldassistnum(nnum);
 		clientbody.setVbatchcode(body.getVbatchcode());// 批次号
-//		clientbody.setClocationid(body.getClocationid());// 货位
+		// clientbody.setClocationid(body.getClocationid());// 货位
 
 	}
 
@@ -292,7 +293,8 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 			if (arrblist.size() > 0) {
 				StoreReqAppVO chgArrBill = new StoreReqAppVO();
 				chgArrBill.setParentVO(aggvo.getParentVO());
-				chgArrBill.setChildrenVO(arrblist.toArray(new StoreReqAppItemVO[0]));
+				chgArrBill.setChildrenVO(arrblist
+						.toArray(new StoreReqAppItemVO[0]));
 				chgBillS.add(chgArrBill);
 			}
 		}
@@ -318,21 +320,18 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 						"vtrantypecode", "dbilldate", "cdptid", "vdef20",
 						"billmaker" });
 		VOCheckUtil.checkBodyNotNullFields(bill, new String[] { "vbatchcode",
-				"nshouldnum", "csourcebillhid", "csourcebillbid", "ncostprice",
+				"nnum", "csourcebillhid", "csourcebillbid", "ncostprice",
 				"cprojectid" });
-		//五金卡信息
-		FiveMetalsHVO hvo = getFiveMetalsHVO(bill.getHead());
-		bill.getHead().setVdef20(hvo.getPrimaryKey());
-		
 
 	}
-	
+
 	private FiveMetalsHVO getFiveMetalsHVO(ICBillHeadVO icBillHeadVO)
 			throws BusinessException {
-		VOQuery<FiveMetalsHVO> query = new VOQuery<FiveMetalsHVO>(FiveMetalsHVO.class);
+		VOQuery<FiveMetalsHVO> query = new VOQuery<FiveMetalsHVO>(
+				FiveMetalsHVO.class);
 		String condition = " and pk_group = '" + icBillHeadVO.getPk_group()
-				+ "' and pk_org ='" + icBillHeadVO.getPk_org() + "' and vcardno = '"
-				+ icBillHeadVO.getVdef20() + "' ";
+				+ "' and pk_org ='" + icBillHeadVO.getPk_org()
+				+ "' and vcardno = '" + icBillHeadVO.getVdef20() + "' ";
 		FiveMetalsHVO[] hvos = (FiveMetalsHVO[]) query.query(condition, null);
 		if (hvos == null || hvos.length == 0)
 			throw new BusinessException("该卡号没有建卡,请检查卡号是否正确 ！");

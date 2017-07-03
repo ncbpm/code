@@ -56,8 +56,9 @@ public class AfterSignRuleFivemetals implements IRule<MaterialOutVO> {
 		hvo.setPk_org(vo.getParentVO().getPk_org());
 		hvo.setVcardno(vo.getParentVO().getVdef20());
 		hvo.setVdepartment(vo.getParentVO().getCdptid());
-		hvo.setVbillstatus(Integer.parseInt(CardStatusEnum.消费.getEnumValue()
-				.getValue()));
+//		hvo.setVbillstatus(Integer.parseInt(CardStatusEnum.消费.getEnumValue()
+//				.getValue()));
+		hvo.setVbillstatus(3);
 
 		FiveMetalsBVO fbvo = new FiveMetalsBVO();
 		fbvo.setCperiod(period);

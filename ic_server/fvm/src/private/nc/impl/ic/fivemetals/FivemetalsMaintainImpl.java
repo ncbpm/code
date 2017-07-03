@@ -239,7 +239,7 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 			throw new BusinessException("该卡号没有建卡,请检查卡号是否正确 ！");
 		}
 
-		if (!(hvo.getVbillstatus() != null && hvo.getVbillstatus().intValue() == Integer
+		if (!(hvo.getVbillstatus() != null && hvo.getVbillstatus().intValue() != Integer
 				.parseInt(CardStatusEnum.启用.getEnumValue().getValue()))) {
 			throw new BusinessException("该卡号为非启用状态,请检查卡号状态是否正确 ！");
 		}

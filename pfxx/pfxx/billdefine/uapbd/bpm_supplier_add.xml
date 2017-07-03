@@ -3,6 +3,15 @@
     <vars>
     </vars>
     <record displayName="供应商基本信息" metadataid="720dcc7c-ff19-48f4-b9c5-b90906682f45" stabletag="header" tablename="billhead" tabletag="billhead" tabletype="head" typeName="表头">
+         <field desc="创建人">
+            <matchtag>creator</matchtag>
+            <name>creator</name>
+            <type>UFID</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>no</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
         <field desc="供应商档案主键">
             <matchtag>pk_supplier</matchtag>
             <name>pk_supplier</name>

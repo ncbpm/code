@@ -1591,7 +1591,7 @@
             <matchtag>creceivecustid</matchtag>
             <name>creceivecustid</name>
             <type>String</type>
-            <nullallowed>yes</nullallowed>
+            <nullallowed>no</nullallowed>
             <maxLength>20</maxLength>
             <needexport>yes</needexport>
             <basdoc>e4f48eaf-5567-4383-a370-a59cb3e8a451</basdoc>

@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import nc.bs.framework.common.InvocationInfoProxy;
 import nc.bs.framework.common.NCLocator;
 import nc.bs.pfxx.ISwapContext;
 import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
 import nc.bs.uap.bd.supplier.ISupplierConst;
+import nc.impl.pubapp.env.BSContext;
 import nc.itf.bd.supplier.assign.ISupplierAssignService;
 import nc.itf.bd.supplier.baseinfo.ISupplierBaseInfoService;
-import nc.itf.bd.supplier.suporg.ISupOrgService;
 import nc.md.persist.framework.IMDPersistenceQueryService;
 import nc.md.persist.framework.IMDPersistenceService;
 import nc.md.persist.framework.MDPersistenceService;
@@ -54,6 +55,12 @@ public class SupplierForBpmAdd extends AbstractPfxxPlugin {
 		String assign_orgs = supplierVO.getPk_org();
 		supplierVO.setPk_org(supplierVO.getPk_group());
 		String voPk = supplierVO.getPk_supplier();
+		
+		//
+		if(!StringUtils.isEmpty(supplierVO.getCreator())){}
+		{
+			 InvocationInfoProxy.getInstance().setUserId(supplierVO.getCreator());
+		}
 		setVOStatus(supplierVO.getSuplinkman(), VOStatus.NEW);  
 		if (voPk == null) {
 			supplierVO.setStatus(VOStatus.NEW);
@@ -65,7 +72,8 @@ public class SupplierForBpmAdd extends AbstractPfxxPlugin {
 				String [] pks = new String[]{voPk};
 				String[] targets = assign_orgs.split(",");			
 				ISupplierAssignService assignService2 = NCLocator.getInstance().lookup(ISupplierAssignService.class);
-				assignService2.assignSupplierByPks(pks, targets,new String[]{"GLOBLE00000000000000", "0001A51000000000078A"});
+				
+				assignService2.assignSupplierByPks(pks, targets,new String[]{"GLOBLE00000000000000", supplierVO.getPk_group()});
 				
 				assignService2.assignByPks(pks, targets, false);
 			
@@ -81,7 +89,7 @@ public class SupplierForBpmAdd extends AbstractPfxxPlugin {
 				String[] targets = assign_orgs.split(",");			
 				ISupplierAssignService assignService2 = NCLocator.getInstance().lookup(ISupplierAssignService.class);
 				
-				assignService2.assignSupplierByPks(pks, targets,new String[]{"GLOBLE00000000000000", "0001A51000000000078A"});
+				assignService2.assignSupplierByPks(pks, targets,new String[]{"GLOBLE00000000000000", supplierVO.getPk_group()});
 				
 				assignService2.assignByPks(pks, targets, true);
 			}

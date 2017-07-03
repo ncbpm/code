@@ -7,10 +7,8 @@ import nc.bs.dao.BaseDAO;
 import nc.bs.framework.common.NCLocator;
 import nc.bs.pfxx.ISwapContext;
 import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
-import nc.bs.xml.out.tool.XmlOutTool;
 import nc.impl.pubapp.pattern.data.bill.BillQuery;
 import nc.itf.so.m30.ref.credit.CreditServicesUtil;
-import nc.itf.so.m30.revise.ISaleOrderReviseMaintainApp;
 import nc.pubitf.org.IOrgRelationDataPubService;
 import nc.vo.credit.billcreditquery.entity.CreditInfoVO;
 import nc.vo.org.orgmodel.OrgRelationVO;
@@ -20,7 +18,6 @@ import nc.vo.pub.AggregatedValueObject;
 import nc.vo.pub.BeanHelper;
 import nc.vo.pub.BusinessException;
 import nc.vo.so.m30.entity.SaleOrderHVO;
-import nc.vo.so.m30.revise.entity.SaleOrderHistoryVO;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.codehaus.jettison.json.JSONObject;

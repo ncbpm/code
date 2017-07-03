@@ -14,10 +14,14 @@ import nc.vo.ic.pub.util.StringUtil;
 import nc.vo.pfxx.auxiliary.AggxsysregisterVO;
 import nc.vo.pub.AggregatedValueObject;
 import nc.vo.pub.BusinessException;
+import nc.vo.pubapp.pattern.model.entity.bill.IBill;
 import nc.vo.so.m30.entity.SaleOrderBVO;
 import nc.vo.so.m30.entity.SaleOrderHVO;
 import nc.vo.so.m30.entity.SaleOrderVO;
 import nc.vo.so.m30.pub.SaleOrderVOCalculator;
+import nc.vo.so.pub.keyvalue.IKeyValue;
+import nc.vo.so.pub.keyvalue.VOKeyValue;
+import nc.vo.so.pub.rule.SOTaxInfoRule;
 
 /**
  * BPM销售订单导入
@@ -83,12 +87,16 @@ public class M30ForBPMAdd extends AbstractPfxxPlugin {
 			bvo.setCqtunitid(bvo.getCunitid());
 			bvo.setVqtunitrate(bvo.getVqtunitrate());
 		}
-		
-		///计算价格信息
 		int rows[] = new int[bvos.length];
 		for(int i=0;i<bvos.length;i++){
 			rows[i] = i;
 		}
+		//计算税码信息
+	    IKeyValue keyValue = new VOKeyValue<IBill>(bill);
+	    // 询税
+	    SOTaxInfoRule taxInfo = new SOTaxInfoRule(keyValue);
+	    taxInfo.setOnlyTaxCodeByBodyPos(rows);
+		///计算价格信息
 		SaleOrderVOCalculator cal = new SaleOrderVOCalculator(bill);
 		cal.calculate(rows, "norigtaxmny");
 	}

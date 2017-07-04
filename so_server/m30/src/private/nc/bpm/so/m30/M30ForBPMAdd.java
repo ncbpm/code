@@ -2,6 +2,9 @@ package nc.bpm.so.m30;
 
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
+import nc.bs.framework.common.InvocationInfoProxy;
 import nc.bs.framework.common.NCLocator;
 import nc.bs.pfxx.ISwapContext;
 import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
@@ -46,12 +49,15 @@ public class M30ForBPMAdd extends AbstractPfxxPlugin {
 		SaleOrderVO bill = (SaleOrderVO)resvo;
 		SaleOrderHVO parentVO = bill.getParentVO();
 		String approver = parentVO.getApprover();
-		
 		parentVO.setApprover(null);
-		
+		if(!StringUtils.isEmpty(parentVO.getBillmaker())){
+			InvocationInfoProxy.getInstance().setUserId(parentVO.getBillmaker());
+		}
 		SaleOrderVO bill2 = (SaleOrderVO) insert(resvo);
 		//重新查询，防止并发
-		
+		if(!StringUtils.isEmpty(approver)){
+			InvocationInfoProxy.getInstance().setUserId(approver);
+		}
 		bill2 = query(bill2.getParentVO().getPrimaryKey());
 		bill2.getParentVO().setApprover(approver);
 		approve(bill2);

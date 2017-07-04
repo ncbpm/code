@@ -167,9 +167,7 @@ public class M30HistoryForBPMAdd extends AbstractPfxxPlugin {
 		//设置伪列
 		bill.getParentVO().setAttributeValue("pseudocolumn", 0);
 		SaleOrderVOCalculator cal = new SaleOrderVOCalculator(bill);
-		cal.calculate(rows, "norigtaxmny");
-
-		
+		cal.calculate(rows, "norigtaxmny");	
 		
 		IM30ReviseMaintain maintainsrv = NCLocator.getInstance().lookup(
 				IM30ReviseMaintain.class);
@@ -267,7 +265,9 @@ public class M30HistoryForBPMAdd extends AbstractPfxxPlugin {
 				if("csaleorderbid".equalsIgnoreCase(attr)){
 					continue;
 				}
-				//累计回写信息，不更新
+				if("ctaxcodeid".equalsIgnoreCase(attr)){
+					continue;
+				}
 				if(attr.endsWith("nnum") && ! attr.equalsIgnoreCase("nnum")){
 					continue;
 				}
@@ -289,7 +289,7 @@ public class M30HistoryForBPMAdd extends AbstractPfxxPlugin {
 			if("ts".equalsIgnoreCase(attr)){
 				continue;
 			}
-			if("Iversion".equalsIgnoreCase(attr)){
+			if("iversion".equalsIgnoreCase(attr)){
 				continue;
 			}
 			hvo.setAttributeValue(attr, hvo_bpm.getAttributeValue(attr));

@@ -14,4 +14,7 @@
     </businessprocessor>
     <businessprocessor baseclassname="" billtype="bpm_55A3_add" classname="nc.impl.mmpac.pickm.plugin.BpmPickmExpPfxxPlugin" locklevel="3" metadataid="b65364a4-d163-4879-a535-f9f3f83f9602" name="备料计划">
     </businessprocessor>
+    <businessprocessor baseclassname="" billtype="TM_WGRK_ADD" classname="nc.bpm.mmpac.pfxx.WgrkPfxxForBpmAdd" locklevel="3" metadataid="9c5489f5-46ae-49a1-9695-f26b6fe557ca" name="条码回写完工入库">
+    </businessprocessor>
+    
 </businessprocessors>

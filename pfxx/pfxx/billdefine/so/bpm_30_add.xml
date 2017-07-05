@@ -187,6 +187,18 @@
             <translatorParams>pk_group</translatorParams>            
             <checkTranslatedPK>no</checkTranslatedPK>
         </field>
+        <field desc="收货客户">
+            <matchtag>chreceivecustid</matchtag>
+            <name>chreceivecustid</name>
+            <type>String</type>
+            <nullallowed>no</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>e4f48eaf-5567-4383-a370-a59cb3e8a451</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+	    <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
         <field desc="开户银行">
             <matchtag>ccustbankid</matchtag>
             <name>ccustbankid</name>

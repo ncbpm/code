@@ -28,6 +28,8 @@ import nc.vo.so.pub.rule.SOTaxInfoRule;
 
 /**
  * BPM销售订单导入
+ * 
+ * BPM导入保持金额和数量不变，重算单价
  * @author liyf
  *
  */
@@ -71,7 +73,7 @@ public class M30ForBPMAdd extends AbstractPfxxPlugin {
 
 	private void fillData(AggregatedValueObject resvo) {
 		// TODO 自动生成的方法存根
-		//补全数量信息：BPM传递主数量，补全辅数量，计价数量
+		//补全数量信息：BPM传递主数量，补全辅数量，
 		SaleOrderVO bill = (SaleOrderVO)resvo;
 		SaleOrderHVO parentVO = bill.getParentVO();
 		SaleOrderBVO[] bvos = bill.getChildrenVO();
@@ -79,7 +81,6 @@ public class M30ForBPMAdd extends AbstractPfxxPlugin {
 		parentVO.setFpfstatusflag(-1);
 		//单据状态，自由
 		parentVO.setFstatusflag(1);
-		
 		//
 		if (StringUtil.isSEmptyOrNull(parentVO.getCtrantypeid())) {
 			// uap不支持单据类型的翻译，暂时以交易类型code查询id的方式补交易类型
@@ -88,10 +89,23 @@ public class M30ForBPMAdd extends AbstractPfxxPlugin {
 					.getTrantypeidByCode(new String[] { vtrantypecode });
 			parentVO.setCtrantypeid(map == null ? null : map.get(vtrantypecode));
 		}
+		
+		if (StringUtil.isSEmptyOrNull(parentVO.getChreceivecustid())) {
+			parentVO.setChreceivecustid(bvos[0].getCreceivecustid());
+		}
+
+				
+		//清空单价：根据金额和数量重算
+		String[] attributeNames = bvos[0].getAttributeNames();
 		//报价信息
 		for(SaleOrderBVO bvo:bvos){
 			bvo.setCqtunitid(bvo.getCunitid());
 			bvo.setVqtunitrate(bvo.getVqtunitrate());
+			for(String attname:attributeNames){
+				if(attname.endsWith("price")){
+					bvo.setAttributeValue(attname, null);
+				}
+			}
 		}
 		int rows[] = new int[bvos.length];
 		for(int i=0;i<bvos.length;i++){
@@ -102,7 +116,8 @@ public class M30ForBPMAdd extends AbstractPfxxPlugin {
 	    // 询税
 	    SOTaxInfoRule taxInfo = new SOTaxInfoRule(keyValue);
 	    taxInfo.setOnlyTaxCodeByBodyPos(rows);
-		///计算价格信息
+	    
+		///根据价税合计，计算单价等
 		SaleOrderVOCalculator cal = new SaleOrderVOCalculator(bill);
 		cal.calculate(rows, "norigtaxmny");
 	}

@@ -157,6 +157,8 @@ public class M30HistoryForBPMAdd extends AbstractPfxxPlugin {
 		bill.setParentVO(oldbill.getParentVO());
 		bill.setChildrenVO(oldbill.getChildrenVO());
 		
+		
+		
 		//重现计算单价等》
 		int rows[] = new int[bill.getChildrenVO().length];
 		for (int i = 0; i <bill.getChildrenVO().length; i++) {
@@ -166,6 +168,17 @@ public class M30HistoryForBPMAdd extends AbstractPfxxPlugin {
 		}
 		//设置伪列
 		bill.getParentVO().setAttributeValue("pseudocolumn", 0);
+		
+		//清空单价：根据金额和数量重算
+		String[] attributeNames =bill.getChildrenVO()[0].getAttributeNames();
+		//报价信息
+		for(SaleOrderBVO bvo:bill.getChildrenVO()){
+			for(String attname:attributeNames){
+				if(attname.endsWith("price")){
+					bvo.setAttributeValue(attname, null);
+				}
+			}
+		}
 		SaleOrderVOCalculator cal = new SaleOrderVOCalculator(bill);
 		cal.calculate(rows, "norigtaxmny");	
 		

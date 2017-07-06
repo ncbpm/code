@@ -1,5 +1,6 @@
 package nc.impl.ic.fivemetals;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -198,7 +199,8 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 			checkFiveMetalsHVO(oldvo);
 			oldvo.setStatus(VOStatus.UPDATED);
 			aggvo.setParentVO(oldvo);
-			bvos = createFiveMetalsBVO1((FiveMetalsBVO[]) bill.getChildrenVO());
+			bvos = createFiveMetalsBVO1((FiveMetalsBVO[]) bill.getChildrenVO(),
+					oldvo.getPk_fivemetals_h());
 		}
 		for (FiveMetalsBVO bvo : bvos) {
 			bvo.setPk_fivemetals_h(aggvo.getParentVO().getPk_fivemetals_h());
@@ -216,20 +218,29 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 		return returnvos[0];
 	}
 
-	private FiveMetalsBVO[] createFiveMetalsBVO1(FiveMetalsBVO[] bvos)
-			throws DAOException {
+	private FiveMetalsBVO[] createFiveMetalsBVO1(FiveMetalsBVO[] bvos,
+			String pk_fivemetals_h) throws DAOException {
 
 		ArrayList<FiveMetalsBVO> al = new ArrayList<>();
 
 		FivemetalsDao dao = new FivemetalsDao();
-		Map<String, UFDouble> retMap = dao.getFivemetalsBalance(bvos[0]
-				.getPk_fivemetals_h());
+		Map<String, UFDouble> retMap = dao
+				.getFivemetalsBalance(pk_fivemetals_h);
 		for (FiveMetalsBVO bvo : bvos) {
 
 			FiveMetalsBVO bvo1 = (FiveMetalsBVO) bvo.clone();
-			UFDouble nmny = retMap.get(bvo.getCperiod());
+			Object nmny = retMap.get(bvo.getCperiod());
 			if (nmny != null) {
-				bvo1.setNmny(SafeCompute.multiply(nmny, new UFDouble(-1)));
+				if (nmny instanceof BigDecimal) {
+					BigDecimal i = (BigDecimal) nmny;
+					bvo1.setNmny(SafeCompute.multiply(
+							new UFDouble(i.doubleValue()), new UFDouble(-1)));
+				} else if (nmny instanceof Integer) {
+					Integer i = (Integer) nmny;
+					bvo1.setNmny(SafeCompute.multiply(
+							new UFDouble(i.doubleValue()), new UFDouble(-1)));
+				}
+
 				bvo1.setVremark("作废余额");
 				al.add(bvo1);
 			}
@@ -323,7 +334,7 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 			throw new BusinessException("该卡号没有建卡,请检查卡号是否正确 ！");
 		}
 
-		if (!(hvo.getVbillstatus() != null && hvo.getVbillstatus().intValue() != Integer
+		if (!(hvo.getVbillstatus() != null && hvo.getVbillstatus().intValue() == Integer
 				.parseInt(CardStatusEnum.启用.getEnumValue().getValue()))) {
 			throw new BusinessException("该卡号为非启用状态,请检查卡号状态是否正确 ！");
 		}

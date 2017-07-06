@@ -86,13 +86,23 @@ public class CheckNmny implements IRule<AggFiveMetalsVO> {
 			Map<String, UFDouble> retMap = dao.getFivemetalsBalance(bvos[0]
 					.getPk_fivemetals_h());
 			for (String str : set) {
-				UFDouble nmny = retMap.get(str);
-				if (nmny != null) {
-					if (nmny.compareTo(BigDecimal.ZERO) < 0) {
+				Object nmny = retMap.get(str);
+				if (nmny == null)
+					continue;
+				if (nmny instanceof BigDecimal) {
+					BigDecimal i = (BigDecimal) nmny;
+					if (i.compareTo(BigDecimal.ZERO) < 0) {
 						throw new BusinessException("卡号" + hvo.getVcardno()
-								+ "月份" + str + "的余额不能小于零！");
+								+ "的余额不能小于零！");
+					}
+				} else if (nmny instanceof Integer) {
+					Integer i = (Integer) nmny;
+					if (i.intValue() < 0) {
+						throw new BusinessException("卡号" + hvo.getVcardno()
+								+ "的余额不能小于零！");
 					}
 				}
+				
 			}
 		} catch (DAOException e) {
 			ExceptionUtils.wrappBusinessException("数据库查询异常");

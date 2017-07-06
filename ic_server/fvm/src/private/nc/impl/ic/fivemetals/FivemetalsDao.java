@@ -111,7 +111,7 @@ public class FivemetalsDao {
 
 	public Map<String, UFDouble> getFivemetalsBalance(String pk_fivemetals_h)
 			throws DAOException {
-		String sql = " select sum(nmny*itype),cperiod nmny  from  ic_fivemetals_b where nvl(dr,0) = 0 and   pk_fivemetals_h = '"
+		String sql = " select sum(nmny*itype) nmny,cperiod from  ic_fivemetals_b where nvl(dr,0) = 0 and   pk_fivemetals_h = '"
 				+ pk_fivemetals_h + "'  group by cperiod ";
 		BaseDAO dao = new BaseDAO();
 		Map<String, UFDouble> retMap = (Map<String, UFDouble>) dao

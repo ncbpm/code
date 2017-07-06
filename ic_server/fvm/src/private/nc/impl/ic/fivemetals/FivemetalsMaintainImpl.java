@@ -2,7 +2,9 @@ package nc.impl.ic.fivemetals;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
+import nc.bs.dao.DAOException;
 import nc.bs.ic.fivemetals.action.FivemetalsSaveAction;
 import nc.impl.pubapp.pattern.data.vo.VOQuery;
 import nc.impl.pubapp.pattern.data.vo.VOUpdate;
@@ -61,7 +63,7 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 			throw new BusinessException("传入数据出错");
 
 		VOCheckUtil.checkHeadNotNullFields(bill, new String[] { "pk_group",
-				"pk_org", "vcardno", "vbillstatus","vdepartment" });
+				"pk_org", "vcardno", "vbillstatus", "vdepartment" });
 
 		FiveMetalsHVO hvo = (FiveMetalsHVO) bill.getParentVO();
 		FiveMetalsHVO oldvo = getFiveMetalsHVO(hvo);
@@ -84,7 +86,7 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 			vo = savebill(bill, oldvo, vsourcetype);
 			break;
 		case 4:
-			// 充值 卡号不存在 建卡 存在 直接充值
+			// 充值 卡号不存在 建卡 存在 直接充值 (保留余额)
 			bvos = (FiveMetalsBVO[]) bill.getChildrenVO();
 			if (bvos == null || bvos.length == 0)
 				throw new BusinessException("传入表体信息不完整");
@@ -95,6 +97,19 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 			}
 			vsourcetype = "五金预算充值 ";
 			vo = savebill(bill, oldvo, vsourcetype);
+			break;
+		case 7:
+			// 充值 卡号不存在 建卡 存在 直接充值 (作废余额)
+			bvos = (FiveMetalsBVO[]) bill.getChildrenVO();
+			if (bvos == null || bvos.length == 0)
+				throw new BusinessException("传入表体信息不完整");
+			for (FiveMetalsBVO bvo : bvos) {
+				bvo.setItype(Integer.parseInt(CostTypeEnum.充值.getEnumValue()
+						.getValue()));
+				bvo.setNmny(bvo.getNmny());
+			}
+			vsourcetype = "五金预算充值 ";
+			vo = savebill1(bill, oldvo, vsourcetype);
 			break;
 		case 5:
 			// 挂失 注销
@@ -135,6 +150,7 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 			hvo.setStatus(VOStatus.NEW);
 			aggvo.setParentVO(hvo);
 		} else {
+			checkFiveMetalsHVO(oldvo);
 			oldvo.setStatus(VOStatus.UPDATED);
 			aggvo.setParentVO(oldvo);
 		}
@@ -153,6 +169,74 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 		if (returnvos == null || returnvos.length == 0)
 			return null;
 		return returnvos[0];
+	}
+
+	private AggFiveMetalsVO savebill1(AggFiveMetalsVO bill,
+			FiveMetalsHVO oldvo, String vsourcetype) throws BusinessException {
+
+		FiveMetalsHVO hvo = (FiveMetalsHVO) bill.getParentVO();
+
+		VOCheckUtil.checkBodyNotNullFields(bill, new String[] {
+				"vsourcebillno", "vsourcebillid", "nmny", "cperiod" });
+
+		AggFiveMetalsVO aggvo = new AggFiveMetalsVO();
+		FiveMetalsBVO[] bvos = null;
+		if (oldvo == null) {
+			if (hvo.getVproject() != null) {
+				hvo.setVcardtype(Integer.parseInt(CardTypeEnum.项目卡
+						.getEnumValue().getValue()));
+			} else {
+				hvo.setVcardtype(Integer.parseInt(CardTypeEnum.部门卡
+						.getEnumValue().getValue()));
+			}
+			hvo.setVbillstatus(Integer.parseInt(CardStatusEnum.启用
+					.getEnumValue().getValue()));
+			hvo.setStatus(VOStatus.NEW);
+			aggvo.setParentVO(hvo);
+			bvos = (FiveMetalsBVO[]) bill.getChildrenVO();
+		} else {
+			checkFiveMetalsHVO(oldvo);
+			oldvo.setStatus(VOStatus.UPDATED);
+			aggvo.setParentVO(oldvo);
+			bvos = createFiveMetalsBVO1((FiveMetalsBVO[]) bill.getChildrenVO());
+		}
+		for (FiveMetalsBVO bvo : bvos) {
+			bvo.setPk_fivemetals_h(aggvo.getParentVO().getPk_fivemetals_h());
+			bvo.setStatus(VOStatus.NEW);
+			bvo.setVsourcetype(vsourcetype);
+		}
+
+		aggvo.setChildrenVO(bvos);
+		FivemetalsSaveAction action = new FivemetalsSaveAction();
+		AggFiveMetalsVO[] returnvos = action
+				.save(new AggFiveMetalsVO[] { aggvo });
+
+		if (returnvos == null || returnvos.length == 0)
+			return null;
+		return returnvos[0];
+	}
+
+	private FiveMetalsBVO[] createFiveMetalsBVO1(FiveMetalsBVO[] bvos)
+			throws DAOException {
+
+		ArrayList<FiveMetalsBVO> al = new ArrayList<>();
+
+		FivemetalsDao dao = new FivemetalsDao();
+		Map<String, UFDouble> retMap = dao.getFivemetalsBalance(bvos[0]
+				.getPk_fivemetals_h());
+		for (FiveMetalsBVO bvo : bvos) {
+
+			FiveMetalsBVO bvo1 = (FiveMetalsBVO) bvo.clone();
+			UFDouble nmny = retMap.get(bvo.getCperiod());
+			if (nmny != null) {
+				bvo1.setNmny(SafeCompute.multiply(nmny, new UFDouble(-1)));
+				bvo1.setVremark("作废余额");
+				al.add(bvo1);
+			}
+			al.add(bvo);
+		}
+		return al.toArray(new FiveMetalsBVO[al.size()]);
+
 	}
 
 	private AggFiveMetalsVO disableAggFiveMetalsVO(FiveMetalsHVO oldvo)

@@ -2,13 +2,17 @@ package nc.impl.ic.fivemetals;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import nc.bs.dao.BaseDAO;
+import nc.bs.dao.DAOException;
+import nc.impl.am.db.processor.KeyValueMapProcessor;
 import nc.jdbc.framework.processor.ArrayProcessor;
 import nc.jdbc.framework.processor.ColumnListProcessor;
 import nc.vo.pmpub.common.utils.StringUtil;
 import nc.vo.pub.BusinessException;
 import nc.vo.pub.lang.UFDate;
+import nc.vo.pub.lang.UFDouble;
 
 public class FivemetalsDao {
 
@@ -103,5 +107,17 @@ public class FivemetalsDao {
 			}
 		}
 		return flowno;
+	}
+
+	public Map<String, UFDouble> getFivemetalsBalance(String pk_fivemetals_h)
+			throws DAOException {
+		String sql = " select sum(nmny*itype),cperiod nmny  from  ic_fivemetals_b where nvl(dr,0) = 0 and   pk_fivemetals_h = '"
+				+ pk_fivemetals_h + "'  group by cperiod ";
+		BaseDAO dao = new BaseDAO();
+		Map<String, UFDouble> retMap = (Map<String, UFDouble>) dao
+				.executeQuery(sql, null,
+						new KeyValueMapProcessor<String, UFDouble>("cperiod",
+								"nmny"));
+		return retMap;
 	}
 }

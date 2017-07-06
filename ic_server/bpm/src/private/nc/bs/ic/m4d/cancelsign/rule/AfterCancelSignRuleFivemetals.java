@@ -1,9 +1,7 @@
 package nc.bs.ic.m4d.cancelsign.rule;
 
 import nc.bs.framework.common.NCLocator;
-import nc.bs.xml.out.tool.XmlOutTool;
 import nc.impl.pubapp.pattern.rule.IRule;
-import nc.itf.hr.wa.IWaAdjustQueryService;
 import nc.itf.ic.fivemetals.IFivemetalsMaintain;
 import nc.vo.ic.fivemetals.AggFiveMetalsVO;
 import nc.vo.ic.fivemetals.CardStatusEnum;
@@ -16,8 +14,6 @@ import nc.vo.pub.BusinessException;
 import nc.vo.pub.lang.UFDouble;
 import nc.vo.pubapp.pattern.exception.ExceptionUtils;
 import nc.vo.trade.voutils.SafeCompute;
-import nc.vo.wa.adjust.AggPsnappaproveVO;
-import nc.vo.wa.adjust.PsnappaproveVO;
 
 /**
  * 

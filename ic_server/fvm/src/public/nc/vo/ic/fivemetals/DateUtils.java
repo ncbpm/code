@@ -428,7 +428,6 @@ public class DateUtils {
 
 	public static String getPeriod(UFDate enddate) {
 		String period = (new StringBuilder(String.valueOf(enddate.getYear())))
-				.append("-")
 				.append(enddate.getMonth() >= 10 ? ((Object) (Integer
 						.valueOf(enddate.getMonth())))
 						: ((Object) ((new StringBuilder("0")).append(enddate

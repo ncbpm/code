@@ -195,8 +195,7 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 					bpmBill.getHead().getAttributeValue(key));
 		}
 		// 五金卡信息
-		FiveMetalsHVO hvo = getFiveMetalsHVO(clientVO.getHead());
-		clientVO.getHead().setVdef20(hvo.getPrimaryKey());
+
 
 		List<MaterialOutBodyVO> children = new ArrayList<MaterialOutBodyVO>();
 		children.addAll(Arrays.asList(clientbodys));
@@ -242,19 +241,25 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 		clientVO.setChildrenVO(new_bodys);
 		// 计算金额
 		BusiCalculator.getBusiCalculatorAtBS().calcOnlyMny(
-				new ICBillVO[] { clientVO }, ICPubMetaNameConst.NNUM);
+				new ICBillVO[] { clientVO }, ICPubMetaNameConst.NCOSTMNY);
 	}
 
 	private void updateClientBVO(ICBillBodyVO body, ICBillBodyVO clientbody)
 			throws BusinessException {
-		UFDouble nnum = getUFDdoubleNullASZero(body.getNnum()).setScale(power,
-				UFDouble.ROUND_HALF_UP);// 数量
-		clientbody.setNnum(nnum);// 实发数量
-		// 交互的应发为空,暂时处理和是否一样
-		clientbody.setNshouldnum(nnum);
-		clientbody.setNshouldassistnum(nnum);
-		clientbody.setVbatchcode(body.getVbatchcode());// 批次号
-		// clientbody.setClocationid(body.getClocationid());// 货位
+		String[] bodyKeys =body.getAttributeNames();
+		for (String key : bodyKeys) {
+			if (nc.util.mmpub.dpub.base.ValueCheckUtil.isEmpty(body.getAttributeValue(key))) {
+				continue;
+			}
+			Object attributeValue = body.getAttributeValue(key);
+			if(attributeValue instanceof UFDouble){
+				UFDouble  value = (UFDouble) attributeValue;
+				attributeValue = value.setScale(power, UFDouble.ROUND_HALF_UP);
+			}
+			clientbody.setAttributeValue(key,attributeValue);
+		}
+
+		clientbody.setNcostmny(clientbody.getNcostprice().multiply(clientbody.getNnum()));
 
 	}
 
@@ -335,8 +340,7 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 						"vtrantypecode", "dbilldate", "cdptid", "vdef20",
 						"billmaker" });
 		VOCheckUtil.checkBodyNotNullFields(bill, new String[] { "vbatchcode",
-				"nnum", "csourcebillhid", "csourcebillbid", "ncostprice",
-				"cprojectid" });
+				"nnum", "csourcebillhid", "csourcebillbid", "ncostprice"});
 
 	}
 
@@ -351,10 +355,8 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 		if (hvos == null || hvos.length == 0)
 			throw new BusinessException("该卡号没有建卡,请检查卡号是否正确 ！");
 
-		if (!(hvos[0].getVbillstatus() != null && hvos[0].getVbillstatus()
-				.intValue() == Integer.parseInt(CardStatusEnum.启用
-				.getEnumValue().getValue()))) {
-			throw new BusinessException("该卡号为非启用状态,请检查卡号状态是否正确 ！");
+		if (!(hvos[0].getVbillstatus() != null && hvos[0].getVbillstatus().intValue() == Integer.parseInt(CardStatusEnum.启用.getEnumValue().getValue()))) {
+			throw new BusinessException("该卡号为非启用状态,请检查卡号状态是否正确 ！");			
 		}
 		return hvos[0];
 	}
@@ -502,18 +504,22 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 					body.setDvalidate(batchvo.getDvalidate());
 				}
 			}
-			// 利用自动拣货，设置批次维度信息:如果设置的批次，则值更新批次相关信息：入供应商寄存等
-			OnhandResService resserver = NCLocator.getInstance().lookup(
-					OnhandResService.class);
-			ICBillPickResults results = resserver.pickAuto(vo);
-			vos = results.getPickBodys();
-			vo.setChildrenVO(vos);
-			// 同步表体批次辅助字段
-			new BatchSynchronizer(new ICBatchFields()).fillBatchVOtoBill(vos);
-			// 同步表体序列号辅助字段
-			new SnCodeSynchronizer(new ICSnFields()).fillBatchVOtoBill(vos);
+		
 			bodyVOCopyFromHeadVO(body, head);
 		}
+		// 利用自动拣货，设置批次维度信息:如果设置的批次，则值更新批次相关信息：入供应商寄存等
+		OnhandResService resserver = NCLocator.getInstance().lookup(
+				OnhandResService.class);
+		ICBillPickResults results = resserver.pickAuto(vo);
+		if(results == null){
+			throw new BusinessException("批次现存量不足.");
+		}
+		vos = results.getPickBodys();
+		vo.setChildrenVO(vos);
+		// 同步表体批次辅助字段
+		new BatchSynchronizer(new ICBatchFields()).fillBatchVOtoBill(vos);
+		// 同步表体序列号辅助字段
+		new SnCodeSynchronizer(new ICSnFields()).fillBatchVOtoBill(vos);
 	}
 
 	/**

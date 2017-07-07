@@ -73,7 +73,7 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 		switch (hvo.getVbillstatus()) {
 		case 3:
 			// ฯ๛ทั
-			checkFiveMetalsHVO(hvo);
+			checkFiveMetalsHVO(oldvo);
 
 			bvos = (FiveMetalsBVO[]) bill.getChildrenVO();
 			if (bvos == null || bvos.length == 0)

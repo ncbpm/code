@@ -79,11 +79,11 @@ public class M4CForJLAdd extends AbstractPfxxPlugin {
 				rs += ",";
 			}
 			// 根据发货单的制单人同步到销售出库单
-			bpmBill.getHead().setBillmaker(chgBill.getParentVO().getBillmaker());
-			ICBillVO[] destVos = PfServiceScmUtil
-					.executeVOChange(SOBillType.Delivery.getCode(),
-							ICBillType.SaleOut.getCode(),
-							new DeliveryVO[] { chgBill });
+			bpmBill.getHead()
+					.setBillmaker(chgBill.getParentVO().getBillmaker());
+			ICBillVO[] destVos = PfServiceScmUtil.executeVOChange(
+					SOBillType.Delivery.getCode(),
+					ICBillType.SaleOut.getCode(), new DeliveryVO[] { chgBill });
 			// 根据BPM回写的发货单信息更新
 			ICBillVO clientVO = destVos[0];
 			updateClientVO(bpmBill, clientVO);
@@ -175,8 +175,7 @@ public class M4CForJLAdd extends AbstractPfxxPlugin {
 	 */
 	private void updateClientVO(ICBillVO bpmBill, ICBillVO clientVO)
 			throws BusinessException {
-		SaleOutBodyVO [] clientbodys = (SaleOutBodyVO []) clientVO
-				.getBodys();
+		SaleOutBodyVO[] clientbodys = (SaleOutBodyVO[]) clientVO.getBodys();
 		ICBillBodyVO[] bodys = (ICBillBodyVO[]) bpmBill.getBodys();
 		Map<String, UFDouble> rownos = new HashMap<String, UFDouble>();
 		UFDouble setp = new UFDouble(0.1);
@@ -188,20 +187,19 @@ public class M4CForJLAdd extends AbstractPfxxPlugin {
 					bpmBill.getHead().getAttributeValue(key));
 		}
 
-		List<SaleOutBodyVO > children = new ArrayList<SaleOutBodyVO >();
+		List<SaleOutBodyVO> children = new ArrayList<SaleOutBodyVO>();
 		children.addAll(Arrays.asList(clientbodys));
 		// 拆行的处理
 		for (ICBillBodyVO body : bodys) {
 			String csourcebillbid = body.getCsourcebillbid();
-			for (SaleOutBodyVO  clientbody : clientbodys) {
+			for (SaleOutBodyVO clientbody : clientbodys) {
 				if (!clientbody.getCsourcebillbid().equalsIgnoreCase(
 						csourcebillbid)) {
 					continue;
 				}
 				// 一行表体，可能回写多个批次
 				if (updateIndex.contains(csourcebillbid)) {
-					SaleOutBodyVO  newBody = (SaleOutBodyVO ) clientbody
-							.clone();
+					SaleOutBodyVO newBody = (SaleOutBodyVO) clientbody.clone();
 					String crowno = newBody.getCrowno();
 					if (rownos.containsKey(crowno)) {
 						UFDouble max_rowno = rownos.get(crowno).add(setp);
@@ -223,8 +221,7 @@ public class M4CForJLAdd extends AbstractPfxxPlugin {
 
 			}
 		}
-		SaleOutBodyVO [] new_bodys = children
-				.toArray(new SaleOutBodyVO [0]);
+		SaleOutBodyVO[] new_bodys = children.toArray(new SaleOutBodyVO[0]);
 		// 数量
 		BusiCalculator.getBusiCalculatorAtBS().calcNum(new_bodys,
 				ICPubMetaNameConst.NNUM);
@@ -236,14 +233,19 @@ public class M4CForJLAdd extends AbstractPfxxPlugin {
 
 	private void updateClientBVO(ICBillBodyVO body, ICBillBodyVO clientbody)
 			throws BusinessException {
-		UFDouble nnum = getUFDdoubleNullASZero(body.getNnum()).setScale(power,
-				UFDouble.ROUND_HALF_UP);// 数量
-		clientbody.setNnum(nnum);// 实发数量
-		//交互的应发为空,暂时处理和是否一样
-		clientbody.setNshouldnum(nnum);
-		clientbody.setNshouldassistnum(nnum);
-		clientbody.setVbatchcode(body.getVbatchcode());// 批次号
-		clientbody.setClocationid(body.getClocationid());// 货位
+		String[] bodyKeys = body.getAttributeNames();
+		for (String key : bodyKeys) {
+			if (nc.util.mmpub.dpub.base.ValueCheckUtil.isEmpty(body
+					.getAttributeValue(key))) {
+				continue;
+			}
+			Object attributeValue = body.getAttributeValue(key);
+			if (attributeValue instanceof UFDouble) {
+				UFDouble value = (UFDouble) attributeValue;
+				attributeValue = value.setScale(power, UFDouble.ROUND_HALF_UP);
+			}
+			clientbody.setAttributeValue(key, attributeValue);
+		}
 
 	}
 
@@ -394,7 +396,7 @@ public class M4CForJLAdd extends AbstractPfxxPlugin {
 		if (vo.getDbilldate() == null)
 			vo.setDbilldate(context.getBizDate());
 		vo.setDmakedate(vo.getDbilldate());
-		//创建时间
+		// 创建时间
 		vo.setCreationtime(new UFDateTime(vo.getDbilldate().toString()));
 		vo.setCreator(vo.getBillmaker());
 		//
@@ -458,7 +460,7 @@ public class M4CForJLAdd extends AbstractPfxxPlugin {
 			if (StringUtil.isSEmptyOrNull(body.getCastunitid()))
 				body.setCastunitid(context.getInvInfo()
 						.getInvBasVO(body.getCmaterialvid()).getPk_stockmeas());
-			
+
 			// 有批次号但无批次主键时， 需要补全批次主键，有必要时(保质期管理)补全生产日期和失效日期
 			if (!StringUtils.isEmpty(body.getVbatchcode())
 					&& StringUtils.isEmpty(body.getPk_batchcode())) {
@@ -470,19 +472,21 @@ public class M4CForJLAdd extends AbstractPfxxPlugin {
 					body.setDvalidate(batchvo.getDvalidate());
 				}
 			}
-
-			//利用自动拣货，设置批次维度信息:如果设置的批次，则值更新批次相关信息：入供应商寄存等
-			OnhandResService resserver = NCLocator.getInstance().lookup(
-					OnhandResService.class);
-			ICBillPickResults results = resserver.pickAuto(vo);
-			vos = results.getPickBodys();
-			vo.setChildrenVO(vos);
-			// 同步表体批次辅助字段
-						new BatchSynchronizer(new ICBatchFields()).fillBatchVOtoBill(vos);
-						// 同步表体序列号辅助字段
-						new SnCodeSynchronizer(new ICSnFields()).fillBatchVOtoBill(vos);
 			bodyVOCopyFromHeadVO(body, head);
 		}
+		// 利用自动拣货，设置批次维度信息:如果设置的批次，则值更新批次相关信息：入供应商寄存等
+		OnhandResService resserver = NCLocator.getInstance().lookup(
+				OnhandResService.class);
+		ICBillPickResults results = resserver.pickAuto(vo);
+		if (results == null) {
+			throw new BusinessException("批次现存量不足.");
+		}
+		vos = results.getPickBodys();
+		vo.setChildrenVO(vos);
+		// 同步表体批次辅助字段
+		new BatchSynchronizer(new ICBatchFields()).fillBatchVOtoBill(vos);
+		// 同步表体序列号辅助字段
+		new SnCodeSynchronizer(new ICSnFields()).fillBatchVOtoBill(vos);
 	}
 
 	/**

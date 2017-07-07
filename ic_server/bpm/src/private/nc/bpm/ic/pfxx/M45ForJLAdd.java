@@ -230,14 +230,19 @@ public class M45ForJLAdd extends AbstractPfxxPlugin {
 
 	private void updateClientBVO(ICBillBodyVO body, ICBillBodyVO clientbody)
 			throws BusinessException {
-		UFDouble nnum = getUFDdoubleNullASZero(body.getNnum()).setScale(power,
-				UFDouble.ROUND_HALF_UP);// 数量
-		clientbody.setNnum(nnum);// 实发数量
-		//交互的应发为空,暂时处理和是否一样
-		clientbody.setNshouldnum(nnum);
-		clientbody.setNshouldassistnum(nnum);
-		clientbody.setVbatchcode(body.getVbatchcode());// 批次号
-		clientbody.setClocationid(body.getClocationid());// 货位
+		String[] bodyKeys = body.getAttributeNames();
+		for (String key : bodyKeys) {
+			if (nc.util.mmpub.dpub.base.ValueCheckUtil.isEmpty(body
+					.getAttributeValue(key))) {
+				continue;
+			}
+			Object attributeValue = body.getAttributeValue(key);
+			if (attributeValue instanceof UFDouble) {
+				UFDouble value = (UFDouble) attributeValue;
+				attributeValue = value.setScale(power, UFDouble.ROUND_HALF_UP);
+			}
+			clientbody.setAttributeValue(key, attributeValue);
+		}
 
 	}
 
@@ -388,7 +393,7 @@ public class M45ForJLAdd extends AbstractPfxxPlugin {
 		if (vo.getDbilldate() == null)
 			vo.setDbilldate(context.getBizDate());
 		vo.setDmakedate(vo.getDbilldate());
-		//创建时间
+		// 创建时间
 		vo.setCreationtime(new UFDateTime(vo.getDbilldate().toString()));
 		vo.setCreator(vo.getBillmaker());
 		//

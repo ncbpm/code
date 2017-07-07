@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import nc.bs.framework.common.InvocationInfoProxy;
 import nc.bs.framework.common.NCLocator;
 import nc.bs.ic.general.plugins.CheckMnyUtil;
 import nc.bs.ic.general.plugins.CheckScaleUtil;
@@ -17,9 +18,12 @@ import nc.bs.pfxx.ISwapContext;
 import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
 import nc.impl.pubapp.pattern.data.bill.BillQuery;
 import nc.impl.pubapp.pattern.data.vo.VOQuery;
+import nc.itf.ic.onhand.OnhandResService;
 import nc.itf.scmpub.reference.uap.pf.PfServiceScmUtil;
 import nc.itf.uap.pf.IPFBusiAction;
 import nc.pubitf.scmf.ic.mbatchcode.IBatchcodePubService;
+import nc.vo.ic.batchcode.BatchSynchronizer;
+import nc.vo.ic.batchcode.ICBatchFields;
 import nc.vo.ic.fivemetals.CardStatusEnum;
 import nc.vo.ic.fivemetals.FiveMetalsHVO;
 import nc.vo.ic.general.define.ICBillBodyVO;
@@ -27,11 +31,14 @@ import nc.vo.ic.general.define.ICBillFlag;
 import nc.vo.ic.general.define.ICBillHeadVO;
 import nc.vo.ic.general.define.ICBillVO;
 import nc.vo.ic.m4d.entity.MaterialOutBodyVO;
+import nc.vo.ic.onhand.define.ICBillPickResults;
 import nc.vo.ic.pub.calc.BusiCalculator;
 import nc.vo.ic.pub.check.VOCheckUtil;
 import nc.vo.ic.pub.define.ICPubMetaNameConst;
 import nc.vo.ic.pub.util.StringUtil;
 import nc.vo.ic.pub.util.ValueCheckUtil;
+import nc.vo.ic.sncode.ICSnFields;
+import nc.vo.ic.sncode.SnCodeSynchronizer;
 import nc.vo.pfxx.auxiliary.AggxsysregisterVO;
 import nc.vo.pu.m422x.entity.StoreReqAppItemVO;
 import nc.vo.pu.m422x.entity.StoreReqAppVO;
@@ -83,8 +90,10 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 		ICBillVO clientVO = destVos[0];
 		clientVO.setChildrenVO(body_list.toArray(new MaterialOutBodyVO[0]));
 		updateClientVO(bpmBill, clientVO);
+		String approver = clientVO.getHead().getApprover();
 		// 保存
 		ICBillVO saveVO = doSave(clientVO);
+		saveVO.getParentVO().setApprover(approver);
 		// 审批
 		doSign(saveVO);
 
@@ -105,7 +114,8 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 		this.checkCanInster(icbill);
 		Logger.info("保存新单据前处理...");
 		this.processBeforeSave(icbill);
-
+		InvocationInfoProxy.getInstance().setUserId(
+				icbill.getHead().getBillmaker());
 		// TODO 单据设置有辅助信息，aggxsysvo为用户配置的具体辅助信息
 
 		Logger.info("保存新单据...");
@@ -135,12 +145,13 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 		Logger.info("签字新单据前处理...");
 		// 签字时间等于单据日期
 		icbill.getHead().setTaudittime(icbill.getHead().getDbilldate());
-		icbill.getHead().setApprover(icbill.getHead().getBillmaker());
+		InvocationInfoProxy.getInstance().setUserId(
+				icbill.getHead().getApprover());
 		Logger.info("签字新单据...");
 		IPFBusiAction service = NCLocator.getInstance().lookup(
 				IPFBusiAction.class);
-		ICBillVO[] icbills = (ICBillVO[]) service.processAction("SIGN", billtype,
-				null, icbill, null, null);
+		ICBillVO[] icbills = (ICBillVO[]) service.processAction("SIGN",
+				billtype, null, icbill, null, null);
 
 		Logger.info("签字新单据完成...");
 
@@ -168,14 +179,18 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 	 */
 	private void updateClientVO(ICBillVO bpmBill, ICBillVO clientVO)
 			throws BusinessException {
-		MaterialOutBodyVO[] clientbodys = (MaterialOutBodyVO[]) clientVO.getBodys();
+		MaterialOutBodyVO[] clientbodys = (MaterialOutBodyVO[]) clientVO
+				.getBodys();
 		ICBillBodyVO[] bodys = (ICBillBodyVO[]) bpmBill.getBodys();
 		Map<String, UFDouble> rownos = new HashMap<String, UFDouble>();
 		UFDouble setp = new UFDouble(0.1);
 		// 设置表头信息
-		String[] headKeys = new String[] { "cwarehouseid", "dbilldate",
-				"vtrantypecode", "cwhsmanagerid", "billmaker", "vdef20" };
+		String[] headKeys = bpmBill.getHead().getAttributeNames();
 		for (String key : headKeys) {
+			if (nc.util.mmpub.dpub.base.ValueCheckUtil.isEmpty(bpmBill
+					.getHead().getAttributeValue(key))) {
+				continue;
+			}
 			clientVO.getHead().setAttributeValue(key,
 					bpmBill.getHead().getAttributeValue(key));
 		}
@@ -195,7 +210,8 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 				}
 				// 一行表体，可能回写多个批次
 				if (updateIndex.contains(csourcebillbid)) {
-					MaterialOutBodyVO newBody = (MaterialOutBodyVO) clientbody.clone();
+					MaterialOutBodyVO newBody = (MaterialOutBodyVO) clientbody
+							.clone();
 					String crowno = newBody.getCrowno();
 					if (rownos.containsKey(crowno)) {
 						UFDouble max_rowno = rownos.get(crowno).add(setp);
@@ -218,9 +234,8 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 			}
 		}
 
-		processBeforeSave(clientVO);
-
-		MaterialOutBodyVO[] new_bodys = children.toArray(new MaterialOutBodyVO[0]);
+		MaterialOutBodyVO[] new_bodys = children
+				.toArray(new MaterialOutBodyVO[0]);
 		// 数量
 		BusiCalculator.getBusiCalculatorAtBS().calcNum(new_bodys,
 				ICPubMetaNameConst.NNUM);
@@ -411,6 +426,10 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 		vo.setCreationtime(new UFDateTime(vo.getDbilldate().toString()));
 		vo.setCreator(vo.getBillmaker());
 		//
+		if (StringUtil.isSEmptyOrNull(vo.getApprover())){
+			vo.setApprover(vo.getBillmaker());
+		}
+
 		// 公司
 		if (StringUtil.isSEmptyOrNull(vo.getCorpoid())
 				|| StringUtil.isSEmptyOrNull(vo.getCorpvid())) {
@@ -483,6 +502,16 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 					body.setDvalidate(batchvo.getDvalidate());
 				}
 			}
+			// 利用自动拣货，设置批次维度信息:如果设置的批次，则值更新批次相关信息：入供应商寄存等
+			OnhandResService resserver = NCLocator.getInstance().lookup(
+					OnhandResService.class);
+			ICBillPickResults results = resserver.pickAuto(vo);
+			vos = results.getPickBodys();
+			vo.setChildrenVO(vos);
+			// 同步表体批次辅助字段
+			new BatchSynchronizer(new ICBatchFields()).fillBatchVOtoBill(vos);
+			// 同步表体序列号辅助字段
+			new SnCodeSynchronizer(new ICSnFields()).fillBatchVOtoBill(vos);
 			bodyVOCopyFromHeadVO(body, head);
 		}
 	}

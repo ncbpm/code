@@ -15,13 +15,14 @@ import nc.vo.pu.m20.entity.PraybillHeaderVO;
 import nc.vo.pu.m20.entity.PraybillItemVO;
 import nc.vo.pu.m20.entity.PraybillVO;
 import nc.vo.pub.BusinessException;
+import nc.vo.pub.lang.UFDouble;
 import nc.vo.pubapp.pattern.pub.SqlBuilder;
 import nc.vo.so.m30.entity.SaleOrderBVO;
 
 /**
  * 唛头生成--NC请购单 1. 直接根据唛头评审生成带来源单据和源头单据的请购单 批次号是需货单号，BPM带过来 来源单据为需货单号对应的销售订单 ---
  * 且需要实现联查。 2. 来源销售订单表体如何关联： 销售订单只有一条表体（可能有赠品，过滤赠品后，之后一行有效物料） 关联后，实现联查
- * 即从请购单可以查询到 3. 如果唛头评审中（A需货单）有指定为非本需货单号的包装物B，数量如10，而需要生成一张由B转换成A的形态转换单。
+ * 即从请购单可以查询到 3. 如果唛头评审中（A需货单）有指定为非本需货单号的包装物B，数量如10，而需要生成一张由B的形态转换单，转换前后物料都是B，转换后批次是需货单号
  * 批次号=需货单号（只是包装物才会有,bpm需要过滤）
  * 
  * @author liyf
@@ -29,6 +30,9 @@ import nc.vo.so.m30.entity.SaleOrderBVO;
  * 
  */
 public class MarksForBpmAdd extends AbstractPfxxPlugin {
+	
+	private int power = 2;// 精度
+
 
 	@Override
 	protected Object processBill(Object vo, ISwapContext swapContext,
@@ -143,8 +147,10 @@ public class MarksForBpmAdd extends AbstractPfxxPlugin {
 		
 		body.setCunitid(item.getCunitid());
 		body.setCasscustid(item.getCastunitid());
-		body.setNnum(item.getNnum());
-		body.setNassistnum(item.getNastnum());
+		body.setNnum(getUFDdoubleNullASZero(item.getNnum()).setScale(power,
+				UFDouble.ROUND_HALF_UP));
+		body.setNassistnum(getUFDdoubleNullASZero(item.getNastnum()).setScale(power,
+				UFDouble.ROUND_HALF_UP));
 		body.setVchangerate(item.getVchangerate());
 		
 		// 批次号
@@ -159,23 +165,38 @@ public class MarksForBpmAdd extends AbstractPfxxPlugin {
 		// cbodywarehouseid 库存仓库
 		body.setCbodywarehouseid(item.getPk_reqstor());
 		// 根据销售订单查询对应的转换后的物料，
-		SaleOrderBVO saleOrderBody = querySaleOrder(bill);
-		body.setCmaterialvid(saleOrderBody.getCmaterialid());
-		body.setCmaterialoid(saleOrderBody.getCmaterialvid());
-	
-		setInvFree(body, saleOrderBody);
-		body.setCunitid(saleOrderBody.getCunitid());
-		body.setCasscustid(saleOrderBody.getCastunitid());
-		
-		body.setNnum(item.getNnum());
-		body.setNassistnum(item.getNastnum());
-		body.setVchangerate(saleOrderBody.getVchangerate());//当前都是1/1,不重新换算
-	
+//		SaleOrderBVO saleOrderBody = querySaleOrder(bill);
+//		body.setCmaterialvid(saleOrderBody.getCmaterialid());
+//		body.setCmaterialoid(saleOrderBody.getCmaterialvid());
+//		body.setCunitid(saleOrderBody.getCunitid());
+//		body.setCasscustid(saleOrderBody.getCastunitid());
+//		
+		body.setCmaterialvid(item.getPk_material());
+		body.setCmaterialoid(item.getPk_srcmaterial());
+		body.setCunitid(item.getCunitid());
+		body.setCasscustid(item.getCastunitid());
+		setInvFree(body, item);		
+		body.setNnum(getUFDdoubleNullASZero(item.getNnum()).setScale(power,
+				UFDouble.ROUND_HALF_UP));
+		body.setNassistnum(getUFDdoubleNullASZero(item.getNastnum()).setScale(power,
+				UFDouble.ROUND_HALF_UP));
+		body.setVchangerate(item.getVchangerate());	
 		// 物料批次号等于销售订单编码
 		body.setVbatchcode(bill.getHVO().getVbillcode());
 		return body;
 	}
 	
+	private UFDouble getUFDdoubleNullASZero(Object o) {
+		if (o == null) {
+			return UFDouble.ZERO_DBL;
+		}
+		if (o instanceof UFDouble) {
+			return (UFDouble) o;
+		} else {
+			return new UFDouble((String) o);
+		}
+	}
+
 	/**
 	 * 根据销售订单表体物料设置自由属性
 	 * @param body

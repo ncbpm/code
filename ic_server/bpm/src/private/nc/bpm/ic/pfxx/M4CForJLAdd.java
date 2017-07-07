@@ -16,18 +16,24 @@ import nc.bs.logging.Logger;
 import nc.bs.pfxx.ISwapContext;
 import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
 import nc.impl.pubapp.pattern.data.bill.BillQuery;
+import nc.itf.ic.onhand.OnhandResService;
 import nc.itf.scmpub.reference.uap.pf.PfServiceScmUtil;
 import nc.itf.uap.pf.IPFBusiAction;
 import nc.pubitf.scmf.ic.mbatchcode.IBatchcodePubService;
+import nc.vo.ic.batchcode.BatchSynchronizer;
+import nc.vo.ic.batchcode.ICBatchFields;
 import nc.vo.ic.general.define.ICBillBodyVO;
 import nc.vo.ic.general.define.ICBillFlag;
 import nc.vo.ic.general.define.ICBillHeadVO;
 import nc.vo.ic.general.define.ICBillVO;
 import nc.vo.ic.m4c.entity.SaleOutBodyVO;
+import nc.vo.ic.onhand.define.ICBillPickResults;
 import nc.vo.ic.pub.calc.BusiCalculator;
 import nc.vo.ic.pub.define.ICPubMetaNameConst;
 import nc.vo.ic.pub.util.StringUtil;
 import nc.vo.ic.pub.util.ValueCheckUtil;
+import nc.vo.ic.sncode.ICSnFields;
+import nc.vo.ic.sncode.SnCodeSynchronizer;
 import nc.vo.pfxx.auxiliary.AggxsysregisterVO;
 import nc.vo.pub.AggregatedValueObject;
 import nc.vo.pub.BusinessException;
@@ -217,9 +223,6 @@ public class M4CForJLAdd extends AbstractPfxxPlugin {
 
 			}
 		}
-
-		processBeforeSave(clientVO);
-
 		SaleOutBodyVO [] new_bodys = children
 				.toArray(new SaleOutBodyVO [0]);
 		// 数量
@@ -455,7 +458,7 @@ public class M4CForJLAdd extends AbstractPfxxPlugin {
 			if (StringUtil.isSEmptyOrNull(body.getCastunitid()))
 				body.setCastunitid(context.getInvInfo()
 						.getInvBasVO(body.getCmaterialvid()).getPk_stockmeas());
-
+			
 			// 有批次号但无批次主键时， 需要补全批次主键，有必要时(保质期管理)补全生产日期和失效日期
 			if (!StringUtils.isEmpty(body.getVbatchcode())
 					&& StringUtils.isEmpty(body.getPk_batchcode())) {
@@ -467,6 +470,17 @@ public class M4CForJLAdd extends AbstractPfxxPlugin {
 					body.setDvalidate(batchvo.getDvalidate());
 				}
 			}
+
+			//利用自动拣货，设置批次维度信息:如果设置的批次，则值更新批次相关信息：入供应商寄存等
+			OnhandResService resserver = NCLocator.getInstance().lookup(
+					OnhandResService.class);
+			ICBillPickResults results = resserver.pickAuto(vo);
+			vos = results.getPickBodys();
+			vo.setChildrenVO(vos);
+			// 同步表体批次辅助字段
+						new BatchSynchronizer(new ICBatchFields()).fillBatchVOtoBill(vos);
+						// 同步表体序列号辅助字段
+						new SnCodeSynchronizer(new ICSnFields()).fillBatchVOtoBill(vos);
 			bodyVOCopyFromHeadVO(body, head);
 		}
 	}

@@ -217,9 +217,6 @@ public class M45ForJLAdd extends AbstractPfxxPlugin {
 
 			}
 		}
-
-		processBeforeSave(clientVO);
-
 		PurchaseInBodyVO[] new_bodys = children
 				.toArray(new PurchaseInBodyVO[0]);
 		// ÊýÁ¿

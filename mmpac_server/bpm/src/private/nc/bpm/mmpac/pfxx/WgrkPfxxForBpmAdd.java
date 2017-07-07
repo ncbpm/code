@@ -91,6 +91,7 @@ public class WgrkPfxxForBpmAdd extends AbstractPfxxPlugin {
 		AggWrVO clientVO = destVos[0];
 		clientVO.setChildrenVO(body_list.toArray(new WrItemVO[0]));
 		updateClientVO(bpmBill, clientVO);
+		String auditer = clientVO.getParentVO().getAuditer();
 		// 保存
 		AggWrVO saveVO = doSave(clientVO);
 		// 审批
@@ -138,6 +139,7 @@ public class WgrkPfxxForBpmAdd extends AbstractPfxxPlugin {
 	private AggWrVO doSign(AggWrVO resvo) throws BusinessException {
 		// 检查是否允许保存
 		Logger.info("签字新单据前处理...");
+		InvocationInfoProxy.getInstance().setUserId(resvo.getParentVO().getAuditer());
 		// 签字时间等于单据日期
 		resvo.getParentVO().setTaudittime(resvo.getParentVO().getDbilldate());
 		resvo.getParentVO().setAuditer(resvo.getParentVO().getBillmaker());
@@ -169,11 +171,12 @@ public class WgrkPfxxForBpmAdd extends AbstractPfxxPlugin {
 			throws BusinessException {
 		WrItemVO[] clientbodys = (WrItemVO[]) clientVO.getChildrenVO();
 		WrItemVO[] bodys = (WrItemVO[]) bpmBill.getChildrenVO();
-		UFDouble setp = new UFDouble(0.1);
 		// 设置表头信息
-		String[] headKeys = new String[] { "dbilldate",
-				"vtrantypecode", "vnote"};
+		String[] headKeys = bpmBill.getParentVO().getAttributeNames();
 		for (String key : headKeys) {
+			if(ValueCheckUtil.isEmpty(bpmBill.getParentVO().getAttributeValue(key))){
+				continue;
+			}
 			clientVO.getParentVO().setAttributeValue(key,
 					bpmBill.getParentVO().getAttributeValue(key));
 		}
@@ -212,16 +215,19 @@ public class WgrkPfxxForBpmAdd extends AbstractPfxxPlugin {
 
 	private void updateClientBVO(WrItemVO body, WrItemVO clientbody)
 			throws BusinessException {
-		clientbody.setNbwrnum(body.getNbwrnum());// 实发数量
-		clientbody.setNbwrastnum(body.getNbwrastnum());
-		// 交互的应发为空,暂时处理和是否一样
-		clientbody.setVbinbatchcode(body.getVbinbatchcode());// 批次号
-//		开始时间
-		clientbody.setTbstarttime(body.getTbstarttime());
-//		结束时间
-		clientbody.setTbendtime(body.getTbendtime());
-//		   <!--产品类型 ,最大长度为1,1=主产品，2=联产品，3=副产品，类型为:Int-->
-		clientbody.setFbproducttype(body.getFbproducttype());
+		String[] names = body.getAttributeNames();
+		
+		for(String name :names){
+			if(ValueCheckUtil.isEmpty(body.getAttributeValue(name))){
+				continue;
+			}
+			clientbody.setAttributeValue(name, body.getAttributeValue(name));
+		}
+		clientbody.setNbwrnum(getUFDdoubleNullASZero(body.getNbwrnum()).setScale(power,
+				UFDouble.ROUND_HALF_UP));// 实发数量
+		clientbody.setNbwrastnum(getUFDdoubleNullASZero(body.getNbwrastnum()).setScale(power,
+				UFDouble.ROUND_HALF_UP));
+	
 	}
 
 	private UFDouble getUFDdoubleNullASZero(Object o) {
@@ -298,7 +304,7 @@ public class WgrkPfxxForBpmAdd extends AbstractPfxxPlugin {
 		}
 		VOCheckUtil
 				.checkHeadNotNullFields(bill, new String[] { "dbilldate",
-						"billmaker"});
+						"billmaker","auditer"});
 //		VOCheckUtil.checkBodyNotNullFields(bill, new String[] { "cbmoid",
 //				"cbmobid", "vbinbatchcode", "nbwrnum" });
 

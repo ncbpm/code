@@ -1,10 +1,10 @@
 package nc.bs.ic.m4d.sign.rule;
 
 import nc.bs.framework.common.NCLocator;
+import nc.impl.ic.fivemetals.FivemetalsDao;
 import nc.impl.pubapp.pattern.rule.IRule;
 import nc.itf.ic.fivemetals.IFivemetalsMaintain;
 import nc.vo.ic.fivemetals.AggFiveMetalsVO;
-import nc.vo.ic.fivemetals.CardStatusEnum;
 import nc.vo.ic.fivemetals.DateUtils;
 import nc.vo.ic.fivemetals.FiveMetalsBVO;
 import nc.vo.ic.fivemetals.FiveMetalsHVO;
@@ -54,10 +54,16 @@ public class AfterSignRuleFivemetals implements IRule<MaterialOutVO> {
 		FiveMetalsHVO hvo = new FiveMetalsHVO();
 		hvo.setPk_group(vo.getParentVO().getPk_group());
 		hvo.setPk_org(vo.getParentVO().getPk_org());
-		hvo.setVcardno(vo.getParentVO().getVdef20());
+		String condition = " and pk_group = '" + hvo.getPk_group()
+				+ "' and pk_org ='" + hvo.getPk_org()
+				+ "' and pk_fivemetals_h = '" + vo.getParentVO().getVdef20()
+				+ "' ";
+		FivemetalsDao fiveDao = new FivemetalsDao();
+		FiveMetalsHVO oldvo = fiveDao.getFiveMetalsHVOByCondition(condition);
+		hvo.setVcardno(oldvo.getVcardno());
 		hvo.setVdepartment(vo.getParentVO().getCdptid());
-//		hvo.setVbillstatus(Integer.parseInt(CardStatusEnum.消费.getEnumValue()
-//				.getValue()));
+		// hvo.setVbillstatus(Integer.parseInt(CardStatusEnum.消费.getEnumValue()
+		// .getValue()));
 		hvo.setVbillstatus(3);
 
 		FiveMetalsBVO fbvo = new FiveMetalsBVO();

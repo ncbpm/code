@@ -7,7 +7,6 @@ import java.util.Map;
 
 import nc.bs.dao.DAOException;
 import nc.bs.ic.fivemetals.action.FivemetalsSaveAction;
-import nc.impl.pubapp.pattern.data.vo.VOQuery;
 import nc.impl.pubapp.pattern.data.vo.VOUpdate;
 import nc.itf.ic.fivemetals.IFivemetalsMaintain;
 import nc.md.persist.framework.IMDPersistenceQueryService;
@@ -67,13 +66,18 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 				"pk_org", "vcardno", "vbillstatus", "vdepartment" });
 
 		FiveMetalsHVO hvo = (FiveMetalsHVO) bill.getParentVO();
-		FiveMetalsHVO oldvo = getFiveMetalsHVO(hvo);
+
+		String condition = " and pk_group = '" + hvo.getPk_group()
+				+ "' and pk_org ='" + hvo.getPk_org() + "' and vcardno = '"
+				+ hvo.getVcardno() + "' ";
+		FivemetalsDao fiveDao = new FivemetalsDao();
+		FiveMetalsHVO oldvo = fiveDao.getFiveMetalsHVOByCondition(condition);
 		FiveMetalsBVO[] bvos = null;
 		String vsourcetype = null;
 		switch (hvo.getVbillstatus()) {
 		case 3:
 			// 消费
-			checkFiveMetalsHVO(oldvo);
+			fiveDao.checkFiveMetalsHVO(oldvo);
 
 			bvos = (FiveMetalsBVO[]) bill.getChildrenVO();
 			if (bvos == null || bvos.length == 0)
@@ -114,7 +118,7 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 			break;
 		case 5:
 			// 挂失 注销
-			checkFiveMetalsHVO(oldvo);
+			fiveDao.checkFiveMetalsHVO(oldvo);
 			vo = disableAggFiveMetalsVO(oldvo);
 			break;
 		case 6:
@@ -151,7 +155,8 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 			hvo.setStatus(VOStatus.NEW);
 			aggvo.setParentVO(hvo);
 		} else {
-			checkFiveMetalsHVO(oldvo);
+			FivemetalsDao fiveDao = new FivemetalsDao();
+			fiveDao.checkFiveMetalsHVO(oldvo);
 			oldvo.setStatus(VOStatus.UPDATED);
 			aggvo.setParentVO(oldvo);
 		}
@@ -196,7 +201,8 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 			aggvo.setParentVO(hvo);
 			bvos = (FiveMetalsBVO[]) bill.getChildrenVO();
 		} else {
-			checkFiveMetalsHVO(oldvo);
+			FivemetalsDao fiveDao = new FivemetalsDao();
+			fiveDao.checkFiveMetalsHVO(oldvo);
 			oldvo.setStatus(VOStatus.UPDATED);
 			aggvo.setParentVO(oldvo);
 			bvos = createFiveMetalsBVO1((FiveMetalsBVO[]) bill.getChildrenVO(),
@@ -269,7 +275,8 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 
 		VOCheckUtil.checkBodyNotNullFields(bill, new String[] {
 				"vsourcebillno", "vsourcebillid", "nmny", "cperiod" });
-		checkFiveMetalsHVO(oldvo);
+		FivemetalsDao fiveDao = new FivemetalsDao();
+		fiveDao.checkFiveMetalsHVO(oldvo);
 		FiveMetalsBVO[] bvos = (FiveMetalsBVO[]) bill.getChildrenVO();
 		if (bvos == null || bvos.length == 0)
 			throw new BusinessException("传入表体信息不完整");
@@ -318,26 +325,4 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 
 	}
 
-	private FiveMetalsHVO getFiveMetalsHVO(FiveMetalsHVO hvo) {
-		VOQuery<ISuperVO> query = new VOQuery(FiveMetalsHVO.class);
-		String condition = " and pk_group = '" + hvo.getPk_group()
-				+ "' and pk_org ='" + hvo.getPk_org() + "' and vcardno = '"
-				+ hvo.getVcardno() + "' ";
-		FiveMetalsHVO[] hvos = (FiveMetalsHVO[]) query.query(condition, null);
-		if (hvos == null || hvos.length == 0)
-			return null;
-		return hvos[0];
-	}
-
-	private void checkFiveMetalsHVO(FiveMetalsHVO hvo) throws BusinessException {
-		if (hvo == null) {
-			throw new BusinessException("该卡号没有建卡,请检查卡号是否正确 ！");
-		}
-
-		if (!(hvo.getVbillstatus() != null && hvo.getVbillstatus().intValue() == Integer
-				.parseInt(CardStatusEnum.启用.getEnumValue().getValue()))) {
-			throw new BusinessException("该卡号为非启用状态,请检查卡号状态是否正确 ！");
-		}
-
-	}
 }

@@ -7,10 +7,14 @@ import java.util.Map;
 import nc.bs.dao.BaseDAO;
 import nc.bs.dao.DAOException;
 import nc.impl.am.db.processor.KeyValueMapProcessor;
+import nc.impl.pubapp.pattern.data.vo.VOQuery;
 import nc.jdbc.framework.processor.ArrayProcessor;
 import nc.jdbc.framework.processor.ColumnListProcessor;
+import nc.vo.ic.fivemetals.CardStatusEnum;
+import nc.vo.ic.fivemetals.FiveMetalsHVO;
 import nc.vo.pmpub.common.utils.StringUtil;
 import nc.vo.pub.BusinessException;
+import nc.vo.pub.ISuperVO;
 import nc.vo.pub.lang.UFDate;
 import nc.vo.pub.lang.UFDouble;
 
@@ -120,4 +124,25 @@ public class FivemetalsDao {
 								"nmny"));
 		return retMap;
 	}
+
+	public FiveMetalsHVO getFiveMetalsHVOByCondition(String condition) {
+		VOQuery<ISuperVO> query = new VOQuery(FiveMetalsHVO.class);
+		FiveMetalsHVO[] hvos = (FiveMetalsHVO[]) query.query(condition, null);
+		if (hvos == null || hvos.length == 0)
+			return null;
+		return hvos[0];
+	}
+
+	public void checkFiveMetalsHVO(FiveMetalsHVO hvo) throws BusinessException {
+		if (hvo == null) {
+			throw new BusinessException("该卡号没有建卡,请检查卡号是否正确 ！");
+		}
+
+		if (!(hvo.getVbillstatus() != null && hvo.getVbillstatus().intValue() == Integer
+				.parseInt(CardStatusEnum.启用.getEnumValue().getValue()))) {
+			throw new BusinessException("该卡号为非启用状态,请检查卡号状态是否正确 ！");
+		}
+
+	}
+
 }

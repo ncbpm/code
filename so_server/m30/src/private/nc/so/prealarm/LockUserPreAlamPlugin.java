@@ -31,7 +31,7 @@ public class LockUserPreAlamPlugin implements IPreAlertPlugin{
 			return null;
 		}
 		VOQuery<PsndocVO> bquery = new VOQuery<>(PsndocVO.class);
-		PsndocVO[] userVos = bquery.query("and enablestate = 2", "pk_psndoc");
+		PsndocVO[] userVos = bquery.query("and enablestate = 2", "");
 		for(PsndocVO user : userVos){
 			System.out.println(user.getPk_psndoc());
 		}

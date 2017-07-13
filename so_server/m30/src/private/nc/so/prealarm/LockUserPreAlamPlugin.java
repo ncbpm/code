@@ -19,6 +19,7 @@ import nc.vo.am.proxy.AMProxy;
 import nc.vo.hi.psndoc.CtrtVO;
 import nc.vo.hi.psndoc.PsndocVO;
 import nc.vo.pub.BusinessException;
+import nc.vo.pub.lang.UFBoolean;
 import nc.vo.pub.lang.UFLiteralDate;
 import nc.vo.pubapp.pattern.data.IRowSet;
 import nc.vo.pubapp.pattern.pub.SqlBuilder;
@@ -64,7 +65,8 @@ public class LockUserPreAlamPlugin implements IPreAlertPlugin{
 				if(users != null){
 					//lock
 					for(UserVO user : users){
-						optSrv.updateLockedTagByAdmin(user.getCuserid(),true);
+						user.setIsLocked(UFBoolean.valueOf(true));
+						optSrv.updateUser(user);
 					}
 				}
 			}

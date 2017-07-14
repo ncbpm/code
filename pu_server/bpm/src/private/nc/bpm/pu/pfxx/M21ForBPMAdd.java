@@ -11,7 +11,6 @@ import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
 import nc.bs.pu.m21.maintain.OrderSaveBP;
 import nc.bs.pu.m21.maintain.rule.SupplierFrozeChkRule;
 import nc.bs.pu.m21.plugin.OrderPluginPoint;
-import nc.bs.xml.out.tool.XmlOutTool;
 import nc.impl.pu.m21.action.rule.approve.ApproveAfterEventRule;
 import nc.impl.pu.m21.action.rule.approve.ApproveBeforeEventRule;
 import nc.impl.pu.m21.action.rule.approve.ApproveBudgetCtrlRule;
@@ -22,6 +21,7 @@ import nc.impl.pu.m21.action.rule.approve.FilterOrderByStatusRule;
 import nc.impl.pu.m21.action.rule.approve.InsertPayPlanRule;
 import nc.impl.pu.m21.action.rule.approve.InsertStatusOnWayRule;
 import nc.impl.pubapp.pattern.data.bill.BillQuery;
+import nc.impl.pubapp.pattern.data.vo.VOQuery;
 import nc.impl.pubapp.pattern.rule.processer.AroundProcesser;
 import nc.itf.pu.m21.IOrderRevise;
 import nc.itf.scmpub.reference.uap.bd.material.MaterialPubService;
@@ -49,6 +49,8 @@ import nc.vo.pub.lang.UFDate;
 import nc.vo.pub.lang.UFDouble;
 import nc.vo.pubapp.pattern.exception.ExceptionUtils;
 import nc.vo.pubapp.util.VORowNoUtils;
+import nc.vo.so.m30.entity.SaleOrderBVO;
+import nc.vo.so.m30.entity.SaleOrderHVO;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -90,8 +92,6 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 	@Override
 	protected Object processBill(Object vo, ISwapContext swapContext,
 			AggxsysregisterVO aggvo) throws BusinessException {
-		// TODO 自动生成的方法存根
-
 		// 1.得到转换后的VO数据,取决于向导第一步注册的VO信息
 		AggregatedValueObject resvo = (AggregatedValueObject) vo;
 		OrderVO bpmOrder = (OrderVO) resvo;
@@ -250,9 +250,12 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 
 		} else if ("30".equalsIgnoreCase(add_row.get(0).getCsourcetypecode())) {
 			String[] formulas = new String[] {
-					"vsourcetrantype->getColValue(so_saleorder,ctrantypeid,csaleorderid  ,csourceid)",
-					"vsourcecode->getColValue(so_saleorder,vbillcode ,csaleorderid  ,csourceid)",
-					"vsourcerowno->getColValue(so_saleorder_b,crowno,  csaleorderbid  ,csourcebid)"
+					"vsourcetrantype->getColValue(so_saleorder,ctrantypeid,vbdef20  ,csourcebid)",
+					"vsourcecode->getColValue(so_saleorder,vbillcode ,vbdef20  ,csourcebid)",
+					"vsourcerowno->getColValue(so_saleorder_b,crowno,  vbdef20  ,csourcebid)",
+					"csourceid->getColValue(so_saleorder_b,csaleorderid ,  vbdef20  ,csourcebid)",
+					"csourcebid->getColValue(so_saleorder_b, csaleorderbid ,  vbdef20  ,csourcebid)"
+
 
 			};
 			SuperVOUtil.execFormulaWithVOs(vos, formulas);
@@ -461,7 +464,7 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 		processer.addAfterRule(new ApproveAfterEventRule());
 	}
 
-	private void fillData(AggregatedValueObject resvo) {
+	private void fillData(AggregatedValueObject resvo) throws BusinessException {
 		// TODO 自动生成的方法存根
 		// 补全数量信息：BPM传递主数量，补全辅数量，计价数量
 		OrderVO bill = (OrderVO) resvo;
@@ -495,19 +498,9 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 			};
 			SuperVOUtil.execFormulaWithVOs(bvos, formulas);
 
-		} else if ("30".equalsIgnoreCase(bvos[0].getCsourcetypecode())) {
-			String[] formulas = new String[] {
-					"vsourcetrantype->getColValue(so_saleorder,ctrantypeid,csaleorderid  ,csourceid)",
-					"vsourcecode->getColValue(so_saleorder,vbillcode ,csaleorderid  ,csourceid)",
-					"vsourcerowno->getColValue(so_saleorder_b,crowno,  csaleorderbid  ,csourcebid)"
-
-			};
-			SuperVOUtil.execFormulaWithVOs(bvos, formulas);
-		}
+		} 
 		for (OrderItemVO bvo : bvos) {
-
 			bvo.setStatus(VOStatus.NEW);
-
 			// --表体根据表头设置
 			// <dbilldate>2017-05-21 20:20:16</dbilldate>
 			// <pk_supplier>1001A5100000000008J1</pk_supplier>
@@ -538,6 +531,30 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 			bvo.setBlargess(UFBoolean.FALSE);
 			// <btransclosed>N</btransclosed>
 			bvo.setBtransclosed(UFBoolean.FALSE);
+			
+			if ("30".equalsIgnoreCase(bvo.getCsourcetypecode())) {
+//				1. BPM来源信息记录的是BPM的销售订单信息
+//				2. NC的销售订单表体  vbdef20记录的BPM的销售订单信息（明细主键全局唯一）
+//				3. 采购订单根据记录的 BPM来源单据明细去NC销售订单
+				 VOQuery<SaleOrderBVO> query = new VOQuery<SaleOrderBVO>(SaleOrderBVO.class);
+				 SaleOrderBVO[] orderbvos = query.query(" and  vbdef20='"+bvo.getCsourcebid()+"'", null);
+				 if(orderbvos == null ||orderbvos.length ==0){
+					 throw new BusinessException("根据BPM销售订单明细主键:"+bvo.getCsourcebid()+",未查询到对应的NC销售订单,请根据以下sql核对:  select * from so_saleorder_b where nvl(dr,0)=0 and  vbdef20='"+bvo.getCsourcebid()+"'");
+				 }
+				 if(orderbvos.length >1){
+					 throw new BusinessException("根据BPM销售订单明细主键:"+bvo.getCsourcebid()+",未查询到多条的NC销售订单明细,请根据以下sql核对:  select * from so_saleorder_b where nvl(dr,0)=0 and  vbdef20='"+bvo.getCsourcebid()+"'");
+				 }
+				 VOQuery<SaleOrderHVO>  hqury= new VOQuery<SaleOrderHVO>(SaleOrderHVO.class);
+				 SaleOrderHVO[] saleOrderHVOs = hqury.query(new String[]{orderbvos[0].getCsaleorderid()});
+				 
+				 bvo.setCsourceid(orderbvos[0].getCsaleorderid());
+				 bvo.setCsourcebid(orderbvos[0].getCsaleorderbid());
+				 bvo.setVsourcerowno(orderbvos[0].getCrowno());
+
+				 bvo.setVsourcecode(saleOrderHVOs[0].getVbillcode());
+				 bvo.setVsourcetrantype(saleOrderHVOs[0].getCtrantypeid());
+				 
+			}
 
 			// 润丰同步的业务源只有请购和协同销售订单
 			// <vfirsttrantype>0001A510000000001SOR</vfirsttrantype>

@@ -52,7 +52,7 @@ public class StoreReqAppInsertAction {
   private void addRule(AroundProcesser<StoreReqAppVO> processer) {
     processer.addBeforeRule(new ParaValidateRule());
     //2017-06-26 Í¬²½µ½BPM
-    processer.addBeforeRule(new SysBpmRule());
+//    processer.addBeforeRule(new SysBpmRule());
   }
 
 }

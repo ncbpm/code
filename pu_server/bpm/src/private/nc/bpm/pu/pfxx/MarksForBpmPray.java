@@ -119,10 +119,9 @@ public class MarksForBpmPray {
 		PraybillHeaderVO head = bill.getHVO();
 		VOQuery<SaleOrderHVO> query = new VOQuery<SaleOrderHVO>(
 				SaleOrderHVO.class);
-		SaleOrderHVO[] hvos = query.query(" and pk_org='" + head.getPk_org()
-				+ "' and vbillcode='" + head.getVbillcode() + "'", null);
+		SaleOrderHVO[] hvos = query.query(" and vbillcode='" + head.getVmemo()+ "'", null);
 		if (hvos == null || hvos.length == 0) {
-			throw new BusinessException("根据需货单号" + head.getVbillcode()
+			throw new BusinessException("根据需货单号" + head.getVmemo()
 					+ "未查询到NC销售订单");
 		}
 		//

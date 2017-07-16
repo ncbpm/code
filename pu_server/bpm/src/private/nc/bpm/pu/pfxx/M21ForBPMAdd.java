@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import nc.bs.framework.common.InvocationInfoProxy;
 import nc.bs.framework.common.NCLocator;
 import nc.bs.pfxx.ISwapContext;
 import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
@@ -56,7 +57,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * 小
+ * 采购订单同步和变更
  * @author liyf
  * 
  */
@@ -102,8 +103,14 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 			// 3.补全数据,并且调整单据状态
 			fillData(resvo);
 			//
-			AggregatedValueObject bill2 = insert(resvo);
-			return bill2.getParentVO().getPrimaryKey();
+			OrderHeaderVO hvo = bpmOrder.getHVO();
+			String approver = hvo.getApprover();
+			UFDate taudittime = hvo.getTaudittime();
+			//保存
+			AggregatedValueObject savevo = insert(resvo);
+			//审批
+			OrderVO orderVO = this.approve(savevo, approver, taudittime);
+			return orderVO.getParentVO().getPrimaryKey();
 		} else {
 			// 如果存在，则执行采购订单修订或者关闭打开
 			OrderVO queryVo = this.queryVOByPk(vopk);
@@ -392,14 +399,11 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 			throws BusinessException {
 		OrderVO order = (OrderVO) vo;
 		OrderHeaderVO hvo = order.getHVO();
-		String approver = hvo.getApprover();
 		hvo.setApprover(null);
 		hvo.setForderstatus(POEnumBillStatus.FREE.toInt());
-		UFDate taudittime = hvo.getTaudittime();
 		hvo.setTaudittime(null);
 		AggregatedValueObject save = this.save(vo, null);
-		OrderVO orderVO = this.approve(save, approver, taudittime);
-		return orderVO;
+		return save;
 	}
 
 	private AggregatedValueObject save(AggregatedValueObject updatevo,
@@ -424,7 +428,7 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 		OrderHeaderVO hvo = order.getHVO();
 		hvo.setApprover(approver);
 		hvo.setTaudittime(taudittime);
-
+		InvocationInfoProxy.getInstance().setUserId(approver);
 		IplatFormEntry iIplatFormEntry = (IplatFormEntry) NCLocator
 				.getInstance().lookup(IplatFormEntry.class.getName());
 		Object retObj = iIplatFormEntry.processAction("APPROVE", "21", null,

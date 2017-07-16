@@ -92,25 +92,20 @@ public class MarksForBpmAdd extends AbstractPfxxPlugin {
 		TransformHeadVO head = new TransformHeadVO();
 		tranbill.setParentVO(head);
 		// 销售组织-采购组织-库存组织
-		head.setAttributeValue("pk_group",
-				bill.getHVO().getAttributeValue("pk_group"));
-		head.setAttributeValue("pk_org",
-				bill.getHVO().getAttributeValue("pk_org"));
-		head.setAttributeValue("pk_org_v",
-				bill.getHVO().getAttributeValue("pk_org_v"));
-		head.setAttributeValue("dbilldate",
-				bill.getHVO().getAttributeValue("dbilldate"));
-		head.setAttributeValue("billmaker",
-				bill.getHVO().getAttributeValue("billmaker"));
-		head.setAttributeValue("cdptid",
-				bill.getHVO().getAttributeValue("cdptid"));
-		head.setAttributeValue("cdptid",
-				bill.getHVO().getAttributeValue("cdptid"));
+		head.setAttributeValue("pk_group",bill.getHVO().getAttributeValue("pk_group"));
+		head.setAttributeValue("pk_org",bill.getHVO().getAttributeValue("pk_org"));
+		head.setAttributeValue("pk_org_v",bill.getHVO().getAttributeValue("pk_org_v"));
+		head.setAttributeValue("dbilldate",bill.getHVO().getAttributeValue("dbilldate"));
+		head.setAttributeValue("billmaker",bill.getHVO().getAttributeValue("billmaker"));
+		head.setAttributeValue("cdptid",bill.getHVO().getAttributeValue("cdptid"));
+		head.setAttributeValue("cdptid",bill.getHVO().getAttributeValue("cdptid"));
 		head.setAttributeValue("cdptvid",
 				bill.getHVO().getAttributeValue("cdptvid"));
-		head.setAttributeValue("vbillcode",
-				bill.getHVO().getAttributeValue("vbillcode"));
+		head.setAttributeValue("vbillcode",bill.getHVO().getAttributeValue("vbillcode"));
 		head.setVtrantypecode("4N-01");
+		head.setAttributeValue(TransformHeadVO.APPROVER, head.getAttributeValue("approver"));
+		head.setAttributeValue(TransformHeadVO.CREATOR, head.getAttributeValue("billmaker"));
+
 		head.setVnote("唛头自动转换");
 		ArrayList<TransformBodyVO> tlist = new ArrayList<TransformBodyVO>();
 		for (PraybillItemVO item : tranlist) {

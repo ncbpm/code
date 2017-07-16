@@ -17,6 +17,7 @@ import nc.vo.pub.AggregatedValueObject;
 import nc.vo.pub.BusinessException;
 import nc.vo.pub.VOStatus;
 import nc.vo.pub.lang.UFDouble;
+import nc.vo.pubapp.pattern.model.entity.bill.IBill;
 import nc.vo.so.m30.entity.SaleOrderBVO;
 import nc.vo.so.m30.entity.SaleOrderVO;
 import nc.vo.so.m30.entity.SaleOrderViewVO;
@@ -24,6 +25,9 @@ import nc.vo.so.m30.pub.SaleOrderVOCalculator;
 import nc.vo.so.m30.revise.entity.SaleOrderHistoryBVO;
 import nc.vo.so.m30.revise.entity.SaleOrderHistoryHVO;
 import nc.vo.so.m30.revise.entity.SaleOrderHistoryVO;
+import nc.vo.so.pub.keyvalue.IKeyValue;
+import nc.vo.so.pub.keyvalue.VOKeyValue;
+import nc.vo.so.pub.rule.SOTaxInfoRule;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -156,9 +160,6 @@ public class M30HistoryForBPMAdd extends AbstractPfxxPlugin {
 		SaleOrderHistoryVO bill = new SaleOrderHistoryVO();
 		bill.setParentVO(oldbill.getParentVO());
 		bill.setChildrenVO(oldbill.getChildrenVO());
-		
-		
-		
 		//重现计算单价等》
 		int rows[] = new int[bill.getChildrenVO().length];
 		for (int i = 0; i <bill.getChildrenVO().length; i++) {
@@ -179,9 +180,17 @@ public class M30HistoryForBPMAdd extends AbstractPfxxPlugin {
 				}
 			}
 		}
+		//计算税码信息
+	    IKeyValue keyValue = new VOKeyValue<IBill>(bill);
+	    // 询税
+	    SOTaxInfoRule taxInfo = new SOTaxInfoRule(keyValue);
+	    taxInfo.setOnlyTaxCodeByBodyPos(rows);
+	    //国外销售-设置税率
+	    if( bill.getChildrenVO()[0].getNtaxrate() == null || bill.getChildrenVO()[0].getNtaxrate().doubleValue() == 0){
+	    	taxInfo.setTaxTypeAndRate(rows);
+	    }
 		SaleOrderVOCalculator cal = new SaleOrderVOCalculator(bill);
-		cal.calculate(rows, "norigtaxmny");	
-		
+		cal.calculate(rows, "norigtaxmny");			
 		IM30ReviseMaintain maintainsrv = NCLocator.getInstance().lookup(
 				IM30ReviseMaintain.class);
 		// ReviseSaveSaleOrderAction action = new ReviseSaveSaleOrderAction();
@@ -281,6 +290,7 @@ public class M30HistoryForBPMAdd extends AbstractPfxxPlugin {
 				if("ctaxcodeid".equalsIgnoreCase(attr)){
 					continue;
 				}
+				//清空非主数量的信息
 				if(attr.endsWith("nnum") && ! attr.equalsIgnoreCase("nnum")){
 					continue;
 				}
@@ -305,6 +315,7 @@ public class M30HistoryForBPMAdd extends AbstractPfxxPlugin {
 			if("iversion".equalsIgnoreCase(attr)){
 				continue;
 			}
+						
 			hvo.setAttributeValue(attr, hvo_bpm.getAttributeValue(attr));
 		}
 //		hvo.setIversion(++nversion);

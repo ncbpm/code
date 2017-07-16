@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import nc.bs.framework.common.InvocationInfoProxy;
 import nc.bs.framework.common.NCLocator;
 import nc.bs.ic.pub.env.ICBSContext;
 import nc.bs.logging.Logger;
@@ -87,6 +88,7 @@ public class MarksForBpmTrans {
 		this.processBeforeSave(icbill);
 
 		// TODO 单据设置有辅助信息，aggxsysvo为用户配置的具体辅助信息
+		InvocationInfoProxy.getInstance().setUserId(icbill.getHead().getCreator());
 
 		Logger.info("保存新单据...");
 		IPFBusiAction service = NCLocator.getInstance().lookup(
@@ -115,7 +117,7 @@ public class MarksForBpmTrans {
 		Logger.info("签字新单据前处理...");
 		// 签字时间等于单据日期
 		icbill.getHead().setTaudittime(icbill.getHead().getDbilldate());
-		icbill.getHead().setApprover(icbill.getHead().getCreator());
+		InvocationInfoProxy.getInstance().setUserId(icbill.getHead().getApprover());
 		Logger.info("签字新单据...");
 		IPFBusiAction service = NCLocator.getInstance().lookup(
 				IPFBusiAction.class);

@@ -112,14 +112,15 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 		WaLoginContext loginContext = createContext(waPeriod, pk_wa_class,
 				pk_group, pk_org);
 
-		updateDataVO(headvo, bodyvos, loginContext);
-
 		if (headvo.getCuserid() == null) {
 			InvocationInfoProxy.getInstance().setUserId(getCuserid(USERCODE));
 			InvocationInfoProxy.getInstance().setUserCode(USERCODE);
 		} else {
 			InvocationInfoProxy.getInstance().setUserId(headvo.getCuserid());
 		}
+		
+		updateDataVO(headvo, bodyvos, loginContext);
+		
 		InSQLCreator inSQLCreator = new InSQLCreator();
 		String pks = inSQLCreator
 				.getInSQL(list.toArray(new String[list.size()]));
@@ -231,6 +232,9 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 			throws BusinessException {
 		WaClassItemVO[] items1 = getWaClassItemVO(loginContext);
 
+		if(items1 == null || items1.length ==0)
+			throw new BusinessException("获取用户有权限的薪资项目出错");
+			
 		for (WaClassItemVO item : items1) {
 			if (item.getName() == null)
 				continue;

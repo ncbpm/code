@@ -31,7 +31,7 @@ public class ChuyunAllCancel  implements IAllCancel {
          sql.and();
          sql.append(ActivityNumHeadVO.CPERIOD, paramvo.getDaccountperiod());
          sql.and();
-         sql.append(ActivityNumHeadVO.VNOTE, "¥¢‘À");
+         sql.append(ActivityNumHeadVO.VDEF20, "¥¢‘À");
 //         sql.append(ActivityNumHeadVO.CCOSTOBJECTID, paramvo.getc);
          deleteActNumBySql(sql.toString());
     }

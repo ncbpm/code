@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import nc.bs.framework.common.InvocationInfoProxy;
 import nc.bs.framework.common.NCLocator;
 import nc.bs.ic.pub.env.ICBSContext;
 import nc.impl.pu.m20.action.PraybillInsertAction;
@@ -66,18 +67,20 @@ public class MarksForBpmPray {
 		return approvevo;
 	}
 
-	protected AggregatedValueObject insert(AggregatedValueObject vo) {
+	protected AggregatedValueObject insert(PraybillVO vo) {
 		if (vo != null) {
 			this.checkScale(vo);
 		}
+		InvocationInfoProxy.getInstance().setUserId(vo.getHVO().getBillmaker());
 		return new PraybillInsertAction()
 				.insert(new PraybillVO[] { (PraybillVO) vo })[0];
 	}
 	
-	protected AggregatedValueObject approve(AggregatedValueObject vo) throws BusinessException {
+	protected AggregatedValueObject approve(PraybillVO vo) throws BusinessException {
 		if (vo != null) {
 			this.checkScale(vo);
-		}
+		}		
+		InvocationInfoProxy.getInstance().setUserId(vo.getHVO().getApprover());
 		IPFBusiAction service = NCLocator.getInstance().lookup(
 				IPFBusiAction.class);
 		AggregatedValueObject [] vos = (AggregatedValueObject[]) service.processAction(IPFActionName.APPROVE, "20", null, vo, null, null);
@@ -116,10 +119,9 @@ public class MarksForBpmPray {
 		PraybillHeaderVO head = bill.getHVO();
 		VOQuery<SaleOrderHVO> query = new VOQuery<SaleOrderHVO>(
 				SaleOrderHVO.class);
-		SaleOrderHVO[] hvos = query.query(" and pk_org='" + head.getPk_org()
-				+ "' and vbillcode='" + head.getVbillcode() + "'", null);
+		SaleOrderHVO[] hvos = query.query(" and vbillcode='" + head.getVmemo()+ "'", null);
 		if (hvos == null || hvos.length == 0) {
-			throw new BusinessException("根据需货单号" + head.getVbillcode()
+			throw new BusinessException("根据需货单号" + head.getVmemo()
 					+ "未查询到NC销售订单");
 		}
 		//

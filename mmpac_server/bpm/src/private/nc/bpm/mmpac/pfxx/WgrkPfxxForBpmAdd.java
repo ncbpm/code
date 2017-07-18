@@ -15,6 +15,7 @@ import nc.bs.logging.Logger;
 import nc.bs.pfxx.ISwapContext;
 import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
 import nc.impl.pubapp.pattern.data.bill.BillQuery;
+import nc.itf.mmpac.wr.IWrBusinessService;
 import nc.itf.mmpac.wr.IWrMaintainService;
 import nc.itf.scmpub.reference.uap.pf.PfServiceScmUtil;
 import nc.pubitf.scmf.ic.mbatchcode.IBatchcodePubService;
@@ -94,12 +95,20 @@ public class WgrkPfxxForBpmAdd extends AbstractPfxxPlugin {
 		String auditer = clientVO.getParentVO().getAuditer();
 		// 保存
 		AggWrVO saveVO = doSave(clientVO);
+		
 		// 审批
-		doSign(saveVO);
+		clientVO.getParentVO().setAuditer(auditer);
+		
+		AggWrVO signVO = doSign(saveVO);
+		//报检
+        this.getWrBusinessService().applyCheck(new AggWrVO[]{signVO});
 
 		return saveVO.getParentVO().getVbillcode();
 
 	}
+	 protected IWrBusinessService getWrBusinessService() {
+	        return NCLocator.getInstance().lookup(IWrBusinessService.class);
+	 }
 
 	/**
 	 * 新增

@@ -5,7 +5,7 @@ import java.util.List;
 
 import nc.bs.pfxx.ISwapContext;
 import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
-import nc.impl.pubapp.pattern.data.vo.VOQuery;
+import nc.vo.ic.batch.BatchRefViewVO;
 import nc.vo.ic.m4n.entity.TransformBodyVO;
 import nc.vo.ic.m4n.entity.TransformHeadVO;
 import nc.vo.ic.m4n.entity.TransformVO;
@@ -16,14 +16,18 @@ import nc.vo.pu.m20.entity.PraybillItemVO;
 import nc.vo.pu.m20.entity.PraybillVO;
 import nc.vo.pub.BusinessException;
 import nc.vo.pub.lang.UFDouble;
-import nc.vo.pubapp.pattern.pub.SqlBuilder;
-import nc.vo.so.m30.entity.SaleOrderBVO;
 
 /**
- * 唛头生成--NC请购单 1. 直接根据唛头评审生成带来源单据和源头单据的请购单 批次号是需货单号，BPM带过来 来源单据为需货单号对应的销售订单 ---
- * 且需要实现联查。 2. 来源销售订单表体如何关联： 销售订单只有一条表体（可能有赠品，过滤赠品后，之后一行有效物料） 关联后，实现联查
- * 即从请购单可以查询到 3. 如果唛头评审中（A需货单）有指定为非本需货单号的包装物B，数量如10，而需要生成一张由B的形态转换单，转换前后物料都是B，转换后批次是需货单号
- * 批次号=需货单号（只是包装物才会有,bpm需要过滤）
+ * 唛头生成--NC请购单 
+1. 直接根据唛头评审生成带来源单据和源头单据的请购单
+BPM带过来生成的请购单 批次号 必须是当前唛头的 需货单号
+来源单据为需货单号对应的销售订单 --- NC实现实现联查。
+2. 来源销售订单表体如何关联： 销售订单只有一条表体（可能有赠品，过滤赠品后，之后一行有效物料）
+关联后，实现联查 即从请购单可以查询到销售订单
+3. 如果唛头评审中（A需货单）有指定可以换批次出库的 库存产品B，数量取可用的现存量如20,并可修改  
+则需要生成一张由B转换成B的 换批次的形态转换单。
+新的 批次号是 需货单的
+转换前后的仓库，都在产品B的批次
  * 
  * @author liyf
  * 
@@ -73,7 +77,13 @@ public class MarksForBpmAdd extends AbstractPfxxPlugin {
 			throws BusinessException {
 		// TODO 自动生成的方法存根
 		PraybillVO aggvo = new PraybillVO();
-		aggvo.setHVO(bill.getHVO());
+		PraybillHeaderVO head = new PraybillHeaderVO();
+		for(String attr:head.getAttributeNames()){
+			head.setAttributeValue(attr, bill.getHVO().getAttributeValue(attr));
+		}
+		head.setVmemo(bill.getHVO().getVbillcode());
+		head.setVbillcode(null);
+		aggvo.setHVO(head);
 		aggvo.setBVO(praylist.toArray(new PraybillItemVO[0]));
 
 		return aggvo;
@@ -92,32 +102,26 @@ public class MarksForBpmAdd extends AbstractPfxxPlugin {
 		TransformHeadVO head = new TransformHeadVO();
 		tranbill.setParentVO(head);
 		// 销售组织-采购组织-库存组织
-		head.setAttributeValue("pk_group",
-				bill.getHVO().getAttributeValue("pk_group"));
-		head.setAttributeValue("pk_org",
-				bill.getHVO().getAttributeValue("pk_org"));
-		head.setAttributeValue("pk_org_v",
-				bill.getHVO().getAttributeValue("pk_org_v"));
-		head.setAttributeValue("dbilldate",
-				bill.getHVO().getAttributeValue("dbilldate"));
-		head.setAttributeValue("billmaker",
-				bill.getHVO().getAttributeValue("billmaker"));
-		head.setAttributeValue("cdptid",
-				bill.getHVO().getAttributeValue("cdptid"));
-		head.setAttributeValue("cdptid",
-				bill.getHVO().getAttributeValue("cdptid"));
+		head.setAttributeValue("pk_group",bill.getHVO().getAttributeValue("pk_group"));
+		head.setAttributeValue("pk_org",bill.getHVO().getAttributeValue("pk_org"));
+		head.setAttributeValue("pk_org_v",bill.getHVO().getAttributeValue("pk_org_v"));
+		head.setAttributeValue("dbilldate",bill.getHVO().getAttributeValue("dbilldate"));
+		head.setAttributeValue("billmaker",bill.getHVO().getAttributeValue("billmaker"));
+		head.setAttributeValue("cdptid",bill.getHVO().getAttributeValue("cdptid"));
 		head.setAttributeValue("cdptvid",
 				bill.getHVO().getAttributeValue("cdptvid"));
-		head.setAttributeValue("vbillcode",
-				bill.getHVO().getAttributeValue("vbillcode"));
+		head.setVnote(bill.getHVO().getVbillcode());
 		head.setVtrantypecode("4N-01");
-		head.setVnote("唛头自动转换");
+		head.setAttributeValue(TransformHeadVO.APPROVER, head.getAttributeValue("approver"));
+		head.setAttributeValue(TransformHeadVO.CREATOR, head.getAttributeValue("billmaker"));
+
+		head.setVnote(bill.getHVO().getVbillcode());
 		ArrayList<TransformBodyVO> tlist = new ArrayList<TransformBodyVO>();
 		for (PraybillItemVO item : tranlist) {
 			// 转换前表体
-			TransformBodyVO body = createbody(item);
+			TransformBodyVO body = createbody(head,item);
 			// 转换后表体:根据销售订单
-			TransformBodyVO afbody = createAfBody(bill, item);
+			TransformBodyVO afbody = createAfBody(bill, body);
 			afbody.setFbillrowflag(3);
 			tlist.add(body);
 			tlist.add(afbody);
@@ -132,15 +136,23 @@ public class MarksForBpmAdd extends AbstractPfxxPlugin {
 	 * 
 	 * @param item
 	 * @return
+	 * @throws BusinessException 
 	 */
-	private TransformBodyVO createbody(PraybillItemVO item) {
+	private TransformBodyVO createbody(TransformHeadVO head,PraybillItemVO item) throws BusinessException {
 		// TODO 自动生成的方法存根
 		TransformBodyVO body = new TransformBodyVO();
+		body.setPk_group(head.getPk_group());
+		body.setPk_org(head.getPk_org());
+		body.setPk_org_v(head.getPk_org_v());
+		body.setCorpoid(head.getCorpoid());
+		body.setCorpvid(head.getCorpvid());
+		body.setCbodywarehouseid(head.getCwarehouseid());
 		// fbillrowflag 行状态 fbillrowflag int 形态转换行类型 2=转换前，3=转换后，
 		body.setFbillrowflag(2);
 		// cbodywarehouseid 库存仓库
 		body.setCbodywarehouseid(item.getPk_reqstor());
 		// h换前物料
+		
 		body.setCmaterialvid(item.getPk_material());
 		body.setCmaterialoid(item.getPk_srcmaterial());
 		setInvFree(body, item);
@@ -152,38 +164,29 @@ public class MarksForBpmAdd extends AbstractPfxxPlugin {
 		body.setNassistnum(getUFDdoubleNullASZero(item.getNastnum()).setScale(power,
 				UFDouble.ROUND_HALF_UP));
 		body.setVchangerate(item.getVchangerate());
-		
 		// 批次号
 		body.setVbatchcode(item.getVbatchcode());
+		
+		//同步的维度信息
+		BatchCodeRule batchCodeRule = new BatchCodeRule();
+		BatchRefViewVO batchRefViewVOs = batchCodeRule.getRefVO(body.getPk_org(),body.getCbodywarehouseid(),body.getCmaterialvid(), body.getVbatchcode());
+		if (batchRefViewVOs != null ) {
+			batchCodeRule.synBatch(batchRefViewVOs, body);
+		}
 		return body;
 	}
-	private TransformBodyVO createAfBody(PraybillVO bill, PraybillItemVO item) throws BusinessException {
+	private TransformBodyVO createAfBody(PraybillVO bill, TransformBodyVO bodyBefore) throws BusinessException {
 		// TODO 自动生成的方法存根
-		TransformBodyVO body = new TransformBodyVO();
+		TransformBodyVO bodyAfter = new TransformBodyVO();
+		for(String attr:bodyAfter.getAttributeNames()){
+			bodyAfter.setAttributeValue(attr, bodyBefore.getAttributeValue(attr));
+		}
 		// fbillrowflag 行状态 fbillrowflag int 形态转换行类型 2=转换前，3=转换后，
-		body.setFbillrowflag(3);
-		// cbodywarehouseid 库存仓库
-		body.setCbodywarehouseid(item.getPk_reqstor());
-		// 根据销售订单查询对应的转换后的物料，
-//		SaleOrderBVO saleOrderBody = querySaleOrder(bill);
-//		body.setCmaterialvid(saleOrderBody.getCmaterialid());
-//		body.setCmaterialoid(saleOrderBody.getCmaterialvid());
-//		body.setCunitid(saleOrderBody.getCunitid());
-//		body.setCasscustid(saleOrderBody.getCastunitid());
-//		
-		body.setCmaterialvid(item.getPk_material());
-		body.setCmaterialoid(item.getPk_srcmaterial());
-		body.setCunitid(item.getCunitid());
-		body.setCasscustid(item.getCastunitid());
-		setInvFree(body, item);		
-		body.setNnum(getUFDdoubleNullASZero(item.getNnum()).setScale(power,
-				UFDouble.ROUND_HALF_UP));
-		body.setNassistnum(getUFDdoubleNullASZero(item.getNastnum()).setScale(power,
-				UFDouble.ROUND_HALF_UP));
-		body.setVchangerate(item.getVchangerate());	
+		bodyAfter.setFbillrowflag(3);
 		// 物料批次号等于销售订单编码
-		body.setVbatchcode(bill.getHVO().getVbillcode());
-		return body;
+		bodyAfter.setVbatchcode(bill.getHVO().getVbillcode());
+		bodyAfter.setPk_batchcode(null);
+		return bodyAfter;
 	}
 	
 	private UFDouble getUFDdoubleNullASZero(Object o) {
@@ -196,49 +199,6 @@ public class MarksForBpmAdd extends AbstractPfxxPlugin {
 			return new UFDouble((String) o);
 		}
 	}
-
-	/**
-	 * 根据销售订单表体物料设置自由属性
-	 * @param body
-	 * @param item
-	 */
-	private void setInvFree(TransformBodyVO body, SaleOrderBVO item) {
-		// TODO 自动生成的方法存根
-		body.setCprojectid(item.getCprojectid());
-		body.setCproductorid(item.getCproductorid());
-		for (int i = 1; i <= 10; i++) {
-			String key = "vfree" + i;
-			body.setAttributeValue(key, item.getAttributeValue(key));
-		}
-	
-		
-	}
-
-	private SaleOrderBVO querySaleOrder(PraybillVO bill)
-			throws BusinessException {
-		// TODO 自动生成的方法存根
-		PraybillHeaderVO head = bill.getHVO();
-		VOQuery<SaleOrderBVO> query = new VOQuery<SaleOrderBVO>(
-				SaleOrderBVO.class);
-		SqlBuilder sql = new SqlBuilder();
-		sql.append(" and nvl(so_saleorder_b.dr,0) =0 ");
-		sql.append(" and nvl(so_saleorder_b.blargessflag,'N')='N'");
-		sql.append(" and so_saleorder_b.csaleorderid = ( select csaleorderid  from so_saleorder where nvl(dr,0)=0 ");
-		sql.append(" and pk_org='" + head.getPk_org() + "' and vbillcode='"
-				+ head.getVbillcode() + "' )");
-		SaleOrderBVO[] bvos = query.query(sql.toString(), null);
-		if (bvos == null || bvos.length == 0) {
-			throw new BusinessException("根据需货单号" + head.getVbillcode()
-					+ "未查询到NC销售订单");
-		}
-		if(bvos.length != 1){
-			throw new BusinessException("根据需货单号" + head.getVbillcode()
-					+ "查询到NC销售订单，除赠外有多条表体，无法确认");
-		}
-		return bvos[0];
-	}
-
-	
 
 	/**
 	 * 设置物料自由属性

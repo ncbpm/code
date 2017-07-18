@@ -292,8 +292,9 @@ public class HuanbaoFIFetch extends  AbstractCheckAndFetch<IMMFetchData> {
 	protected List<Map<IFetchData, PullDataErroInfoVO>> getErrorInfo(
 			IMMFetchData[] datas, String cperiod, boolean isCheckFlag)
 			throws BusinessException {
-		return super.getErrorInfoAndFilteredData(datas,
-				new MMFetchCheckStrategy(this.pkOrg), cperiod, isCheckFlag);
+	     // 获取全部成本中心
+        super.getAllCostCenterIds(datas);
+		return null;
 	}
 	
 	
@@ -330,7 +331,7 @@ public class HuanbaoFIFetch extends  AbstractCheckAndFetch<IMMFetchData> {
 		ActivityNumHeadVO.setPk_org(paramvo.getPk_org()); // 组织
 		ActivityNumHeadVO.setPk_org_v(paramvo.getPk_org_v());
 		ActivityNumHeadVO.setCperiod(paramvo.getDaccountperiod()); // 会计期间
-		ActivityNumHeadVO.setVnote("储运");
+		ActivityNumHeadVO.setVdef20("环保");
 
 		// 来源类型完工报告
 		ActivityNumHeadVO.setIsourcetype(datavos[0].getResourcetype());

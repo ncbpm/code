@@ -2,19 +2,28 @@ package nc.bs.cm.fetchdata.checkandfetch;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import nc.bd.framework.base.CMStringUtil;
+import nc.bd.framework.base.CMValueCheck;
+import nc.bd.framework.db.CMSqlBuilder;
+import nc.bs.cm.fetchdata.factory.FetchPersistentFactory;
+import nc.bs.cm.fetchdata.fetchPersistent.AbstractFetchPersistent;
 import nc.bs.cm.fetchdata.fetchcheck.AbstractCheckStrategy;
 import nc.bs.cm.fetchdata.fetchcheck.MMFetchCheckStrategy;
 import nc.bs.cm.fetchdata.groupdata.IGroupStrategy;
+import nc.bs.dao.BaseDAO;
 import nc.bs.framework.common.NCLocator;
 import nc.cmpub.business.adapter.BDAdapter;
 import nc.cmpub.business.enumeration.CMAllocStatusEnum;
 import nc.cmpub.business.enumeration.CMSourceTypeEnum;
 import nc.cmpub.business.enumeration.CMStatusEnum;
+import nc.impl.cm.fetchdata.PullDataTool;
 import nc.impl.pubapp.pattern.database.DataAccessUtils;
+import nc.jdbc.framework.processor.BeanListProcessor;
 import nc.pubitf.cm.activitynum.cm.mmfetch.IActivityNumRewriteForMMFetch;
 import nc.vo.bd.bdactivity.entity.BDActivityVO;
 import nc.vo.cm.activitynum.entity.ActivityNumAggVO;
@@ -23,6 +32,7 @@ import nc.vo.cm.activitynum.entity.ActivityNumItemVO;
 import nc.vo.cm.costobject.entity.CostObjectGenerateVO;
 import nc.vo.cm.costobject.enumeration.CostObjInStorageTypeEnum;
 import nc.vo.cm.fetchdata.entity.ChuyunFetchDataVO;
+import nc.vo.cm.fetchdata.entity.FetchKeyVO;
 import nc.vo.cm.fetchdata.entity.FetchParamVO;
 import nc.vo.cm.fetchdata.entity.PullDataErroInfoVO;
 import nc.vo.cm.fetchdata.entity.PullDataStateVO;
@@ -57,7 +67,145 @@ public class ChuyunFIFetch extends AbstractCheckAndFetch<IMMFetchData> {
 		// 得到mm生产制造的完工单或者工序完工单据
 		return this.getFinishOrGxFinish(paramvo);
 	}
+	
+	@Override
+	public IFetchData[] transDatas(CircularlyAccessibleValueObject[] datas,
+			FetchParamVO paramVo) {
+		List<AggActNumVOAdapter> aggActNumVOList = new ArrayList<AggActNumVOAdapter>();
+		PullDataStateVO vo2 = paramVo.getPullDataStateVOArr()[0];
+		for (CircularlyAccessibleValueObject cadata : datas) {
+			ChuyunFetchDataVO data = (ChuyunFetchDataVO) cadata;
+			AggActNumVOAdapter vo = new AggActNumVOAdapter();
+			
+			 // 消耗成本中心
+			vo.setCcostcenterid( data.getCcostcenterid());
+			// 成本对象编码
+			vo.setCcostobjectid(vo2.getPk_costobject());
+			// 入库类型
+			vo.setFinstoragetype(CostObjInStorageTypeEnum.HOME_MAKE.toIntValue());
+			// 设置类型，区别错误信息和警告信息
+			vo.setImestype(CMMesTypeEnum.ERROR.toIntValue());
+			//作业编码
+			vo.setBdActivityId(vo2.getPk_workitem());
+			
+//			vo.setCmoid(data.getCmoid());
+//			vo.setCmocode(data.getCmocode());
+			
+//			vo.setMaterialid(data.getMaterialid());
+			
+			vo.setHeadwkid(data.getHeadwkid());
+			//
+			vo.setWkid(data.getWkid());
+			vo.setCdeptid(vo2.getPk_serverdept());//服务部门--用来对照表体完工成本中心
+			vo.setWknum(data.getWknum());
+			vo.setResourcetype(Integer.valueOf(CMSourceTypeEnum.HOME_MAKE
+					.getEnumValue().getValue()));// 
+			// 物料辅助属性
+//			vo.setCprojectid(data.getCprojectid());
+//			vo.setCproductorid(data.getCproductorid());
+//			vo.setCvendorid(data.getCvendorid());
+//			vo.setCcustomerid(data.getCcustomerid());
+//			vo.setVfree1(data.getVfree1());
+//			vo.setVfree2(data.getVfree2());
+//			vo.setVfree3(data.getVfree3());
+//			vo.setVfree4(data.getVfree4());
+//			vo.setVfree5(data.getVfree5());
+//			vo.setVfree6(data.getVfree6());
+//			vo.setVfree7(data.getVfree7());
+//			vo.setVfree8(data.getVfree8());
+//			vo.setVfree9(data.getVfree9());
+//			vo.setVfree10(data.getVfree10());
+			aggActNumVOList.add(vo);
+		}
+		// 设置计量单位
+		this.getMeasureId(aggActNumVOList);
+		return aggActNumVOList.toArray(new AggActNumVOAdapter[0]);
 
+	}
+	
+
+	@Override
+	public void transVOInserDB(IMMFetchData[] correctData, FetchParamVO paramvo)
+			throws BusinessException {
+		Map<String, List<IMMFetchData>> cachedVOMap = super.transVO(
+				correctData, new AbstractFetchStrategy() {
+					// 根据key字段，分组同样key值的vo，存到cachedVOMap，作业消耗单以标题
+					// 消耗成本中心、成本对象进行区分
+					@Override
+					public String getUniqueKey(IMMFetchData vo) {
+						StringBuffer key = new StringBuffer();
+						key.append(vo.getCcostcenterid());
+						key.append(vo.getCcostobjectid());
+						return key.toString();
+					}
+				});
+		ActivityNumAggVO[] ActivityNumAggVO = this.transActActNumVO(
+				cachedVOMap, correctData, paramvo);
+		this.insertByGroup(ActivityNumAggVO);
+	}
+	
+	@Override
+	protected void saveFetchStatus(FetchParamVO paramvo, boolean isCheckFlag)
+			throws BusinessException {
+        if (!isCheckFlag) {
+            // modify by zhangchdV65 2015.01.21
+            // 查询数据库表【pccm_fetchinfo】中的数据
+            // 要保存的状态
+            Set<PullDataStateVO> savePullDataStateSet = new HashSet<PullDataStateVO>();
+            // 要更新的状态
+            Set<PullDataStateVO> updatePullDataStateSet = new HashSet<PullDataStateVO>();       
+            CMSqlBuilder sb = new CMSqlBuilder();
+            sb.select();
+            sb.append(" * ");   
+            sb.from(PullDataStateVO.getDefaultTableName());
+            sb.where();
+            sb.append(nc.vo.cmpub.fetchdata.PullDataStateVO.PK_GROUP, paramvo.getPk_group());
+            sb.append(" and ");
+            sb.append(nc.vo.cmpub.fetchdata.PullDataStateVO.PK_ORG, paramvo.getPk_org());
+            sb.append(" and ");
+            sb.append(nc.vo.cmpub.fetchdata.PullDataStateVO.IFETCHOBJTYPE, paramvo.getIfetchobjtype());
+            sb.append(" and ");
+            sb.append(nc.vo.cmpub.fetchdata.PullDataStateVO.CPERIOD, paramvo.getPullDataStateVOArr()[0].getCperiod());
+            sb.append(" and ");
+            sb.append(" dr = 0 ");
+        
+            BaseDAO dao = new BaseDAO();
+            List<PullDataStateVO> queryVOS = (List<PullDataStateVO>) dao.executeQuery(sb.toString(), new BeanListProcessor(PullDataStateVO.class));
+            
+            //本次执行取数的VO
+            Map<FetchKeyVO, PullDataStateVO> clientVOS = PullDataTool.splitBykey( paramvo.getPullDataStateVOArr());
+            //数据库中已经存在的VO
+            Map<FetchKeyVO, PullDataStateVO> orignVOS = PullDataTool.splitBykey(queryVOS);
+            
+            for (FetchKeyVO key :clientVOS.keySet()) {
+                // 保存状态                  
+                if (!orignVOS.containsKey(key)) {
+                    savePullDataStateSet.add(clientVOS.get(key));
+                }
+                // 更新状态
+                else {
+                    updatePullDataStateSet.add(clientVOS.get(key));
+                }
+            }
+
+            if (CMValueCheck.isNotEmpty(savePullDataStateSet)) {
+                this.saveStatusDB(paramvo.getAllFetchParamVo(), savePullDataStateSet
+                        .toArray(new PullDataStateVO[savePullDataStateSet.size()]));
+            }
+
+            if (CMValueCheck.isNotEmpty(updatePullDataStateSet)) {
+                AbstractFetchPersistent.updateFetchStates(updatePullDataStateSet
+                        .toArray(new PullDataStateVO[savePullDataStateSet.size()]));
+            }
+
+        }
+    }
+
+	 private void saveStatusDB(FetchParamVO paramvo, PullDataStateVO[] pullDataStateVOArr) throws BusinessException {
+	        Integer pullDataType = paramvo == null ? null : paramvo.getPulldatatype();
+	        AbstractFetchPersistent tsp = FetchPersistentFactory.createFetchPersistentFactory(pullDataType);
+	        tsp.saveStatus(paramvo, pullDataStateVOArr);
+	    }
 	/**
 	 * 根据维护的交易类型，查询指定库存的出入库单的出入库数量，负数的取绝对值，
 	 * 汇总依据：作业+消耗成本中心+成本对象+完工成本中心
@@ -165,25 +313,6 @@ public class ChuyunFIFetch extends AbstractCheckAndFetch<IMMFetchData> {
 		return vos;
 	}
 
-	@Override
-	public void transVOInserDB(IMMFetchData[] correctData, FetchParamVO paramvo)
-			throws BusinessException {
-		Map<String, List<IMMFetchData>> cachedVOMap = super.transVO(
-				correctData, new AbstractFetchStrategy() {
-					// 根据key字段，分组同样key值的vo，存到cachedVOMap，作业消耗单以标题
-					// 消耗成本中心、成本对象进行区分
-					@Override
-					public String getUniqueKey(IMMFetchData vo) {
-						StringBuffer key = new StringBuffer();
-						key.append(vo.getCcostcenterid());
-						key.append(vo.getCcostobjectid());
-						return key.toString();
-					}
-				});
-		ActivityNumAggVO[] ActivityNumAggVO = this.transActActNumVO(
-				cachedVOMap, correctData, paramvo);
-		this.insertByGroup(ActivityNumAggVO);
-	}
 
 	// 分批插入作业统计单中
 	private void insertByGroup(ActivityNumAggVO[] activityNumAggVO)
@@ -266,8 +395,9 @@ public class ChuyunFIFetch extends AbstractCheckAndFetch<IMMFetchData> {
 	protected List<Map<IFetchData, PullDataErroInfoVO>> getErrorInfo(
 			IMMFetchData[] datas, String cperiod, boolean isCheckFlag)
 			throws BusinessException {
-		return super.getErrorInfoAndFilteredData(datas,
-				new MMFetchCheckStrategy(this.pkOrg), cperiod, isCheckFlag);
+	     // 获取全部成本中心
+        super.getAllCostCenterIds(datas);
+		return null;
 	}
 	
 	
@@ -298,13 +428,13 @@ public class ChuyunFIFetch extends AbstractCheckAndFetch<IMMFetchData> {
 	public ActivityNumHeadVO setActNumHeadVO(FetchParamVO paramvo,
 			IMMFetchData[] datavos) {
 		ActivityNumHeadVO ActivityNumHeadVO = new ActivityNumHeadVO();
-		ActivityNumHeadVO.setCcostcenterid(datavos[0].getCcostcenterid()); // 成本中心
+		ActivityNumHeadVO.setCcostcenterid(datavos[0].getCcostcenterid()); // 消耗成本中心
 		ActivityNumHeadVO.setCcostobjectid(datavos[0].getCcostobjectid()); // 成本对象编码
 		ActivityNumHeadVO.setPk_group(paramvo.getPk_group()); // 集团
 		ActivityNumHeadVO.setPk_org(paramvo.getPk_org()); // 组织
 		ActivityNumHeadVO.setPk_org_v(paramvo.getPk_org_v());
 		ActivityNumHeadVO.setCperiod(paramvo.getDaccountperiod()); // 会计期间
-		ActivityNumHeadVO.setVnote("储运");
+		ActivityNumHeadVO.setVdef20("储运");
 
 		// 来源类型完工报告
 		ActivityNumHeadVO.setIsourcetype(datavos[0].getResourcetype());
@@ -374,60 +504,7 @@ public class ChuyunFIFetch extends AbstractCheckAndFetch<IMMFetchData> {
 		return this.activityNumPubService;
 	}
 
-	@Override
-	public IFetchData[] transDatas(CircularlyAccessibleValueObject[] datas,
-			FetchParamVO paramVo) {
-		List<AggActNumVOAdapter> aggActNumVOList = new ArrayList<AggActNumVOAdapter>();
-		PullDataStateVO vo2 = paramVo.getPullDataStateVOArr()[0];
-		for (CircularlyAccessibleValueObject cadata : datas) {
-			ChuyunFetchDataVO data = (ChuyunFetchDataVO) cadata;
-			AggActNumVOAdapter vo = new AggActNumVOAdapter();
-			
-			 // 消耗成本中心
-			vo.setCcostcenterid( data.getCcostcenterid());
-			// 成本对象编码
-			vo.setCcostobjectid(vo2.getPk_costobject());
-			// 入库类型
-			vo.setFinstoragetype(CostObjInStorageTypeEnum.HOME_MAKE.toIntValue());
-			// 设置类型，区别错误信息和警告信息
-			vo.setImestype(CMMesTypeEnum.ERROR.toIntValue());
-			//作业编码
-			vo.setBdActivityId(vo2.getPk_workitem());
-			
-//			vo.setCmoid(data.getCmoid());
-//			vo.setCmocode(data.getCmocode());
-			
-//			vo.setMaterialid(data.getMaterialid());
-			
-			vo.setHeadwkid(data.getHeadwkid());
-			//
-			vo.setWkid(data.getWkid());
-			vo.setCdeptid(vo2.getPk_serverdept());//服务部门--用来对照表体完工成本中心
-			vo.setWknum(data.getWknum());
-			vo.setResourcetype(Integer.valueOf(CMSourceTypeEnum.HOME_MAKE
-					.getEnumValue().getValue()));// 
-			// 物料辅助属性
-//			vo.setCprojectid(data.getCprojectid());
-//			vo.setCproductorid(data.getCproductorid());
-//			vo.setCvendorid(data.getCvendorid());
-//			vo.setCcustomerid(data.getCcustomerid());
-//			vo.setVfree1(data.getVfree1());
-//			vo.setVfree2(data.getVfree2());
-//			vo.setVfree3(data.getVfree3());
-//			vo.setVfree4(data.getVfree4());
-//			vo.setVfree5(data.getVfree5());
-//			vo.setVfree6(data.getVfree6());
-//			vo.setVfree7(data.getVfree7());
-//			vo.setVfree8(data.getVfree8());
-//			vo.setVfree9(data.getVfree9());
-//			vo.setVfree10(data.getVfree10());
-			aggActNumVOList.add(vo);
-		}
-		// 设置计量单位
-		this.getMeasureId(aggActNumVOList);
-		return aggActNumVOList.toArray(new AggActNumVOAdapter[0]);
-
-	}
+	
 
 	/**
 	 * 获取计量单位

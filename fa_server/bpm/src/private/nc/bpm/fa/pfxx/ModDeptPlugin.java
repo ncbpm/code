@@ -6,14 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import nc.bs.framework.common.NCLocator;
 import nc.bs.pfxx.ISwapContext;
 import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
-//import nc.bs.xml.out.tool.XmlOutTool;
-import nc.itf.fa.prv.IAlter;
 import nc.itf.fa.prv.IAsset;
 import nc.itf.fa.service.IAlterImport;
-import nc.itf.fa.service.IAssetService;
 import nc.pub.billcode.itf.IBillcodeManage;
 import nc.pub.fa.card.AssetFieldConst;
 import nc.pub.fa.common.consts.BillTypeConst;
@@ -41,6 +37,7 @@ import nc.vo.pfxx.util.PfxxPluginUtils;
 import nc.vo.pub.BusinessException;
 import nc.vo.pub.lang.UFBoolean;
 import nc.vo.pub.lang.UFDouble;
+//import nc.bs.xml.out.tool.XmlOutTool;
 
 public class ModDeptPlugin extends AbstractPfxxPlugin {
 
@@ -455,16 +452,29 @@ public class ModDeptPlugin extends AbstractPfxxPlugin {
 
 							// 使用部门单独处理， 要转化成link_key存储
 							if (showKey.equals(AssetFieldConst.PK_USEDEPT)) {
-								String[] pk_depts = new String[] { before,
-										after };
-								Map<String, String> pkAndLinkeys = createUsedeptScaleVOs(pk_depts);
-								before = pkAndLinkeys.get(before);
-								after = pkAndLinkeys.get(after);
+								
 								sheetVO.setItem_code(AlterKeyConst.USEDEPT);
-							}
+								// 变动前
+								// 变动前
+								DeptScaleVO scaleVO = new DeptScaleVO();
+								scaleVO.setLink_key(before);
+								scaleVO.setUsescale(new UFDouble(100));
+								scaleVO.setTotalscale(new UFDouble(100));
+								bodyVO.setOld_deptscalevos(before == null ?null :new DeptScaleVO[]{scaleVO});
+								// 变动后
+								String[] pk_depts = new String[] {after };
+								Map<String, DeptScaleVO> pkAndLinkeys = createUsedeptScaleVOs(pk_depts);
+							
+								bodyVO.setNew_deptscalevos(pkAndLinkeys.get(after) == null ?null :new DeptScaleVO[]{pkAndLinkeys.get(after)});
+								
+								//
+								before = pkAndLinkeys.get(before) == null ?null :pkAndLinkeys.get(before).getLink_key();
+								after = pkAndLinkeys.get(after) == null ?null :pkAndLinkeys.get(after).getLink_key();
 
-							bodyVO.setAttributeValue(sheetVO.getItem_code()
-									+ AlterKeyConst.BEFORE_SUFFIX, before);
+							}
+//
+//							bodyVO.setAttributeValue(sheetVO.getItem_code()
+//									+ AlterKeyConst.BEFORE_SUFFIX, before);
 							bodyVO.setAttributeValue(sheetVO.getItem_code()
 									+ AlterKeyConst.AFTER_SUFFIX, after);
 
@@ -491,12 +501,25 @@ public class ModDeptPlugin extends AbstractPfxxPlugin {
 
 								// 使用部门单独处理， 要转化成link_key存储
 								if (showKey.equals(AssetFieldConst.PK_USEDEPT)) {
-									String[] pk_depts = new String[] { before,
-											after };
-									Map<String, String> pkAndLinkeys = createUsedeptScaleVOs(pk_depts);
-									before = pkAndLinkeys.get(before);
-									after = pkAndLinkeys.get(after);
+									
 									sheetVO.setItem_code(AlterKeyConst.USEDEPT);
+									// 变动前
+									// 变动前
+									DeptScaleVO scaleVO = new DeptScaleVO();
+									scaleVO.setLink_key(before);
+									scaleVO.setUsescale(new UFDouble(100));
+									scaleVO.setTotalscale(new UFDouble(100));
+									bodyVO.setOld_deptscalevos(before == null ?null :new DeptScaleVO[]{scaleVO});
+									// 变动后
+									String[] pk_depts = new String[] {after };
+									Map<String, DeptScaleVO> pkAndLinkeys = createUsedeptScaleVOs(pk_depts);
+								
+									bodyVO.setNew_deptscalevos(pkAndLinkeys.get(after) == null ?null :new DeptScaleVO[]{pkAndLinkeys.get(after)});
+									
+									//
+									before = pkAndLinkeys.get(before) == null ?null :pkAndLinkeys.get(before).getLink_key();
+									after = pkAndLinkeys.get(after) == null ?null :pkAndLinkeys.get(after).getLink_key();
+
 								}
 
 								bodyVO.setAttributeValue(sheetVO.getItem_code()
@@ -510,21 +533,32 @@ public class ModDeptPlugin extends AbstractPfxxPlugin {
 								// 3. 直接就是按照PK来导入, 不需要查询， 直接保存
 								// 使用部门单独处理， 要转化成link_key存储
 								if (showKey.equals(AssetFieldConst.PK_USEDEPT)) {
-									String[] pk_depts = new String[] { before,
-											after };
-									Map<String, String> pkAndLinkeys = createUsedeptScaleVOs(pk_depts);
-									before = pkAndLinkeys.get(before);
-									after = pkAndLinkeys.get(after);
+									
 									sheetVO.setItem_code(AlterKeyConst.USEDEPT);
+									// 变动前
+									// 变动前
+									DeptScaleVO scaleVO = new DeptScaleVO();
+									scaleVO.setLink_key(before);
+									scaleVO.setUsescale(new UFDouble(100));
+									scaleVO.setTotalscale(new UFDouble(100));
+									bodyVO.setOld_deptscalevos(before == null ?null :new DeptScaleVO[]{scaleVO});
+									// 变动后
+									String[] pk_depts = new String[] {after };
+									Map<String, DeptScaleVO> pkAndLinkeys = createUsedeptScaleVOs(pk_depts);
+								
+									bodyVO.setNew_deptscalevos(pkAndLinkeys.get(after) == null ?null :new DeptScaleVO[]{pkAndLinkeys.get(after)});
+									
+									//
+									before = pkAndLinkeys.get(before) == null ?null :pkAndLinkeys.get(before).getLink_key();
+									after = pkAndLinkeys.get(after) == null ?null :pkAndLinkeys.get(after).getLink_key();
+
 								}
 
-								// 变动前
 								bodyVO.setAttributeValue(sheetVO.getItem_code()
 										+ AlterKeyConst.BEFORE_SUFFIX, before);
-
-								// 变动后
 								bodyVO.setAttributeValue(sheetVO.getItem_code()
 										+ AlterKeyConst.AFTER_SUFFIX, after);
+								
 							}
 						}
 					}
@@ -581,14 +615,14 @@ public class ModDeptPlugin extends AbstractPfxxPlugin {
 				AlterHeadVO.PK_GROUP);
 		String pk_org = (String) billVO.getParentVO().getAttributeValue(
 				AlterHeadVO.PK_ORG);
-		// 调用单据号接口单据号
-		// 获取单据号管理服务
-		IBillcodeManage billCodeManager = AMProxy.lookup(IBillcodeManage.class);
-
-		// 取得新的单据号
-		String billCode = billCodeManager.getPreBillCode_RequiresNew(
-				BillTypeConst.ALTER, pk_group, pk_org);
-		((AlterHeadVO) billVO.getParentVO()).setBill_code(billCode);
+//		// 调用单据号接口单据号
+//		// 获取单据号管理服务
+//		IBillcodeManage billCodeManager = AMProxy.lookup(IBillcodeManage.class);
+//
+//		// 取得新的单据号
+//		String billCode = billCodeManager.getPreBillCode_RequiresNew(
+//				BillTypeConst.ALTER, pk_group, pk_org);
+//		((AlterHeadVO) billVO.getParentVO()).setBill_code(billCode);
 
 		if (notFitFields.size() != 0) {
 			ExceptionUtils
@@ -607,10 +641,13 @@ public class ModDeptPlugin extends AbstractPfxxPlugin {
 	 * @param pk_depts
 	 * @return
 	 */
-	private Map<String, String> createUsedeptScaleVOs(String[] pk_depts)
+	private Map<String, DeptScaleVO> createUsedeptScaleVOs(String[] pk_depts)
 			throws BusinessException {
 		List<DeptScaleVO> deptScaleVOs = new ArrayList<DeptScaleVO>();
 		for (String pk_dept : pk_depts) {
+			if(org.apache.commons.lang.StringUtils.isEmpty(pk_dept)){
+				continue;
+			}
 			DeptScaleVO scaleVO = new DeptScaleVO();
 			scaleVO.setPk_dept(pk_dept);
 			scaleVO.setUsescale(new UFDouble(100));
@@ -621,10 +658,10 @@ public class ModDeptPlugin extends AbstractPfxxPlugin {
 		DeptScaleVO[] deptVOs = UseDeptScaleUtils.insert(deptScaleVOs
 				.toArray(new DeptScaleVO[0]));
 
-		Map<String, String> pkAndLinkeys = new HashMap<String, String>();
+		Map<String, DeptScaleVO> pkAndLinkeys = new HashMap<String, DeptScaleVO>();
 
 		for (DeptScaleVO vo : deptVOs) {
-			pkAndLinkeys.put(vo.getPk_dept(), vo.getLink_key());
+			pkAndLinkeys.put(vo.getPk_dept(), vo);
 		}
 		return pkAndLinkeys;
 	}

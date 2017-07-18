@@ -7,47 +7,59 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import nc.bs.framework.common.InvocationInfoProxy;
 import nc.bs.framework.common.NCLocator;
 import nc.bs.ic.pub.env.ICBSContext;
 import nc.bs.logging.Logger;
+import nc.impl.pubapp.pattern.data.view.ViewQuery;
 import nc.itf.scmpub.reference.uap.pf.PfServiceScmUtil;
 import nc.itf.uap.pf.IPFBusiAction;
+import nc.pubitf.org.cache.IBasicOrgUnitPubService_C;
 import nc.pubitf.scmf.ic.mbatchcode.IBatchcodePubService;
+import nc.vo.ic.batch.BatchRefViewVO;
+import nc.vo.ic.batchcode.BatchSynchronizer;
+import nc.vo.ic.batchcode.ICNewBatchFields;
 import nc.vo.ic.general.define.ICBillFlag;
 import nc.vo.ic.m4n.entity.TransformBodyVO;
+import nc.vo.ic.onhand.entity.OnhandDimVO;
 import nc.vo.ic.pub.calc.BusiCalculator;
+import nc.vo.ic.pub.define.IBizObject;
 import nc.vo.ic.pub.define.ICPubMetaNameConst;
+import nc.vo.ic.pub.util.NCBaseTypeUtils;
 import nc.vo.ic.pub.util.StringUtil;
 import nc.vo.ic.pub.util.ValueCheckUtil;
 import nc.vo.ic.special.define.ICSpecialBodyEntity;
 import nc.vo.ic.special.define.ICSpecialHeadEntity;
 import nc.vo.ic.special.define.ICSpecialVO;
 import nc.vo.pub.BusinessException;
+import nc.vo.pub.CircularlyAccessibleValueObject;
 import nc.vo.pub.VOStatus;
+import nc.vo.pub.lang.UFDate;
 import nc.vo.pub.lang.UFDateTime;
 import nc.vo.pub.lang.UFDouble;
 import nc.vo.pub.pf.workflow.IPFActionName;
+import nc.vo.pubapp.AppContext;
+import nc.vo.pubapp.calculator.HslParseUtil;
 import nc.vo.pubapp.pattern.exception.ExceptionUtils;
 import nc.vo.pubapp.util.VORowNoUtils;
 import nc.vo.scmf.ic.mbatchcode.BatchcodeVO;
 
 import org.apache.commons.lang.StringUtils;
 
-
 /**
  * 生成形态转换单
+ * 
  * @author Administrator
- *
+ * 
  */
 public class MarksForBpmTrans {
-	
-
 
 	private List<String> updateIndex = new ArrayList<String>();
 	private int power = 2;// 精度
 
 	/**
 	 * 保存形态转换单
+	 * 
 	 * @param vo
 	 * @param swapContext
 	 * @param aggvo
@@ -62,12 +74,12 @@ public class MarksForBpmTrans {
 		BusiCalculator.getBusiCalculatorAtBS().calcNum(bodys,
 				ICPubMetaNameConst.NNUM);
 		// 计算金额
-//		BusiCalculator.getBusiCalculatorAtBS().calcOnlyMny(
-//				new ICSpecialVO[] { bpmBill }, ICPubMetaNameConst.NNUM);
+		// BusiCalculator.getBusiCalculatorAtBS().calcOnlyMny(
+		// new ICSpecialVO[] { bpmBill }, ICPubMetaNameConst.NNUM);
 		// 保存
 		ICSpecialVO saveVO = doSave(bpmBill);
 		// 审批
-//		doSign(saveVO);
+		// doSign(saveVO);
 
 		return saveVO;
 
@@ -87,6 +99,8 @@ public class MarksForBpmTrans {
 		this.processBeforeSave(icbill);
 
 		// TODO 单据设置有辅助信息，aggxsysvo为用户配置的具体辅助信息
+		InvocationInfoProxy.getInstance().setUserId(
+				icbill.getHead().getCreator());
 
 		Logger.info("保存新单据...");
 		IPFBusiAction service = NCLocator.getInstance().lookup(
@@ -115,12 +129,13 @@ public class MarksForBpmTrans {
 		Logger.info("签字新单据前处理...");
 		// 签字时间等于单据日期
 		icbill.getHead().setTaudittime(icbill.getHead().getDbilldate());
-		icbill.getHead().setApprover(icbill.getHead().getCreator());
+		InvocationInfoProxy.getInstance().setUserId(
+				icbill.getHead().getApprover());
 		Logger.info("签字新单据...");
 		IPFBusiAction service = NCLocator.getInstance().lookup(
 				IPFBusiAction.class);
-		ICSpecialVO[] icbills = (ICSpecialVO[]) service.processAction("SIGN", "4N",
-				null, icbill, null, null);
+		ICSpecialVO[] icbills = (ICSpecialVO[]) service.processAction("SIGN",
+				"4N", null, icbill, null, null);
 
 		Logger.info("签字新单据完成...");
 
@@ -128,7 +143,6 @@ public class MarksForBpmTrans {
 
 		return icbills[0];
 	}
-
 
 	private UFDouble getUFDdoubleNullASZero(Object o) {
 		if (o == null) {
@@ -191,6 +205,9 @@ public class MarksForBpmTrans {
 	 */
 	private void headVOProcess(ICSpecialHeadEntity vo, ICBSContext context) {
 		vo.setStatus(VOStatus.NEW);
+		// 组织版本
+		if (StringUtil.isSEmptyOrNull(vo.getPk_org_v()))
+			vo.setPk_org_v(getPkOrg_v(vo.getPk_org()));
 		// 集团
 		if (StringUtil.isSEmptyOrNull(vo.getPk_group()))
 			vo.setPk_group(context.getPk_group());
@@ -204,7 +221,7 @@ public class MarksForBpmTrans {
 		if (vo.getDbilldate() == null)
 			vo.setDbilldate(context.getBizDate());
 		vo.setDmakedate(vo.getDbilldate());
-		//创建时间
+		// 创建时间
 		vo.setCreationtime(new UFDateTime(vo.getDbilldate().toString()));
 		//
 		// 公司
@@ -226,6 +243,26 @@ public class MarksForBpmTrans {
 
 	}
 
+	public String getPkOrg_v(String pk_org) {
+		// 组织的最新版本
+		String pk_org_v = null;
+		Map<String, String> map;
+		UFDate busiDate = AppContext.getInstance().getBusiDate();
+		try {
+			map = NCLocator
+					.getInstance()
+					.lookup(IBasicOrgUnitPubService_C.class)
+					.getNewVIDSByOrgIDSAndDate(new String[] { pk_org },
+							busiDate);
+			pk_org_v = map.get(pk_org);
+
+		} catch (BusinessException e1) {
+			// TODO 自动生成的 catch 块
+			e1.printStackTrace();
+		}
+		return pk_org_v;
+	}
+
 	/**
 	 * 单据表体处理
 	 * 
@@ -245,7 +282,7 @@ public class MarksForBpmTrans {
 
 		VORowNoUtils.setVOsRowNoByRule(vos, ICPubMetaNameConst.CROWNO);// 行号处理
 		ICSpecialHeadEntity head = vo.getHead();
-		Map<String, BatchcodeVO> batchmap = this.getBatchcodeVO(vos);
+
 		for (ICSpecialBodyEntity body : vos) {
 			body.setStatus(VOStatus.NEW);
 			if (StringUtil.isSEmptyOrNull(body.getCmaterialoid())
@@ -256,9 +293,7 @@ public class MarksForBpmTrans {
 																 * @res
 																 * "单据表体物料不能为空"
 																 */);
-
-	
-	
+			bodyVOCopyFromHeadVO(body, head);
 			// 辅单位
 			if (StringUtil.isSEmptyOrNull(body.getCastunitid()))
 				body.setCastunitid(context.getInvInfo()
@@ -267,64 +302,21 @@ public class MarksForBpmTrans {
 			// 有批次号但无批次主键时， 需要补全批次主键，有必要时(保质期管理)补全生产日期和失效日期
 			if (!StringUtils.isEmpty(body.getVbatchcode())
 					&& StringUtils.isEmpty(body.getPk_batchcode())) {
-				BatchcodeVO batchvo = batchmap.get(body.getCmaterialvid()
-						+ body.getVbatchcode());
-				if (batchvo != null) {
-					body.setPk_batchcode(batchvo.getPk_batchcode());
-					body.setDproducedate(batchvo.getDproducedate());
-					body.setDvalidate(batchvo.getDvalidate());
+			
+				//同步的维度信息
+				BatchCodeRule batchCodeRule = new BatchCodeRule();
+				BatchRefViewVO batchRefViewVOs = batchCodeRule.getRefVO(body.getPk_org(),body.getCbodywarehouseid(),body.getCmaterialvid(), body.getVbatchcode());
+				if (batchRefViewVOs != null ) {
+					batchCodeRule.synBatch(batchRefViewVOs, body);
 				}
+				
 			}
-			bodyVOCopyFromHeadVO(body, head);
-		}
-	}
-
-	/**
-	 * 获取批次号档案
-	 * 
-	 * @param vos
-	 * @return Map<String(cmaterialvid+vbatchcode), BatchcodeVO批次档案>
-	 */
-	private Map<String, BatchcodeVO> getBatchcodeVO(ICSpecialBodyEntity[] vos) {
-		List<String> cmaterialvidList = new ArrayList<String>();
-		List<String> vbatchcodeList = new ArrayList<String>();
-		Set<String> materialbatch = new HashSet<String>();
-		for (ICSpecialBodyEntity body : vos) {
-			if (body.getCmaterialvid() != null && body.getVbatchcode() != null) {
-				if (materialbatch.contains(body.getCmaterialvid()
-						+ body.getVbatchcode())) {
-					continue;
-				}
-				cmaterialvidList.add(body.getCmaterialvid());
-				vbatchcodeList.add(body.getVbatchcode());
-				materialbatch
-						.add(body.getCmaterialvid() + body.getVbatchcode());
-			}
-		}
-		if (materialbatch.size() == 0) {
-			return new HashMap<String, BatchcodeVO>();
-		}
-		IBatchcodePubService batchservice = NCLocator.getInstance().lookup(
-				IBatchcodePubService.class);
-		BatchcodeVO[] batchvos = null;
-		try {
-			batchvos = batchservice.queryBatchVOs(
-					cmaterialvidList.toArray(new String[0]),
-					vbatchcodeList.toArray(new String[0]));
-		} catch (BusinessException e) {
-			ExceptionUtils.wrappException(e);
+		
 		}
 
-		if (batchvos == null || batchvos.length == 0) {
-			return new HashMap<String, BatchcodeVO>();
-		}
-		Map<String, BatchcodeVO> batchmap = new HashMap<String, BatchcodeVO>();
-		for (BatchcodeVO batchvo : batchvos) {
-			batchmap.put(batchvo.getCmaterialvid() + batchvo.getVbatchcode(),
-					batchvo);
-		}
-		return batchmap;
 	}
+
+	
 
 	/**
 	 * 根据表头设置表体默认值，表体集团，库存组织，公司，仓库，交易类型
@@ -332,7 +324,8 @@ public class MarksForBpmTrans {
 	 * @param body
 	 * @param head
 	 */
-	private void bodyVOCopyFromHeadVO(ICSpecialBodyEntity body, ICSpecialHeadEntity head) {
+	private void bodyVOCopyFromHeadVO(ICSpecialBodyEntity body,
+			ICSpecialHeadEntity head) {
 		body.setPk_group(head.getPk_group());
 		body.setPk_org(head.getPk_org());
 		body.setPk_org_v(head.getPk_org_v());
@@ -340,7 +333,5 @@ public class MarksForBpmTrans {
 		body.setCorpvid(head.getCorpvid());
 		body.setCbodywarehouseid(head.getCwarehouseid());
 	}
-
-
 
 }

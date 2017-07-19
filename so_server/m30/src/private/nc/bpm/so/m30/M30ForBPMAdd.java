@@ -116,7 +116,7 @@ public class M30ForBPMAdd extends AbstractPfxxPlugin {
 	    // 询税
 	    SOTaxInfoRule taxInfo = new SOTaxInfoRule(keyValue);
 	    taxInfo.setOnlyTaxCodeByBodyPos(rows);
-	    //国外销售-设置税率
+	    //-设置税率
 	    if( bvos[0].getNtaxrate() == null ||  bvos[0].getNtaxrate().doubleValue() == 0){
 	    	taxInfo.setTaxTypeAndRate(rows);
 	    }

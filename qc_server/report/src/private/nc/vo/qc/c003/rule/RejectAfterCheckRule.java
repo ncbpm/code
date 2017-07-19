@@ -53,6 +53,18 @@ public class RejectAfterCheckRule implements IRule<ReportVO> {
 			if (list.size() == 0) {
 				return;
 			}
+			// 只有这几种类型,才执行 采购，成品，半成品
+			String vtrantypecode = vo.getHVO().getVtrantypecode();
+			boolean bisAutoDeal = false;
+			if ("C003-0001".equalsIgnoreCase(vtrantypecode)
+					|| "C003-0002".equalsIgnoreCase(vtrantypecode)
+					|| "C003-Cxx_05".equalsIgnoreCase(vtrantypecode)) {
+				bisAutoDeal = true;
+			}
+			if (!bisAutoDeal) {
+				continue;
+			}
+
 			ReportVO bill = new ReportVO();
 			bill.setParentVO(vo.getHVO());
 			bill.setBVO(list.toArray(new ReportItemVO[list.size()]));
@@ -67,7 +79,7 @@ public class RejectAfterCheckRule implements IRule<ReportVO> {
 			} catch (BusinessException e) {
 				// TODO 自动生成的 catch 块
 				e.printStackTrace();
-				ExceptionUtils.wrappBusinessException("质检报告自动生成不合格品处理单异常");
+				ExceptionUtils.wrappBusinessException("质检报告自动生成不合格品处理单异常:"+e.getMessage());
 			}
 
 		}
@@ -105,10 +117,10 @@ public class RejectAfterCheckRule implements IRule<ReportVO> {
 				continue;
 			}
 			if (StringUtils.isEmpty(item.getPk_qualitylv_b())
-					||(item.getFprocessjudge() == null)) {
+					|| (item.getFprocessjudge() == null)) {
 				continue;
 
-			} 
+			}
 			list.add(item);
 		}
 

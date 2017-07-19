@@ -10,9 +10,7 @@ import nc.bs.pfxx.ISwapContext;
 import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
 import nc.itf.fa.prv.IAsset;
 import nc.itf.fa.service.IAlterImport;
-import nc.pub.billcode.itf.IBillcodeManage;
 import nc.pub.fa.card.AssetFieldConst;
-import nc.pub.fa.common.consts.BillTypeConst;
 import nc.pub.fa.common.manager.FABDDataManager;
 import nc.pub.fa.common.manager.VOManager;
 import nc.pub.fa.common.util.StringUtils;
@@ -424,13 +422,13 @@ public class ModDeptPlugin extends AbstractPfxxPlugin {
 								sheetVO.getNew_content());
 
 						// 变动部分
-						UFDouble newValue = new UFDouble(
-								sheetVO.getNew_content());
-						UFDouble oldValue = new UFDouble(
-								sheetVO.getOld_content());
-						bodyVO.setAttributeValue(sheetVO.getItem_code()
-								+ AlterKeyConst.ALTER_SUFFIX,
-								UFDoubleUtils.sub(newValue, oldValue));
+//						UFDouble newValue = new UFDouble(
+//								sheetVO.getNew_content());
+//						UFDouble oldValue = new UFDouble(
+//								sheetVO.getOld_content());
+//						bodyVO.setAttributeValue(sheetVO.getItem_code()
+//								+ AlterKeyConst.ALTER_SUFFIX,
+//								UFDoubleUtils.sub(newValue, oldValue));
 					} else {
 						// 1. 通过编码来取(用的比较多) 这个是走缓存的
 						Map<String, String> codeAndPkMaps = FABDDataManager

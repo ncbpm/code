@@ -6,11 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import nc.bs.framework.common.NCLocator;
 import nc.bs.pfxx.ISwapContext;
 import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
-//import nc.bs.xml.out.tool.XmlOutTool;
-import nc.itf.fa.prv.IAlter;
 import nc.itf.fa.service.IAlterImport;
 import nc.itf.fa.service.IAssetService;
 import nc.pub.billcode.itf.IBillcodeManage;
@@ -40,6 +37,7 @@ import nc.vo.pfxx.util.PfxxPluginUtils;
 import nc.vo.pub.BusinessException;
 import nc.vo.pub.lang.UFBoolean;
 import nc.vo.pub.lang.UFDouble;
+//import nc.bs.xml.out.tool.XmlOutTool;
 
 public class ModUsagePlugin extends AbstractPfxxPlugin{
 
@@ -334,6 +332,8 @@ public class ModUsagePlugin extends AbstractPfxxPlugin{
 		List<String> notFitFields = new ArrayList<String>();
 
 		//¿¨Æ¬ËùÓÐ×Ö¶Î
+		
+		
 		List<String> cardFields = (List<String>) CollectionUtils.convertToList(ArrayUtils.getFirstElem(cardVOs).getAttributeNames());
 
 		for (AlterBodyVO bodyVO : bodyVOs) {

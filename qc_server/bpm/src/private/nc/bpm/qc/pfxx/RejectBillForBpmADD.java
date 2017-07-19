@@ -7,6 +7,7 @@ import nc.bs.qc.c003.maintain.rule.ReportSendMessageWithPlatTemplateRule;
 import nc.bs.qc.c003.maintain.rule.UpdateSnDocRule;
 import nc.bs.qc.c004.approve.action.rule.RejectWriteBackRuleForAppr;
 import nc.impl.pubapp.pattern.data.bill.BillUpdate;
+import nc.impl.pubapp.pattern.data.vo.VOQuery;
 import nc.impl.qc.c003.approve.action.rule.CreateStockStateChangeBill;
 import nc.impl.qc.c003.approve.action.rule.Write55D2WhenAuditRule;
 import nc.impl.qc.c003.approve.action.rule.WriteC001WhenAuditRule;
@@ -31,6 +32,7 @@ import nc.vo.qc.c004.entity.RejectBillHeadVO;
 import nc.vo.qc.c004.entity.RejectBillItemVO;
 import nc.vo.qc.c004.entity.RejectBillVO;
 import nc.vo.qc.pub.enumeration.QCBillStatusEnum;
+import nc.vo.scmf.qc.dealfashion.entity.DealFashionVO;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -178,6 +180,7 @@ public class RejectBillForBpmADD extends AbstractPfxxPlugin {
 			for (RejectBillItemVO org : clientItems) {
 				if (ele.getPk_rejectbill_b().equals(org.getPk_rejectbill_b())) {
 					org.setFprocessjudge(ele.getFprocessjudge());
+
 					org.setStatus(VOStatus.UPDATED);
 					ismached = true;
 					break;

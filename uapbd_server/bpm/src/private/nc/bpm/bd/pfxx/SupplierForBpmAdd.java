@@ -9,8 +9,6 @@ import nc.bs.framework.common.NCLocator;
 import nc.bs.pfxx.ISwapContext;
 import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
 import nc.bs.uap.bd.supplier.ISupplierConst;
-import nc.impl.pubapp.env.BSContext;
-import nc.itf.bd.supplier.assign.ISupplierAssignService;
 import nc.itf.bd.supplier.baseinfo.ISupplierBaseInfoService;
 import nc.md.persist.framework.IMDPersistenceQueryService;
 import nc.md.persist.framework.IMDPersistenceService;
@@ -64,35 +62,35 @@ public class SupplierForBpmAdd extends AbstractPfxxPlugin {
 		setVOStatus(supplierVO.getSuplinkman(), VOStatus.NEW);  
 		if (voPk == null) {
 			supplierVO.setStatus(VOStatus.NEW);
-			supplierVO = getBasesService().insertSupplierVOForCreate(supplierVO,
+			supplierVO = getBasesService().pfxxInsertSupplierVO(supplierVO,
 					false);
 			voPk = supplierVO.getPk_supplier();
-			//执行供应商分配
-			if(!StringUtils.isEmpty(assign_orgs)){
-				String [] pks = new String[]{voPk};
-				String[] targets = assign_orgs.split(",");			
-				ISupplierAssignService assignService2 = NCLocator.getInstance().lookup(ISupplierAssignService.class);
-				
-				assignService2.assignSupplierByPks(pks, targets,new String[]{"GLOBLE00000000000000", supplierVO.getPk_group()});
-				
-				assignService2.assignByPks(pks, targets, false);
-			
-				
-			}
+//			//执行供应商分配
+//			if(!StringUtils.isEmpty(assign_orgs)){
+//				String [] pks = new String[]{voPk};
+//				String[] targets = assign_orgs.split(",");			
+//				ISupplierAssignService assignService2 = NCLocator.getInstance().lookup(ISupplierAssignService.class);
+//				
+//				assignService2.assignSupplierByPks(pks, targets,new String[]{"GLOBLE00000000000000", supplierVO.getPk_group()});
+//				
+//				assignService2.assignByPks(pks, targets, false);
+//			
+//				
+//			}
 		} else {
 			supplierVO.setStatus(VOStatus.UPDATED);
 			setUpdateValues(supplierVO, voPk);
-			getBasesService().updateSupplierVO(supplierVO, false);
-			//执行供应商分配
-			if(!StringUtils.isEmpty(assign_orgs)){
-				String [] pks = new String[]{voPk};
-				String[] targets = assign_orgs.split(",");			
-				ISupplierAssignService assignService2 = NCLocator.getInstance().lookup(ISupplierAssignService.class);
-				
-				assignService2.assignSupplierByPks(pks, targets,new String[]{"GLOBLE00000000000000", supplierVO.getPk_group()});
-				
-				assignService2.assignByPks(pks, targets, true);
-			}
+			getBasesService().pfxxUpdateSupplierVO(supplierVO, false);
+//			//执行供应商分配
+//			if(!StringUtils.isEmpty(assign_orgs)){
+//				String [] pks = new String[]{voPk};
+//				String[] targets = assign_orgs.split(",");			
+//				ISupplierAssignService assignService2 = NCLocator.getInstance().lookup(ISupplierAssignService.class);
+//				
+//				assignService2.assignSupplierByPks(pks, targets,new String[]{"GLOBLE00000000000000", supplierVO.getPk_group()});
+//				
+//				assignService2.assignByPks(pks, targets, true);
+//			}
 		}
 		//重新执行一次查询，
 		

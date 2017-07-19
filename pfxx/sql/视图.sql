@@ -1,200 +1,121 @@
 --------------------------------------------------------
---  Êñá‰ª∂Â∑≤ÂàõÂª∫ - ÊòüÊúü‰∏â-ÂÖ≠Êúà-21-2017   
+--  Œƒº˛“—¥¥Ω® - –«∆⁄∂˛-∆ﬂ‘¬-18-2017   
 --------------------------------------------------------
 --------------------------------------------------------
---  DDL for View VIEW_BPM_WAITEM
---------------------------------------------------------
-
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_WAITEM" ("PK_WA_CLASS", "CLNAME", "PK_ORG", "CYEAR", "CPERIOD", "ITEMKEY", "ITEMNAME", "CODE", "NAME") AS 
-  SELECT citem.pk_wa_class,cl.name clname,citem.pk_org,citem.cyear,
-  citem.cperiod,citem.itemkey,citem.name itemname,
-  def.code,def.name name
-  FROM wa_classitem citem
-  left join wa_waclass cl on cl.pk_wa_class=citem.pk_wa_class
-  left JOIN wa_item item ON citem.pk_wa_item = item.pk_wa_item
-  left join bd_defdoc def on item.category_id  = def.pk_defdoc 
-  ORDER BY citem.itemkey;
---------------------------------------------------------
---  DDL for View VIEW_BPM_BHGBT
+--  DDL for View VIEW_BPM_ACCBOOK
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_BHGBT" ("PK_REJECTBILL", "PK_ORG", "ORGNAME", "VBILLCODE", "PK_STOCKORG", "STOCKORGNAME", "VREPORTBILLCODE", "VAPPLYBILLCODE", "DEPT_NAME", "CAPPLYTIME", "VCHKSTANDARDNAME", "PK_MATERIAL", "INV_CODE", "INV_NAME", "MATERIALSPEC", "MATERIALTYPE", "VBATCHCODE", "VCODE", "JLZNAME", "NCHECKASTNUM", "VCHANGERATE", "JLNAME", "NCHECKNUM", "VMEMO") AS 
-  SELECT h.pk_rejectbill,   
-  h.pk_org,org.name as orgname,--Ë¥®Ê£Ä‰∏≠ÂøÉÁªÑÁªá  
-  h.vbillcode,--‰∏çÂêàÊ†ºÂìÅÂ§ÑÁêÜÂçïÂè∑
-  h.pk_stockorg,--Â∫ìÂ≠òÁªÑÁªá‰∏ªÈîÆ
-  orgs.name as stockorgname,--Â∫ìÂ≠òÁªÑÁªáÂêçÁß∞
-  h.vreportbillcode ,  --Ë¥®Ê£ÄÊä•ÂëäÂè∑ 
-  h.vapplybillcode, -- Êä•Ê£ÄÂçïÂè∑  
-  od.name as dept_name,--Êä•Ê£ÄÈÉ®Èó®‰ø°ÊÅØ 
-  h.capplytime,   --Êä•Ê£ÄÊó∂Èó¥   
-  qc.vchkstandardname, --Ê£ÄÈ™åÊñπÊ°à
-  h.pk_material,
-  inv.code as inv_code,  inv.name as inv_name,--Áâ©Êñô  
-  inv.materialspec,inv.materialtype,--ËßÑÊ†º„ÄÅÂûãÂè∑
-  h.vbatchcode,--Áâ©ÊñôÊâπÊ¨°  
-  sn.vcode,--Â∫èÂàóÂè∑
-  mea.name as jlZName,--‰∏ªÂçï‰Ωç
-  h.ncheckastnum, --Ê£ÄÈ™åÊï∞Èáè
-  h.vchangerate,--Êç¢ÁÆóÁéá
-  meat.name as jlName,--Âçï‰Ωç
-  h.nchecknum,--Ê£ÄÈ™å‰∏ªÊï∞Èáè 
-  --ÂçïÊçÆÁä∂ÊÄÅÈªòËÆ§:Ëá™Áî±
-  h.vmemo--Â§áÊ≥®
-FROM qc_rejectbill h 
-left join org_orgs org on org.pk_org=h.pk_org
-left join org_orgs orgs on orgs.pk_org=h.pk_stockorg
-LEFT JOIN org_dept od ON h.pk_applydept = od.pk_dept
-left join qc_checkstandard qc on qc.pk_checkstandard =h.pk_chkstd --Ê£ÄÈ™åÊñπÊ°à
-left join sn_serialno sn on  sn.pk_serialno = h.pk_serialno --Â∫èÂàóÂè∑
-left join bd_measdoc mea on mea.pk_measdoc  = h.cunitid--ËÆ°ÈáèÂçï‰Ωçcunitid
-left join bd_measdoc meat on meat.pk_measdoc  = h.castunitid --Âçï‰Ωç
-LEFT JOIN bd_material inv ON h. pk_material = inv.pk_material
-where nvl(h.dr,0)=0 and h.fbillstatus=0;
---------------------------------------------------------
---  DDL for View VIEW_BPM_BD_BOMVERSION
---------------------------------------------------------
-
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_BD_BOMVERSION" ("HVERSION", "FBOMTYPECODE", "FBOMTYPE", "CBOMID", "CWLNAME", "CWLCODE", "CPK_WL", "CPK_WLFL", "CWLFLNAME", "CWLFLCODE", "CPK_UNIT", "CUNITNAME", "CUNITCODE", "CMATERIALSPEC", "CMATERIALTYPE") AS 
-  select d.HVERSION,d.FBOMTYPE AS FBOMTYPECODE,(case d.FBOMTYPE when 1 then 'Áîü‰∫ßBOM' when 2 then 'ÂåÖË£ÖBOM' when 3 then 'ÈÖçÁΩÆBOM' end) as FBOMTYPE,d.CBOMID,a.name cWLname,a.code cWLcode,a.pk_material cPk_WL,a.pk_marbasclass cPk_WLFL,b.name cWLFLname,b.code cWLFLcode,a.pk_measdoc cPk_Unit,
-c.name cUnitName,c.code cUnitCode,a.materialspec cMaterialspec,a.materialtype cMaterialtype
-from bd_bom d left JOIN bd_material a on a.pk_material=d.hcmaterialid left join
-bd_marbasclass b on a.pk_marbasclass=b.pk_marbasclass left join bd_measdoc c on a.pk_measdoc=c.pk_measdoc
-where FBOMTYPE=1;
---------------------------------------------------------
---  DDL for View VIEW_BPM_RYLB
---------------------------------------------------------
-
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_RYLB" ("CODE", "NAME", "PK_PSNCL", "PARENT_ID") AS 
-  select code, name, pk_psncl, parent_id from bd_psncl 
-where 11 = 11 and ( enablestate = 2 ) and ( ( 1 = 1 ) ) order by code;
---------------------------------------------------------
---  DDL for View VIEW_BPM_BHGMXB
---------------------------------------------------------
-
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_BHGMXB" ("PK_REJECTBILL", "PK_REJECTBILL_B", "CROWNO", "JLNAME", "NASTNUM", "VCHANGERATE", "JLZNAME", "NNUM", "INV_CODE", "INV_NAME", "CQUALITYLVNAME", "BELIGIBLE", "VREJECTTYPENAME", "VCHECKITEMNAME", "VNOELIGNOTE", "PK_SUGGPROCESS", "CDEALFASHNAME", "FPROCESSJUDGE", "CLFSPD", "PSNNAME", "DEPTNAME", "VMEMOB") AS 
-  SELECT b.pk_rejectbill,  
-  b.pk_rejectbill_b,
-  b.crowno,--Ë°åÂè∑
-  meat.name as jlName,--Âçï‰Ωç
-  b.nastnum, --Êï∞Èáè
-  b.vchangerate,--Êç¢ÁÆóÁéá
-  mea.name as jlZName,--‰∏ªÂçï‰Ωç
-  b.nnum,--‰∏ªÊï∞Èáè
-  inv.code as inv_code,--ÊîπÂà§Áâ©ÊñôÁºñÁ†Å
-  inv.name as inv_name,--Áâ©ÊñôÂêçÁß∞
-  scm.cqualitylvname, --Ë¥®ÈáèÁ≠âÁ∫ß 
-  b.beligible,--ÊòØÂê¶ÂêàÊ†ºÂìÅ
-  qc.vrejecttypename, --‰∏çÂêàÊ†ºÁ±ªÂûãpk_defecttype 
-  item.vcheckitemname, --‰∏çÂêàÊ†ºÈ°πÁõÆ
-  b.vnoelignote ,--‰∏çÂêàÊ†ºËØ¥Êòé
-  b.pk_suggprocess,
-  scmdel.cdealfashname, --Âª∫ËÆÆÂ§ÑÁêÜÊñπÂºè 
-  b.fprocessjudge,
-  (case fprocessjudge when 1 then 'ÂÖ•Â∫ì'
-    when 2 then 'ÂêàÊ†ºÂÖ•Â∫ì'
-    when 3 then 'Êä•Â∫üÂÖ•Â∫ì'
-    when 4 then 'ËøîÂ∑•'
-    when 5 then '‰∏çÂÖ•Â∫ì'
-    when 6 then 'ÂêàÊ†º'
-    when 7 then 'ÊñôÂ∫ü'
-    when 8 then 'Â∑•Â∫ü'
-    else 'ÊãíÊî∂' end ) as   clfspd,--Â§ÑÁêÜÊñπÂºèÂà§ÂÆö:1=ÂÖ•Â∫ìÔºå2=ÂêàÊ†ºÂÖ•Â∫ìÔºå3=Êä•Â∫üÂÖ•Â∫ìÔºå4=ËøîÂ∑•Ôºå5=‰∏çÂÖ•Â∫ìÔºå6=ÂêàÊ†ºÔºå7=ÊñôÂ∫üÔºå8=Â∑•Â∫üÔºå9=ÊãíÊî∂
-  psn.name as psnname,--Ë¥£‰ªª‰∫∫
-  dept.name as deptname,--Ë¥£‰ªªÈÉ®Èó®
-  b.vmemob --Â§áÊ≥®
-FROM qc_rejectbill_b b
-left join bd_measdoc mea on mea.pk_measdoc  = b.cunitid--ËÆ°ÈáèÂçï‰Ωçcunitid
-left join bd_measdoc meat on meat.pk_measdoc  = b.castunitid --Âçï‰Ωç
-LEFT JOIN bd_material inv ON b.pk_chgmrl = inv.pk_material--Áâ©Êñô
-left join scm_qualitylevel_b scm on scm.pk_qualitylv_b = b.pk_qualitylv_b --Ë¥®ÈáèÁ≠âÁ∫ß
-left join qc_rejecttype qc on qc.pk_rejecttype =b.pk_defecttype--‰∏çÂêàÊ†ºÁ±ªÂûã
-left join qc_checkitem item on item.pk_checkitem = b.pk_noelgichkitem--‰∏çÂêàÊ†ºÈ°πÁõÆ
-left join scm_dealfashion scmdel on scmdel.pk_dealfashion = b.pk_suggprocess--Âª∫ËÆÆÂ§ÑÁêÜÊñπÂºè
-left join bd_psndoc psn on psn.pk_psndoc=b.pk_chargepsn --Ë¥£‰ªª‰∫∫
-LEFT JOIN org_dept dept ON dept.pk_dept=b.pk_chargedept --Ë¥£‰ªªÈÉ®Èó®
-where nvl(b.dr,0)=0;
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_ACCBOOK" ("ORGCODE", "CODE", "NAME", "PK_ACCOUNTINGBOOK", "PK_RELORG") AS 
+  select org.code as orgcode,book.code,book.name,book.pk_accountingbook,book.pk_relorg from org_accountingbook book
+left join org_orgs org on org.pk_org=book.pk_relorg;
 --------------------------------------------------------
 --  DDL for View VIEW_BPM_ACCOA
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_ACCOA" ("ORG_PK", "ORG_CODE", "ORG_NAME", "OASTM_CODERULE", "OASTM_PK", "OASTM_CODE", "OASTM_NAME", "KEMU_PK", "KEMU_NAME", "KEMU_CODE", "SSITEM_PK", "SSITEM_CODE", "SSITEM_NAME") AS 
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_ACCOA" ("ORG_PK", "ORG_CODE", "ORG_NAME", "OASTM_CODERULE", "OASTM_PK", "OASTM_CODE", "OASTM_NAME", "KEMU_PK", "KEMU_NAME", "KEMU_CODE", "SSITEM_PK", "SSITEM_CODE", "SSITEM_NAME") AS 
   (
 
 select 
 
---ÁßëÁõÆË°®‰ª•ÂèäÂØπÂ∫îÁöÑË¥¢Âä°ÁªÑÁªáÂíåÁßëÁõÆ‰ΩìÁ≥ª
---ÂàÜÈÖçÂà∞ÁªÑÁªá
+--ø∆ƒø±Ì“‘º∞∂‘”¶µƒ≤∆ŒÒ◊È÷Ø∫Õø∆ƒøÃÂœµ
+--∑÷≈‰µΩ◊È÷Ø
 org.pk_org as org_pk,
 org.code as org_code,
 org.name as org_name,
 
---ÁßëÁõÆ‰ΩìÁ≥ª
-oastm.acccoderule as oastm_coderule ,--ÁßëÁõÆÁºñÁ†ÅËßÑÂàô  
+--ø∆ƒøÃÂœµ
+oastm.acccoderule as oastm_coderule ,--ø∆ƒø±‡¬ÎπÊ‘Ú  
 oastm.pk_accsystem as oastm_pk,
 oastm.code as oastm_code,
 oastm.name as oastm_name,
 
---‰ºöËÆ°ÁßëÁõÆÊòéÁªÜ
+--ª·º∆ø∆ƒø√˜œ∏
 oab. pk_accasoa  as kemu_pk,
 oab.name as  kemu_name, 
 oabase.code as kemu_code,
 
---ËæÖÂä©Ê†∏ÁÆó
+--∏®÷˙∫ÀÀ„
 ssitem.pk_accassitem  as  ssitem_pk,
 ssitem.code  as ssitem_code,
 ssitem.name  as  ssitem_name
 
 from 
---‰ºöËÆ°ÁßëÁõÆ
+--ª·º∆ø∆ƒø
 bd_accasoa oab
 left join bd_account oabase on oab.  pk_account = oabase. pk_account 
 left join bd_accchart oah on oab.   pk_accchart  = oah.  pk_accchart 
 left join org_orgs org on   oah.   pk_org  = org.pk_org
 left join bd_accsystem oastm  on oah.  pk_accsystem  = oastm. pk_accsystem 
---ËæÖÂä©Ê†∏ÁÆóÔºåÈÄªËæë‰∏äÂèØ‰ª•ÊúâÂ§ö‰∏™
+--∏®÷˙∫ÀÀ„£¨¬ﬂº≠…œø…“‘”–∂‡∏ˆ
 left join bd_accass oass on oab.pk_accasoa=oass.pk_accasoa
 left join bd_accassitem ssitem on oass. pk_entity   = ssitem.pk_accassitem
 );
 --------------------------------------------------------
+--  DDL for View VIEW_BPM_AREA
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_AREA" ("CODE", "NAME", "PK_AREACL", "PK_FATHERAREA", "MNECODE") AS 
+  SELECT code,
+  name,
+  pk_areacl,
+  pk_fatherarea,
+  mnecode
+FROM bd_areacl
+WHERE 11          = 11
+AND ( enablestate = 2 )
+AND ( ( pk_group  = '0001A110000000000DDM' ) )
+ORDER BY code;
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_ARRIVEORDER
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_ARRIVEORDER" ("VBILLCODE", "BBACKREFORDER", "BC_VVENDBATCHCODE", "BFAFLAG", "BLETGOSTATE", "BPRESENT", "BPRESENTSOURCE", "BTRANSASSET", "BTRIATRADEFLAG", "CASSCUSTID", "CASTUNITID", "CCURRENCYID", "CFFILEID", "CFIRSTBID", "CFIRSTID", "CFIRSTTYPECODE", "CORIGCURRENCYID", "CPASSBOLLROWNO", "CPRODUCTORID", "CPROJECTID", "CPROJECTTASKID", "CQUALITYLEVELID", "CRECECOUNTRYID", "CREPORTERID", "CROWNO", "CSENDCOUNTRYID", "CSOURCEARRIVEBID", "CSOURCEARRIVEID", "CSOURCEBID", "CSOURCEID", "CSOURCETYPECODE", "CTAXCOUNTRYID", "CUNITID", "DBILLDATE", "DINVALIDDATE", "DPLANRECEIVEDATE", "DPRODUCEDATE", "DR", "DREPORTDATE", "FBUYSELLFLAG", "FPRODUCTCLASS", "FTAXTYPEFLAG", "IVALIDDAY", "NACCUMBACKNUM", "NACCUMCHECKNUM", "NACCUMLETGOINNUM", "NACCUMLETGONUM", "NACCUMREPLNUM", "NACCUMSTORENUM", "NASTNUM", "NELIGNUM", "NEXCHANGERATE", "NMNY", "NNOTELIGNUM", "NNUM", "NORIGMNY", "NORIGPRICE", "NORIGTAXMNY", "NORIGTAXPRICE", "NPLANASTNUM", "NPLANNUM", "NPRESENTASTNUM", "NPRESENTNUM", "NPRICE", "NTAX", "NTAXMNY", "NTAXPRICE", "NTAXRATE", "NWASTASTNUM", "NWASTNUM", "PK_APFINANCEORG", "PK_APFINANCEORG_V", "PK_APLIABCENTER", "PK_APLIABCENTER_V", "PK_ARRIVEORDER", "PK_ARRIVEORDER_B", "PK_ARRLIABCENTER", "PK_ARRLIABCENTER_V", "PK_BATCHCODE", "PK_GROUP", "PK_MATERIAL", "PK_ORDER", "PK_ORDER_B", "PK_ORDER_BB1", "PK_ORG", "PK_ORG_V", "PK_PASSBILL", "PK_PASSBILL_B", "PK_PSFINANCEORG", "PK_PSFINANCEORG_V", "PK_RACK", "PK_RECEIVESTORE", "PK_REQSTOORG", "PK_REQSTOORG_V", "PK_REQSTORE", "PK_SRCMATERIAL", "TS", "VBACKREASONB", "VBATCHCODE", "VBDEF1", "VBDEF10", "VBDEF11", "VBDEF12", "VBDEF13", "VBDEF14", "VBDEF15", "VBDEF16", "VBDEF17", "VBDEF18", "VBDEF19", "VBDEF2", "VBDEF20", "VBDEF3", "VBDEF4", "VBDEF5", "VBDEF6", "VBDEF7", "VBDEF8", "VBDEF9", "VCHANGERATE", "VFIRSTCODE", "VFIRSTROWNO", "VFIRSTTRANTYPE", "VFREE1", "VFREE10", "VFREE2", "VFREE3", "VFREE4", "VFREE5", "VFREE6", "VFREE7", "VFREE8", "VFREE9", "VMEMOB", "VPASSBILLCODE", "VSOURCECODE", "VSOURCEROWNO", "VSOURCETRANTYPE") AS 
+  (select r.vbillcode ,b."BBACKREFORDER",b."BC_VVENDBATCHCODE",b."BFAFLAG",b."BLETGOSTATE",b."BPRESENT",b."BPRESENTSOURCE",b."BTRANSASSET",b."BTRIATRADEFLAG",b."CASSCUSTID",b."CASTUNITID",b."CCURRENCYID",b."CFFILEID",b."CFIRSTBID",b."CFIRSTID",b."CFIRSTTYPECODE",b."CORIGCURRENCYID",b."CPASSBOLLROWNO",b."CPRODUCTORID",b."CPROJECTID",b."CPROJECTTASKID",b."CQUALITYLEVELID",b."CRECECOUNTRYID",b."CREPORTERID",b."CROWNO",b."CSENDCOUNTRYID",b."CSOURCEARRIVEBID",b."CSOURCEARRIVEID",b."CSOURCEBID",b."CSOURCEID",b."CSOURCETYPECODE",b."CTAXCOUNTRYID",b."CUNITID",b."DBILLDATE",b."DINVALIDDATE",b."DPLANRECEIVEDATE",b."DPRODUCEDATE",b."DR",b."DREPORTDATE",b."FBUYSELLFLAG",b."FPRODUCTCLASS",b."FTAXTYPEFLAG",b."IVALIDDAY",b."NACCUMBACKNUM",b."NACCUMCHECKNUM",b."NACCUMLETGOINNUM",b."NACCUMLETGONUM",b."NACCUMREPLNUM",b."NACCUMSTORENUM",b."NASTNUM",b."NELIGNUM",b."NEXCHANGERATE",b."NMNY",b."NNOTELIGNUM",b."NNUM",b."NORIGMNY",b."NORIGPRICE",b."NORIGTAXMNY",b."NORIGTAXPRICE",b."NPLANASTNUM",b."NPLANNUM",b."NPRESENTASTNUM",b."NPRESENTNUM",b."NPRICE",b."NTAX",b."NTAXMNY",b."NTAXPRICE",b."NTAXRATE",b."NWASTASTNUM",b."NWASTNUM",b."PK_APFINANCEORG",b."PK_APFINANCEORG_V",b."PK_APLIABCENTER",b."PK_APLIABCENTER_V",b."PK_ARRIVEORDER",b."PK_ARRIVEORDER_B",b."PK_ARRLIABCENTER",b."PK_ARRLIABCENTER_V",b."PK_BATCHCODE",b."PK_GROUP",b."PK_MATERIAL",b."PK_ORDER",b."PK_ORDER_B",b."PK_ORDER_BB1",b."PK_ORG",b."PK_ORG_V",b."PK_PASSBILL",b."PK_PASSBILL_B",b."PK_PSFINANCEORG",b."PK_PSFINANCEORG_V",b."PK_RACK",b."PK_RECEIVESTORE",b."PK_REQSTOORG",b."PK_REQSTOORG_V",b."PK_REQSTORE",b."PK_SRCMATERIAL",b."TS",b."VBACKREASONB",b."VBATCHCODE",b."VBDEF1",b."VBDEF10",b."VBDEF11",b."VBDEF12",b."VBDEF13",b."VBDEF14",b."VBDEF15",b."VBDEF16",b."VBDEF17",b."VBDEF18",b."VBDEF19",b."VBDEF2",b."VBDEF20",b."VBDEF3",b."VBDEF4",b."VBDEF5",b."VBDEF6",b."VBDEF7",b."VBDEF8",b."VBDEF9",b."VCHANGERATE",b."VFIRSTCODE",b."VFIRSTROWNO",b."VFIRSTTRANTYPE",b."VFREE1",b."VFREE10",b."VFREE2",b."VFREE3",b."VFREE4",b."VFREE5",b."VFREE6",b."VFREE7",b."VFREE8",b."VFREE9",b."VMEMOB",b."VPASSBILLCODE",b."VSOURCECODE",b."VSOURCEROWNO",b."VSOURCETRANTYPE" from  po_arriveorder r join po_arriveorder_b b  on r.pk_arriveorder =b.pk_arriveorder  where   nvl(r.fbillstatus ,0) = 3 and nvl(r.dr,0) = 0 and nvl(b.dr,0) = 0);
+--------------------------------------------------------
 --  DDL for View VIEW_BPM_ASSETSCODE
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_ASSETSCODE" ("Âç°Áâá‰∏ªÈîÆ", "ÂçïÊçÆÁ±ªÂûã", "Âà©Ê∂¶‰∏≠ÂøÉ", "Âà©Ê∂¶‰∏≠ÂøÉÁâàÊú¨", "Ë¥¢Âä°ÁªÑÁªá", "ËµÑ‰∫ßÁºñÁ†Å", "ËµÑ‰∫ßÂêçÁß∞", "Â∏ÅÁßç", "CURR_NAME", "ËµÑ‰∫ßÁ±ªÂà´ÁºñÁ†Å", "ËµÑ‰∫ßÁ±ªÂà´ÂêçÁß∞", "ËßÑÊ†º", "ÂûãÂè∑", "Â≠òÊîæÂú∞ÁÇπ", "Áîü‰∫ßÂéÇÂÆ∂", "‰æõÂ∫îÂïÜ‰∏ªÈîÆ", "ÂºÄÂßã‰ΩøÁî®Êó•Êúü", "ÂéüÂ∏ÅÂéüÂÄº", "ÂáÄÂÄº", "‰ΩøÁî®ÊúàÈôê", "‰ΩøÁî®ÈÉ®Èó®", "ÈÉ®Èó®ÁºñÁ†Å", "PK_USEDEPT") AS 
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_ASSETSCODE" ("PK_CARD", "PK_USINGSTATUS", "STATUS_NAME", "PK_TRANSITYPE", "PK_RAORG", "PK_RAORG_V", "PK_ORG", "ASSET_CODE", "ASSET_NAME", "ASSET_STATE", "PK_CURRTYPE", "CURR_NAME", "PK_CATEGORY", "CATE_CODE", "CATE_NAME", "SPEC", "CARD_MODEL", "POSITION", "PRODUCER", "PROVIDER", "STARTDATE", "ORIGINVALUE", "NETWORTH", "NATUREMONTH", "PK_USEDEPT", "DEPT_NAME", "DEPT_CODE") AS 
   Select
-	A .Pk_Card Pk_Card,
-	A .Pk_Transitype Pk_Transitype,
-	A .pk_raorg pk_raorg,
-	A .pk_raorg_v pk_raorg_v,
-	A .pk_org pk_org,
-	A .asset_code asset_code,
-	A .asset_name asset_name,
+	A .Pk_Card Pk_Card,--◊ ≤˙ø®∆¨÷˜º¸
+  b.pk_usingstatus,-- π”√◊¥øˆ÷˜º¸
+  status.STATUS_NAME,-- π”√◊¥øˆ√˚≥∆
+	A .Pk_Transitype Pk_Transitype,--Ωª“◊¿‡–Õ 
+	A .pk_raorg pk_raorg,--¿˚»Û÷––ƒ
+	A .pk_raorg_v pk_raorg_v,--¿˚»Û÷––ƒ∞Ê±æ
+	A .pk_org pk_org,--≤∆ŒÒ◊È÷Ø
+	A .asset_code asset_code,--◊ ≤˙±‡¬Î
+	A .asset_name asset_name,--◊ ≤˙√˚≥∆
+b.asset_state,
 	bd_currtype .pk_currtype pk_currtype,
   bd_currtype.NAME curr_name ,
-	c.cate_code cate_code,
-	c.cate_name cate_name,
-	A .spec spec,
-	A .card_model card_model,
-	A .position position,
-	A .producer producer,
-	A .Provider Provider,
-	SUBSTR (A .begin_date, 0, 10) startDate,
-	b.originvalue originvalue,
+  c. pk_category  pk_category ,--¿‡±÷˜º¸
+	c.cate_code cate_code,--¿‡±±‡¬Î
+	c.cate_name cate_name,--¿‡±√˚≥∆ 
+	A .spec spec,--πÊ∏Ò
+	A .card_model card_model,--–Õ∫≈
+	A .position position,--¥Ê∑≈µÿµ„
+	A .producer producer,--…˙≤˙≥ß…Ã
+	A .Provider Provider,--π©”¶…Ã
+	SUBSTR (A .begin_date, 0, 10) startDate,--ø™ º π”√»’∆⁄ 
+	b.originvalue originvalue,--±æ±“‘≠÷µ 
 	(
 		b.localoriginvalue - b.accudep_cal
 	) networth,
-	B.Naturemonth Naturemonth,
+	B.Naturemonth Naturemonth,--naturemonth
   
-	b.pk_usedept  PK_USEDEPT
-
-
+	b.pk_usedept  PK_USEDEPT,-- π”√≤ø√≈÷˜º¸
+  dept.name  dept_name,--≤ø√≈√˚≥∆
+  dept.code  dept_code--≤ø√≈±‡¬Î
 FROM
 	fa_card A
-INNER JOIN fa_cardhistory b ON A .pk_card = b.pk_card
-INNER JOIN fa_cardsub ON A .pk_card = fa_cardsub.pk_card
+left JOIN fa_cardhistory b ON A .pk_card = b.pk_card
+left JOIN fa_cardsub ON A .pk_card = fa_cardsub.pk_card
 LEFT OUTER JOIN fa_category c ON b.pk_category = c.pk_category
---LEFT  JOIN org_dept D ON b.pk_usedept = D .pk_dept
+left join fa_deptscale  deptscale on deptscale.link_key=b.pk_usedept
+left join org_dept dept on dept.pk_dept= deptscale.pk_dept
 left outer join bd_currtype bd_currtype ON bd_currtype.pk_currtype=a.pk_currency
+left join fa_usingstatus status on status.PK_USINGSTATUS=b.PK_USINGSTATUS
 WHERE
 	(
 		b.laststate_flag = 'Y'
@@ -209,88 +130,1005 @@ WHERE
 			AND b.laststate_flag = 'N'
 		)
 	)
-AND A .dr = 0
-AND b.dr = 0
-AND fa_cardsub.dr = 0;
+AND nvl( A .dr,0) = 0
+AND nvl( b.dr ,0)= 0
+AND nvl( fa_cardsub.dr,0) = 0
+and nvl(bd_currtype.dr,0)=0
+and nvl( status.dr,0)=0
+and nvl( dept.dr,0)=0
+and nvl(deptscale.dr,0)=0;
 --------------------------------------------------------
---  DDL for View VIEW_BPM_PORTDOC
---------------------------------------------------------
-
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_PORTDOC" ("INNERCODE", "NAME", "PK_DEFDOC") AS 
-  select b.INNERCODE,b.NAME,b.PK_DEFDOC from bd_defdoc b left join bd_defdoclist a on a.pk_defdoclist=b.pk_defdoclist where a.code='A03' and (b.PID!='~' or b.pid!=null);
---------------------------------------------------------
---  DDL for View VIEW_JL_INV
+--  DDL for View VIEW_BPM_BANKACCSUB
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_JL_INV" ("Â≠òË¥ßÁºñÁ†Å", "CINVADDCODE", "Â≠òË¥ßÂêçÁß∞", "ËßÑÊ†ºÂûãÂè∑", "ÊòØÂê¶ÈîÄÂîÆ", "ÊòØÂê¶Â§ñË¥≠", "ÊòØÂê¶Ëá™Âà∂", "Âä©ËÆ∞Á†Å", "ÊòØÂê¶ËÆ°Èáè", "ËÆ°ÈáèÂçï‰ΩçÂêçÁß∞", "ÂÖ•Â∫ìË∂ÖÈ¢ù‰∏äÈôê") AS 
-  (SELECT inv.code      AS Â≠òË¥ßÁºñÁ†Å,
-    ''                  AS cInvAddCode,
-    inv. name           AS Â≠òË¥ßÂêçÁß∞,
-    inv. materialspec   AS ËßÑÊ†ºÂûãÂè∑,
-    'ÊòØ'                 AS ÊòØÂê¶ÈîÄÂîÆ,
-    'ÊòØ'                 AS ÊòØÂê¶Â§ñË¥≠,
-    'ÊòØ'                 AS ÊòØÂê¶Ëá™Âà∂,
-    inv.materialmnecode AS Âä©ËÆ∞Á†Å,
-    NVL(inv.def1,'N')   AS ÊòØÂê¶ËÆ°Èáè,
-    meas.name           AS ËÆ°ÈáèÂçï‰ΩçÂêçÁß∞,
-    9999999             AS ÂÖ•Â∫ìË∂ÖÈ¢ù‰∏äÈôê
-  FROM bd_material inv
-  LEFT JOIN bd_measdoc meas
-  ON inv.pk_measdoc = meas.pk_measdoc
-  WHERE NVL(inv.dr,0)   =0
-    --ÊòØÂê¶ËÆ°Èáè
-  AND NVL(inv.def1,'N')='Y'
-    --Â∑≤ÁªèÂêØÁî®
-  AND inv.enablestate =2
-    --  AND (cInvCCode NOT BETWEEN '0401' AND '0413')
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_BANKACCSUB" ("PK_BANKACCSUB", "TS", "DR", "FROZENDATE", "DEF10", "ISCONCERTED", "ACCNAME", "DATAORIGINFLAG", "ACCNUM", "CREATOR", "PK_CURRTYPE", "DEFROZENDATE", "NAME", "OVERDRAFTTYPE", "DEF7", "DEF8", "DEF5", "DEF6", "DEF9", "CODE", "PK_BANKACCBAS", "FRONZENMNY", "NAME5", "CONCERTEDMNY", "CREATIONTIME", "MODIFIER", "NAME6", "NAME3", "NAME4", "ISTRADE", "ACCTYPE", "MODIFIEDTIME", "FRONZENSTATE", "DEF4", "PAYAREA", "OVERDRAFTMNY", "DEF3", "NAME2", "DEF2", "DEF1") AS 
+  SELECT bd_bankaccsub.pk_bankaccsub pk_bankaccsub,
+  bd_bankaccsub.ts ts,
+  bd_bankaccsub.dr dr,
+  bd_bankaccsub.frozendate frozendate,
+  bd_bankaccsub.def10 def10,
+  bd_bankaccsub.isconcerted isconcerted,
+  bd_bankaccsub.accname accname,
+  bd_bankaccsub.dataoriginflag dataoriginflag,
+  bd_bankaccsub.accnum accnum,
+  bd_bankaccsub.creator creator,
+  bd_bankaccsub.pk_currtype pk_currtype,
+  bd_bankaccsub.defrozendate defrozendate,
+  bd_bankaccsub. NAME NAME,
+  bd_bankaccsub.overdrafttype overdrafttype,
+  bd_bankaccsub.def7 def7,
+  bd_bankaccsub.def8 def8,
+  bd_bankaccsub.def5 def5,
+  bd_bankaccsub.def6 def6,
+  bd_bankaccsub.def9 def9,
+  bd_bankaccsub.code code,
+  bd_bankaccsub.pk_bankaccbas pk_bankaccbas,
+  bd_bankaccsub.fronzenmny fronzenmny,
+  bd_bankaccsub.name5 name5,
+  bd_bankaccsub.concertedmny concertedmny,
+  bd_bankaccsub.creationtime creationtime,
+  bd_bankaccsub.modifier modifier,
+  bd_bankaccsub.name6 name6,
+  bd_bankaccsub.name3 name3,
+  bd_bankaccsub.name4 name4,
+  bd_bankaccsub.istrade istrade,
+  bd_bankaccsub.acctype acctype,
+  bd_bankaccsub.modifiedtime modifiedtime,
+  bd_bankaccsub.fronzenstate fronzenstate,
+  bd_bankaccsub.def4 def4,
+  bd_bankaccsub.payarea payarea,
+  bd_bankaccsub.overdraftmny overdraftmny,
+  bd_bankaccsub.def3 def3,
+  bd_bankaccsub.name2 name2,
+  bd_bankaccsub.def2 def2,
+  bd_bankaccsub.def1 def1
+FROM bd_bankaccsub bd_bankaccsub
+Where Bd_Bankaccsub.Pk_Bankaccbas In
+  (SELECT pk_bankaccbas
+  FROM bd_bankaccbas
+  WHERE (accclass    = 2)
+  And ( Enablestate In (2, 1)
+  AND pk_org         = '0001A110000000000DDM' )
+ );
+ 
+
+   COMMENT ON TABLE "NC06192"."VIEW_BPM_BANKACCSUB"  IS '--∆æ÷§±Ìµ•÷–≤È—Ø“¯––÷– π”√-∂‘”¶”⁄NC-“¯––’Àªß-ºØÕ≈';
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_BD_BOMVERSION
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_BD_BOMVERSION" ("HVERSION", "FBOMTYPECODE", "FBOMTYPE", "CBOMID", "CWLNAME", "CWLCODE", "CPK_WL", "CPK_WLFL", "CWLFLNAME", "CWLFLCODE", "CPK_UNIT", "CUNITNAME", "CUNITCODE", "CMATERIALSPEC", "CMATERIALTYPE") AS 
+  select d.HVERSION,d.FBOMTYPE AS FBOMTYPECODE,(case d.FBOMTYPE when 1 then '…˙≤˙BOM' when 2 then '∞¸◊∞BOM' when 3 then '≈‰÷√BOM' end) as FBOMTYPE,d.CBOMID,a.name cWLname,a.code cWLcode,a.pk_material cPk_WL,a.pk_marbasclass cPk_WLFL,b.name cWLFLname,b.code cWLFLcode,a.pk_measdoc cPk_Unit,
+c.name cUnitName,c.code cUnitCode,a.materialspec cMaterialspec,a.materialtype cMaterialtype
+from bd_bom d left JOIN bd_material a on a.pk_material=d.hcmaterialid left join
+bd_marbasclass b on a.pk_marbasclass=b.pk_marbasclass left join bd_measdoc c on a.pk_measdoc=c.pk_measdoc
+where FBOMTYPE=1;
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_BD_MATERIAL
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_BD_MATERIAL" ("CWLNAME", "CWLCODE", "PRODAREA", "CPK_WL", "CPK_WLFL", "CWLFLNAME", "CWLFLCODE", "CPK_UNIT", "CUNITNAME", "CUNITCODE", "CMATERIALSPEC", "CMATERIALTYPE") AS 
+  select a.name cWLname,a.code cWLcode,a.prodarea,a.pk_material cPk_WL,a.pk_marbasclass cPk_WLFL,b.name cWLFLname,b.code cWLFLcode,a.pk_measdoc cPk_Unit,
+c.name cUnitName,c.code cUnitCode,a.materialspec cMaterialspec,a.materialtype cMaterialtype
+from bd_material a left join
+bd_marbasclass b on a.pk_marbasclass=b.pk_marbasclass left join bd_measdoc c on a.pk_measdoc=c.pk_measdoc;
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_BHGBT
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_BHGBT" ("PK_REJECTBILL", "PK_ORG", "ORGNAME", "VBILLCODE", "DBILLDATE", "PK_STOCKORG", "STOCKORGNAME", "VREPORTBILLCODE", "VAPPLYBILLCODE", "DEPT_NAME", "CAPPLYTIME", "VCHKSTANDARDNAME", "PK_MATERIAL", "INV_CODE", "INV_NAME", "MATERIALSPEC", "MATERIALTYPE", "VBATCHCODE", "VCODE", "JLZNAME", "NCHECKASTNUM", "VCHANGERATE", "JLNAME", "NCHECKNUM", "VMEMO") AS 
+  SELECT h.pk_rejectbill,   
+  h.pk_org,org.name as orgname,--÷ ºÏ÷––ƒ◊È÷Ø  
+  h.vbillcode,--≤ª∫œ∏Ò∆∑¥¶¿Ìµ•∫≈
+  h.dbilldate,--µ•æ›»’∆⁄
+  h.pk_stockorg,--ø‚¥Ê◊È÷Ø÷˜º¸
+  orgs.name as stockorgname,--ø‚¥Ê◊È÷Ø√˚≥∆
+  h.vreportbillcode ,  --÷ ºÏ±®∏Ê∫≈ 
+  h.vapplybillcode, -- ±®ºÏµ•∫≈  
+  od.name as dept_name,--±®ºÏ≤ø√≈–≈œ¢ 
+  h.capplytime,   --±®ºÏ ±º‰   
+  qc.vchkstandardname, --ºÏ—È∑Ω∞∏
+  h.pk_material,
+  inv.code as inv_code,  inv.name as inv_name,--ŒÔ¡œ  
+  inv.materialspec,inv.materialtype,--πÊ∏Ò°¢–Õ∫≈
+  h.vbatchcode,--ŒÔ¡œ≈˙¥Œ  
+  sn.vcode,--–Ú¡–∫≈
+  mea.name as jlZName,--÷˜µ•Œª
+  h.ncheckastnum, --ºÏ—È ˝¡ø
+  h.vchangerate,--ªªÀ„¬ 
+  meat.name as jlName,--µ•Œª
+  h.nchecknum,--ºÏ—È÷˜ ˝¡ø 
+  --µ•æ›◊¥Ã¨ƒ¨»œ:◊‘”…
+  h.vmemo--±∏◊¢
+FROM qc_rejectbill h 
+left join org_orgs org on org.pk_org=h.pk_org
+left join org_orgs orgs on orgs.pk_org=h.pk_stockorg
+LEFT JOIN org_dept od ON h.pk_applydept = od.pk_dept
+left join qc_checkstandard qc on qc.pk_checkstandard =h.pk_chkstd --ºÏ—È∑Ω∞∏
+left join sn_serialno sn on  sn.pk_serialno = h.pk_serialno --–Ú¡–∫≈
+left join bd_measdoc mea on mea.pk_measdoc  = h.cunitid--º∆¡øµ•Œªcunitid
+left join bd_measdoc meat on meat.pk_measdoc  = h.castunitid --µ•Œª
+LEFT JOIN bd_material inv ON h. pk_material = inv.pk_material
+where nvl(h.dr,0)=0 and h.fbillstatus=0;
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_BHGJYXX
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_BHGJYXX" ("PK_REJECTBILL", "PK_CHECKBILL", "PK_CHECKBILL_B", "VCHECKITEMNAME", "VCHKVALUE", "VSTDVALUE1", "BKEYITEM", "BDEFAULTITEM", "BMUSTREACH", "BACCORDED", "NAME", "TCHECKTIME", "VMEMOB") AS 
+  SELECT 
+    h.pk_rejectbill,
+    chkb.pk_checkbill,
+    chkb.pk_checkbill_b,
+    chkitem.vcheckitemname,
+    vchkvalue,vstdvalue1,
+    (case when chkb.bkeyitem='N' then '0' else '1' end) as bkeyitem,
+    (case when chkb.bdefaultitem='N' then '0' else '1' end) as bdefaultitem,
+    (case when chkb.bmustreach='N' then '0' else '1' end) as bmustreach,
+    (case when chkb.baccorded='N' then '0' else '1' end) as baccorded,
+    psn.name,chkb.tchecktime,chkb.vmemob
+  FROM qc_checkbill_b chkb
+  left join bd_psndoc psn on psn.pk_psndoc = chkb.pk_chkpsn
+  LEFT JOIN qc_checkbill chk on chk.pk_checkbill =chkb.pk_checkbill
+  LEFT JOIN qc_applybill_s apl on apl.pk_applybill = chk.cfirstid
+  LEFT JOIN  qc_rejectbill h on h.pk_applybill  = apl.pk_applybill
+  LEFT JOIN  qc_rejectbill_b b ON b. pk_rejectbill = h. pk_rejectbill
+  LEFT JOIN qc_checkitem chkitem
+  ON chkb. pk_checkitem =chkitem.pk_checkitem
+  where nvl(chkb.dr,0)=0 and chkb.buseless='N';
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_BHGMXB
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_BHGMXB" ("PK_REJECTBILL", "PK_REJECTBILL_B", "CROWNO", "JLNAME", "NASTNUM", "VCHANGERATE", "JLZNAME", "NNUM", "INV_CODE", "INV_NAME", "CQUALITYLVNAME", "BELIGIBLE", "VREJECTTYPENAME", "VCHECKITEMNAME", "VNOELIGNOTE", "PK_SUGGPROCESS", "CDEALFASHNAME", "FPROCESSJUDGE", "CLFSPD", "PSNNAME", "DEPTNAME", "VMEMOB") AS 
+  SELECT b.pk_rejectbill,  
+  b.pk_rejectbill_b,
+  b.crowno,--––∫≈
+  meat.name as jlName,--µ•Œª
+  b.nastnum, -- ˝¡ø
+  b.vchangerate,--ªªÀ„¬ 
+  mea.name as jlZName,--÷˜µ•Œª
+  b.nnum,--÷˜ ˝¡ø
+  inv.code as inv_code,--∏ƒ≈–ŒÔ¡œ±‡¬Î
+  inv.name as inv_name,--ŒÔ¡œ√˚≥∆
+  scm.cqualitylvname, --÷ ¡øµ»º∂ 
+  b.beligible,-- «∑Ò∫œ∏Ò∆∑
+  qc.vrejecttypename, --≤ª∫œ∏Ò¿‡–Õpk_defecttype 
+  item.vcheckitemname, --≤ª∫œ∏ÒœÓƒø
+  b.vnoelignote ,--≤ª∫œ∏ÒÀµ√˜
+  b.pk_suggprocess,
+  scmdel.cdealfashname, --Ω®“È¥¶¿Ì∑Ω Ω 
+  b.fprocessjudge,
+  (case fprocessjudge when 1 then '»Îø‚'
+    when 2 then '∫œ∏Ò»Îø‚'
+    when 3 then '±®∑œ»Îø‚'
+    when 4 then '∑µπ§'
+    when 5 then '≤ª»Îø‚'
+    when 6 then '∫œ∏Ò'
+    when 7 then '¡œ∑œ'
+    when 8 then 'π§∑œ'
+    else 'æ‹ ’' end ) as   clfspd,--¥¶¿Ì∑Ω Ω≈–∂®:1=»Îø‚£¨2=∫œ∏Ò»Îø‚£¨3=±®∑œ»Îø‚£¨4=∑µπ§£¨5=≤ª»Îø‚£¨6=∫œ∏Ò£¨7=¡œ∑œ£¨8=π§∑œ£¨9=æ‹ ’
+  psn.name as psnname,--‘»Œ»À
+  dept.name as deptname,--‘»Œ≤ø√≈
+  b.vmemob --±∏◊¢
+FROM qc_rejectbill_b b
+left join bd_measdoc mea on mea.pk_measdoc  = b.cunitid--º∆¡øµ•Œªcunitid
+left join bd_measdoc meat on meat.pk_measdoc  = b.castunitid --µ•Œª
+LEFT JOIN bd_material inv ON b.pk_chgmrl = inv.pk_material--ŒÔ¡œ
+left join scm_qualitylevel_b scm on scm.pk_qualitylv_b = b.pk_qualitylv_b --÷ ¡øµ»º∂
+left join qc_rejecttype qc on qc.pk_rejecttype =b.pk_defecttype--≤ª∫œ∏Ò¿‡–Õ
+left join qc_checkitem item on item.pk_checkitem = b.pk_noelgichkitem--≤ª∫œ∏ÒœÓƒø
+left join scm_dealfashion scmdel on scmdel.pk_dealfashion = b.pk_suggprocess--Ω®“È¥¶¿Ì∑Ω Ω
+left join bd_psndoc psn on psn.pk_psndoc=b.pk_chargepsn --‘»Œ»À
+LEFT JOIN org_dept dept ON dept.pk_dept=b.pk_chargedept --‘»Œ≤ø√≈
+where nvl(b.dr,0)=0;
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_BLSQ
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_BLSQ" ("VBILLCODE", "CPICKMID", "VFIRSTMOCODE", "VSALEBILLCODE", "VBATCHCODE", "VBOMVERSIONNUMBER", "VPBOMVERSIONNUMBER", "CMATERIALVID", "CPRODUCCODE", "CPRODUCNAME") AS 
+  SELECT
+a.vbillcode,--±∏¡œº∆ªÆµ•∫≈
+b.CODE as cProducCode,--≤˙∆∑±‡¬Î
+b.NAME as cProducName,--≤˙∆∑√˚≥∆
+a.vbatchcode,--…˙≤˙≈˙¥Œ
+a.cpickmid  ,--±∏¡œº∆ªÆµ•÷˜º¸
+a.vfirstmocode ,--‘¥Õ∑…˙≤˙∂©µ•∫≈
+a.vsalebillcode ,-- œ˙ €∂©µ•∫≈
+a.vbomversionnumber	,--…˙≤˙BOM∞Ê±æ
+a.vpbomversionnumber,--∞¸◊∞BOM∞Ê±æ
+a.cmaterialvid--	≤˙∆∑÷˜º¸
+FROM mm_pickm a--±∏¡œº∆ªÆ
+LEFT OUTER JOIN bd_material  b --ŒÔ¡œª˘±æ–≈œ¢£®∂‡∞Ê±æ£©
+ON a.cmaterialvid =b.pk_material 
+where a.dr='0';
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_BLSQ_B
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_BLSQ_B" ("CPICKMID", "CPICKM_BID", "CBMATERIALID", "CBMATERIALVID", "CBUNITID", "CBASTUNITID", "VBCHANGERATE", "BCONTROLL", "NQUOTNUM", "NSHOULDASTNUM", "NSHOULDNUM", "CDELIVERORGID", "CDELIVERORGVID", "CODE", "NAME", "NQUOTASTNUM", "NUNITUSEASTNUM", "DOLDOUTBOUNDNUM", "NPLANOUTASTNUM", "NPLANOUTNUM", "NACCOUTASTNUM", "NACCOUTNUM", "NBSETPARTSNUM", "VROWNO") AS 
+  SELECT
+a.cpickmid  ,--±∏¡œº∆ªÆµ•÷˜º¸
+c.cpickm_bid ,--±∏¡œº∆ªÆ√˜œ∏
+c.cbmaterialid,--≤ƒ¡œ◊Ó–¬∞Ê±æ
+c.cbmaterialvid, --≤ƒ¡œ±‡¬Î
+c.cbunitid ,--÷˜µ•Œª 
+c.cbastunitid ,--µ•Œª 
+c.vbchangerate ,--ªªÀ„¬ 
+c.bcontroll ,--øÿ÷∆
+c.nquotnum ,--÷˜∂®∂Ó”√¡ø
+c.nshouldastnum ,--¿€º∆¥˝∑¢ ˝¡ø 
+c.nshouldnum ,
+c.cdeliverorgid,--∑¢¡œ◊È÷Ø◊Ó–¬∞Ê±æ
+c.cdeliverorgvid,--∑¢¡œ◊È÷Ø 
+b.CODE,--ŒÔ¡œ√˚≥∆
+b.NAME,--  ŒÔ¡œ±‡¬Î
+c.nquotastnum,--∂®∂Ó”√¡ø
+c.nunituseastnum ,--µ•Œª”√¡ø 
+c.nplanoutastnum as dOldOutboundNum,--‘≠º∆ªÆ≥ˆø‚¡ø
+c.nplanoutastnum,--º∆ªÆ≥ˆø‚ ˝¡ø
+c.nplanoutnum,--º∆ªÆ≥ˆø‚÷˜ ˝¡ø
+c.naccoutastnum , --¿€º∆≥ˆø‚ ˝¡ø 
+c.naccoutnum ,--¿€º∆≥ˆø‚÷˜ ˝¡ø
+c.nbsetpartsnum,
+c.vrowno
+FROM  mm_pickm_b  c --±∏¡œº∆ªÆ√˜œ∏
+left join mm_pickm a ON a.cpickmid=c.CPICKMID
+LEFT OUTER JOIN bd_material b--ŒÔ¡œª˘±æ–≈œ¢£®∂‡∞Ê±æ£©
+on C.CBMATERIALVID =b.pk_material 
+where c.dr='0';
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_BLSQ_M
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_BLSQ_M" ("VBILLCODE", "CPRODUCCODE", "CPRODUCNAME", "VBATCHCODE", "CPICKMID", "VFIRSTMOCODE", "VSALEBILLCODE", "VBOMVERSIONNUMBER", "VPBOMVERSIONNUMBER", "CMATERIALVID") AS 
+  SELECT
+a.vbillcode,--±∏¡œº∆ªÆµ•∫≈
+b.CODE as cProducCode,--≤˙∆∑±‡¬Î
+b.NAME as cProducName,--≤˙∆∑√˚≥∆
+a.vbatchcode,--…˙≤˙≈˙¥Œ
+a.cpickmid  ,--±∏¡œº∆ªÆµ•÷˜º¸
+a.vfirstmocode ,--‘¥Õ∑…˙≤˙∂©µ•∫≈
+a.vsalebillcode ,-- œ˙ €∂©µ•∫≈
+a.vbomversionnumber	,--…˙≤˙BOM∞Ê±æ
+a.vpbomversionnumber,--∞¸◊∞BOM∞Ê±æ
+a.cmaterialvid--	≤˙∆∑÷˜º¸
+FROM mm_pickm a--±∏¡œº∆ªÆ
+LEFT OUTER JOIN bd_material  b --ŒÔ¡œª˘±æ–≈œ¢£®∂‡∞Ê±æ£©
+ON a.cmaterialvid =b.pk_material 
+where a.dr='0';
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_BOM
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_BOM" ("PK_ORG", "PLANORGPK", "PLANORG_CODE", "PLANORG_NAME", "BOM_PK", "PK_MATERIAL", "INV_CODE", "INV_NAME", "INV_SPEC", "INV_TYPE", "BOM_TYPE", "BOM_TYPENAME", "BOM_HVERSION", "MEASPK", "MEASCODE", "MEASNAME", "BOM_FNUM") AS 
+  (SELECT
+    inv.pk_org,
+    --…˙≤˙◊È÷Ø£¨÷˜º¸£¨±‡¬Î£¨√˚≥∆
+    bom. pk_org AS planorgpk,
+    org.code    AS planorg_code,
+    org.name    AS planorg_name,
+    --ŒÔ¡œ–≈œ¢
+    --cbomid bom÷˜º¸
+    bom.cbomid AS bom_pk,
+    --ŒÔ¡œ÷˜º¸
+    inv.pk_material,
+    --inv.codeŒÔ¡œ±‡¬Î
+    inv.code AS inv_code,
+    --inv.nameŒÔ¡œ√˚≥∆
+    inv.name AS inv_name,
+    --materialspec  πÊ∏Ò
+    inv.materialspec AS inv_spec ,
+    --materialtype –Õ∫≈
+    inv.materialtype AS inv_type,
+    -- BOM¿‡–Õ  1=…˙≤˙BOM£¨2=∞¸◊∞BOM£¨3=≈‰÷√BOM
+    bom.fbomtype AS bom_type,
+    CASE bom.fbomtype
+      WHEN 1
+      THEN '…˙≤˙BOM'
+      WHEN 2
+      THEN '∞¸◊∞BOM'
+      WHEN 3
+      THEN '≈‰÷√BOM'
+    END AS bom_typename,
+    --hversion ∞Ê±æ∫≈
+    bom.hversion AS bom_hversion,
+    --BOMµ•Œª
+    meas.pk_measdoc    AS measpk,
+    meas.code          AS meascode,
+    meas.name          AS measname,
+    bom.hnassparentnum AS bom_fnum
+  FROM bd_bom bom
+  LEFT JOIN org_orgs org ON bom.pk_org = org.pk_org
+  LEFT JOIN bd_material inv ON bom.hcmaterialid = inv.pk_material
+  LEFT JOIN bd_measdoc meas ON bom.hcmeasureid = meas.pk_measdoc
+  WHERE NVL(bom.dr,0)=0
   );
 --------------------------------------------------------
---  DDL for View VIEW_NC_ZUOYEAUTOCOST01
+--  DDL for View VIEW_BPM_card
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_NC_ZUOYEAUTOCOST01" ("PK_GROUP", "PK_ORG", "CCOSTCENTERID", "CPERIOD", "WGNNUM", "XHNNUM", "ZYNNUM") AS 
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_card" ("◊ ≤˙±‡¬Î", "◊ ≤˙√˚≥∆", "◊ ≤˙¿‡±±‡¬Î", "◊ ≤˙¿‡±√˚≥∆", "πÊ∏Ò", "–Õ∫≈", "…Ë±∏÷˜º¸", "¥Ê∑≈µÿµ„", "…˙≤˙≥ßº“", "ø™ º π”√»’∆⁄", "‘≠±“‘≠÷µ", "æª÷µ", " π”√‘¬œﬁ", " π”√≤ø√≈", "≤ø√≈±‡¬Î") AS 
+  SELECT a.asset_code ◊ ≤˙±‡¬Î,
+    a.asset_name ◊ ≤˙√˚≥∆ ,
+    c.cate_code ◊ ≤˙¿‡±±‡¬Î,
+    c.cate_name ◊ ≤˙¿‡±√˚≥∆,
+    a.spec πÊ∏Ò,
+    a.card_model –Õ∫≈,
+    a.pk_equip …Ë±∏÷˜º¸,
+    a.position ¥Ê∑≈µÿµ„,
+    a.producer …˙≤˙≥ßº“,
+    SUBSTR(a.begin_date,0,10) ø™ º π”√»’∆⁄,
+    b.originvalue ‘≠±“‘≠÷µ,
+    (b.localoriginvalue-b.accudep_cal) æª÷µ,
+    b.naturemonth  π”√‘¬œﬁ,
+    d.name  π”√≤ø√≈,
+    d.code ≤ø√≈±‡¬Î
+  FROM fa_card a
+  INNER JOIN fa_cardhistory b
+  ON a.pk_card = b.pk_card
+  INNER JOIN fa_cardsub
+  ON a.pk_card = fa_cardsub.pk_card
+  LEFT OUTER JOIN fa_category c
+  ON b.pk_category=c.pk_category
+  LEFT OUTER JOIN org_dept d
+  ON B.Pk_Mandept          =D.Pk_Dept
+  WHERE ( b.laststate_flag = 'Y'
+  OR ( b.asset_state      IN ( 'reduce', 'reduce_split', 'reduce_combin', 'redeploy_way', 'redeploy_out' )
+  And B.Laststate_Flag     = 'N' ) )
+  And Nvl(A.Dr,0)          = 0
+ AND Nvl(B.Dr,0£©          = 0
+ AND Nvl(Fa_Cardsub.Dr,0) = 0;
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_CASHFLOW
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_CASHFLOW" ("ORG_PK", "ORG_CODE", "ORG_NAME", "CASH_PK", "CASH_CODE", "CASH_NAME") AS 
+  (SELECT
+    --◊È÷Ø–≈œ¢
+    org.pk_org AS org_pk,
+    org.code   AS org_code,
+    org.name   AS org_name,
+    --œ÷Ω¡˜œÓƒø±Ì
+    cash.pk_cashflow as cash_pk,
+    cash.code as cash_code,
+    cash.name as cash_name
+    
+  FROM bd_cashflow cash
+  INNER JOIN org_orgs org
+  ON cash. pk_org     = org.pk_org
+  WHERE NVL(cash.dr,0)=0
+  --1=Œ¥∆Ù”√£¨2=“—∆Ù”√£¨3=“—Õ£”√£¨ 
+  AND cash.enablestate=2
+  );
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_CGFKJH
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_CGFKJH" ("BPREFLAG", "CCONTRACTID", "CCURRENCYID", "CROWNO", "DBEGINDATE", "DENDDATE", "FEFFDATETYPE", "IACCOUNTTERMNO", "IITERMDAYS", "ISDEPOSIT", "NACCUMPAYAPPMNY", "NACCUMPAYAPPORGMNY", "NACCUMPAYMNY", "NACCUMPAYORGMNY", "NEXCHANGERATE", "NMNY", "NORIGMNY", "NRATE", "NTOTALORIGMNY", "PK_FINANCEORG", "PK_FINANCEORG_V", "PK_GROUP", "PK_ORDER", "PK_ORDER_PAYPLAN", "PK_PAYMENTCH", "PK_PAYTERM", "TS", "PK_ORG", "PK_ORG_V", "VBILLCODE", "DBILLDATE", "PK_SUPPLIER", "SUPPCODE", "SUPPNAME", "CORIGCURRENCYID", "FKXYCODE", "FKXYNAME") AS 
+  select a.bpreflag, a.ccontractid, a.ccurrencyid, a.crowno, a.dbegindate, a.denddate, 
+a.feffdatetype, a.iaccounttermno, a.iitermdays, a.isdeposit, a.naccumpayappmny, a.naccumpayapporgmny, a.naccumpaymny,
+a.naccumpayorgmny, a.nexchangerate, a.nmny, a.norigmny, a.nrate, a.ntotalorigmny, a.pk_financeorg, a.pk_financeorg_v,
+a.pk_group, a.pk_order, a.pk_order_payplan, a.pk_paymentch, b.pk_payterm, a.ts,
+--≤…π∫◊È÷Ø            ∂©µ•±‡∫≈                        ∂©µ•»’∆⁄        π©”¶…Ã÷˜º¸       π©”¶…Ã±‡¬Î           π©”¶…Ã√˚≥∆          ±“÷÷÷˜º¸     ∏∂øÓ–≠“È±‡¬Î    ∏∂øÓ–≠“È√˚≥∆    
+b.PK_ORG,b.PK_ORG_V,b.VBILLCODE,SUBStr(b.DBILLDATE,0,10) DBILLDATE,b.pk_supplier,c.CODE SuppCode,c.NAME SuppName,b.corigcurrencyid,d.CODE fkxyCode,d.NAME fkxyName
+from po_order_payplan a join po_order b on a.pk_order=b.pk_order
+join bd_supplier c on b.pk_supplier=c.pk_supplier
+join bd_payment d on d.pk_payment = b.pk_payterm
+where a.dr = 0;
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_CGFKJH_M
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_CGFKJH_M" ("PK_PAYTERM", "NTOTALORIGMNY", "CCURRENCYID", "VBILLCODE", "DBILLDATE", "PK_SUPPLIER", "SUPPNAME", "CORIGCURRENCYID", "FKXYNAME", "PK_ORG") AS 
+  select distinct b.pk_payterm,A.NTOTALORIGMNY,a.ccurrencyid,
+--∂©µ•±‡∫≈                        ∂©µ•»’∆⁄        π©”¶…Ã÷˜º¸            π©”¶…Ã√˚≥∆          ±“÷÷÷˜º¸       ∏∂øÓ–≠“È√˚≥∆   À˘ Ù◊È÷Ø 
+b.VBILLCODE,SUBStr(b.DBILLDATE,0,10) DBILLDATE,b.pk_supplier,c.NAME SuppName,b.corigcurrencyid,d.NAME fkxyName,b.PK_ORG
+from po_order_payplan a join po_order b on a.pk_order=b.pk_order
+join bd_supplier c on b.pk_supplier=c.pk_supplier
+join bd_payment d on d.pk_payment = b.pk_payterm
+where a.dr = 0;
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_CGFKJH_T
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_CGFKJH_T" ("BPREFLAG", "CCONTRACTID", "CCURRENCYID", "CROWNO", "DBEGINDATE", "DENDDATE", "FEFFDATETYPE", "IACCOUNTTERMNO", "IITERMDAYS", "ISDEPOSIT", "NACCUMPAYAPPMNY", "NACCUMPAYAPPORGMNY", "NACCUMPAYMNY", "NACCUMPAYORGMNY", "NEXCHANGERATE", "NMNY", "NORIGMNY", "NRATE", "NTOTALORIGMNY", "PK_FINANCEORG", "PK_FINANCEORG_V", "PK_GROUP", "PK_ORDER", "PK_ORDER_PAYPLAN", "PK_PAYMENTCH", "PK_PAYTERM", "TS", "PK_ORG", "PK_ORG_V", "VBILLCODE", "DBILLDATE", "PK_SUPPLIER", "SUPPCODE", "SUPPNAME", "CORIGCURRENCYID", "FKXYCODE", "FKXYNAME") AS 
+  select a.bpreflag, a.ccontractid, a.ccurrencyid, a.crowno, a.dbegindate, a.denddate, 
+a.feffdatetype, a.iaccounttermno, a.iitermdays, a.isdeposit, a.naccumpayappmny, a.naccumpayapporgmny, a.naccumpaymny,
+a.naccumpayorgmny, a.nexchangerate, a.nmny, a.norigmny, a.nrate, a.ntotalorigmny, a.pk_financeorg, a.pk_financeorg_v,
+a.pk_group, a.pk_order, a.pk_order_payplan, a.pk_paymentch, b.pk_payterm, a.ts,
+--≤…π∫◊È÷Ø            ∂©µ•±‡∫≈                        ∂©µ•»’∆⁄        π©”¶…Ã÷˜º¸       π©”¶…Ã±‡¬Î           π©”¶…Ã√˚≥∆          ±“÷÷÷˜º¸     ∏∂øÓ–≠“È±‡¬Î    ∏∂øÓ–≠“È√˚≥∆    
+b.PK_ORG,b.PK_ORG_V,b.VBILLCODE,SUBStr(b.DBILLDATE,0,10) DBILLDATE,b.pk_supplier,c.CODE SuppCode,c.NAME SuppName,b.corigcurrencyid,d.CODE fkxyCode,d.NAME fkxyName
+from po_order_payplan a join po_order b on a.pk_order=b.pk_order
+join bd_supplier c on b.pk_supplier=c.pk_supplier
+join bd_payment d on d.pk_payment = b.pk_payterm
+where a.dr = 0;
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_CGGLCPGX
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_CGGLCPGX" ("PK_ORG", "PK_MATERIAL", "CODE", "NAME", "MATERIALSPEC", "MATERIALTYPE") AS 
+  select mp.pk_org,mp.pk_material,m.code,m.name,m.materialspec,m.materialtype  from bd_materialpu mp 
+left join bd_material m on m.pk_material=mp.pk_material
+where nvl(mp.dr,0)=0;
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_CGHT
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_CGHT" ("PK_ORG", "PK_MARBASCLASS", "CLSCODE", "CLSNAME", "PK_MATERIAL", "CODE", "NAME", "MATERIALSPEC", "MATERIALTYPE", "PK_MEASDOC", "MEANAME", "CMATERIALVID", "PK_STORDOC", "STORENAME", "NONHANDNUM") AS 
+  select maorg.pk_org,cls.pk_marbasclass,cls.code as clscode,cls.name as clsname,ma.pk_material,ma.code,ma.name,
+ma.materialspec ,ma.materialtype,ma.pk_measdoc,mea.name as meaname,
+'' as cmaterialvid,'' as pk_stordoc,'' as storename,'0' as nonhandnum
+from bd_material ma 
+left join bd_marorg maorg on maorg.pk_material = ma.pk_material
+left join bd_marbasclass cls on ma.pk_marbasclass=cls.pk_marbasclass
+left join bd_measdoc mea on ma.pk_measdoc=mea.pk_measdoc
+where cls.code not like '04%' and cls.code not like '05%' and cls.code not like '99%';
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_CGTYPE
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_CGTYPE" ("PK_BILLTYPECODE", "BILLTYPENAME", "PK_BILLTYPEID") AS 
+  select distinct pk_billtypecode, billtypename, pk_billtypeid from bd_billtype where parentbilltype = '21' and pk_group = '0001A110000000000DDM' and nvl ( islock, 'N' ) = 'N';
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_CURRINFO
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_CURRINFO" ("FNPK", "FNNAME", "SRCCURPK", "SRCCURCODE", "SRCCURNAME", "OPPCURPK", "OPPCURCODE", "OPPCURNAM", "RATE", "RATEDATE", "YEAR", "MONTH") AS 
   (
-select pk_group,pk_org,ccostcenterid,cperiod,sum(wgnnum) as wgnnum,sum(xhnum) as xhnnum,sum(zynnum)  as zynnum  from (
+   SELECT
+    --ª„¬ ∑Ω∞∏
+    bc.pk_exratescheme AS fnpk,
+    scm.name           AS fnname,
+    --‘¥±“÷÷
+    bc.pk_currtype AS srccurpk,
+    srccur.code    AS srccurcode,
+    srccur.name    AS srccurname,
+    --ƒøµƒ±“÷÷
+    bc.oppcurrtype AS oppcurpk,
+    oppcur.code    AS oppcurcode,
+    oppcur.name    AS oppcurnam,
+    rate.rate ,--»’ª„¬ ÷–º‰º€
+    rate.ratedate,--ª„¬ »’∆⁄
+    SUBSTR(rate.ratedate,0,4) AS YEAR,
+    SUBSTR(rate.ratedate,6,2) AS MONTH
+  FROM bd_exratescheme scm
+  INNER JOIN bd_currinfo bc  ON scm.pk_exratescheme = bc. pk_exratescheme
+  INNER JOIN bd_currtype oppcur  ON bc.oppcurrtype = oppcur. pk_currtype
+  INNER JOIN bd_currtype srccur  ON bc.pk_currtype = srccur.pk_currtype
+  inner join bd_currrate rate on rate.PK_CURRINFO=bc.PK_CURRINFO
+  WHERE NVL(bc.dr,0)          =0
+  AND NVL(rate.dr,0)         =0
+and 
+	 SUBSTR(rate.ratedate,0,4)=(select  to_char(sysdate, 'yyyy' )  from dual)
+and SUBSTR(rate.ratedate,6,2)=(select  to_char(sysdate, 'MM' )  from dual)
 
-select pk_group,pk_org,ccostcenterid,cperiod , sum(1) as  wgnnum, 0 as xhnum, 0 as zynnum  from  cm_product where nvl(dr,0)=0
-group by pk_group,pk_org,ccostcenterid,cperiod
-union all
-
-select pk_group,pk_org,ccostcenterid,cperiod , 0 as  wgnnum, sum(1) as xhnum, 0 as zynnum from  cm_stuff where nvl(dr,0)=0
-group by pk_group,pk_org,ccostcenterid,cperiod
-union all
-
-select pk_group,pk_org,ccostcenterid,cperiod , 0 as  wgnnum, 0 as xhnum, sum(1) as zynnum from  cm_actcost where nvl(dr,0)=0
-group by pk_group,pk_org,ccostcenterid,cperiod
-)
-group by pk_group,pk_org,ccostcenterid,cperiod
 );
 --------------------------------------------------------
---  DDL for View VIEW_BPM_TZLX
+--  DDL for View VIEW_BPM_CUST
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_TZLX" ("TRNSTYPECODE", "TRNSTYPENAME", "PK_TRNSTYPE") AS 
-  SELECT trnstypecode,
-  trnstypename,
-  pk_trnstype
-FROM hr_trnstype
-WHERE ( 1        = 1
-AND enablestate  = 2
-AND trnsevent    = 3 )
-AND ( ( ( pk_org = 'GLOBLE00000000000000'
-OR pk_group      = '0001A51000000000078A' ) ) )
-ORDER BY trnstypecode;
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_CUST" ("CUSTPK", "CUSTCODE", "CUSTNAME", "CUSTSHORTNAME", "PSNPK", "PSNCODE", "PSNNAME", "DEPPK", "DEPCODE", "DEPNAME", "PK_VID", "SORGPK", "SORGCODE", "SORGNAME") AS 
+  (
+SELECT 
+--øÕªß–≈œ¢
+cust.pk_customer as custpk,
+cust.code as custcode,
+cust.name  as custname,
+cust.shortname as custshortname,
+--◊®π‹“µŒÒ‘±–≈œ¢
+bcs.respperson as psnpk,
+psn.code as psncode, 
+psn.name as psnname,
+--◊®π‹≤ø√≈–≈œ¢
+bcs.respdept as deppk,
+dept.code as depcode, 
+Dept.Name As Depname,
+dept.pk_vid pk_vid,
+--œ˙ €◊È÷Ø–≈œ¢
+sorg.pk_salesorg as sorgpk ,
+sorg.code as sorgcode ,
+sorg.name as sorgname
+FROM bd_customer  cust
+left join bd_custsale bcs on cust.pk_customer = bcs.pk_customer
+left join org_salesorg sorg on bcs.pk_org = sorg.pk_salesorg
+left  join bd_psndoc psn on bcs.respperson = psn.pk_psndoc
+left join org_dept dept on bcs.respdept = Dept.Pk_Dept
+where nvl(cust.dr,0)=0 and nvl(bcs.dr,0)=0
+);
 --------------------------------------------------------
---  DDL for View VIEW_BPM_SUPPLIERCLASS
+--  DDL for View VIEW_BPM_CUSTDOMESTIC
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_SUPPLIERCLASS" ("CODE", "CREATIONTIME", "CREATOR", "DATAORIGINFLAG", "DEF1", "DEF2", "DEF3", "DEF4", "DEF5", "DR", "ENABLESTATE", "INNERCODE", "MNECODE", "MODIFIEDTIME", "MODIFIER", "NAME", "NAME2", "NAME3", "NAME4", "NAME5", "NAME6", "PARENT_ID", "PK_GROUP", "PK_ORG", "PK_SUPPLIERCLASS", "SEQ", "TS") AS 
-  (select "CODE","CREATIONTIME","CREATOR","DATAORIGINFLAG","DEF1","DEF2","DEF3","DEF4","DEF5","DR","ENABLESTATE","INNERCODE","MNECODE","MODIFIEDTIME","MODIFIER","NAME","NAME2","NAME3","NAME4","NAME5","NAME6","PARENT_ID","PK_GROUP","PK_ORG","PK_SUPPLIERCLASS","SEQ","TS" from bd_supplierclass  where  nvl(dr,0) = 0);
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_CUSTDOMESTIC" ("CUSTPK", "CUSTCODE", "CUSTNAME", "CUSTSHORTNAME", "PSNPK", "PSNCODE", "PSNNAME", "DEPPK", "DEPCODE", "DEPNAME", "PK_VID", "SORGPK", "SORGCODE", "SORGNAME", "PK_COUNTRY", "COUNTRY_NAME") AS 
+  (
+	SELECT
+		--øÕªß–≈œ¢
+		cust.pk_customer AS custpk,
+		cust.code AS custcode,
+		cust. NAME AS custname,
+		cust.shortname AS custshortname,
+		--◊®π‹“µŒÒ‘±–≈œ¢
+		bcs.respperson AS psnpk,
+		psn.code AS psncode,
+		psn. NAME AS psnname,
+		--◊®π‹≤ø√≈–≈œ¢
+		bcs.respdept AS deppk,
+		dept.code AS depcode,
+		Dept. NAME AS Depname,
+		dept.pk_vid pk_vid,
+		--œ˙ €◊È÷Ø–≈œ¢
+		sorg.pk_salesorg AS sorgpk,
+		sorg.code AS sorgcode,
+		sorg. NAME AS sorgname,
+  --π˙º“µÿ«¯
+	country.pk_country,
+	country. NAME country_name
+	FROM
+		bd_customer cust
+	LEFT JOIN bd_custsale bcs ON cust.pk_customer = bcs.pk_customer
+	LEFT JOIN org_salesorg sorg ON bcs.pk_org = sorg.pk_salesorg
+	LEFT JOIN bd_psndoc psn ON bcs.respperson = psn.pk_psndoc
+	LEFT JOIN org_dept dept ON bcs.respdept = Dept.Pk_Dept
+
+LEFT JOIN bd_countryzone country ON country.pk_country = cust.pk_country
+	WHERE
+		CUST.pk_custclass IN (
+			SELECT
+				pk_custclass
+			FROM
+				BD_CUSTCLASS
+			WHERE
+				NAME IN ('π˙ƒ⁄π´Àæ')
+		)
+	AND NVL (cust.dr, 0) = 0
+	AND NVL (bcs.dr, 0) = 0
+	AND NVL (sorg.dr, 0) = 0
+	AND NVL (psn.dr, 0) = 0
+	AND NVL (dept.dr, 0) = 0
+	UNION ALL
+		SELECT
+			--øÕªß–≈œ¢
+			cust.pk_customer AS custpk,
+			cust.code AS custcode,
+			cust. NAME AS custname,
+			cust.shortname AS custshortname,
+			--◊®π‹“µŒÒ‘±–≈œ¢
+			bcs.respperson AS psnpk,
+			psn.code AS psncode,
+			psn. NAME AS psnname,
+			--◊®π‹≤ø√≈–≈œ¢
+			bcs.respdept AS deppk,
+			dept.code AS depcode,
+			Dept. NAME AS Depname,
+			dept.pk_vid pk_vid,
+			--œ˙ €◊È÷Ø–≈œ¢
+			sorg.pk_salesorg AS sorgpk,
+			sorg.code AS sorgcode,
+			sorg. NAME AS sorgname,
+  --π˙º“µÿ«¯
+	country.pk_country,
+	country. NAME country_name
+		FROM
+			bd_customer cust
+		LEFT JOIN bd_custsale bcs ON cust.pk_customer = bcs.pk_customer
+		LEFT JOIN org_salesorg sorg ON bcs.pk_org = sorg.pk_salesorg
+		LEFT JOIN bd_psndoc psn ON bcs.respperson = psn.pk_psndoc
+		LEFT JOIN org_dept dept ON bcs.respdept = Dept.Pk_Dept
+
+LEFT JOIN bd_countryzone country ON country.pk_country = cust.pk_country
+		WHERE
+			CUST.pk_custclass IN (
+				SELECT
+					PK_CUSTCLASS
+				FROM
+					BD_CUSTCLASS
+				WHERE
+					parent_id IN (
+						SELECT
+							PK_CUSTCLASS
+						FROM
+							BD_CUSTCLASS
+						WHERE
+							NAME = 'π˙ƒ⁄øÕªß'
+					)
+			)
+		AND NVL (cust.dr, 0) = 0
+		AND NVL (bcs.dr, 0) = 0
+		AND NVL (sorg.dr, 0) = 0
+		AND NVL (psn.dr, 0) = 0
+		AND NVL (dept.dr, 0) = 0
+);
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_CUSTFOREIGN
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_CUSTFOREIGN" ("CUSTPK", "CUSTCODE", "CUSTNAME", "CUSTSHORTNAME", "PSNPK", "PSNCODE", "PSNNAME", "DEPPK", "DEPCODE", "DEPNAME", "PK_VID", "SORGPK", "SORGCODE", "SORGNAME", "PK_COUNTRY", "COUNTRY_NAME") AS 
+  (
+SELECT
+	--øÕªß–≈œ¢
+	cust.pk_customer AS custpk,
+	cust.code AS custcode,
+	cust. NAME AS custname,
+	cust.shortname AS custshortname,
+	--◊®π‹“µŒÒ‘±–≈œ¢
+	bcs.respperson AS psnpk,
+	psn.code AS psncode,
+	psn. NAME AS psnname,
+	--◊®π‹≤ø√≈–≈œ¢
+	bcs.respdept AS deppk,
+	dept.code AS depcode,
+	Dept. NAME AS Depname,
+	dept.pk_vid pk_vid,
+	--œ˙ €◊È÷Ø–≈œ¢
+	sorg.pk_salesorg AS sorgpk,
+	sorg.code AS sorgcode,
+	sorg. NAME AS sorgname ,
+  --π˙º“µÿ«¯
+	country.pk_country,
+	country. NAME country_name
+FROM
+	bd_customer cust
+LEFT JOIN bd_custsale bcs ON cust.pk_customer = bcs.pk_customer
+LEFT JOIN org_salesorg sorg ON bcs.pk_org = sorg.pk_salesorg
+LEFT JOIN bd_psndoc psn ON bcs.respperson = psn.pk_psndoc
+LEFT JOIN org_dept dept ON bcs.respdept = Dept.Pk_Dept
+LEFT JOIN bd_countryzone country ON country.pk_country = cust.pk_country
+WHERE
+	CUST.pk_custclass IN (
+		SELECT
+			pk_custclass
+		FROM
+			BD_CUSTCLASS
+		WHERE
+			NAME IN ('æ≥Õ‚π´Àæ')
+	)
+AND NVL (cust.dr, 0) = 0
+AND NVL (bcs.dr, 0) = 0
+AND NVL (sorg.dr, 0) = 0
+AND NVL (psn.dr, 0) = 0
+AND NVL (dept.dr, 0) = 0
+UNION ALL
+	SELECT
+		--øÕªß–≈œ¢
+		cust.pk_customer AS custpk,
+		cust.code AS custcode,
+		cust. NAME AS custname,
+		cust.shortname AS custshortname,
+		--◊®π‹“µŒÒ‘±–≈œ¢
+		bcs.respperson AS psnpk,
+		psn.code AS psncode,
+		psn. NAME AS psnname,
+		--◊®π‹≤ø√≈–≈œ¢
+		bcs.respdept AS deppk,
+		dept.code AS depcode,
+		Dept. NAME AS Depname,
+		dept.pk_vid pk_vid,
+		--œ˙ €◊È÷Ø–≈œ¢
+		sorg.pk_salesorg AS sorgpk,
+		sorg.code AS sorgcode,
+		sorg. NAME AS sorgname,
+ --π˙º“µÿ«¯
+		country.pk_country,
+		country. NAME country_name
+	FROM
+		bd_customer cust
+	LEFT JOIN bd_custsale bcs ON cust.pk_customer = bcs.pk_customer
+	LEFT JOIN org_salesorg sorg ON bcs.pk_org = sorg.pk_salesorg
+	LEFT JOIN bd_psndoc psn ON bcs.respperson = psn.pk_psndoc
+	LEFT JOIN org_dept dept ON bcs.respdept = Dept.Pk_Dept
+	LEFT JOIN bd_countryzone country ON country.pk_country = cust.pk_country
+	WHERE
+		CUST.pk_custclass IN (
+			SELECT
+				PK_CUSTCLASS
+			FROM
+				BD_CUSTCLASS
+			WHERE
+				parent_id IN (
+					SELECT
+						PK_CUSTCLASS
+					FROM
+						BD_CUSTCLASS
+					WHERE
+						NAME = 'π˙Õ‚øÕªß'
+				)
+		)
+	AND NVL (cust.dr, 0) = 0
+	AND NVL (bcs.dr, 0) = 0
+	AND NVL (sorg.dr, 0) = 0
+	AND NVL (psn.dr, 0) = 0
+	AND NVL (dept.dr, 0) = 0
+);
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_CUSTOMER
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_CUSTOMER" ("CUSNAME", "CUSCODE", "SHORTNAME", "PK_CUSTOMER", "PK_COUNTRY", "COUNTRYNAME", "COUNTRYCODE") AS 
+  ( SELECT a.name as CusName,a.code as CusCode,A.SHORTNAME,A.PK_CUSTOMER,A.PK_COUNTRY,b.NAME as countryName,b.CODE as countryCode 
+FROM bd_customer a left join bd_countryzone b on a.pk_country = b.pk_country);
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_CWZZ
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_CWZZ" ("PK_ACCOUNTINGBOOK", "BOOK_CODE", "BOOK_NAME", "ORG_NAME", "ORG_CODE", "PK_ORG", "ORG_VID") AS 
+  SELECT
+	BOOK.pk_accountingbook,
+	book.code as book_code,
+  book.NAME AS book_name ,
+  ORG.NAME AS org_name,
+	org.code AS org_code,
+	ORG.pk_org,
+	ORG.PK_VID org_vid
+FROM
+	org_orgs org
+LEFT JOIN org_accountingbook book ON book.pk_relorg = org.pk_org
+WHERE
+	ORG.orgtype5 = 'Y'
+AND NVL (ORG.DR, 0) = 0
+AND NVL (BOOK.dr, 0) = 0;
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_DELIVERY
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_DELIVERY" ("VBILLCODE", "BADVFEEFLAG", "BBARSETTLEFLAG", "BCHECKFLAG", "BLARGESSFLAG", "BOUTENDFLAG", "BQUALITYFLAG", "BTRANSENDFLAG", "BTRIATRADEFLAG", "BUSECHECKFLAG", "CARORGID", "CARORGVID", "CASTUNITID", "CCHANNELTYPEID", "CCHAUFFEURID", "CCURRENCYID", "CCUSTMATERIALID", "CDELIVERYBID", "CDELIVERYID", "CDEPTID", "CDEPTVID", "CEMPLOYEEID", "CFIRSTBID", "CFIRSTID", "CFREECUSTID", "CINSTOCKORGID", "CINSTOCKORGVID", "CINSTORDOCID", "CINVOICECUSTID", "CMATERIALID", "CMATERIALVID", "CMFFILEID", "CORDERCUSTID", "CORIGAREAID", "CORIGCOUNTRYID", "CORIGCURRENCYID", "CPRICEFORMID", "CPRODLINEID", "CPRODUCTORID", "CPROFITCENTERID", "CPROFITCENTERVID", "CPROJECTID", "CQTUNITID", "CQUALITYLEVELID", "CRECECOUNTRYID", "CRECEIVEADDDOCID", "CRECEIVEADDRID", "CRECEIVEAREAID", "CRECEIVECUSTID", "CRECEIVEPERSONID", "CRETREASONID", "CROWNO", "CRPROFITCENTERID", "CRPROFITCENTERVID", "CSALEORGID", "CSALEORGVID", "CSENDADDDOCID", "CSENDADDRID", "CSENDAREAID", "CSENDCOUNTRYID", "CSENDPERSONID", "CSENDSTOCKORGID", "CSENDSTOCKORGVID", "CSENDSTORDOCID", "CSETTLEORGID", "CSETTLEORGVID", "CSPACEID", "CSPROFITCENTERID", "CSPROFITCENTERVID", "CSRCBID", "CSRCID", "CSUPERCARGOID", "CTAXCODEID", "CTAXCOUNTRYID", "CTRANSCUSTID", "CUNITID", "CVEHICLEID", "CVEHICLETYPEID", "CVENDORID", "DBILLDATE", "DR", "DRECEIVEDATE", "DSENDDATE", "FBUYSELLFLAG", "FROWNOTE", "FTAXTYPEFLAG", "NASTNUM", "NCALTAXMNY", "NDISCOUNT", "NDISCOUNTRATE", "NEXCHANGERATE", "NGLOBALEXCHGRATE", "NGLOBALMNY", "NGLOBALTAXMNY", "NGROUPEXCHGRATE", "NGROUPMNY", "NGROUPTAXMNY", "NITEMDISCOUNTRATE", "NMNY", "NNETPRICE", "NNUM", "NORIGDISCOUNT", "NORIGMNY", "NORIGNETPRICE", "NORIGPRICE", "NORIGTAXMNY", "NORIGTAXNETPRICE", "NORIGTAXPRICE", "NPIECE", "NPRICE", "NQTNETPRICE", "NQTORIGNETPRICE", "NQTORIGPRICE", "NQTORIGTAXNETPRC", "NQTORIGTAXPRICE", "NQTPRICE", "NQTTAXNETPRICE", "NQTTAXPRICE", "NQTUNITNUM", "NREQRSNUM", "NTAX", "NTAXMNY", "NTAXNETPRICE", "NTAXPRICE", "NTAXRATE", "NTOTALARNUM", "NTOTALELIGNUM", "NTOTALESTARNUM", "NTOTALNOTOUTNUM", "NTOTALOUTNUM", "NTOTALREPORTNUM", "NTOTALRUSHNUM", "NTOTALTRANSNUM", "NTOTALUNELIGNUM", "NTRANSLOSSNUM", "NVOLUME", "NWEIGHT", "PK_BATCHCODE", "PK_GROUP", "PK_ORG", "TS", "VBATCHCODE", "VBDEF1", "VBDEF10", "VBDEF11", "VBDEF12", "VBDEF13", "VBDEF14", "VBDEF15", "VBDEF16", "VBDEF17", "VBDEF18", "VBDEF19", "VBDEF2", "VBDEF20", "VBDEF3", "VBDEF4", "VBDEF5", "VBDEF6", "VBDEF7", "VBDEF8", "VBDEF9", "VCHANGERATE", "VFIRSTBILLDATE", "VFIRSTCODE", "VFIRSTROWNO", "VFIRSTTRANTYPE", "VFIRSTTYPE", "VFREE1", "VFREE10", "VFREE2", "VFREE3", "VFREE4", "VFREE5", "VFREE6", "VFREE7", "VFREE8", "VFREE9", "VQTUNITRATE", "VRECEIVETEL", "VRETURNMODE", "VSENDTEL", "VSRCCODE", "VSRCROWNO", "VSRCTRANTYPE", "VSRCTYPE") AS 
+  (
+ select y.vbillcode, b."BADVFEEFLAG",b."BBARSETTLEFLAG",b."BCHECKFLAG",b."BLARGESSFLAG",b."BOUTENDFLAG",b."BQUALITYFLAG",b."BTRANSENDFLAG",b."BTRIATRADEFLAG",b."BUSECHECKFLAG",b."CARORGID",b."CARORGVID",b."CASTUNITID",b."CCHANNELTYPEID",b."CCHAUFFEURID",b."CCURRENCYID",b."CCUSTMATERIALID",b."CDELIVERYBID",b."CDELIVERYID",b."CDEPTID",b."CDEPTVID",b."CEMPLOYEEID",b."CFIRSTBID",b."CFIRSTID",b."CFREECUSTID",b."CINSTOCKORGID",b."CINSTOCKORGVID",b."CINSTORDOCID",b."CINVOICECUSTID",b."CMATERIALID",b."CMATERIALVID",b."CMFFILEID",b."CORDERCUSTID",b."CORIGAREAID",b."CORIGCOUNTRYID",b."CORIGCURRENCYID",b."CPRICEFORMID",b."CPRODLINEID",b."CPRODUCTORID",b."CPROFITCENTERID",b."CPROFITCENTERVID",b."CPROJECTID",b."CQTUNITID",b."CQUALITYLEVELID",b."CRECECOUNTRYID",b."CRECEIVEADDDOCID",b."CRECEIVEADDRID",b."CRECEIVEAREAID",b."CRECEIVECUSTID",b."CRECEIVEPERSONID",b."CRETREASONID",b."CROWNO",b."CRPROFITCENTERID",b."CRPROFITCENTERVID",b."CSALEORGID",b."CSALEORGVID",b."CSENDADDDOCID",b."CSENDADDRID",b."CSENDAREAID",b."CSENDCOUNTRYID",b."CSENDPERSONID",b."CSENDSTOCKORGID",b."CSENDSTOCKORGVID",b."CSENDSTORDOCID",b."CSETTLEORGID",b."CSETTLEORGVID",b."CSPACEID",b."CSPROFITCENTERID",b."CSPROFITCENTERVID",b."CSRCBID",b."CSRCID",b."CSUPERCARGOID",b."CTAXCODEID",b."CTAXCOUNTRYID",b."CTRANSCUSTID",b."CUNITID",b."CVEHICLEID",b."CVEHICLETYPEID",b."CVENDORID",b."DBILLDATE",b."DR",b."DRECEIVEDATE",b."DSENDDATE",b."FBUYSELLFLAG",b."FROWNOTE",b."FTAXTYPEFLAG",b."NASTNUM",b."NCALTAXMNY",b."NDISCOUNT",b."NDISCOUNTRATE",b."NEXCHANGERATE",b."NGLOBALEXCHGRATE",b."NGLOBALMNY",b."NGLOBALTAXMNY",b."NGROUPEXCHGRATE",b."NGROUPMNY",b."NGROUPTAXMNY",b."NITEMDISCOUNTRATE",b."NMNY",b."NNETPRICE",b."NNUM",b."NORIGDISCOUNT",b."NORIGMNY",b."NORIGNETPRICE",b."NORIGPRICE",b."NORIGTAXMNY",b."NORIGTAXNETPRICE",b."NORIGTAXPRICE",b."NPIECE",b."NPRICE",b."NQTNETPRICE",b."NQTORIGNETPRICE",b."NQTORIGPRICE",b."NQTORIGTAXNETPRC",b."NQTORIGTAXPRICE",b."NQTPRICE",b."NQTTAXNETPRICE",b."NQTTAXPRICE",b."NQTUNITNUM",b."NREQRSNUM",b."NTAX",b."NTAXMNY",b."NTAXNETPRICE",b."NTAXPRICE",b."NTAXRATE",b."NTOTALARNUM",b."NTOTALELIGNUM",b."NTOTALESTARNUM",b."NTOTALNOTOUTNUM",b."NTOTALOUTNUM",b."NTOTALREPORTNUM",b."NTOTALRUSHNUM",b."NTOTALTRANSNUM",b."NTOTALUNELIGNUM",b."NTRANSLOSSNUM",b."NVOLUME",b."NWEIGHT",b."PK_BATCHCODE",b."PK_GROUP",b."PK_ORG",b."TS",b."VBATCHCODE",b."VBDEF1",b."VBDEF10",b."VBDEF11",b."VBDEF12",b."VBDEF13",b."VBDEF14",b."VBDEF15",b."VBDEF16",b."VBDEF17",b."VBDEF18",b."VBDEF19",b."VBDEF2",b."VBDEF20",b."VBDEF3",b."VBDEF4",b."VBDEF5",b."VBDEF6",b."VBDEF7",b."VBDEF8",b."VBDEF9",b."VCHANGERATE",b."VFIRSTBILLDATE",b."VFIRSTCODE",b."VFIRSTROWNO",b."VFIRSTTRANTYPE",b."VFIRSTTYPE",b."VFREE1",b."VFREE10",b."VFREE2",b."VFREE3",b."VFREE4",b."VFREE5",b."VFREE6",b."VFREE7",b."VFREE8",b."VFREE9",b."VQTUNITRATE",b."VRECEIVETEL",b."VRETURNMODE",b."VSENDTEL",b."VSRCCODE",b."VSRCROWNO",b."VSRCTRANTYPE",b."VSRCTYPE"
+  from so_delivery y
+  join so_delivery_b b
+    on y.cdeliveryid = b.cdeliveryid
+ where nvl(y.dr, 0) = 0
+   and nvl(b.dr, 0) = 0
+   and nvl(y.fstatusflag, 0) = 2);
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_FACARD
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_FACARD" ("CARD_CODE", "ASSET_CODE", "ASSET_NAME", "POSITION", "ORG_DEPTNAME", "PK_USEDEPT", "BD_PSNDOCNAME", "BAR_CODE", "TYPE7", "TYPE8", "TYPE9", "TYPE10", "TYPE11", "TYPE12", "TYPE13", "TYPE14", "TYPE15", "TYPE16", "PK_CARD", "ROWNUM_") AS 
+  (
+SELECT "CARD_CODE","ASSET_CODE","ASSET_NAME","POSITION","ORG_DEPTNAME","PK_USEDEPT","BD_PSNDOCNAME","BAR_CODE","TYPE7","TYPE8","TYPE9","TYPE10","TYPE11","TYPE12","TYPE13","TYPE14","TYPE15","TYPE16","PK_CARD","ROWNUM_"
+FROM
+  (SELECT row_.*,
+    rownum rownum_
+  FROM
+    (SELECT fa_card.card_code,
+      fa_card.asset_code,
+      fa_card.asset_name,
+      fa_card.position,
+      org_dept.name org_deptname,
+      fa_cardhistory.pk_usedept,
+      bd_psndoc.name bd_psndocname,
+      fa_card.bar_code,
+      NULL type7,
+      NULL type8,
+      NULL type9,
+      NULL type10,
+      NULL type11,
+      NULL type12,
+      NULL type13,
+      NULL type14,
+      NULL type15,
+      NULL type16,
+      fa_cardhistory.pk_card
+    FROM fa_card
+    INNER JOIN fa_cardhistory
+    ON fa_card.pk_card = fa_cardhistory.pk_card
+    LEFT OUTER JOIN org_dept
+    ON fa_cardhistory.pk_mandept = org_dept.pk_dept
+    LEFT OUTER JOIN pam_addreducestyle
+    ON fa_card.pk_addreducestyle = pam_addreducestyle.pk_addreducestyle
+    LEFT OUTER JOIN fa_usingstatus
+    ON fa_cardhistory.pk_usingstatus = fa_usingstatus.pk_usingstatus
+    LEFT OUTER JOIN bd_project
+    ON fa_cardhistory.pk_jobmngfil = bd_project.pk_project
+    LEFT OUTER JOIN bd_psndoc
+    ON fa_card.pk_assetuser = bd_psndoc.pk_psndoc
+    LEFT OUTER JOIN bd_supplier
+    ON fa_card.provider              = bd_supplier.pk_supplier
+    WHERE ( fa_card.dr               = 0
+    AND fa_cardhistory.dr            = 0
+    AND fa_cardhistory.business_flag = 'Y'
+    AND EXISTS
+      (SELECT pk_card
+      FROM fa_cardhistory fa_cardhistory2
+      WHERE dr                           = 0
+      AND fa_cardhistory2.laststate_flag = 'Y'
+      AND fa_cardhistory2.asset_state    = 'exist'
+      AND fa_cardhistory.pk_card         = fa_cardhistory2.pk_card
+      )
+    AND ( fa_cardhistory.laststate_flag = 'Y'
+    OR ( fa_cardhistory.asset_state    IN ( 'reduce', 'reduce_split', 'reduce_combin', 'redeploy_way', 'redeploy_out' )
+    AND fa_cardhistory.laststate_flag   = 'N' ) )
+    AND NVL ( fa_card.pk_equip, '~' )   = '~' )
+    ORDER BY fa_card.card_code
+    ) row_
+  WHERE rownum <= 500
+  )
+WHERE rownum_ > 0
+);
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_FIVEMEATALS
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_FIVEMEATALS" ("PK_ORG", "CCARDNO", "CARDSTATUS", "VPROJECT", "PH_CODE", "PH_NAME", "VDEPARTMENT", "CDEPCODE", "CDEPNAME", "VREMARK", "YUE", "CUSERMONTH") AS 
+  select h.pk_org,h.vcardno as ccardno, case when vbillstatus=1 then'∆Ù”√'else '◊¢œ˙' end AS CardStatus,h.vproject,pro.ph_code,pro.ph_name,
+h.vdepartment,org.code||'_'||dept.code as cdepcode,dept.name as cdepname,h.vremark,
+e.balance as yue,e.cperiod as cusermonth
+from ic_fivemetals_h h 
+join (select sum(nmny * itype) balance, b.cperiod,b.pk_fivemetals_h
+          from ic_fivemetals_b b
+         where nvl(b.dr, 0) = 0
+         group by b.pk_fivemetals_h, b.cperiod) e 
+         on h.pk_fivemetals_h=e.pk_fivemetals_h 
+left join org_orgs org on org.pk_org=h.pk_org
+left join org_dept dept on dept.pk_dept=h.vdepartment
+left join view_bpm_project pro on pro.ph_pk=h.vproject
+where h. vbillstatus=1;
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_FIVEMETALSBALANC
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_FIVEMETALSBALANC" ("CARDNO", "PK_GROUP", "PK_ORG", "CPERIOD", "VDEPARTMENT", "VPROJECT", "BALANCE", "VBILLSTATUS") AS 
+  (select h.vcardno cardNo,
+       h.pk_group,
+       h.pk_org,
+       e.cperiod,
+       h.vdepartment,
+       h.vproject,
+       e.balance,
+       h.vbillstatus
+  from ic_fivemetals_h h
+  join (select sum(nmny * itype) balance, b.cperiod,b.pk_fivemetals_h
+          from ic_fivemetals_b b
+         where nvl(b.dr, 0) = 0
+         group by b.pk_fivemetals_h, b.cperiod) e
+    on h.pk_fivemetals_h = e.pk_fivemetals_h
+ where nvl(h.dr, 0) = 0
+);
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_FIVEMETALSBALANCE
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_FIVEMETALSBALANCE" ("CARDNO", "PK_GROUP", "PK_ORG", "CPERIOD", "VDEPARTMENT", "VPROJECT", "BALANCE", "VBILLSTATUS") AS 
+  (select h.vcardno cardNo,--ø®∫≈
+       h.pk_group,--ºØÕ≈
+       h.pk_org,--◊È÷Ø
+       e.cperiod,--‘¬∑›
+       h.vdepartment,--≤ø√≈
+       h.vproject,--œÓƒø
+       e.balance,--”‡∂Ó
+       h.vbillstatus---◊¥Ã¨  1-ø…”√  2-Õ£”√
+  from ic_fivemetals_h h
+  join (select sum(nmny * itype) balance, b.cperiod,b.pk_fivemetals_h
+          from ic_fivemetals_b b
+         where nvl(b.dr, 0) = 0
+         group by b.pk_fivemetals_h, b.cperiod) e
+    on h.pk_fivemetals_h = e.pk_fivemetals_h
+ where nvl(h.dr, 0) = 0
+);
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_GWGZ
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_GWGZ" ("PK_WA_CRT", "PK_WA_GRD", "PK_WA_PRMLV", "MAX_VALUE", "MIN_VALUE", "PK_WA_SECLV", "CRITERIONVALUE", "GRDNAME", "PRMLVNAME", "PK_WA_GRADEVER", "SECLVNAME") AS 
+  (
+SELECT wc.pk_wa_crt,
+  wc.pk_wa_grd,
+  wc.pk_wa_prmlv,
+  wc.max_value,
+  wc.min_value,
+  wc.pk_wa_seclv,
+  wc.criterionvalue,
+  wg.name grdName,
+  wp.levelname prmlvName,
+  ver.pk_wa_gradever,
+  ws.levelname seclvName
+FROM wa_seclv ws,
+  wa_grade wg,
+  wa_prmlv wp,  
+  wa_criterion wc,
+  wa_grade_ver ver
+WHERE   1 = 1
+AND wc.pk_wa_grd       = wg.pk_wa_grd
+AND wc.pk_wa_prmlv     = wp.pk_wa_prmlv
+AND wc.pk_wa_gradever  = ver.pk_wa_gradever
+AND wc.pk_wa_seclv     = ws.pk_wa_seclv
+);
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_HTGL_CHBM
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_HTGL_CHBM" ("ROWNO", "DATASOURCE", "VBILLCODE", "PK_MATERIAL", "INVCODE", "INVNAME", "NNUM", "NPRICE", "PK_MEASDOC", "UTCODE", "UTNAME", "BZGGNAME", "PK_BZGG") AS 
+  select ROWNUM as rowNo,t."DATASOURCE",t."VBILLCODE",t."PK_MATERIAL",t."INVCODE",t."INVNAME",t."NNUM",t."NPRICE",t."PK_MEASDOC",t."UTCODE",t."UTNAME",t."BZGGNAME",t."PK_BZGG" from (
+select distinct '«Îπ∫µ•' as DataSource,A.VBILLCODE,c.pk_material,c.code as Invcode,c.name as Invname,b.nnum,0 as nprice,d.pk_measdoc,d.code as UTcode,d.name as UTname,
+e.NAME as BZGGname,e.PK_DEFDOC as PK_BZGG
+from po_praybill_b b left join po_praybill a on a.pk_praybill =b.pk_praybill  
+left join bd_material c on b.pk_material=c.pk_material 
+left join bd_measdoc d on b.cunitid =d.pk_measdoc
+left join VIEW_BPM_PACKAGESTYPE e on b.vfree1=e.PK_DEFDOC
+) t;
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_HTGL_QGD
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_HTGL_QGD" ("ROWNO", "DATASOURCE", "VBILLCODE", "PK_ORG", "CTRANTYPEID", "VTRANTYPECODE", "CROWNO", "PK_MATERIAL", "INVCODE", "INVNAME", "HEADID", "BODYID", "NNUM", "NPRICE", "PK_MEASDOC", "UTCODE", "UTNAME", "BZGGNAME", "PK_BZGG") AS 
+  select ROWNUM as rowNo,t."DATASOURCE",t."VBILLCODE",t."PK_ORG",t."CTRANTYPEID",t."VTRANTYPECODE",t."CROWNO",t."PK_MATERIAL",t."INVCODE",t."INVNAME",t."HEADID",t."BODYID",t."NNUM",t."NPRICE",t."PK_MEASDOC",t."UTCODE",t."UTNAME",t."BZGGNAME",t."PK_BZGG" 
+  from (
+-- ˝æ›¿¥‘¥£¨µ•æ›±‡∫≈
+select distinct '«Îπ∫µ•' as DataSource,A.VBILLCODE,a.pk_org,
+--Ωª“◊¿‡–Õ÷˜º¸£¨∂©µ•¿‡–Õ£®Ωª“◊¿‡–Õ±‡¬Î£©,¥”±Ì––∫≈
+a.ctrantypeid,a.vtrantypecode,b.crowno,
+--ŒÔ¡œ÷˜º¸£¨ŒÔ¡œ±‡¬Î£¨ŒÔ¡œ√˚≥∆
+c.pk_material,c.code as Invcode,c.name as Invname,
+-- ˝¡ø£¨µ•º€£¨µ•Œª÷˜º¸£¨µ•Œª±‡¬Î£¨µ•Œª√˚≥∆
+b.pk_praybill as HeadID,b.pk_praybill_b as BodyID,b.nnum,0.000000 as nprice,d.pk_measdoc,d.code as UTcode,d.name as UTname,
+--∞¸◊∞πÊ∏Ò√˚≥∆£¨∞¸◊∞πÊ∏Ò÷˜º¸
+e.NAME as BZGGname,e.PK_DEFDOC as PK_BZGG
+from po_praybill_b b left join po_praybill a on a.pk_praybill =b.pk_praybill  
+left join bd_material c on b.pk_material=c.pk_material 
+left join bd_measdoc d on b.cunitid =d.pk_measdoc
+left join VIEW_BPM_PACKAGESTYPE e on b.vfree1=e.PK_DEFDOC
+where nvl(b.dr,0)=0) t;
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_INCOTERM
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_INCOTERM" ("CODE", "NAME", "PK_INCOTERM", "PK_ORG", "PK_GROUP") AS 
+  (
+  select c.code, c.name, c.pk_incoterm, c.pk_org, c.pk_group
+  from bd_incoterm c );
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_JOBLEVEL
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_JOBLEVEL" ("CODE", "NAME", "SYSCODE", "SYSNAME", "PK_JOBLEVEL", "PK_JOBLEVELSYS") AS 
+  SELECT om_joblevel.code,
+  om_joblevel.name,
+  om_joblevelsys.code syscode,
+  om_joblevelsys.name sysname,
+  pk_joblevel,
+  om_joblevelsys.pk_joblevelsys
+FROM om_joblevel
+INNER JOIN om_joblevelsys
+ON om_joblevel.pk_joblevelsys = om_joblevelsys.pk_joblevelsys
+ORDER BY pk_joblevel;
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_JOBRANK
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_JOBRANK" ("JOBRANKCODE", "JOBRANKNAME", "PK_JOBRANK", "JOBRANKORDER") AS 
+  SELECT jobrankcode,
+  jobrankname,
+  pk_jobrank,
+  jobrankorder
+FROM om_jobrank;
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_JYCLFS
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_JYCLFS" ("CDEALFASHCODE", "CDEALFASHNAME", "VMEMO", "PK_DEALFASHION") AS 
+  select cdealfashcode, cdealfashname, vmemo, pk_dealfashion
+  from scm_dealfashion
+ where 11 = 11
+   and ((pk_group = '0001A110000000000DDM' and nvl(dr,0) = 0))
+ order by cdealfashcode;
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_JZQJ
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_JZQJ" ("PK_ORG", "ORGNAME", "PK_PERIODSTATE", "PK_PERIODSCHEME", "ACCOUNTMARK", "PK_WA_CLASS", "WACLASSCODE", "WACLASSCNAME", "PK_WA_PERIOD", "CYEAR", "CPERIOD", "XZQJ") AS 
+  select a.pk_org , org.name orgname,a.pk_periodstate ,b.pk_periodscheme,a.accountmark,
+a.pk_wa_class ,c.code waclasscode,c.name waclasscname,
+a.pk_wa_period,b.cyear,b.cperiod, b.cyear||b.cperiod AS xzqj
+from wa_periodstate a
+inner join wa_period b on a.pk_wa_period=b.pk_wa_period
+left join wa_waclass c on a.pk_wa_class=c.pk_wa_class
+left join org_orgs org on org.pk_org=a.pk_org 
+where a.enableflag = 'Y';
 --------------------------------------------------------
 --  DDL for View VIEW_BPM_LZLX
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_LZLX" ("TRNSTYPECODE", "TRNSTYPENAME", "PK_TRNSTYPE") AS 
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_LZLX" ("TRNSTYPECODE", "TRNSTYPENAME", "PK_TRNSTYPE") AS 
   SELECT trnstypecode,
   trnstypename,
   pk_trnstype
@@ -302,76 +1140,542 @@ AND ( ( ( pk_org = 'GLOBLE00000000000000'
 OR pk_group      = '0001A51000000000078A' ) ) )
 ORDER BY trnstypecode;
 --------------------------------------------------------
---  DDL for View VIEW_BPM_XZFA
+--  DDL for View VIEW_BPM_LZYY
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_XZFA" ("PK_WA_CLASS", "CODE", "NAME", "PK_PERIODSCHEME", "CYEAR", "CPERIOD", "MUTIPLEFLAG", "PK_ORG") AS 
-  SELECT 
-  wa_waclass.pk_wa_class,--Ëñ™ËµÑÊñπÊ°à‰∏ªÈîÆ
-  wa_waclass.code,--Ëñ™ËµÑÊñπÊ°àÁºñÁ†Å
-  wa_waclass.name,--Ëñ™ËµÑÊñπÊ°àÂêçÁß∞
-  wa_waclass.pk_periodscheme,--Ëñ™ËµÑÊúüÈó¥ÊñπÊ°à‰∏ªÈîÆ
-  wa_waclass.cyear,--Âπ¥‰ªΩ
-  wa_waclass.cperiod,--Êúà‰ªΩÊúüÈó¥
-  wa_waclass.mutipleflag, --Â§öÊ¨°ÂèëÊîæ 
-  wa_waclass.pk_org--ÁªÑÁªá
-FROM wa_waclass
-WHERE 11                        = 11
-AND ( stopflag                  = 'N' )
-AND wa_waclass.pk_periodscheme != '~'
-AND showflag                    = 'Y' 
-ORDER BY wa_waclass.pk_org,
-  wa_waclass.code;
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_LZYY" ("CODE", "NAME", "MNECODE", "PK_DEFDOC", "PID") AS 
+  SELECT code,
+  name,
+  mnecode,
+  pk_defdoc,
+  pid
+FROM bd_defdoc
+WHERE 11          = 11
+AND ( enablestate = 2 )
+AND ( ( 1         = 1 )
+AND pk_defdoclist = '1001Z71000000000GPD1' )
+ORDER BY code;
 --------------------------------------------------------
---  DDL for View VIEW_BPM_SUPPLIER
+--  DDL for View VIEW_BPM_MATERIAL
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_SUPPLIER" ("PK_SUPPLIER", "VENNAME", "VENCODE", "VENSHORTNAME", "RESPPERSON", "PSNNAME", "PSNCODE", "RESPDEPT", "DEPCODE", "DEPNAME") AS 
-  select a.pk_supplier,a.name as VenName,a.code as VenCode,a.shortname as Venshortname,
-b.respperson,d.name as psnname,d.code as psncode,
-b.respdept,d.code as depcode, d.name as depname
---c.pk_purchaseorg,c.code as sorgcode ,c.name as sorgname
-from bd_supplier a
-inner join bd_supstock b on a.pk_supplier=b.pk_supplier
---inner join org_purchaseorg c on a.pk_org=c.pk_purchaseorg
-left join bd_psndoc d on b.respperson =d.pk_psndoc 
-left join org_dept e on b.respdept=e.pk_dept;
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_MATERIAL" ("PK_ORG", "INVPK", "INVCODE", "INVNAME", "MEASPK", "MEASCODE", "MEASNAME", "SCDDNAME", "PK_SCDD", "TAXRATE", "PK_XSORG", "XSORGCODE", "XSORGNAME", "MARTYPE") AS 
+  SELECT DISTINCT
+	inv.pk_org,
+	--ŒÔ¡œ–≈œ¢
+	inv.pk_material AS invpk,
+	inv.code AS invcode,
+	inv. NAME AS invname,
+	--÷˜µ•Œª
+	meas.pk_measdoc AS measpk,
+	meas.code AS meascode,
+	meas. NAME AS measname,
+	--…˙≤˙µÿµ„
+	doc. NAME scddName,
+	doc.pk_defdoc pk_scdd,
+	--ŒÔ¡œÀ∞¬ 
+	c.taxrate,
+	--ŒÔ¡œœ˙ €◊È÷Ø÷˜º¸
+  e.pk_salesorg as pk_xsOrg,  
+  e.code xsOrgCode,
+  e.name xsOrgName,
+	--ŒÔ¡œø‚¥Ê–≈œ¢
+	(
+		CASE mater.martype
+		WHEN 'DR' THEN
+			'∑÷œ˙≤πªı'
+		WHEN 'FR' THEN
+			'π§≥ß≤πªı'
+		WHEN 'MR' THEN
+			'÷∆‘Ïº˛'
+		WHEN 'PR' THEN
+			'≤…π∫º˛'
+		WHEN 'OT' THEN
+			'ŒØÕ‚º˛'
+		WHEN 'ET' THEN
+			'∆‰À˚'
+		ELSE
+			mater.martype
+		END
+	) AS martype
+	--MATER.pk_materialstock
+FROM
+	bd_material inv
+inner JOIN bd_materialprod invprod ON inv.pk_material = invprod.pk_material
+inner JOIN bd_defdoc doc ON inv.prodarea = doc.pk_defdoc
+LEFT JOIN bd_measdoc meas ON inv.pk_measdoc = meas.pk_measdoc
+LEFT JOIN bd_taxcode b ON inv.pk_mattaxes = b.mattaxes
+LEFT JOIN bd_taxrate c ON b.pk_taxcode = c.pk_taxcode
+LEFT JOIN bd_materialsale D ON inv.pk_material = D .pk_material
+inner join org_salesorg e on d.pk_org =e.pk_salesorg
+inner JOIN bd_materialstock mater ON mater.pk_material = inv.pk_material
+WHERE	NVL (inv.dr, 0) = 0 AND NVL (invprod.dr, 0) = 0
+AND inv.PK_MARASSTFRAME IN (
+	SELECT PK_MARASSTFRAME FROM bd_marasstframe WHERE code in ('01','02','03','04')
+)
+AND NVL (MATER.dr, 0) = 0
+AND NVL (doc.dr, 0) = 0
+ORDER BY invcode;
 --------------------------------------------------------
---  DDL for View VIEW_BPM_INCOTERM
+--  DDL for View VIEW_BPM_MTCHDA
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_INCOTERM" ("CODE", "NAME", "PK_INCOTERM", "PK_ORG", "PK_GROUP") AS 
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_MTCHDA" ("PK_ORG", "PK_MARBASCLASS", "CLSCODE", "CLSNAME", "PK_MATERIAL", "CODE", "NAME", "MATERIALSPEC", "MATERIALTYPE", "PK_MEASDOC", "MEANAME", "CMATERIALVID", "PK_STORDOC", "STORENAME", "NONHANDNUM") AS 
+  select ma.pk_org,cls.pk_marbasclass,cls.code as clscode,cls.name as clsname,ma.pk_material,ma.code,ma.name,
+ma.materialspec ,ma.materialtype,ma.pk_measdoc,mea.name as meaname,
+'' as cmaterialvid,'' as pk_stordoc,'' as storename,'0' as nonhandnum
+from bd_material ma 
+left join bd_marbasclass cls on ma.pk_marbasclass=cls.pk_marbasclass
+left join bd_measdoc mea on ma.pk_measdoc=mea.pk_measdoc
+where cls.code like '03%';
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_ORDERTYPE
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_ORDERTYPE" ("NAME", "CODE", "PK_DEFDOC") AS 
+  select b.name,b.code,b.PK_DEFDOC from bd_defdoc b left join bd_defdoclist a on a.pk_defdoclist=b.pk_defdoclist where a.code='DDLB';
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_PACKAGESTYPE
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_PACKAGESTYPE" ("PK_ORG", "NAME", "CODE", "PK_DEFDOC") AS 
+  select b.pk_org,b.name,b.code,b.PK_DEFDOC from bd_defdoc b 
+  left join bd_defdoclist a on a.pk_defdoclist=b.pk_defdoclist where a.code='BZGG';
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_PAYMENTPLAN
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_PAYMENTPLAN" ("CROWNO", "VBILLCODE", "SUPPLIER_NAME", "SUPPLIER_CODE", "IACCOUNTTERMNO", "PAYPERIOD_NAME", "DBEGINDATE", "IITERMDAYS", "DENDDATE", "BPREFLAG", "NRATE", "NORIGMNY", "NACCUMPAYAPPORGMNY", "NACCUMPAYORGMNY", "PK_ORDER_PAYPLAN", "ORG_NAME", "PK_FINANCEORG", "ORG_CODE") AS 
+  Select P.Crowno Crowno,--–Ú∫≈,
+    Po_Order.Vbillcode Vbillcode,--∂©µ•±‡∫≈,
+    Bd_Supplier.Name Supplier_Name,--π©”¶…Ã,
+    Bd_Supplier.Code Supplier_Code,--π©”¶…Ã±‡¬Î,
+    P.Iaccounttermno Iaccounttermno,--∆⁄’À∫≈,
+    Bd_Payperiod.Name  Payperiod_Name,--∆À„“¿æ›,
+    P.Dbegindate Dbegindate,--∆À„»’∆⁄,
+    P.Iitermdays Iitermdays,--’À∆⁄ÃÏ ˝,
+    P.Denddate Denddate,--∆⁄’ÀµΩ∆⁄»’,
+    P.Bpreflag Bpreflag,--‘§∏∂øÓ,
+    P.Nrate Nrate,--±»¿˝,
+    P.Norigmny Norigmny,--Ω∂Ó,
+    P.Naccumpayapporgmny Naccumpayapporgmny,--¿€º∆∏∂øÓ…Í«ÎΩ∂Ó,
+    P.Naccumpayorgmny Naccumpayorgmny,--¿€º∆∏∂øÓΩ∂Ó,
+    P. Pk_Order_Payplan Pk_Order_Payplan,
+    Org_Financeorg.Name Org_Name ,--◊È÷Ø
+    Org_Financeorg.Pk_Financeorg Pk_Financeorg,
+    org_financeorg.code  org_code 
+  FROM po_order_payplan p
+  LEFT OUTER JOIN po_order po_order
+  ON p.pk_order=po_order.pk_order
+  LEFT OUTER JOIN bd_payperiod bd_payperiod
+  ON p.feffdatetype =bd_payperiod.pk_payperiod
+  LEFT OUTER JOIN org_financeorg org_financeorg
+ ON p. pk_financeorg =org_financeorg.  pk_financeorg
+  LEFT OUTER JOIN bd_supplier bd_supplier
+  ON po_order.pk_supplier=bd_supplier.pk_supplier;
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_POORDER
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_POORDER" ("VBILLCODE", "BARRIVECLOSE", "BBORROWPUR", "BINVOICECLOSE", "BLARGESS", "BPAYCLOSE", "BRECEIVEPLAN", "BSTOCKCLOSE", "BTRANSCLOSED", "BTRIATRADEFLAG", "CASSCUSTID", "CASTUNITID", "CCONTRACTID", "CCONTRACTROWID", "CCURRENCYID", "CDESTIAREAID", "CDESTICOUNTRYID", "CDEVADDRID", "CDEVAREAID", "CECBILLBID", "CECBILLID", "CECTYPECODE", "CFFILEID", "CFIRSTBID", "CFIRSTID", "CFIRSTTYPECODE", "CHANDLER", "CORIGAREAID", "CORIGCOUNTRYID", "CORIGCURRENCYID", "CPRAYBILLBID", "CPRAYBILLCODE", "CPRAYBILLHID", "CPRAYBILLROWNO", "CPRAYTYPECODE", "CPRICEAUDIT_BB1ID", "CPRICEAUDIT_BID", "CPRICEAUDITID", "CPRODUCTORID", "CPROJECTID", "CPROJECTTASKID", "CQPBASESCHEMEID", "CQTUNITID", "CQUALITYLEVELID", "CRECECOUNTRYID", "CROWNO", "CSENDCOUNTRYID", "CSOURCEBID", "CSOURCEID", "CSOURCETYPECODE", "CTAXCODEID", "CTAXCOUNTRYID", "CUNITID", "CVENDDEVADDRID", "CVENDDEVAREAID", "DBILLDATE", "DCORRECTDATE", "DPLANARRVDATE", "DR", "FBUYSELLFLAG", "FISACTIVE", "FTAXTYPEFLAG", "NACCCANCELINVMNY", "NACCUMARRVNUM", "NACCUMDEVNUM", "NACCUMINVOICEMNY", "NACCUMINVOICENUM", "NACCUMPICKUPNUM", "NACCUMRPNUM", "NACCUMSTORENUM", "NACCUMWASTNUM", "NASTNUM", "NBACKARRVNUM", "NBACKSTORENUM", "NCALCOSTMNY", "NCALTAXMNY", "NEXCHANGERATE", "NFEEMNY", "NGLOBALEXCHGRATE", "NGLOBALMNY", "NGLOBALTAXMNY", "NGROUPEXCHGRATE", "NGROUPMNY", "NGROUPTAXMNY", "NITEMDISCOUNTRATE", "NMNY", "NNETPRICE", "NNOSUBTAX", "NNOSUBTAXRATE", "NNUM", "NORIGMNY", "NORIGNETPRICE", "NORIGPRICE", "NORIGTAXMNY", "NORIGTAXNETPRICE", "NORIGTAXPRICE", "NPACKNUM", "NPRICE", "NQTNETPRICE", "NQTORIGNETPRICE", "NQTORIGPRICE", "NQTORIGTAXNETPRC", "NQTORIGTAXPRICE", "NQTPRICE", "NQTTAXNETPRICE", "NQTTAXPRICE", "NQTUNITNUM", "NSUPRSNUM", "NTAX", "NTAXMNY", "NTAXNETPRICE", "NTAXPRICE", "NTAXRATE", "NVOLUMN", "NWEIGHT", "PK_APFINANCEORG", "PK_APFINANCEORG_V", "PK_APLIABCENTER", "PK_APLIABCENTER_V", "PK_ARRLIABCENTER", "PK_ARRLIABCENTER_V", "PK_ARRVSTOORG", "PK_ARRVSTOORG_V", "PK_BATCHCODE", "PK_DISCOUNT", "PK_FLOWSTOCKORG", "PK_FLOWSTOCKORG_V", "PK_GROUP", "PK_MATERIAL", "PK_ORDER", "PK_ORDER_B", "PK_ORG", "PK_ORG_V", "PK_PSFINANCEORG", "PK_PSFINANCEORG_V", "PK_RECEIVEADDRESS", "PK_RECVSTORDOC", "PK_REQCORP", "PK_REQDEPT", "PK_REQDEPT_V", "PK_REQSTOORG", "PK_REQSTOORG_V", "PK_REQSTORDOC", "PK_SRCMATERIAL", "PK_SRCORDER_B", "PK_SUPPLIER", "TS", "VBATCHCODE", "VBDEF1", "VBDEF10", "VBDEF11", "VBDEF12", "VBDEF13", "VBDEF14", "VBDEF15", "VBDEF16", "VBDEF17", "VBDEF18", "VBDEF19", "VBDEF2", "VBDEF20", "VBDEF3", "VBDEF4", "VBDEF5", "VBDEF6", "VBDEF7", "VBDEF8", "VBDEF9", "VBMEMO", "VCHANGERATE", "VCONTRACTCODE", "VECBILLCODE", "VFIRSTCODE", "VFIRSTROWNO", "VFIRSTTRANTYPE", "VFREE1", "VFREE10", "VFREE2", "VFREE3", "VFREE4", "VFREE5", "VFREE6", "VFREE7", "VFREE8", "VFREE9", "VPRICEAUDITCODE", "VQTUNITRATE", "VSOURCECODE", "VSOURCEROWNO", "VSOURCETRANTYPE", "VVENDDEVADDR", "VVENDINVENTORYCODE", "VVENDINVENTORYNAME") AS 
+  (select r.vbillcode, b."BARRIVECLOSE",b."BBORROWPUR",b."BINVOICECLOSE",b."BLARGESS",b."BPAYCLOSE",b."BRECEIVEPLAN",b."BSTOCKCLOSE",b."BTRANSCLOSED",b."BTRIATRADEFLAG",b."CASSCUSTID",b."CASTUNITID",b."CCONTRACTID",b."CCONTRACTROWID",b."CCURRENCYID",b."CDESTIAREAID",b."CDESTICOUNTRYID",b."CDEVADDRID",b."CDEVAREAID",b."CECBILLBID",b."CECBILLID",b."CECTYPECODE",b."CFFILEID",b."CFIRSTBID",b."CFIRSTID",b."CFIRSTTYPECODE",b."CHANDLER",b."CORIGAREAID",b."CORIGCOUNTRYID",b."CORIGCURRENCYID",b."CPRAYBILLBID",b."CPRAYBILLCODE",b."CPRAYBILLHID",b."CPRAYBILLROWNO",b."CPRAYTYPECODE",b."CPRICEAUDIT_BB1ID",b."CPRICEAUDIT_BID",b."CPRICEAUDITID",b."CPRODUCTORID",b."CPROJECTID",b."CPROJECTTASKID",b."CQPBASESCHEMEID",b."CQTUNITID",b."CQUALITYLEVELID",b."CRECECOUNTRYID",b."CROWNO",b."CSENDCOUNTRYID",b."CSOURCEBID",b."CSOURCEID",b."CSOURCETYPECODE",b."CTAXCODEID",b."CTAXCOUNTRYID",b."CUNITID",b."CVENDDEVADDRID",b."CVENDDEVAREAID",b."DBILLDATE",b."DCORRECTDATE",b."DPLANARRVDATE",b."DR",b."FBUYSELLFLAG",b."FISACTIVE",b."FTAXTYPEFLAG",b."NACCCANCELINVMNY",b."NACCUMARRVNUM",b."NACCUMDEVNUM",b."NACCUMINVOICEMNY",b."NACCUMINVOICENUM",b."NACCUMPICKUPNUM",b."NACCUMRPNUM",b."NACCUMSTORENUM",b."NACCUMWASTNUM",b."NASTNUM",b."NBACKARRVNUM",b."NBACKSTORENUM",b."NCALCOSTMNY",b."NCALTAXMNY",b."NEXCHANGERATE",b."NFEEMNY",b."NGLOBALEXCHGRATE",b."NGLOBALMNY",b."NGLOBALTAXMNY",b."NGROUPEXCHGRATE",b."NGROUPMNY",b."NGROUPTAXMNY",b."NITEMDISCOUNTRATE",b."NMNY",b."NNETPRICE",b."NNOSUBTAX",b."NNOSUBTAXRATE",b."NNUM",b."NORIGMNY",b."NORIGNETPRICE",b."NORIGPRICE",b."NORIGTAXMNY",b."NORIGTAXNETPRICE",b."NORIGTAXPRICE",b."NPACKNUM",b."NPRICE",b."NQTNETPRICE",b."NQTORIGNETPRICE",b."NQTORIGPRICE",b."NQTORIGTAXNETPRC",b."NQTORIGTAXPRICE",b."NQTPRICE",b."NQTTAXNETPRICE",b."NQTTAXPRICE",b."NQTUNITNUM",b."NSUPRSNUM",b."NTAX",b."NTAXMNY",b."NTAXNETPRICE",b."NTAXPRICE",b."NTAXRATE",b."NVOLUMN",b."NWEIGHT",b."PK_APFINANCEORG",b."PK_APFINANCEORG_V",b."PK_APLIABCENTER",b."PK_APLIABCENTER_V",b."PK_ARRLIABCENTER",b."PK_ARRLIABCENTER_V",b."PK_ARRVSTOORG",b."PK_ARRVSTOORG_V",b."PK_BATCHCODE",b."PK_DISCOUNT",b."PK_FLOWSTOCKORG",b."PK_FLOWSTOCKORG_V",b."PK_GROUP",b."PK_MATERIAL",b."PK_ORDER",b."PK_ORDER_B",b."PK_ORG",b."PK_ORG_V",b."PK_PSFINANCEORG",b."PK_PSFINANCEORG_V",b."PK_RECEIVEADDRESS",b."PK_RECVSTORDOC",b."PK_REQCORP",b."PK_REQDEPT",b."PK_REQDEPT_V",b."PK_REQSTOORG",b."PK_REQSTOORG_V",b."PK_REQSTORDOC",b."PK_SRCMATERIAL",b."PK_SRCORDER_B",b."PK_SUPPLIER",b."TS",b."VBATCHCODE",b."VBDEF1",b."VBDEF10",b."VBDEF11",b."VBDEF12",b."VBDEF13",b."VBDEF14",b."VBDEF15",b."VBDEF16",b."VBDEF17",b."VBDEF18",b."VBDEF19",b."VBDEF2",b."VBDEF20",b."VBDEF3",b."VBDEF4",b."VBDEF5",b."VBDEF6",b."VBDEF7",b."VBDEF8",b."VBDEF9",b."VBMEMO",b."VCHANGERATE",b."VCONTRACTCODE",b."VECBILLCODE",b."VFIRSTCODE",b."VFIRSTROWNO",b."VFIRSTTRANTYPE",b."VFREE1",b."VFREE10",b."VFREE2",b."VFREE3",b."VFREE4",b."VFREE5",b."VFREE6",b."VFREE7",b."VFREE8",b."VFREE9",b."VPRICEAUDITCODE",b."VQTUNITRATE",b."VSOURCECODE",b."VSOURCEROWNO",b."VSOURCETRANTYPE",b."VVENDDEVADDR",b."VVENDINVENTORYCODE",b."VVENDINVENTORYNAME" from po_order r join po_order_b b on r.pk_order = b.pk_order  where   nvl(r.forderstatus,0) = 3 and nvl(r.dr,0) = 0 and nvl(b.dr,0) = 0);
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_PORTDOC
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_PORTDOC" ("PID", "INNERCODE", "NAME", "PK_DEFDOC") AS 
+  select b.PID,b.INNERCODE,b.NAME,b.PK_DEFDOC from bd_defdoc b left join bd_defdoclist a on a.pk_defdoclist=b.pk_defdoclist where a.code='Harbor' and (b.PID!='~' or b.pid!=null);
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_PRAYBILL
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_PRAYBILL" ("VBILLCODE", "BCANPURCHASEORGEDIT", "BISARRANGE", "BISGENSAORDER", "BPUBLISHTOEC", "BROWCLOSE", "CASSCUSTID", "CASTUNITID", "CFFILEID", "CFIRSTBID", "CFIRSTID", "CFIRSTTYPECODE", "CORDERTRANTYPECODE", "CPRODUCTORID", "CPROJECTID", "CPROJECTTASKID", "CROWNO", "CSOURCEBID", "CSOURCEID", "CSOURCETYPECODE", "CUNITID", "DBILLDATE", "DR", "DREQDATE", "DSUGGESTDATE", "NACCUMULATENUM", "NASTNUM", "NGENCT", "NNUM", "NPRICEAUDITBILL", "NQUOTEBILL", "NTAXMNY", "NTAXPRICE", "PK_BATCHCODE", "PK_CUSTOMER", "PK_EMPLOYEE", "PK_GROUP", "PK_MATERIAL", "PK_ORG", "PK_ORG_V", "PK_PRAYBILL", "PK_PRAYBILL_B", "PK_PRODUCT", "PK_PRODUCT_V", "PK_PURCHASEORG", "PK_PURCHASEORG_V", "PK_REQDEPT", "PK_REQDEPT_V", "PK_REQSTOORG", "PK_REQSTOORG_V", "PK_REQSTOR", "PK_SRCMATERIAL", "PK_SUGGESTSUPPLIER", "TS", "VBATCHCODE", "VBDEF1", "VBDEF10", "VBDEF11", "VBDEF12", "VBDEF13", "VBDEF14", "VBDEF15", "VBDEF16", "VBDEF17", "VBDEF18", "VBDEF19", "VBDEF2", "VBDEF20", "VBDEF3", "VBDEF4", "VBDEF5", "VBDEF6", "VBDEF7", "VBDEF8", "VBDEF9", "VBMEMO", "VCHANGERATE", "VFIRSTCODE", "VFIRSTROWNO", "VFIRSTTRANTYPE", "VFREE1", "VFREE10", "VFREE2", "VFREE3", "VFREE4", "VFREE5", "VFREE6", "VFREE7", "VFREE8", "VFREE9", "VSOURCECODE", "VSOURCEROWNO", "VSRCTRANTYPECODE") AS 
+  (select r.vbillcode  ,b."BCANPURCHASEORGEDIT",b."BISARRANGE",b."BISGENSAORDER",b."BPUBLISHTOEC",b."BROWCLOSE",b."CASSCUSTID",b."CASTUNITID",b."CFFILEID",b."CFIRSTBID",b."CFIRSTID",b."CFIRSTTYPECODE",b."CORDERTRANTYPECODE",b."CPRODUCTORID",b."CPROJECTID",b."CPROJECTTASKID",b."CROWNO",b."CSOURCEBID",b."CSOURCEID",b."CSOURCETYPECODE",b."CUNITID",b."DBILLDATE",b."DR",b."DREQDATE",b."DSUGGESTDATE",b."NACCUMULATENUM",b."NASTNUM",b."NGENCT",b."NNUM",b."NPRICEAUDITBILL",b."NQUOTEBILL",b."NTAXMNY",b."NTAXPRICE",b."PK_BATCHCODE",b."PK_CUSTOMER",b."PK_EMPLOYEE",b."PK_GROUP",b."PK_MATERIAL",b."PK_ORG",b."PK_ORG_V",b."PK_PRAYBILL",b."PK_PRAYBILL_B",b."PK_PRODUCT",b."PK_PRODUCT_V",b."PK_PURCHASEORG",b."PK_PURCHASEORG_V",b."PK_REQDEPT",b."PK_REQDEPT_V",b."PK_REQSTOORG",b."PK_REQSTOORG_V",b."PK_REQSTOR",b."PK_SRCMATERIAL",b."PK_SUGGESTSUPPLIER",b."TS",b."VBATCHCODE",b."VBDEF1",b."VBDEF10",b."VBDEF11",b."VBDEF12",b."VBDEF13",b."VBDEF14",b."VBDEF15",b."VBDEF16",b."VBDEF17",b."VBDEF18",b."VBDEF19",b."VBDEF2",b."VBDEF20",b."VBDEF3",b."VBDEF4",b."VBDEF5",b."VBDEF6",b."VBDEF7",b."VBDEF8",b."VBDEF9",b."VBMEMO",b."VCHANGERATE",b."VFIRSTCODE",b."VFIRSTROWNO",b."VFIRSTTRANTYPE",b."VFREE1",b."VFREE10",b."VFREE2",b."VFREE3",b."VFREE4",b."VFREE5",b."VFREE6",b."VFREE7",b."VFREE8",b."VFREE9",b."VSOURCECODE",b."VSOURCEROWNO",b."VSRCTRANTYPECODE" from  po_praybill r join po_praybill_b b  on r.pk_praybill =b.pk_praybill  where   nvl(r.fbillstatus  ,0) = 3 and nvl(r.dr,0) = 0 and nvl(b.dr,0) = 0);
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_PROJECT
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_PROJECT" ("PH_PK", "PH_CODE", "PH_NAME", "ORG_PK", "ORG_CODE", "ORG_NAME") AS 
   (
-  select c.code, c.name, c.pk_incoterm, c.pk_org, c.pk_group
-  from bd_incoterm c );
+select 
+--ph.pk_projectœÓƒø÷˜º¸
+ph.pk_project as  ph_pk,
+--ph.project_code œÓƒø±‡¬Î
+ph.project_code as ph_code,
+--ph.project_name œÓƒø√˚≥∆
+ph.project_name  as ph_name,
+--∑÷≈‰µΩ◊È÷Ø
+org.pk_org as org_pk,
+org.code as org_code,
+org.name as org_name
+from bd_project ph
+inner join bd_project_b pb
+on ph.  pk_project = pb.  pk_project 
+inner join org_orgs org on   pb.   pk_parti_org  = org.pk_org
+where nvl(ph.dr,0)=0 and nvl(pb.dr,0)=0 
+--  enablestate  ∆Ù”√◊¥Ã¨  enablestate int  ∆Ù”√◊¥Ã¨   1=Œ¥∆Ù”√£¨2=“—∆Ù”√£¨3=“—Õ£”√£¨ 
+and ph.enablestate = 2
+
+);
 --------------------------------------------------------
---  DDL for View VIEW_BPM_ARRIVEORDER
+--  DDL for View VIEW_BPM_PSN
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_ARRIVEORDER" ("VBILLCODE", "BBACKREFORDER", "BC_VVENDBATCHCODE", "BFAFLAG", "BLETGOSTATE", "BPRESENT", "BPRESENTSOURCE", "BTRANSASSET", "BTRIATRADEFLAG", "CASSCUSTID", "CASTUNITID", "CCURRENCYID", "CFFILEID", "CFIRSTBID", "CFIRSTID", "CFIRSTTYPECODE", "CORIGCURRENCYID", "CPASSBOLLROWNO", "CPRODUCTORID", "CPROJECTID", "CPROJECTTASKID", "CQUALITYLEVELID", "CRECECOUNTRYID", "CREPORTERID", "CROWNO", "CSENDCOUNTRYID", "CSOURCEARRIVEBID", "CSOURCEARRIVEID", "CSOURCEBID", "CSOURCEID", "CSOURCETYPECODE", "CTAXCOUNTRYID", "CUNITID", "DBILLDATE", "DINVALIDDATE", "DPLANRECEIVEDATE", "DPRODUCEDATE", "DR", "DREPORTDATE", "FBUYSELLFLAG", "FPRODUCTCLASS", "FTAXTYPEFLAG", "IVALIDDAY", "NACCUMBACKNUM", "NACCUMCHECKNUM", "NACCUMLETGOINNUM", "NACCUMLETGONUM", "NACCUMREPLNUM", "NACCUMSTORENUM", "NASTNUM", "NELIGNUM", "NEXCHANGERATE", "NMNY", "NNOTELIGNUM", "NNUM", "NORIGMNY", "NORIGPRICE", "NORIGTAXMNY", "NORIGTAXPRICE", "NPLANASTNUM", "NPLANNUM", "NPRESENTASTNUM", "NPRESENTNUM", "NPRICE", "NTAX", "NTAXMNY", "NTAXPRICE", "NTAXRATE", "NWASTASTNUM", "NWASTNUM", "PK_APFINANCEORG", "PK_APFINANCEORG_V", "PK_APLIABCENTER", "PK_APLIABCENTER_V", "PK_ARRIVEORDER", "PK_ARRIVEORDER_B", "PK_ARRLIABCENTER", "PK_ARRLIABCENTER_V", "PK_BATCHCODE", "PK_GROUP", "PK_MATERIAL", "PK_ORDER", "PK_ORDER_B", "PK_ORDER_BB1", "PK_ORG", "PK_ORG_V", "PK_PASSBILL", "PK_PASSBILL_B", "PK_PSFINANCEORG", "PK_PSFINANCEORG_V", "PK_RACK", "PK_RECEIVESTORE", "PK_REQSTOORG", "PK_REQSTOORG_V", "PK_REQSTORE", "PK_SRCMATERIAL", "TS", "VBACKREASONB", "VBATCHCODE", "VBDEF1", "VBDEF10", "VBDEF11", "VBDEF12", "VBDEF13", "VBDEF14", "VBDEF15", "VBDEF16", "VBDEF17", "VBDEF18", "VBDEF19", "VBDEF2", "VBDEF20", "VBDEF3", "VBDEF4", "VBDEF5", "VBDEF6", "VBDEF7", "VBDEF8", "VBDEF9", "VCHANGERATE", "VFIRSTCODE", "VFIRSTROWNO", "VFIRSTTRANTYPE", "VFREE1", "VFREE10", "VFREE2", "VFREE3", "VFREE4", "VFREE5", "VFREE6", "VFREE7", "VFREE8", "VFREE9", "VMEMOB", "VPASSBILLCODE", "VSOURCECODE", "VSOURCEROWNO", "VSOURCETRANTYPE") AS 
-  (select r.vbillcode ,b."BBACKREFORDER",b."BC_VVENDBATCHCODE",b."BFAFLAG",b."BLETGOSTATE",b."BPRESENT",b."BPRESENTSOURCE",b."BTRANSASSET",b."BTRIATRADEFLAG",b."CASSCUSTID",b."CASTUNITID",b."CCURRENCYID",b."CFFILEID",b."CFIRSTBID",b."CFIRSTID",b."CFIRSTTYPECODE",b."CORIGCURRENCYID",b."CPASSBOLLROWNO",b."CPRODUCTORID",b."CPROJECTID",b."CPROJECTTASKID",b."CQUALITYLEVELID",b."CRECECOUNTRYID",b."CREPORTERID",b."CROWNO",b."CSENDCOUNTRYID",b."CSOURCEARRIVEBID",b."CSOURCEARRIVEID",b."CSOURCEBID",b."CSOURCEID",b."CSOURCETYPECODE",b."CTAXCOUNTRYID",b."CUNITID",b."DBILLDATE",b."DINVALIDDATE",b."DPLANRECEIVEDATE",b."DPRODUCEDATE",b."DR",b."DREPORTDATE",b."FBUYSELLFLAG",b."FPRODUCTCLASS",b."FTAXTYPEFLAG",b."IVALIDDAY",b."NACCUMBACKNUM",b."NACCUMCHECKNUM",b."NACCUMLETGOINNUM",b."NACCUMLETGONUM",b."NACCUMREPLNUM",b."NACCUMSTORENUM",b."NASTNUM",b."NELIGNUM",b."NEXCHANGERATE",b."NMNY",b."NNOTELIGNUM",b."NNUM",b."NORIGMNY",b."NORIGPRICE",b."NORIGTAXMNY",b."NORIGTAXPRICE",b."NPLANASTNUM",b."NPLANNUM",b."NPRESENTASTNUM",b."NPRESENTNUM",b."NPRICE",b."NTAX",b."NTAXMNY",b."NTAXPRICE",b."NTAXRATE",b."NWASTASTNUM",b."NWASTNUM",b."PK_APFINANCEORG",b."PK_APFINANCEORG_V",b."PK_APLIABCENTER",b."PK_APLIABCENTER_V",b."PK_ARRIVEORDER",b."PK_ARRIVEORDER_B",b."PK_ARRLIABCENTER",b."PK_ARRLIABCENTER_V",b."PK_BATCHCODE",b."PK_GROUP",b."PK_MATERIAL",b."PK_ORDER",b."PK_ORDER_B",b."PK_ORDER_BB1",b."PK_ORG",b."PK_ORG_V",b."PK_PASSBILL",b."PK_PASSBILL_B",b."PK_PSFINANCEORG",b."PK_PSFINANCEORG_V",b."PK_RACK",b."PK_RECEIVESTORE",b."PK_REQSTOORG",b."PK_REQSTOORG_V",b."PK_REQSTORE",b."PK_SRCMATERIAL",b."TS",b."VBACKREASONB",b."VBATCHCODE",b."VBDEF1",b."VBDEF10",b."VBDEF11",b."VBDEF12",b."VBDEF13",b."VBDEF14",b."VBDEF15",b."VBDEF16",b."VBDEF17",b."VBDEF18",b."VBDEF19",b."VBDEF2",b."VBDEF20",b."VBDEF3",b."VBDEF4",b."VBDEF5",b."VBDEF6",b."VBDEF7",b."VBDEF8",b."VBDEF9",b."VCHANGERATE",b."VFIRSTCODE",b."VFIRSTROWNO",b."VFIRSTTRANTYPE",b."VFREE1",b."VFREE10",b."VFREE2",b."VFREE3",b."VFREE4",b."VFREE5",b."VFREE6",b."VFREE7",b."VFREE8",b."VFREE9",b."VMEMOB",b."VPASSBILLCODE",b."VSOURCECODE",b."VSOURCEROWNO",b."VSOURCETRANTYPE" from  po_arriveorder r join po_arriveorder_b b  on r.pk_arriveorder =b.pk_arriveorder  where   nvl(r.fbillstatus ,0) = 3 and nvl(r.dr,0) = 0 and nvl(b.dr,0) = 0)
-;
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_PSN" ("ORG_PK", "ORG_CODE", "ORG_NAME", "PSN_PK", "PSN_CODE", "PSN_NAME", "CT_BEGINDATE", "CT_ENDDATE", "PSNCL_PK", "PSNCL_CODE", "PSNCL_NAME", "PJOB_ORG2_PK", "PJOB_ORG2_CODE", "PJOB_ORG2_NAME", "PJOB_PK_DEPT", "PJOB_DEPT_CODE", "PJOB_DEPT_NAME", "PJOB_ISMAINJOB", "PJOB_INDUTYDATE", "JOB_PK", "JOB_CODE", "JOB_NAME", "JOBLEVEL_PK", "JOBLEVEL_CODE", "JOBLEVEL_NAME", "POST_PK", "POST_CODE", "POST_NAME", "TRIAL_FLAG", "TRIAL_TYPE", "PK_PSNJOB", "PK_PSNORG") AS 
+  (
+
+SELECT
+  --À˘‘⁄◊È÷Ø
+  org.pk_org AS org_pk,
+  org.code   AS org_code,
+  org.name   AS org_name,
+  --»À‘±÷˜º¸
+  psn.pk_psndoc AS psn_pk,
+  --ª˘±æ–≈œ¢
+  psn.code AS psn_code,
+  psn.name AS psn_name,
+  
+  --∫œÕ¨–≈œ¢
+  ctrt.begindate as ct_begindate,
+  ctrt.enddate  as ct_enddate,
+  --»À‘±¿‡±
+  psncl.pk_psncl  as psncl_pk,
+    psncl.code  as psncl_code,
+  psncl.name   as psncl_name ,
+
+  --»Œ÷∞◊È÷Ø
+  org2.pk_org AS pjob_org2_pk,
+  org2.code   AS pjob_org2_code,
+  org2.name   AS pjob_org2_name,
+ 
+  -- »Œ÷∞ pk_dept ≤ø√≈
+  pjob.pk_dept AS pjob_pk_dept,
+  dept.code    AS pjob_dept_code,
+  dept.name    AS pjob_dept_name,
+   --÷˜÷∞
+  pjob.ismainjob AS pjob_ismainjob ,
+  --»Î÷∞»’∆⁄
+  pjob.indutydate as pjob_indutydate,
+  
+  --÷∞ŒÒ
+  pjob.pk_job as job_pk,
+  ojob.jobcode as job_code,
+  ojob.jobname  as job_name,
+  --÷∞º∂
+  joblevel.pk_joblevel as joblevel_pk,
+  joblevel.code as joblevel_code,
+    joblevel.name as joblevel_name,
+
+  --∏⁄Œª–≈œ¢
+  pjob. pk_post AS post_pk,
+  post.postcode AS post_code,
+  post.postname AS post_name,
+  
+  -- ‘”√«Èøˆ
+  hjob.trial_flag as trial_flag,
+  hjob. trial_type as  trial_type,
+  
+  hjob.PK_PSNJOB,
+  hjob.PK_PSNORG
+  
+FROM bd_psndoc psn
+LEFT JOIN org_orgs org
+ON psn.pk_org = org.pk_org
+
+-- hi_psndoc_ctrt ∫œÕ¨–≈œ¢
+left join hi_psndoc_ctrt ctrt on psn.pk_psndoc = ctrt.pk_psndoc
+
+LEFT JOIN bd_psnjob pjob
+ON psn.pk_psndoc = pjob.pk_psndoc
+
+LEFT JOIN hi_psnjob hjob
+ON psn.pk_psndoc = hjob.pk_psndoc
+
+LEFT JOIN bd_psncl psncl
+ON pjob.pk_psncl = psncl.pk_psncl 
+
+LEFT JOIN org_orgs org2
+ON pjob.pk_org = org2.pk_org
+
+
+LEFT JOIN org_dept dept
+ON pjob.pk_dept = dept.pk_dept
+
+LEFT JOIN om_job ojob
+ON pjob.pk_job = ojob.pk_job
+
+left join om_levelrelation levlra on ojob.pk_job= levlra.pk_job
+
+left join om_joblevel joblevel on levlra.pk_joblevel = joblevel.pk_joblevel
+
+LEFT JOIN om_post post
+ON pjob. pk_post = post.pk_post
+
+where nvl(psn.dr,0)=0 and nvl(pjob.dr,0)=0 
+);
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_PSNLZ
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_PSNLZ" ("ORG_PK", "ORG_CODE", "ORG_NAME", "PSN_PK", "PSN_CODE", "PSN_NAME", "CT_BEGINDATE", "CT_ENDDATE", "PSNCL_PK", "PSNCL_CODE", "PSNCL_NAME", "PJOB_ORG2_PK", "PJOB_ORG2_CODE", "PJOB_ORG2_NAME", "PJOB_PK_DEPT", "PJOB_DEPT_CODE", "PJOB_DEPT_NAME", "PJOB_ISMAINJOB", "PJOB_INDUTYDATE", "ENDDATE", "JOB_PK", "JOB_CODE", "JOB_NAME", "JOBLEVEL_PK", "JOBLEVEL_CODE", "JOBLEVEL_NAME", "POST_PK", "POST_CODE", "POST_NAME", "TRIAL_FLAG", "TRIAL_TYPE", "PK_PSNJOB", "PK_PSNORG") AS 
+  (SELECT
+    --À˘‘⁄◊È÷Ø
+    org.pk_org AS org_pk,
+    org.code   AS org_code,
+    org.name   AS org_name,
+    --»À‘±÷˜º¸
+    psn.pk_psndoc AS psn_pk,
+    --ª˘±æ–≈œ¢
+    psn.code AS psn_code,
+    psn.name AS psn_name,
+    --∫œÕ¨–≈œ¢
+    ctrt.begindate AS ct_begindate,
+    ctrt.enddate   AS ct_enddate,
+    --»À‘±¿‡±
+    psncl.pk_psncl AS psncl_pk,
+    psncl.code     AS psncl_code,
+    psncl.name     AS psncl_name ,
+    --»Œ÷∞◊È÷Ø
+    org2.pk_org AS pjob_org2_pk,
+    org2.code   AS pjob_org2_code,
+    org2.name   AS pjob_org2_name,
+    -- »Œ÷∞ pk_dept ≤ø√≈
+    pjob.pk_dept AS pjob_pk_dept,
+    dept.code    AS pjob_dept_code,
+    dept.name    AS pjob_dept_name,
+    --÷˜÷∞
+    pjob.ismainjob AS pjob_ismainjob ,
+    --»Î÷∞»’∆⁄
+    pjob.begindate AS pjob_indutydate,
+    pjob.enddate,
+    --÷∞ŒÒ
+    pjob.pk_job  AS job_pk,
+    ojob.jobcode AS job_code,
+    ojob.jobname AS job_name,
+    --÷∞º∂
+    joblevel.pk_joblevel AS joblevel_pk,
+    joblevel.code        AS joblevel_code,
+    joblevel.name        AS joblevel_name,
+    --∏⁄Œª–≈œ¢
+    pjob. pk_post AS post_pk,
+    post.postcode AS post_code,
+    post.postname AS post_name,
+    pjob.trial_flag,
+    pjob.trial_type,
+    pjob.pk_psnjob,
+    pjob.pk_psnorg
+  FROM bd_psndoc psn
+  LEFT JOIN org_orgs org
+  ON psn.pk_org = org.pk_org
+    -- hi_psndoc_ctrt ∫œÕ¨–≈œ¢
+  LEFT JOIN hi_psndoc_ctrt ctrt
+  ON psn.pk_psndoc = ctrt.pk_psndoc
+  LEFT JOIN hi_psnjob pjob
+  ON psn.pk_psndoc = pjob.pk_psndoc
+  LEFT JOIN bd_psncl psncl
+  ON pjob.pk_psncl = psncl.pk_psncl
+  LEFT JOIN org_orgs org2
+  ON pjob.pk_org = org2.pk_org
+  LEFT JOIN org_dept dept
+  ON pjob.pk_dept = dept.pk_dept
+  LEFT JOIN om_job ojob
+  ON pjob.pk_job = ojob.pk_job
+  LEFT JOIN om_levelrelation levlra
+  ON ojob.pk_job= levlra.pk_job
+  LEFT JOIN om_joblevel joblevel
+  ON levlra.pk_joblevel = joblevel.pk_joblevel
+  LEFT JOIN om_post post
+  ON pjob. pk_post   = post.pk_post
+  WHERE NVL(psn.dr,0)=0
+  AND NVL(pjob.dr,0) =0
+  AND ismainjob      ='Y'
+  AND pjob.enddate  IS NULL
+  );
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_PSNTZ
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_PSNTZ" ("ORG_PK", "ORG_CODE", "ORG_NAME", "PSN_PK", "PSN_CODE", "PSN_NAME", "ENABLESTATE", "CT_BEGINDATE", "CT_ENDDATE", "PSNCL_PK", "PSNCL_CODE", "PSNCL_NAME", "PJOB_ORG2_PK", "PJOB_ORG2_CODE", "PJOB_ORG2_NAME", "PJOB_PK_DEPT", "PJOB_DEPT_CODE", "PJOB_DEPT_NAME", "PJOB_ISMAINJOB", "PJOB_INDUTYDATE", "ENDDATE", "JOB_PK", "JOB_CODE", "JOB_NAME", "JOBLEVEL_PK", "JOBLEVEL_CODE", "JOBLEVEL_NAME", "POST_PK", "POST_CODE", "POST_NAME", "PK_PSNJOB", "PK_PSNORG", "PK_POSTSERIES", "TRIAL_FLAG", "SERIES", "PK_JOBRANK", "JOBRANKCODE", "JOBRANKNAME") AS 
+  (SELECT
+    --À˘‘⁄◊È÷Ø
+    org.pk_org AS org_pk,
+    org.code   AS org_code,
+    org.name   AS org_name,
+    --»À‘±÷˜º¸
+    psn.pk_psndoc AS psn_pk,
+    --ª˘±æ–≈œ¢
+    psn.code AS psn_code,
+    psn.name AS psn_name,
+    psn.enablestate,
+    --∫œÕ¨–≈œ¢
+    ctrt.begindate AS ct_begindate,
+    ctrt.enddate   AS ct_enddate,
+    --»À‘±¿‡±
+    psncl.pk_psncl AS psncl_pk,
+    psncl.code     AS psncl_code,
+    psncl.name     AS psncl_name ,
+    --»Œ÷∞◊È÷Ø
+    org2.pk_org AS pjob_org2_pk,
+    org2.code   AS pjob_org2_code,
+    org2.name   AS pjob_org2_name,
+    -- »Œ÷∞ pk_dept ≤ø√≈
+    pjob.pk_dept AS pjob_pk_dept,
+    dept.code    AS pjob_dept_code,
+    dept.name    AS pjob_dept_name,
+    --÷˜÷∞
+    pjob.ismainjob AS pjob_ismainjob ,
+    --»Î÷∞»’∆⁄
+    pjob.begindate AS pjob_indutydate,
+    pjob.enddate,
+    --÷∞ŒÒ
+    pjob.pk_job  AS job_pk,
+    ojob.jobcode AS job_code,
+    ojob.jobname AS job_name,
+    --÷∞º∂
+    joblevel.pk_joblevel AS joblevel_pk,
+    joblevel.code        AS joblevel_code,
+    joblevel.name        AS joblevel_name,
+    --∏⁄Œª–≈œ¢
+    pjob. pk_post AS post_pk,
+    post.postcode AS post_code,
+    post.postname AS post_name,
+    pjob.pk_psnjob,
+    pjob.pk_psnorg,
+    pjob.pk_postseries,
+    pjob.trial_flag,
+    pjob.series,
+    --÷∞µ»
+    jrank.pk_jobrank,
+    jrank.jobrankcode ,
+    jrank.jobrankname
+  FROM bd_psndoc psn
+  LEFT JOIN org_orgs org
+  ON psn.pk_org = org.pk_org
+    -- hi_psndoc_ctrt ∫œÕ¨–≈œ¢
+  LEFT JOIN hi_psndoc_ctrt ctrt
+  ON psn.pk_psndoc = ctrt.pk_psndoc
+  LEFT JOIN hi_psnjob pjob
+  ON psn.pk_psndoc = pjob.pk_psndoc
+  LEFT JOIN bd_psncl psncl
+  ON pjob.pk_psncl = psncl.pk_psncl
+  LEFT JOIN org_orgs org2
+  ON pjob.pk_org = org2.pk_org
+  LEFT JOIN org_dept dept
+  ON pjob.pk_dept = dept.pk_dept
+  LEFT JOIN om_job ojob
+  ON pjob.pk_job = ojob.pk_job
+  LEFT JOIN om_levelrelation levlra
+  ON ojob.pk_job= levlra.pk_job
+  LEFT JOIN om_joblevel joblevel
+  ON levlra.pk_joblevel = joblevel.pk_joblevel
+  LEFT JOIN om_post post
+  ON pjob. pk_post = post.pk_post
+  LEFT JOIN om_jobrank jrank
+  ON levlra.jobrank   =jrank.pk_jobrank
+  WHERE NVL(psn.dr,0) =0
+  AND NVL(pjob.dr,0)  =0
+  AND pjob.enddate   IS NULL
+  AND psn.enablestate!=3
+  );
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_PSNXL
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_PSNXL" ("CODE", "NAME", "MNECODE", "PK_DEFDOC", "PID") AS 
+  SELECT DISTINCT code,
+  name,
+  mnecode,
+  pk_defdoc,
+  pid
+FROM bd_defdoc
+WHERE 11          = 11
+AND ( enablestate = 2 )
+and PK_DEFDOCLIST='1001Z71000000000GP4V';
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_PSNZZ
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_PSNZZ" ("ORG_PK", "ORG_CODE", "ORG_NAME", "PSN_PK", "PSN_CODE", "PSN_NAME", "CT_BEGINDATE", "CT_ENDDATE", "PSNCL_PK", "PSNCL_CODE", "PSNCL_NAME", "PJOB_ORG2_PK", "PJOB_ORG2_CODE", "PJOB_ORG2_NAME", "PJOB_PK_DEPT", "PJOB_DEPT_CODE", "PJOB_DEPT_NAME", "PJOB_ISMAINJOB", "PJOB_INDUTYDATE", "JOB_PK", "JOB_CODE", "JOB_NAME", "JOBLEVEL_PK", "JOBLEVEL_CODE", "JOBLEVEL_NAME", "POST_PK", "POST_CODE", "POST_NAME", "TRIAL_FLAG", "TRIAL_TYPE", "PK_PSNJOB", "PK_PSNORG") AS 
+  (
+SELECT
+  --À˘‘⁄◊È÷Ø
+  org.pk_org AS org_pk,org.code   AS org_code,org.name   AS org_name,
+  --»À‘±÷˜º¸
+  psn.pk_psndoc AS psn_pk,
+  --ª˘±æ–≈œ¢
+  psn.code AS psn_code,psn.name AS psn_name,  
+  --∫œÕ¨–≈œ¢
+  ctrt.begindate as ct_begindate,ctrt.enddate  as ct_enddate,
+  --»À‘±¿‡±
+  psncl.pk_psncl  as psncl_pk,psncl.code  as psncl_code,psncl.name   as psncl_name ,
+  --»Œ÷∞◊È÷Ø
+  org2.pk_org AS pjob_org2_pk,org2.code   AS pjob_org2_code,org2.name   AS pjob_org2_name, 
+  -- »Œ÷∞ pk_dept ≤ø√≈
+  pjob.pk_dept AS pjob_pk_dept,dept.code    AS pjob_dept_code,dept.name    AS pjob_dept_name,
+  --÷˜÷∞
+  pjob.ismainjob AS pjob_ismainjob ,
+  --»Î÷∞»’∆⁄
+  pjob.begindate as pjob_indutydate,  
+  --÷∞ŒÒ
+  pjob.pk_job as job_pk,ojob.jobcode as job_code,ojob.jobname  as job_name,
+  --÷∞º∂
+  joblevel.pk_joblevel as joblevel_pk,joblevel.code as joblevel_code,joblevel.name as joblevel_name,
+  --∏⁄Œª–≈œ¢
+  pjob. pk_post AS post_pk,post.postcode AS post_code,post.postname AS post_name,
+  pjob.trial_flag,pjob.trial_type,pjob.pk_psnjob,pjob.pk_psnorg
+
+FROM bd_psndoc psn
+LEFT JOIN org_orgs org ON psn.pk_org = org.pk_org
+-- hi_psndoc_ctrt ∫œÕ¨–≈œ¢
+left join hi_psndoc_ctrt ctrt on psn.pk_psndoc = ctrt.pk_psndoc
+
+LEFT JOIN hi_psnjob pjob ON psn.pk_psndoc = pjob.pk_psndoc
+
+LEFT JOIN bd_psncl psncl ON pjob.pk_psncl = psncl.pk_psncl 
+
+LEFT JOIN org_orgs org2 ON pjob.pk_org = org2.pk_org
+
+LEFT JOIN org_dept dept ON pjob.pk_dept = dept.pk_dept
+
+LEFT JOIN om_job ojob ON pjob.pk_job = ojob.pk_job
+
+left join om_levelrelation levlra on ojob.pk_job= levlra.pk_job
+
+left join om_joblevel joblevel on levlra.pk_joblevel = joblevel.pk_joblevel
+
+LEFT JOIN om_post post ON pjob. pk_post = post.pk_post
+
+where nvl(psn.dr,0)=0 and nvl(pjob.dr,0)=0 
+and ismainjob='Y' and pjob.enddate is null
+and pjob.trial_flag='Y'
+);
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_PURBILLTYPE
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_PURBILLTYPE" ("ACCOUNTCLASS", "BILLCODERULE", "BILLSTYLE", "BILLTYPENAME", "BILLTYPENAME2", "BILLTYPENAME3", "BILLTYPENAME4", "BILLTYPENAME5", "BILLTYPENAME6", "CANEXTENDTRANSACTION", "CHECKCLASSNAME", "CLASSNAME", "COMP", "COMPONENT", "DATAFINDERCLZ", "DEF1", "DEF2", "DEF3", "DR", "EMENDENUMCLASS", "FORWARDBILLTYPE", "ISACCOUNT", "ISAPPROVEBILL", "ISBIZFLOWBILL", "ISEDITABLEPROPERTY", "ISENABLEBUTTON", "ISENABLETRANSTYPEBCR", "ISLOCK", "ISROOT", "ISTRANSACTION", "NCBRCODE", "NODECODE", "PARENTBILLTYPE", "PK_BILLTYPECODE", "PK_BILLTYPEID", "PK_GROUP", "PK_ORG", "REFERCLASSNAME", "SYSTEMCODE", "TRANSTYPE_CLASS", "TS", "WEBNODECODE", "WHERESTRING") AS 
+  (select "ACCOUNTCLASS","BILLCODERULE","BILLSTYLE","BILLTYPENAME","BILLTYPENAME2","BILLTYPENAME3","BILLTYPENAME4","BILLTYPENAME5","BILLTYPENAME6","CANEXTENDTRANSACTION","CHECKCLASSNAME","CLASSNAME","COMP","COMPONENT","DATAFINDERCLZ","DEF1","DEF2","DEF3","DR","EMENDENUMCLASS","FORWARDBILLTYPE","ISACCOUNT","ISAPPROVEBILL","ISBIZFLOWBILL","ISEDITABLEPROPERTY","ISENABLEBUTTON","ISENABLETRANSTYPEBCR","ISLOCK","ISROOT","ISTRANSACTION","NCBRCODE","NODECODE","PARENTBILLTYPE","PK_BILLTYPECODE","PK_BILLTYPEID","PK_GROUP","PK_ORG","REFERCLASSNAME","SYSTEMCODE","TRANSTYPE_CLASS","TS","WEBNODECODE","WHERESTRING" from bd_billtype  where systemcode in('PO','PURP','MPP') and nvl(dr,0) = 0);
 --------------------------------------------------------
 --  DDL for View VIEW_BPM_REGISTE
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_REGISTE" ("ORG_PK", "ORG_CODE", "ORG_NAME", "BILLNO_PK", "FBMBILLNO", "QIANFA_DATE", "DAOQI_DATE", "SHOUDAO_DATE", "PAYBANK_PK", "PAYBANK_CODE", "PAYBANK_NAME") AS 
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_REGISTE" ("ORG_PK", "ORG_CODE", "ORG_NAME", "BILLNO_PK", "FBMBILLNO", "QIANFA_DATE", "DAOQI_DATE", "SHOUDAO_DATE", "PAYBANK_PK", "PAYBANK_CODE", "PAYBANK_NAME") AS 
   (SELECT
-   --ÁªÑÁªá
+   --◊È÷Ø
     org.pk_org AS org_pk,
     org.code   AS org_code,
     org.name   AS org_name,
-    --NCÁ•®ÊçÆÂè∑‰∏ªÈîÆ
+    --NC∆±æ›∫≈÷˜º¸
     pk_register AS billno_pk,
-    --Á•®ÊçÆÂè∑
+    --∆±æ›∫≈
     fbmbillno AS fbmbillno,
-    --dvoucherdate  Âà∂ËØÅÊó•Êúü Ôºö as Á≠æÂèëÊó•Êúü„ÄÅ
+    --dvoucherdate  ÷∆÷§»’∆⁄ £∫ as «©∑¢»’∆⁄°¢
     dvoucherdate AS qianfa_date,
-    --Âà∞ÊúüÊó•Êúü
+    --µΩ∆⁄»’∆⁄
     enddate AS daoqi_date,
-    --Êî∂Âà∞Êó•Êúü
+    -- ’µΩ»’∆⁄
     gatherdate AS shoudao_date,
-    --ÊâøÂÖëÈì∂Ë°å
+    --≥–∂““¯––
     hidepaybank as paybank_pk,
     bank.code as paybank_code,
     bank.name as paybank_name
@@ -383,171 +1687,248 @@ left join org_dept e on b.respdept=e.pk_dept;
   WHERE NVL(fbm.dr,0)     =0
   AND fbm.BASEINFOSTATUS IN('register','has_invoice')
   
-    --Â¶ÇÊûúÂà§Êñ≠Â∑≤Áªè‰ΩøÁî®Ôºü
+    --»Áπ˚≈–∂œ“—æ≠ π”√£ø
   );
 --------------------------------------------------------
---  DDL for View VIEW_NC_ZUOYECHUYUN
+--  DDL for View VIEW_BPM_REGISTE_BPM
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_NC_ZUOYECHUYUN" ("PK_GROUP", "PK_ORG", "CDPTID", "CTRANTYPEID", "DBILLDATE", "TAUDITTIME", "NNUM") AS 
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_REGISTE_BPM" ("µ•æ›◊¥Ã¨", "≥ˆ∆±»’∆⁄", "µΩ∆⁄»’∆⁄", " ’∆±»’∆⁄", "ªß√˚", "√˚≥∆", "’À∫≈", "PK_REGISTER", "∆±æ›±‡∫≈") AS 
+  SELECT f.baseinfostatus µ•æ›◊¥Ã¨,
+    f.invoicedate ≥ˆ∆±»’∆⁄ ,
+    f.enddate µΩ∆⁄»’∆⁄,
+    f.gatherdate  ’∆±»’∆⁄,
+    a.ACCNAME ªß√˚,
+    a.name √˚≥∆,
+    a.accnum ’À∫≈,
+    f.pk_register,
+    f.fbmbillno ∆±æ›±‡∫≈
+  FROM fbm_register f
+  LEFT OUTER JOIN bd_bankaccsub a
+  ON f.pk_payacc        =a. pk_bankaccsub
+  WHERE NVL(f.dr,0)     =0
+  AND f.BASEINFOSTATUS IN('register','has_invoice');
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_REGISTER
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_REGISTER" ("BASEINFOSTATUS", "INVOICEDATE", "ENDDATE", "GATHERDATE", "PK_REGISTER", "FBMBILLNO", "ACCNAME", "NAME", "ACCNUM", "PK_BANKACCSUB") AS 
+  SELECT F.Baseinfostatus,-- µ•æ›◊¥Ã¨,
+  F.Invoicedate,        -- ≥ˆ∆±»’∆⁄ ,
+  F.Enddate ,           --µΩ∆⁄»’∆⁄,
+  F.Gatherdate ,        -- ’∆±»’∆⁄,
+  F.Pk_Register,
+  F.Fbmbillno,-- ∆±æ›±‡∫≈
+  --“¯––’Àªß
+  A.Accname , --ªß√˚,
+  A.Name ,    --√˚≥∆,
+  A.Accnum ,  --’À∫≈,
+  a. pk_bankaccsub
+FROM fbm_register f
+LEFT OUTER JOIN bd_bankaccsub a
+On F.Pk_Payacc       =A. Pk_Bankaccsub
+Where Baseinfostatus In ('REGISTER','HAS_INVOICE')
+And Nvl(A.Dr,0)=0
+and nvl(f.dr,0)=0;
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_REJECTBILL
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_REJECTBILL" ("PK_ORG", "CAPPLYTIME", "VBILLCODE", "VAPPLYBILLCODE", "VREPORTBILLCODE", "PK_DEPT", "DEPT_CODE", "DEPT_NAM", "INV_CODE", "INV_NAME", "VBATCHCODE", "NAPPLYNUM", "NNUM", "PK_REJECTBILL_B", "PK_REJECTBILL", "VCHECKITEMNAME", "BACCORDED", "VSTDVALUE1", "VCHKVALUE") AS 
   (
----ÈááË¥≠ÂÖ•Â∫ì
-select  pk_group,pk_org ,cdptid as  cdptid, ctrantypeid ,   dbilldate ,taudittime , abs(ntotalnum) as nnum from  ic_purchasein_h 
-where nvl(dr,0)=0 
-union all
----Ë∞ÉÊã®ÂÖ•Â∫ì
-select  pk_group,pk_org ,cdptid as  cdptid, ctrantypeid , dbilldate , taudittime , abs(ntotalnum) as nnum from  ic_transin_h 
-where nvl(dr,0)=0 
-union all
----‰∫ßÊàêÂìÅÂÖ•Â∫ì
-select  pk_group,pk_org ,cdptid as  cdptid, ctrantypeid , dbilldate , taudittime , abs(ntotalnum) as nnum from  ic_finprodin_h 
-where nvl(dr,0)=0 
-union all
----ÂÖ∂‰ªñÂÖ•Â∫ì
-select  pk_group,pk_org ,cdptid as  cdptid, ctrantypeid , dbilldate , taudittime , abs(ntotalnum) as nnum from  ic_generalin_h 
-where nvl(dr,0)=0 
-union all
---ÂßîÊâòÂä†Â∑•ÂÖ•Â∫ì
-select  pk_group,pk_org ,cdptid as  cdptid, ctrantypeid , dbilldate , taudittime , abs(ntotalnum) as nnum from  ic_subcontin_h 
-where nvl(dr,0)=0 
-union all
----Áîü‰∫ßÊä•Â∫üÂÖ•Â∫ì
-select  pk_group,pk_org ,cdptid as  cdptid, ctrantypeid , dbilldate , taudittime , abs(ntotalnum) as nnum from  ic_discardin_h 
-where nvl(dr,0)=0 
-union all
---ÈîÄÂîÆÂá∫Â∫ì
-select  pk_group,pk_org ,   cdptid  as  cdptid ,  ctrantypeid ,  dbilldate , taudittime , abs(ntotalnum) as nnum  from  ic_saleout_h 
-where nvl(dr,0)=0 
-union all
---Ë∞ÉÊã®Âá∫Â∫ì
-select  pk_group,pk_org ,   cdptid  as  cdptid ,  ctrantypeid ,  dbilldate , taudittime , abs(ntotalnum) as nnum  from  ic_transout_h 
-where nvl(dr,0)=0
+  SELECT
 
-union all
---ÊùêÊñôÂá∫Â∫ì
-select  pk_group,pk_org ,   cdptid  as  cdptid ,  ctrantypeid ,  dbilldate , taudittime , abs(ntotalnum) as nnum  from  ic_material_h 
-where nvl(dr,0)=0 
-union all
---ÂÖ∂‰ªñÂá∫Â∫ì
-select  pk_group,pk_org ,   cdptid  as  cdptid ,  ctrantypeid ,  dbilldate , taudittime , abs(ntotalnum) as nnum  from  ic_generalout_h 
-where nvl(dr,0)=0 
-);
---------------------------------------------------------
---  DDL for View VIEW_BPM_FIVEMETALSBALANCE
---------------------------------------------------------
+----  ≤ª∫œ∏Ò∆∑¥¶¿Ìµ•–≈œ¢+±ÌÕ∑+±ÌÃÂ“ª––√˜œ∏
+  --ø‚¥Ê◊È÷Ø
+  h.pk_org,
+  --±®ºÏ ±º‰
+  h.capplytime,
+  --≤ª∫œ∏Ò∆∑¥¶¿Ìµ•∫≈
+  h.vbillcode,
+  -- ±®ºÏµ•∫≈
+  h.vapplybillcode,
+  --÷ ºÏ±®∏Ê∫≈
+  h.vreportbillcode ,
+ 
+  --±®ºÏ≤ø√≈÷˜º¸
+  od.pk_dept ,
+  od.code as dept_code,
+  od.name as dept_nam,
+  --ŒÔ¡œ
+  inv.code as inv_code,
+  inv.name as inv_name,
+  --ŒÔ¡œ≈˙¥Œ
+  h. vbatchcode,
+   --±®ºÏ÷˜ ˝¡ø
+  h.napplynum ,
+  --≤ª∫œ∏Ò ˝¡ø
+  b.nnum,
+  -- ≤ª∫œ∏Ò∆∑¥¶¿Ìµ•√˜œ∏  
+  b.pk_rejectbill_b,
+   b.pk_rejectbill,
+-------------ºÏ—Èµ•µƒ–≈œ¢-------
+--ºÏ—ÈœÓƒø
+chkitem.vcheckitemname ,
+--    ¥Ô±Í 
+chkb.baccorded,
+--   ±Í◊º÷µ1  
+chkb.vstdvalue1,
+--    µº ºÏ—È÷µ  
+chkb.vchkvalue
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_FIVEMETALSBALANCE" ("CARDNO", "PK_GROUP", "PK_ORG", "CPERIOD", "DEPARTNAME", "BALANCE") AS 
-  (select h.vcardno cardNo,
-       h.pk_group,
-       h.pk_org,
-       h.cperiod,
-       case
-         when h.vdepartment is null then
-          h.vproject
-         else
-          h.vdepartment
-       end departName,
-       e.balance
-  from ic_fivemetals_h h
-  join (select sum(nmny * itype) balance, b.pk_fivemetals_h
-          from ic_fivemetals_b b
-         where nvl(b.dr, 0) = 0
-         group by b.pk_fivemetals_h) e
-    on h.pk_fivemetals_h = e.pk_fivemetals_h
- where nvl(h.dr, 0) = 0)
-;
---------------------------------------------------------
---  DDL for View VIEW_BPM_CGTYPE
---------------------------------------------------------
+FROM qc_rejectbill_b b
+LEFT JOIN qc_rejectbill h
+ON b. pk_rejectbill = h. pk_rejectbill
+LEFT JOIN org_dept od
+ON h.pk_applydept = od.pk_dept
+LEFT JOIN bd_material inv
+ON h. pk_material = inv.pk_material
+--±®ºÏµ• 
+--left join qc_applybill_s apl on h.  pk_applybill  = apl.pk_applybill
+--ºÏ—Èµ•
+left join qc_checkbill chk on h.pk_applybill= chk.csourceid 
+left join qc_checkbill_b chkb on  chk.  pk_checkbill  = chkb.pk_checkbill
+--ºÏ—ÈœÓƒø
+left join  qc_checkitem chkitem on chkb. pk_checkitem  =chkitem.pk_checkitem 
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_CGTYPE" ("PK_BILLTYPECODE", "BILLTYPENAME", "PK_BILLTYPEID") AS 
-  select distinct pk_billtypecode, billtypename, pk_billtypeid from bd_billtype where parentbilltype = '21' and pk_group = '0001A51000000000078A' and nvl ( islock, 'N' ) = 'N' and PK_BILLTYPECODE!='21-Cxx-01';
---------------------------------------------------------
---  DDL for View VIEW_JL_CUSTOMER
---------------------------------------------------------
-
-  CREATE OR REPLACE FORCE VIEW "VIEW_JL_CUSTOMER" ("ÂÆ¢ÂïÜÁºñÁ†Å", "ÂÆ¢ÂïÜÂêçÁß∞", "ÂÆ¢ÂïÜÁÆÄÁß∞", "Âä©ËÆ∞Á†Å", "ÊòØÂê¶ÂõΩÂ§ñ", "CVENDEFINE1", "CVENDEFINE2") AS 
-  (
-  SELECT code AS ÂÆ¢ÂïÜÁºñÁ†Å,
-    name       AS ÂÆ¢ÂïÜÂêçÁß∞,
-    shortname  AS ÂÆ¢ÂïÜÁÆÄÁß∞,
-    mnecode    AS Âä©ËÆ∞Á†Å,
-    CASE pk_country
-      WHEN '0001Z010000000079UJJ'
-      THEN 'ÊòØ'
-      ELSE 'Âê¶'
-    END AS ÊòØÂê¶ÂõΩÂ§ñ,
-    '' cVenDefine1,
-    '' cVenDefine2
-  FROM bd_customer
-  where nvl(dr,0)=0 
-  --ÊòØÂê¶ËÆ°Èáè
-  and nvl(def1,'N')='Y'
+where nvl(h.dr,0)=0 and nvl(b.dr,0)=0
+and h.fbillstatus=0
   );
 --------------------------------------------------------
---  DDL for View VIEW_BPM_CUSTOMER
+--  DDL for View VIEW_BPM_RESPPERSON
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_CUSTOMER" ("CUSNAME", "CUSCODE", "SHORTNAME", "PK_CUSTOMER", "PK_COUNTRY", "COUNTRYNAME", "COUNTRYCODE") AS 
-  ( SELECT a.name as CusName,a.code as CusCode,A.SHORTNAME,A.PK_CUSTOMER,A.PK_COUNTRY,b.NAME as countryName,b.CODE as countryCode 
-FROM bd_customer a left join bd_countryzone b on a.pk_country = b.pk_country);
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_RESPPERSON" ("PSNPK", "PSNCODE", "PSNNAME", "DEPPK", "DEPCODE", "DEPNAME") AS 
+  select distinct 
+--◊®π‹“µŒÒ‘±–≈œ¢
+psnpk,
+psncode, 
+psnname,
+--◊®π‹≤ø√≈–≈œ¢
+DEPPK,
+depcode, 
+depname from VIEW_BPM_CUST;
 --------------------------------------------------------
---  DDL for View VIEW_BPM_CURRINFO
+--  DDL for View VIEW_BPM_RYLB
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_CURRINFO" ("FNPK", "FNNAME", "SRCCURPK", "SRCCURCODE", "SRCCURNAME", "OPPCURPK", "OPPCURCODE", "OPPCURNAM", "ADJUSTPK", "MONTH", "YEAR", "ADJUSTRATE", "YEARMTH") AS 
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_RYLB" ("CODE", "NAME", "PK_PSNCL", "PARENT_ID") AS 
+  select code, name, pk_psncl, parent_id from bd_psncl 
+where 11 = 11 and ( enablestate = 2 ) and ( ( 1 = 1 ) ) order by code;
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_SALETYPE
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_SALETYPE" ("TYPE", "BILLTYPENAME", "PK_BILLTYPECODE", "PK_BILLTYPEID") AS 
+  SELECT
+	'ck' AS TYPE,
+	billtypename,
+	pk_billtypecode,
+	pk_billtypeid
+FROM
+	bd_billtype
+WHERE
+	istransaction = 'Y'
+AND NVL (islock, 'N') = 'N'
+AND parentbilltype = '30'
+AND PK_GROUP = '0001A110000000000DDM'
+AND pk_billtypecode NOT IN (
+	'30-01',
+	'30-04'
+)
+Union All
+	SELECT
+		'nx' AS TYPE,
+		billtypename,
+		pk_billtypecode,
+		pk_billtypeid
+	FROM
+		bd_billtype
+	WHERE
+		istransaction = 'Y'
+	AND NVL (islock, 'N') = 'N'
+	AND parentbilltype = '30'
+	AND PK_GROUP = '0001A110000000000DDM'
+	AND pk_billtypecode IN (
+		'30-01',
+		'30-04'
+	)
+Order By Pk_Billtypecode;
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_SECLV
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_SECLV" ("PK_WA_CRT", "PK_WA_GRD", "PK_WA_PRMLV", "MAX_VALUE", "MIN_VALUE", "PK_WA_SECLV", "CRITERIONVALUE", "GRDNAME", "PRMLVNAME", "PK_WA_GRADEVER", "SECLVNAME") AS 
   (
-select
---Ê±áÁéáÊñπÊ°à
-bc.pk_exratescheme as fnpk,
-scm.name as fnname,
-
---Ê∫êÂ∏ÅÁßç
-bc.pk_currtype  as srccurpk,
-srccur.code as srccurcode,
-srccur.name as srccurname,
---ÁõÆÁöÑÂ∏ÅÁßç
-bc.oppcurrtype  as oppcurpk,
-oppcur.code as oppcurcode,
-oppcur.name as oppcurnam,
---ÊúüÈó¥Ê±áÁéá
-arate. pk_adjustrate  as adjustpk,
---‰ºöËÆ°Êúà‰ªΩÔºöRFÊòØËá™ÁÑ∂ÊúàÁöÑ‰ºöËÆ°ÊúüÈó¥
-amonth.Accperiodmth as month,
-substr(amonth.yearmth,0,4) as year,
---amonth.begindate as abegindate ,
---amonth.enddate  as aenddate  ,
-arate.adjustrate  as adjustrate,
-amonth.yearmth as yearmth
-from  bd_exratescheme scm
-inner  join bd_currinfo bc on  scm.pk_exratescheme = bc. pk_exratescheme
-inner join bd_currtype  oppcur on bc.oppcurrtype = oppcur.  pk_currtype
-inner join bd_currtype  srccur on bc.pk_currtype  = srccur.pk_currtype
-inner join  bd_adjustrate arate on bc. pk_currinfo= arate. pk_currinfo
-inner join  bd_accperiodmonth amonth on arate. pk_accperiodmonth  = amonth. pk_accperiodmonth
-where nvl(bc.dr,0)=0 and nvl(arate.dr,0)=0
+SELECT wc.pk_wa_crt,
+  wc.pk_wa_grd,
+  wc.pk_wa_prmlv,
+  wc.max_value,
+  wc.min_value,
+  wc.pk_wa_seclv,
+  wc.criterionvalue,
+  wg.name grdName,
+  wp.levelname prmlvName,
+  ver.pk_wa_gradever,
+  ws.levelname seclvName
+FROM wa_seclv ws,
+  wa_grade wg,
+  wa_prmlv wp,
+  wa_criterion wc,
+  wa_grade_ver ver
+WHERE 1                = 1
+AND wc.pk_wa_grd       = wg.pk_wa_grd
+AND wc.pk_wa_prmlv     = wp.pk_wa_prmlv
+AND wc.pk_wa_gradever  = ver.pk_wa_gradever
+AND wc.pk_wa_seclv     = ws.pk_wa_seclv
 
 );
 --------------------------------------------------------
---  DDL for View VIEW_BPM_BD_MATERIAL
+--  DDL for View VIEW_BPM_STORE
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_BD_MATERIAL" ("CWLNAME", "CWLCODE", "PRODAREA", "CPK_WL", "CPK_WLFL", "CWLFLNAME", "CWLFLCODE", "CPK_UNIT", "CUNITNAME", "CUNITCODE", "CMATERIALSPEC", "CMATERIALTYPE") AS 
-  select a.name cWLname,a.code cWLcode,a.prodarea,a.pk_material cPk_WL,a.pk_marbasclass cPk_WLFL,b.name cWLFLname,b.code cWLFLcode,a.pk_measdoc cPk_Unit,
-c.name cUnitName,c.code cUnitCode,a.materialspec cMaterialspec,a.materialtype cMaterialtype
-from bd_material a left join
-bd_marbasclass b on a.pk_marbasclass=b.pk_marbasclass left join bd_measdoc c on a.pk_measdoc=c.pk_measdoc;
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_STORE" ("PK_ORG", "PK_MATERIAL", "PK_STORDOC", "STORCODE", "STORNAME") AS 
+  select stor.pk_org,matstor.pk_material,stor.pk_stordoc,stor.code as storcode,stor.name as storname
+from bd_stordoc stor
+left join bd_materialwarh matstor on stor.pk_stordoc=matstor.pk_stordoc;
 --------------------------------------------------------
---  DDL for View VIEW_BPM_POORDER
+--  DDL for View VIEW_BPM_SUPPLIER
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_POORDER" ("VBILLCODE", "BARRIVECLOSE", "BBORROWPUR", "BINVOICECLOSE", "BLARGESS", "BPAYCLOSE", "BRECEIVEPLAN", "BSTOCKCLOSE", "BTRANSCLOSED", "BTRIATRADEFLAG", "CASSCUSTID", "CASTUNITID", "CCONTRACTID", "CCONTRACTROWID", "CCURRENCYID", "CDESTIAREAID", "CDESTICOUNTRYID", "CDEVADDRID", "CDEVAREAID", "CECBILLBID", "CECBILLID", "CECTYPECODE", "CFFILEID", "CFIRSTBID", "CFIRSTID", "CFIRSTTYPECODE", "CHANDLER", "CORIGAREAID", "CORIGCOUNTRYID", "CORIGCURRENCYID", "CPRAYBILLBID", "CPRAYBILLCODE", "CPRAYBILLHID", "CPRAYBILLROWNO", "CPRAYTYPECODE", "CPRICEAUDIT_BB1ID", "CPRICEAUDIT_BID", "CPRICEAUDITID", "CPRODUCTORID", "CPROJECTID", "CPROJECTTASKID", "CQPBASESCHEMEID", "CQTUNITID", "CQUALITYLEVELID", "CRECECOUNTRYID", "CROWNO", "CSENDCOUNTRYID", "CSOURCEBID", "CSOURCEID", "CSOURCETYPECODE", "CTAXCODEID", "CTAXCOUNTRYID", "CUNITID", "CVENDDEVADDRID", "CVENDDEVAREAID", "DBILLDATE", "DCORRECTDATE", "DPLANARRVDATE", "DR", "FBUYSELLFLAG", "FISACTIVE", "FTAXTYPEFLAG", "NACCCANCELINVMNY", "NACCUMARRVNUM", "NACCUMDEVNUM", "NACCUMINVOICEMNY", "NACCUMINVOICENUM", "NACCUMPICKUPNUM", "NACCUMRPNUM", "NACCUMSTORENUM", "NACCUMWASTNUM", "NASTNUM", "NBACKARRVNUM", "NBACKSTORENUM", "NCALCOSTMNY", "NCALTAXMNY", "NEXCHANGERATE", "NFEEMNY", "NGLOBALEXCHGRATE", "NGLOBALMNY", "NGLOBALTAXMNY", "NGROUPEXCHGRATE", "NGROUPMNY", "NGROUPTAXMNY", "NITEMDISCOUNTRATE", "NMNY", "NNETPRICE", "NNOSUBTAX", "NNOSUBTAXRATE", "NNUM", "NORIGMNY", "NORIGNETPRICE", "NORIGPRICE", "NORIGTAXMNY", "NORIGTAXNETPRICE", "NORIGTAXPRICE", "NPACKNUM", "NPRICE", "NQTNETPRICE", "NQTORIGNETPRICE", "NQTORIGPRICE", "NQTORIGTAXNETPRC", "NQTORIGTAXPRICE", "NQTPRICE", "NQTTAXNETPRICE", "NQTTAXPRICE", "NQTUNITNUM", "NSUPRSNUM", "NTAX", "NTAXMNY", "NTAXNETPRICE", "NTAXPRICE", "NTAXRATE", "NVOLUMN", "NWEIGHT", "PK_APFINANCEORG", "PK_APFINANCEORG_V", "PK_APLIABCENTER", "PK_APLIABCENTER_V", "PK_ARRLIABCENTER", "PK_ARRLIABCENTER_V", "PK_ARRVSTOORG", "PK_ARRVSTOORG_V", "PK_BATCHCODE", "PK_DISCOUNT", "PK_FLOWSTOCKORG", "PK_FLOWSTOCKORG_V", "PK_GROUP", "PK_MATERIAL", "PK_ORDER", "PK_ORDER_B", "PK_ORG", "PK_ORG_V", "PK_PSFINANCEORG", "PK_PSFINANCEORG_V", "PK_RECEIVEADDRESS", "PK_RECVSTORDOC", "PK_REQCORP", "PK_REQDEPT", "PK_REQDEPT_V", "PK_REQSTOORG", "PK_REQSTOORG_V", "PK_REQSTORDOC", "PK_SRCMATERIAL", "PK_SRCORDER_B", "PK_SUPPLIER", "TS", "VBATCHCODE", "VBDEF1", "VBDEF10", "VBDEF11", "VBDEF12", "VBDEF13", "VBDEF14", "VBDEF15", "VBDEF16", "VBDEF17", "VBDEF18", "VBDEF19", "VBDEF2", "VBDEF20", "VBDEF3", "VBDEF4", "VBDEF5", "VBDEF6", "VBDEF7", "VBDEF8", "VBDEF9", "VBMEMO", "VCHANGERATE", "VCONTRACTCODE", "VECBILLCODE", "VFIRSTCODE", "VFIRSTROWNO", "VFIRSTTRANTYPE", "VFREE1", "VFREE10", "VFREE2", "VFREE3", "VFREE4", "VFREE5", "VFREE6", "VFREE7", "VFREE8", "VFREE9", "VPRICEAUDITCODE", "VQTUNITRATE", "VSOURCECODE", "VSOURCEROWNO", "VSOURCETRANTYPE", "VVENDDEVADDR", "VVENDINVENTORYCODE", "VVENDINVENTORYNAME") AS 
-  (select r.vbillcode, b."BARRIVECLOSE",b."BBORROWPUR",b."BINVOICECLOSE",b."BLARGESS",b."BPAYCLOSE",b."BRECEIVEPLAN",b."BSTOCKCLOSE",b."BTRANSCLOSED",b."BTRIATRADEFLAG",b."CASSCUSTID",b."CASTUNITID",b."CCONTRACTID",b."CCONTRACTROWID",b."CCURRENCYID",b."CDESTIAREAID",b."CDESTICOUNTRYID",b."CDEVADDRID",b."CDEVAREAID",b."CECBILLBID",b."CECBILLID",b."CECTYPECODE",b."CFFILEID",b."CFIRSTBID",b."CFIRSTID",b."CFIRSTTYPECODE",b."CHANDLER",b."CORIGAREAID",b."CORIGCOUNTRYID",b."CORIGCURRENCYID",b."CPRAYBILLBID",b."CPRAYBILLCODE",b."CPRAYBILLHID",b."CPRAYBILLROWNO",b."CPRAYTYPECODE",b."CPRICEAUDIT_BB1ID",b."CPRICEAUDIT_BID",b."CPRICEAUDITID",b."CPRODUCTORID",b."CPROJECTID",b."CPROJECTTASKID",b."CQPBASESCHEMEID",b."CQTUNITID",b."CQUALITYLEVELID",b."CRECECOUNTRYID",b."CROWNO",b."CSENDCOUNTRYID",b."CSOURCEBID",b."CSOURCEID",b."CSOURCETYPECODE",b."CTAXCODEID",b."CTAXCOUNTRYID",b."CUNITID",b."CVENDDEVADDRID",b."CVENDDEVAREAID",b."DBILLDATE",b."DCORRECTDATE",b."DPLANARRVDATE",b."DR",b."FBUYSELLFLAG",b."FISACTIVE",b."FTAXTYPEFLAG",b."NACCCANCELINVMNY",b."NACCUMARRVNUM",b."NACCUMDEVNUM",b."NACCUMINVOICEMNY",b."NACCUMINVOICENUM",b."NACCUMPICKUPNUM",b."NACCUMRPNUM",b."NACCUMSTORENUM",b."NACCUMWASTNUM",b."NASTNUM",b."NBACKARRVNUM",b."NBACKSTORENUM",b."NCALCOSTMNY",b."NCALTAXMNY",b."NEXCHANGERATE",b."NFEEMNY",b."NGLOBALEXCHGRATE",b."NGLOBALMNY",b."NGLOBALTAXMNY",b."NGROUPEXCHGRATE",b."NGROUPMNY",b."NGROUPTAXMNY",b."NITEMDISCOUNTRATE",b."NMNY",b."NNETPRICE",b."NNOSUBTAX",b."NNOSUBTAXRATE",b."NNUM",b."NORIGMNY",b."NORIGNETPRICE",b."NORIGPRICE",b."NORIGTAXMNY",b."NORIGTAXNETPRICE",b."NORIGTAXPRICE",b."NPACKNUM",b."NPRICE",b."NQTNETPRICE",b."NQTORIGNETPRICE",b."NQTORIGPRICE",b."NQTORIGTAXNETPRC",b."NQTORIGTAXPRICE",b."NQTPRICE",b."NQTTAXNETPRICE",b."NQTTAXPRICE",b."NQTUNITNUM",b."NSUPRSNUM",b."NTAX",b."NTAXMNY",b."NTAXNETPRICE",b."NTAXPRICE",b."NTAXRATE",b."NVOLUMN",b."NWEIGHT",b."PK_APFINANCEORG",b."PK_APFINANCEORG_V",b."PK_APLIABCENTER",b."PK_APLIABCENTER_V",b."PK_ARRLIABCENTER",b."PK_ARRLIABCENTER_V",b."PK_ARRVSTOORG",b."PK_ARRVSTOORG_V",b."PK_BATCHCODE",b."PK_DISCOUNT",b."PK_FLOWSTOCKORG",b."PK_FLOWSTOCKORG_V",b."PK_GROUP",b."PK_MATERIAL",b."PK_ORDER",b."PK_ORDER_B",b."PK_ORG",b."PK_ORG_V",b."PK_PSFINANCEORG",b."PK_PSFINANCEORG_V",b."PK_RECEIVEADDRESS",b."PK_RECVSTORDOC",b."PK_REQCORP",b."PK_REQDEPT",b."PK_REQDEPT_V",b."PK_REQSTOORG",b."PK_REQSTOORG_V",b."PK_REQSTORDOC",b."PK_SRCMATERIAL",b."PK_SRCORDER_B",b."PK_SUPPLIER",b."TS",b."VBATCHCODE",b."VBDEF1",b."VBDEF10",b."VBDEF11",b."VBDEF12",b."VBDEF13",b."VBDEF14",b."VBDEF15",b."VBDEF16",b."VBDEF17",b."VBDEF18",b."VBDEF19",b."VBDEF2",b."VBDEF20",b."VBDEF3",b."VBDEF4",b."VBDEF5",b."VBDEF6",b."VBDEF7",b."VBDEF8",b."VBDEF9",b."VBMEMO",b."VCHANGERATE",b."VCONTRACTCODE",b."VECBILLCODE",b."VFIRSTCODE",b."VFIRSTROWNO",b."VFIRSTTRANTYPE",b."VFREE1",b."VFREE10",b."VFREE2",b."VFREE3",b."VFREE4",b."VFREE5",b."VFREE6",b."VFREE7",b."VFREE8",b."VFREE9",b."VPRICEAUDITCODE",b."VQTUNITRATE",b."VSOURCECODE",b."VSOURCEROWNO",b."VSOURCETRANTYPE",b."VVENDDEVADDR",b."VVENDINVENTORYCODE",b."VVENDINVENTORYNAME" from po_order r join po_order_b b on r.pk_order = b.pk_order  where   nvl(r.forderstatus,0) = 3 and nvl(r.dr,0) = 0 and nvl(b.dr,0) = 0);
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_SUPPLIER" ("PK_SUPPLIER", "VENNAME", "VENCODE", "VENSHORTNAME", "RESPPERSON", "PSNNAME", "PSNCODE", "RESPDEPT", "DEPCODE", "DEPNAME") AS 
+  select distinct a.pk_supplier,a.name as VenName,a.code as VenCode,a.shortname as Venshortname,
+b.respperson,d.name as psnname,d.code as psncode,
+b.respdept,e.code as depcode, e.name as depname
+from bd_supplier a
+right join bd_supstock b on a.pk_supplier=b.pk_supplier
+left join bd_psndoc d on b.respperson =d.pk_psndoc 
+left join org_dept e on b.respdept=e.pk_dept;
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_SUPPLIERCLASS
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_SUPPLIERCLASS" ("CODE", "CREATIONTIME", "CREATOR", "DATAORIGINFLAG", "DEF1", "DEF2", "DEF3", "DEF4", "DEF5", "DR", "ENABLESTATE", "INNERCODE", "MNECODE", "MODIFIEDTIME", "MODIFIER", "NAME", "NAME2", "NAME3", "NAME4", "NAME5", "NAME6", "PARENT_ID", "PK_GROUP", "PK_ORG", "PK_SUPPLIERCLASS", "SEQ", "TS") AS 
+  (select "CODE","CREATIONTIME","CREATOR","DATAORIGINFLAG","DEF1","DEF2","DEF3","DEF4","DEF5","DR","ENABLESTATE","INNERCODE","MNECODE","MODIFIEDTIME","MODIFIER","NAME","NAME2","NAME3","NAME4","NAME5","NAME6","PARENT_ID","PK_GROUP","PK_ORG","PK_SUPPLIERCLASS","SEQ","TS" from bd_supplierclass  where  nvl(dr,0) = 0);
+--------------------------------------------------------
+--  DDL for View VIEW_BPM_TZLX
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_TZLX" ("TRNSTYPECODE", "TRNSTYPENAME", "PK_TRNSTYPE") AS 
+  SELECT trnstypecode,
+  trnstypename,
+  pk_trnstype
+FROM hr_trnstype
+WHERE ( 1        = 1
+AND enablestate  = 2
+AND trnsevent    = 3 )
+AND ( ( ( pk_org = 'GLOBLE00000000000000'
+OR pk_group      = '0001A51000000000078A' ) ) )
+ORDER BY trnstypecode;
 --------------------------------------------------------
 --  DDL for View VIEW_BPM_WADATA
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_WADATA" ("CYEAR", "CPERIOD", "PK_ORG", "PK_GROUP", "PK_PSNDOC", "PK_WA_CLASS", "PK_WA_DATA", "F_1", "F_2", "F_3", "F_4", "F_5", "F_6", "F_7", "F_8", "F_9", "F_10", "F_11", "F_12", "F_13", "F_14", "F_15", "F_16", "F_17", "F_18", "F_19", "F_20", "F_21", "F_22", "F_23", "F_24", "F_25", "F_26", "F_27", "F_28", "F_29", "F_30", "F_31", "F_32", "F_33", "F_34", "F_35", "F_36", "F_37", "F_38", "F_39", "F_40", "F_41", "F_42", "F_43", "F_44", "F_45", "F_46", "F_47", "F_48", "F_49", "F_50", "F_51", "F_52", "F_53", "F_54", "F_55", "F_56", "F_57", "F_58", "F_59", "F_60", "F_61", "F_62", "F_63", "F_64", "F_65", "F_66", "F_67", "F_68", "F_69", "F_70", "F_71", "F_72", "F_73", "F_74", "F_75", "F_76", "F_77", "F_78", "F_79", "F_80", "F_81", "F_82", "F_83", "F_84", "F_85", "F_86", "F_87", "F_88", "F_89", "F_90", "F_91", "F_92", "F_93", "F_94", "F_95", "F_96", "F_97", "F_98", "F_99", "F_100") AS 
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_WADATA" ("CYEAR", "CPERIOD", "PK_ORG", "PK_GROUP", "PK_PSNDOC", "PK_WA_CLASS", "PK_WA_DATA", "F_1", "F_2", "F_3", "F_4", "F_5", "F_6", "F_7", "F_8", "F_9", "F_10", "F_11", "F_12", "F_13", "F_14", "F_15", "F_16", "F_17", "F_18", "F_19", "F_20", "F_21", "F_22", "F_23", "F_24", "F_25", "F_26", "F_27", "F_28", "F_29", "F_30", "F_31", "F_32", "F_33", "F_34", "F_35", "F_36", "F_37", "F_38", "F_39", "F_40", "F_41", "F_42", "F_43", "F_44", "F_45", "F_46", "F_47", "F_48", "F_49", "F_50", "F_51", "F_52", "F_53", "F_54", "F_55", "F_56", "F_57", "F_58", "F_59", "F_60", "F_61", "F_62", "F_63", "F_64", "F_65", "F_66", "F_67", "F_68", "F_69", "F_70", "F_71", "F_72", "F_73", "F_74", "F_75", "F_76", "F_77", "F_78", "F_79", "F_80", "F_81", "F_82", "F_83", "F_84", "F_85", "F_86", "F_87", "F_88", "F_89", "F_90", "F_91", "F_92", "F_93", "F_94", "F_95", "F_96", "F_97", "F_98", "F_99", "F_100", "C_1", "C_2", "C_3", "C_4", "C_5", "C_6", "C_7", "C_8", "C_9", "C_10", "C_11", "C_12", "C_13", "C_14", "C_15", "C_16", "C_17", "C_18", "C_19", "C_20", "D_1", "D_2", "D_3", "D_4", "D_5", "D_6", "D_7", "D_8", "D_9", "D_10") AS 
   (select wa.cyear,
        wa.cperiod,
        wa.pk_org,
@@ -654,115 +2035,79 @@ bd_marbasclass b on a.pk_marbasclass=b.pk_marbasclass left join bd_measdoc c on 
        wa.f_97,
        wa.f_98,
        wa.f_99,
-       wa.f_100
+       wa.f_100,
+wa.c_1,
+wa.c_2,
+wa.c_3,wa.c_4,wa.c_5,
+wa.c_6,wa.c_7,wa.c_8,
+wa.c_9,
+wa.c_10,
+wa.c_11,
+wa.c_12,
+wa.c_13,wa.c_14,wa.c_15,wa.c_16,wa.c_17,wa.c_18,wa.c_19,wa.c_20,wa.d_1,wa.d_2,wa.d_3,wa.d_4,wa.d_5,wa.d_6,wa.d_7,wa.d_8,wa.d_9,wa.d_10
   from wa_data wa
  where nvl(wa.dr, 0) = 0);
 --------------------------------------------------------
---  DDL for View VIEW_BPM_PACKAGESTYPE
+--  DDL for View VIEW_BPM_WADATA_XZFF
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_PACKAGESTYPE" ("PK_DEFDOC", "CODE", "NAME") AS 
-  SELECT b.PK_DEFDOC,
-    b.code,
-    b.NAME
-  FROM bd_defdoc b
-  LEFT JOIN bd_defdoclist a
-  ON a.pk_defdoclist  =b.pk_defdoclist
-  WHERE b.enablestate = 2
-  AND a.code          ='01';
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_WADATA_XZFF" ("CYEAR", "CPERIOD", "PK_ORG", "PK_GROUP", "PK_PSNDOC", "PK_WA_CLASS", "PK_WA_DATA", "F_1", "F_2", "F_3", "F_4", "F_5", "F_6", "F_7", "F_8", "F_9", "F_10", "F_11", "F_12", "F_13", "F_14", "F_15", "F_16", "F_17", "F_18", "F_19", "F_20", "F_21", "F_22", "F_23", "F_24", "F_25", "F_26", "F_27", "F_28", "F_29", "F_30", "F_31", "F_32", "F_33", "F_34", "F_35", "F_36", "F_37", "F_38", "F_39", "F_40", "F_41", "F_42", "F_43", "F_44", "F_45", "F_46", "F_47", "F_48", "F_49", "F_50", "F_51", "F_52", "F_53", "F_54", "F_55", "F_56", "F_57", "F_58", "F_59", "F_60", "F_61", "F_62", "F_63", "F_64", "F_65", "F_66", "F_67", "F_68", "F_69", "F_70", "F_71", "F_72", "F_73", "F_74", "F_75", "F_76", "F_77", "F_78", "F_79", "F_80", "F_81", "F_82", "F_83", "F_84", "F_85", "F_86", "F_87", "F_88", "F_89", "F_90", "F_91", "F_92", "F_93", "F_94", "F_95", "F_96", "F_97", "F_98", "F_99", "F_100", "C_1", "C_2", "C_3", "C_4", "C_5", "C_6", "C_7", "C_8", "C_9", "C_10", "C_11", "C_12", "C_13", "C_14", "C_15", "C_16", "C_17", "C_18", "C_19", "C_20", "D_1", "D_2", "D_3", "D_4", "D_5", "D_6", "D_7", "D_8", "D_9", "D_10", "CODE", "NAME", "PSNTYPE", "PK_DEPT") AS 
+  select wadata."CYEAR",wadata."CPERIOD",wadata."PK_ORG",wadata."PK_GROUP",wadata."PK_PSNDOC",wadata."PK_WA_CLASS",wadata."PK_WA_DATA",wadata."F_1",wadata."F_2",wadata."F_3",wadata."F_4",wadata."F_5",wadata."F_6",wadata."F_7",wadata."F_8",wadata."F_9",wadata."F_10",wadata."F_11",wadata."F_12",wadata."F_13",wadata."F_14",wadata."F_15",wadata."F_16",wadata."F_17",wadata."F_18",wadata."F_19",wadata."F_20",wadata."F_21",wadata."F_22",wadata."F_23",wadata."F_24",wadata."F_25",wadata."F_26",wadata."F_27",wadata."F_28",wadata."F_29",wadata."F_30",wadata."F_31",wadata."F_32",wadata."F_33",wadata."F_34",wadata."F_35",wadata."F_36",wadata."F_37",wadata."F_38",wadata."F_39",wadata."F_40",wadata."F_41",wadata."F_42",wadata."F_43",wadata."F_44",wadata."F_45",wadata."F_46",wadata."F_47",wadata."F_48",wadata."F_49",wadata."F_50",wadata."F_51",wadata."F_52",wadata."F_53",wadata."F_54",wadata."F_55",wadata."F_56",wadata."F_57",wadata."F_58",wadata."F_59",wadata."F_60",wadata."F_61",wadata."F_62",wadata."F_63",wadata."F_64",wadata."F_65",wadata."F_66",wadata."F_67",wadata."F_68",wadata."F_69",wadata."F_70",wadata."F_71",wadata."F_72",wadata."F_73",wadata."F_74",wadata."F_75",wadata."F_76",wadata."F_77",wadata."F_78",wadata."F_79",wadata."F_80",wadata."F_81",wadata."F_82",wadata."F_83",wadata."F_84",wadata."F_85",wadata."F_86",wadata."F_87",wadata."F_88",wadata."F_89",wadata."F_90",wadata."F_91",wadata."F_92",wadata."F_93",wadata."F_94",wadata."F_95",wadata."F_96",wadata."F_97",wadata."F_98",wadata."F_99",wadata."F_100",wadata."C_1",wadata."C_2",wadata."C_3",wadata."C_4",wadata."C_5",wadata."C_6",wadata."C_7",wadata."C_8",wadata."C_9",wadata."C_10",wadata."C_11",wadata."C_12",wadata."C_13",wadata."C_14",wadata."C_15",wadata."C_16",wadata."C_17",wadata."C_18",wadata."C_19",wadata."C_20",wadata."D_1",wadata."D_2",wadata."D_3",wadata."D_4",wadata."D_5",wadata."D_6",wadata."D_7",wadata."D_8",wadata."D_9",wadata."D_10",psndoc.code,psndoc.NAME,psnjob.psntype,psnjob.pk_dept from VIEW_BPM_wadata 
+wadata left join bd_psndoc psndoc on wadata.PK_PSNDOC = psndoc.PK_PSNDOC
+left join hi_psnjob psnjob on wadata.PK_PSNDOC = psnjob.PK_PSNDOC
+where psnjob.enddate is null;
 --------------------------------------------------------
---  DDL for View VIEW_BPM_DELIVERY
+--  DDL for View VIEW_BPM_WAITEM
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_DELIVERY" ("VBILLCODE", "BADVFEEFLAG", "BBARSETTLEFLAG", "BCHECKFLAG", "BLARGESSFLAG", "BOUTENDFLAG", "BQUALITYFLAG", "BTRANSENDFLAG", "BTRIATRADEFLAG", "BUSECHECKFLAG", "CARORGID", "CARORGVID", "CASTUNITID", "CCHANNELTYPEID", "CCHAUFFEURID", "CCURRENCYID", "CCUSTMATERIALID", "CDELIVERYBID", "CDELIVERYID", "CDEPTID", "CDEPTVID", "CEMPLOYEEID", "CFIRSTBID", "CFIRSTID", "CFREECUSTID", "CINSTOCKORGID", "CINSTOCKORGVID", "CINSTORDOCID", "CINVOICECUSTID", "CMATERIALID", "CMATERIALVID", "CMFFILEID", "CORDERCUSTID", "CORIGAREAID", "CORIGCOUNTRYID", "CORIGCURRENCYID", "CPRICEFORMID", "CPRODLINEID", "CPRODUCTORID", "CPROFITCENTERID", "CPROFITCENTERVID", "CPROJECTID", "CQTUNITID", "CQUALITYLEVELID", "CRECECOUNTRYID", "CRECEIVEADDDOCID", "CRECEIVEADDRID", "CRECEIVEAREAID", "CRECEIVECUSTID", "CRECEIVEPERSONID", "CRETREASONID", "CROWNO", "CRPROFITCENTERID", "CRPROFITCENTERVID", "CSALEORGID", "CSALEORGVID", "CSENDADDDOCID", "CSENDADDRID", "CSENDAREAID", "CSENDCOUNTRYID", "CSENDPERSONID", "CSENDSTOCKORGID", "CSENDSTOCKORGVID", "CSENDSTORDOCID", "CSETTLEORGID", "CSETTLEORGVID", "CSPACEID", "CSPROFITCENTERID", "CSPROFITCENTERVID", "CSRCBID", "CSRCID", "CSUPERCARGOID", "CTAXCODEID", "CTAXCOUNTRYID", "CTRANSCUSTID", "CUNITID", "CVEHICLEID", "CVEHICLETYPEID", "CVENDORID", "DBILLDATE", "DR", "DRECEIVEDATE", "DSENDDATE", "FBUYSELLFLAG", "FROWNOTE", "FTAXTYPEFLAG", "NASTNUM", "NCALTAXMNY", "NDISCOUNT", "NDISCOUNTRATE", "NEXCHANGERATE", "NGLOBALEXCHGRATE", "NGLOBALMNY", "NGLOBALTAXMNY", "NGROUPEXCHGRATE", "NGROUPMNY", "NGROUPTAXMNY", "NITEMDISCOUNTRATE", "NMNY", "NNETPRICE", "NNUM", "NORIGDISCOUNT", "NORIGMNY", "NORIGNETPRICE", "NORIGPRICE", "NORIGTAXMNY", "NORIGTAXNETPRICE", "NORIGTAXPRICE", "NPIECE", "NPRICE", "NQTNETPRICE", "NQTORIGNETPRICE", "NQTORIGPRICE", "NQTORIGTAXNETPRC", "NQTORIGTAXPRICE", "NQTPRICE", "NQTTAXNETPRICE", "NQTTAXPRICE", "NQTUNITNUM", "NREQRSNUM", "NTAX", "NTAXMNY", "NTAXNETPRICE", "NTAXPRICE", "NTAXRATE", "NTOTALARNUM", "NTOTALELIGNUM", "NTOTALESTARNUM", "NTOTALNOTOUTNUM", "NTOTALOUTNUM", "NTOTALREPORTNUM", "NTOTALRUSHNUM", "NTOTALTRANSNUM", "NTOTALUNELIGNUM", "NTRANSLOSSNUM", "NVOLUME", "NWEIGHT", "PK_BATCHCODE", "PK_GROUP", "PK_ORG", "TS", "VBATCHCODE", "VBDEF1", "VBDEF10", "VBDEF11", "VBDEF12", "VBDEF13", "VBDEF14", "VBDEF15", "VBDEF16", "VBDEF17", "VBDEF18", "VBDEF19", "VBDEF2", "VBDEF20", "VBDEF3", "VBDEF4", "VBDEF5", "VBDEF6", "VBDEF7", "VBDEF8", "VBDEF9", "VCHANGERATE", "VFIRSTBILLDATE", "VFIRSTCODE", "VFIRSTROWNO", "VFIRSTTRANTYPE", "VFIRSTTYPE", "VFREE1", "VFREE10", "VFREE2", "VFREE3", "VFREE4", "VFREE5", "VFREE6", "VFREE7", "VFREE8", "VFREE9", "VQTUNITRATE", "VRECEIVETEL", "VRETURNMODE", "VSENDTEL", "VSRCCODE", "VSRCROWNO", "VSRCTRANTYPE", "VSRCTYPE") AS 
-  (
- select y.vbillcode, b."BADVFEEFLAG",b."BBARSETTLEFLAG",b."BCHECKFLAG",b."BLARGESSFLAG",b."BOUTENDFLAG",b."BQUALITYFLAG",b."BTRANSENDFLAG",b."BTRIATRADEFLAG",b."BUSECHECKFLAG",b."CARORGID",b."CARORGVID",b."CASTUNITID",b."CCHANNELTYPEID",b."CCHAUFFEURID",b."CCURRENCYID",b."CCUSTMATERIALID",b."CDELIVERYBID",b."CDELIVERYID",b."CDEPTID",b."CDEPTVID",b."CEMPLOYEEID",b."CFIRSTBID",b."CFIRSTID",b."CFREECUSTID",b."CINSTOCKORGID",b."CINSTOCKORGVID",b."CINSTORDOCID",b."CINVOICECUSTID",b."CMATERIALID",b."CMATERIALVID",b."CMFFILEID",b."CORDERCUSTID",b."CORIGAREAID",b."CORIGCOUNTRYID",b."CORIGCURRENCYID",b."CPRICEFORMID",b."CPRODLINEID",b."CPRODUCTORID",b."CPROFITCENTERID",b."CPROFITCENTERVID",b."CPROJECTID",b."CQTUNITID",b."CQUALITYLEVELID",b."CRECECOUNTRYID",b."CRECEIVEADDDOCID",b."CRECEIVEADDRID",b."CRECEIVEAREAID",b."CRECEIVECUSTID",b."CRECEIVEPERSONID",b."CRETREASONID",b."CROWNO",b."CRPROFITCENTERID",b."CRPROFITCENTERVID",b."CSALEORGID",b."CSALEORGVID",b."CSENDADDDOCID",b."CSENDADDRID",b."CSENDAREAID",b."CSENDCOUNTRYID",b."CSENDPERSONID",b."CSENDSTOCKORGID",b."CSENDSTOCKORGVID",b."CSENDSTORDOCID",b."CSETTLEORGID",b."CSETTLEORGVID",b."CSPACEID",b."CSPROFITCENTERID",b."CSPROFITCENTERVID",b."CSRCBID",b."CSRCID",b."CSUPERCARGOID",b."CTAXCODEID",b."CTAXCOUNTRYID",b."CTRANSCUSTID",b."CUNITID",b."CVEHICLEID",b."CVEHICLETYPEID",b."CVENDORID",b."DBILLDATE",b."DR",b."DRECEIVEDATE",b."DSENDDATE",b."FBUYSELLFLAG",b."FROWNOTE",b."FTAXTYPEFLAG",b."NASTNUM",b."NCALTAXMNY",b."NDISCOUNT",b."NDISCOUNTRATE",b."NEXCHANGERATE",b."NGLOBALEXCHGRATE",b."NGLOBALMNY",b."NGLOBALTAXMNY",b."NGROUPEXCHGRATE",b."NGROUPMNY",b."NGROUPTAXMNY",b."NITEMDISCOUNTRATE",b."NMNY",b."NNETPRICE",b."NNUM",b."NORIGDISCOUNT",b."NORIGMNY",b."NORIGNETPRICE",b."NORIGPRICE",b."NORIGTAXMNY",b."NORIGTAXNETPRICE",b."NORIGTAXPRICE",b."NPIECE",b."NPRICE",b."NQTNETPRICE",b."NQTORIGNETPRICE",b."NQTORIGPRICE",b."NQTORIGTAXNETPRC",b."NQTORIGTAXPRICE",b."NQTPRICE",b."NQTTAXNETPRICE",b."NQTTAXPRICE",b."NQTUNITNUM",b."NREQRSNUM",b."NTAX",b."NTAXMNY",b."NTAXNETPRICE",b."NTAXPRICE",b."NTAXRATE",b."NTOTALARNUM",b."NTOTALELIGNUM",b."NTOTALESTARNUM",b."NTOTALNOTOUTNUM",b."NTOTALOUTNUM",b."NTOTALREPORTNUM",b."NTOTALRUSHNUM",b."NTOTALTRANSNUM",b."NTOTALUNELIGNUM",b."NTRANSLOSSNUM",b."NVOLUME",b."NWEIGHT",b."PK_BATCHCODE",b."PK_GROUP",b."PK_ORG",b."TS",b."VBATCHCODE",b."VBDEF1",b."VBDEF10",b."VBDEF11",b."VBDEF12",b."VBDEF13",b."VBDEF14",b."VBDEF15",b."VBDEF16",b."VBDEF17",b."VBDEF18",b."VBDEF19",b."VBDEF2",b."VBDEF20",b."VBDEF3",b."VBDEF4",b."VBDEF5",b."VBDEF6",b."VBDEF7",b."VBDEF8",b."VBDEF9",b."VCHANGERATE",b."VFIRSTBILLDATE",b."VFIRSTCODE",b."VFIRSTROWNO",b."VFIRSTTRANTYPE",b."VFIRSTTYPE",b."VFREE1",b."VFREE10",b."VFREE2",b."VFREE3",b."VFREE4",b."VFREE5",b."VFREE6",b."VFREE7",b."VFREE8",b."VFREE9",b."VQTUNITRATE",b."VRECEIVETEL",b."VRETURNMODE",b."VSENDTEL",b."VSRCCODE",b."VSRCROWNO",b."VSRCTRANTYPE",b."VSRCTYPE"
-  from so_delivery y
-  join so_delivery_b b
-    on y.cdeliveryid = b.cdeliveryid
- where nvl(y.dr, 0) = 0
-   and nvl(b.dr, 0) = 0
-   and nvl(y.fstatusflag, 0) = 2);
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_WAITEM" ("PK_WA_CLASS", "CLNAME", "PK_ORG", "CYEAR", "CPERIOD", "ITEMKEY", "ITEMNAME", "CODE", "NAME") AS 
+  SELECT citem.pk_wa_class,cl.name clname,citem.pk_org,citem.cyear,
+  citem.cperiod,citem.itemkey,citem.name itemname,
+  def.code,def.name name
+  FROM wa_classitem citem
+  left join wa_waclass cl on cl.pk_wa_class=citem.pk_wa_class
+  left JOIN wa_item item ON citem.pk_wa_item = item.pk_wa_item
+  left join bd_defdoc def on item.category_id  = def.pk_defdoc 
+  ORDER BY citem.itemkey;
 --------------------------------------------------------
---  DDL for View VIEW_BPM_PRAYBILL
---------------------------------------------------------
-
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_PRAYBILL" ("VBILLCODE", "BCANPURCHASEORGEDIT", "BISARRANGE", "BISGENSAORDER", "BPUBLISHTOEC", "BROWCLOSE", "CASSCUSTID", "CASTUNITID", "CFFILEID", "CFIRSTBID", "CFIRSTID", "CFIRSTTYPECODE", "CORDERTRANTYPECODE", "CPRODUCTORID", "CPROJECTID", "CPROJECTTASKID", "CROWNO", "CSOURCEBID", "CSOURCEID", "CSOURCETYPECODE", "CUNITID", "DBILLDATE", "DR", "DREQDATE", "DSUGGESTDATE", "NACCUMULATENUM", "NASTNUM", "NGENCT", "NNUM", "NPRICEAUDITBILL", "NQUOTEBILL", "NTAXMNY", "NTAXPRICE", "PK_BATCHCODE", "PK_CUSTOMER", "PK_EMPLOYEE", "PK_GROUP", "PK_MATERIAL", "PK_ORG", "PK_ORG_V", "PK_PRAYBILL", "PK_PRAYBILL_B", "PK_PRODUCT", "PK_PRODUCT_V", "PK_PURCHASEORG", "PK_PURCHASEORG_V", "PK_REQDEPT", "PK_REQDEPT_V", "PK_REQSTOORG", "PK_REQSTOORG_V", "PK_REQSTOR", "PK_SRCMATERIAL", "PK_SUGGESTSUPPLIER", "TS", "VBATCHCODE", "VBDEF1", "VBDEF10", "VBDEF11", "VBDEF12", "VBDEF13", "VBDEF14", "VBDEF15", "VBDEF16", "VBDEF17", "VBDEF18", "VBDEF19", "VBDEF2", "VBDEF20", "VBDEF3", "VBDEF4", "VBDEF5", "VBDEF6", "VBDEF7", "VBDEF8", "VBDEF9", "VBMEMO", "VCHANGERATE", "VFIRSTCODE", "VFIRSTROWNO", "VFIRSTTRANTYPE", "VFREE1", "VFREE10", "VFREE2", "VFREE3", "VFREE4", "VFREE5", "VFREE6", "VFREE7", "VFREE8", "VFREE9", "VSOURCECODE", "VSOURCEROWNO", "VSRCTRANTYPECODE") AS 
-  (select r.vbillcode  ,b."BCANPURCHASEORGEDIT",b."BISARRANGE",b."BISGENSAORDER",b."BPUBLISHTOEC",b."BROWCLOSE",b."CASSCUSTID",b."CASTUNITID",b."CFFILEID",b."CFIRSTBID",b."CFIRSTID",b."CFIRSTTYPECODE",b."CORDERTRANTYPECODE",b."CPRODUCTORID",b."CPROJECTID",b."CPROJECTTASKID",b."CROWNO",b."CSOURCEBID",b."CSOURCEID",b."CSOURCETYPECODE",b."CUNITID",b."DBILLDATE",b."DR",b."DREQDATE",b."DSUGGESTDATE",b."NACCUMULATENUM",b."NASTNUM",b."NGENCT",b."NNUM",b."NPRICEAUDITBILL",b."NQUOTEBILL",b."NTAXMNY",b."NTAXPRICE",b."PK_BATCHCODE",b."PK_CUSTOMER",b."PK_EMPLOYEE",b."PK_GROUP",b."PK_MATERIAL",b."PK_ORG",b."PK_ORG_V",b."PK_PRAYBILL",b."PK_PRAYBILL_B",b."PK_PRODUCT",b."PK_PRODUCT_V",b."PK_PURCHASEORG",b."PK_PURCHASEORG_V",b."PK_REQDEPT",b."PK_REQDEPT_V",b."PK_REQSTOORG",b."PK_REQSTOORG_V",b."PK_REQSTOR",b."PK_SRCMATERIAL",b."PK_SUGGESTSUPPLIER",b."TS",b."VBATCHCODE",b."VBDEF1",b."VBDEF10",b."VBDEF11",b."VBDEF12",b."VBDEF13",b."VBDEF14",b."VBDEF15",b."VBDEF16",b."VBDEF17",b."VBDEF18",b."VBDEF19",b."VBDEF2",b."VBDEF20",b."VBDEF3",b."VBDEF4",b."VBDEF5",b."VBDEF6",b."VBDEF7",b."VBDEF8",b."VBDEF9",b."VBMEMO",b."VCHANGERATE",b."VFIRSTCODE",b."VFIRSTROWNO",b."VFIRSTTRANTYPE",b."VFREE1",b."VFREE10",b."VFREE2",b."VFREE3",b."VFREE4",b."VFREE5",b."VFREE6",b."VFREE7",b."VFREE8",b."VFREE9",b."VSOURCECODE",b."VSOURCEROWNO",b."VSRCTRANTYPECODE" from  po_praybill r join po_praybill_b b  on r.pk_praybill =b.pk_praybill  where   nvl(r.fbillstatus  ,0) = 3 and nvl(r.dr,0) = 0 and nvl(b.dr,0) = 0);
---------------------------------------------------------
---  DDL for View VIEW_BPM_MATERIAL
+--  DDL for View VIEW_BPM_XCL
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_MATERIAL" ("INVPK", "INVCODE", "INVNAME", "MEASPK", "MEASCODE", "MEASNAME", "SFACPK", "SFACCODE", "SFACNAME") AS 
-  (
-
-SELECT 
---Áâ©Êñô‰ø°ÊÅØ
-inv.pk_material  as invpk,
-inv.code as invcode,
-inv.name  as invname,
---‰∏ªÂçï‰Ωç
-meas.pk_measdoc as measpk,
-meas.code as meascode, 
-meas.name as measname,
---Â∑•ÂéÇ‰ø°ÊÅØ
-sfac.pk_factory  as sfacpk ,
-sfac.code as sfaccode ,
-sfac.name as sfacname
-FROM 
-bd_material  inv
-inner join bd_materialprod invprod
-on inv.pk_material =invprod.pk_material
-inner join org_factory sfac
-on invprod.pk_org = sfac.pk_factory
-left  join bd_measdoc meas
-on inv.pk_measdoc  = meas.pk_measdoc
-where nvl(inv.dr,0)=0 and nvl(invprod.dr,0)=0
-
-
-);
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_XCL" ("PK_ORG", "NONHANDNUM", "PK_BATCHCODE", "VBATCHCODE", "PK_STORDOC", "STORENAME", "CMATERIALVID", "PK_MATERIAL", "CODE", "MATERIALNAME", "CASTUNITID", "MEASNAME") AS 
+  select ich.pk_org,icnum.nonhandnum,ich.pk_batchcode,ich.vbatchcode,stor.pk_stordoc,stor.name as storename, 
+ich.cmaterialvid,mat.pk_material,mat.code,mat.name as materialname,ich.castunitid,mess.name as measname
+from ic_onhandnum icnum 
+left join ic_onhanddim ich on icnum.pk_onhanddim=ich.pk_onhanddim
+left join bd_stordoc stor on stor.pk_stordoc=ich.cwarehouseid
+left join bd_material mat on mat.pk_material=ich.cmaterialvid
+left join bd_measdoc mess on mess.pk_measdoc=ich.castunitid 
+where nvl(icnum.dr,0)=0 and icnum.nonhandnum<>0;
 --------------------------------------------------------
---  DDL for View VIEW_BPM_CUST
+--  DDL for View VIEW_BPM_XZFA
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_CUST" ("CUSTPK", "CUSTCODE", "CUSTNAME", "CUSTSHORTNAME", "PSNPK", "PSNCODE", "PSNNAME", "DEPPK", "DEPCODE", "DEPNAME", "SORGPK", "SORGCODE", "SORGNAME") AS 
-  (
-SELECT 
---ÂÆ¢Êà∑‰ø°ÊÅØ
-cust.pk_customer as custpk,
-cust.code as custcode,
-cust.name  as custname,
-cust.shortname as custshortname,
---‰∏ìÁÆ°‰∏öÂä°Âëò‰ø°ÊÅØ
-bcs.respperson as psnpk,
-psn.code as psncode, 
-psn.name as psnname,
---‰∏ìÁÆ°ÈÉ®Èó®‰ø°ÊÅØ
-bcs.respdept as deppk,
-dept.code as depcode, 
-dept.name as depname,
---ÈîÄÂîÆÁªÑÁªá‰ø°ÊÅØ
-sorg.pk_salesorg as sorgpk ,
-sorg.code as sorgcode ,
-sorg.name as sorgname
-FROM bd_customer  cust
-left join bd_custsale bcs on cust.pk_customer = bcs.pk_customer
-left join org_salesorg sorg on bcs.pk_org = sorg.pk_salesorg
-left  join bd_psndoc psn on bcs.respperson = psn.pk_psndoc
-left join org_dept dept on bcs.respdept = Dept.Pk_Dept
-where nvl(cust.dr,0)=0 and nvl(bcs.dr,0)=0
-);
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_XZFA" ("PK_WA_CLASS", "CODE", "NAME", "PK_PERIODSCHEME", "CYEAR", "CPERIOD", "MUTIPLEFLAG", "PK_ORG") AS 
+  SELECT 
+  wa_waclass.pk_wa_class,--–Ω◊ ∑Ω∞∏÷˜º¸
+  wa_waclass.code,--–Ω◊ ∑Ω∞∏±‡¬Î
+  wa_waclass.name,--–Ω◊ ∑Ω∞∏√˚≥∆
+  wa_waclass.pk_periodscheme,--–Ω◊ ∆⁄º‰∑Ω∞∏÷˜º¸
+  wa_waclass.cyear,--ƒÍ∑›
+  wa_waclass.cperiod,--‘¬∑›∆⁄º‰
+  wa_waclass.mutipleflag, --∂‡¥Œ∑¢∑≈ 
+  wa_waclass.pk_org--◊È÷Ø
+FROM wa_waclass
+WHERE 11                        = 11
+AND ( stopflag                  = 'N' )
+AND wa_waclass.pk_periodscheme != '~'
+AND showflag                    = 'Y' 
+ORDER BY wa_waclass.pk_org,
+  wa_waclass.code;
 --------------------------------------------------------
---  DDL for View VIEW_BPM_PURBILLTYPE
+--  DDL for View VIEW_BPM_XZQJ
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_PURBILLTYPE" ("ACCOUNTCLASS", "BILLCODERULE", "BILLSTYLE", "BILLTYPENAME", "BILLTYPENAME2", "BILLTYPENAME3", "BILLTYPENAME4", "BILLTYPENAME5", "BILLTYPENAME6", "CANEXTENDTRANSACTION", "CHECKCLASSNAME", "CLASSNAME", "COMP", "COMPONENT", "DATAFINDERCLZ", "DEF1", "DEF2", "DEF3", "DR", "EMENDENUMCLASS", "FORWARDBILLTYPE", "ISACCOUNT", "ISAPPROVEBILL", "ISBIZFLOWBILL", "ISEDITABLEPROPERTY", "ISENABLEBUTTON", "ISENABLETRANSTYPEBCR", "ISLOCK", "ISROOT", "ISTRANSACTION", "NCBRCODE", "NODECODE", "PARENTBILLTYPE", "PK_BILLTYPECODE", "PK_BILLTYPEID", "PK_GROUP", "PK_ORG", "REFERCLASSNAME", "SYSTEMCODE", "TRANSTYPE_CLASS", "TS", "WEBNODECODE", "WHERESTRING") AS 
-  (select "ACCOUNTCLASS","BILLCODERULE","BILLSTYLE","BILLTYPENAME","BILLTYPENAME2","BILLTYPENAME3","BILLTYPENAME4","BILLTYPENAME5","BILLTYPENAME6","CANEXTENDTRANSACTION","CHECKCLASSNAME","CLASSNAME","COMP","COMPONENT","DATAFINDERCLZ","DEF1","DEF2","DEF3","DR","EMENDENUMCLASS","FORWARDBILLTYPE","ISACCOUNT","ISAPPROVEBILL","ISBIZFLOWBILL","ISEDITABLEPROPERTY","ISENABLEBUTTON","ISENABLETRANSTYPEBCR","ISLOCK","ISROOT","ISTRANSACTION","NCBRCODE","NODECODE","PARENTBILLTYPE","PK_BILLTYPECODE","PK_BILLTYPEID","PK_GROUP","PK_ORG","REFERCLASSNAME","SYSTEMCODE","TRANSTYPE_CLASS","TS","WEBNODECODE","WHERESTRING" from bd_billtype  where systemcode in('PO','PURP','MPP') and nvl(dr,0) = 0);
---------------------------------------------------------
---  DDL for View VIEW_BPM_JZQJ
---------------------------------------------------------
-
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_JZQJ" ("PK_ORG", "ORGNAME", "PK_PERIODSTATE", "PK_PERIODSCHEME", "ACCOUNTMARK", "PK_WA_CLASS", "WACLASSCODE", "WACLASSCNAME", "PK_WA_PERIOD", "CYEAR", "CPERIOD", "XZQJ") AS 
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_XZQJ" ("PK_ORG", "ORGNAME", "PK_PERIODSTATE", "PK_PERIODSCHEME", "ACCOUNTMARK", "PK_WA_CLASS", "WACLASSCODE", "WACLASSCNAME", "PK_WA_PERIOD", "CYEAR", "CPERIOD", "XZQJ") AS 
   select a.pk_org , org.name orgname,a.pk_periodstate ,b.pk_periodscheme,a.accountmark,
 a.pk_wa_class ,c.code waclasscode,c.name waclasscname,
 a.pk_wa_period,b.cyear,b.cperiod, b.cyear||b.cperiod AS xzqj
@@ -772,228 +2117,50 @@ left join wa_waclass c on a.pk_wa_class=c.pk_wa_class
 left join org_orgs org on org.pk_org=a.pk_org 
 where a.enableflag = 'Y';
 --------------------------------------------------------
---  DDL for View VIEW_BPM_SALETYPE
---------------------------------------------------------
-
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_SALETYPE" ("PK_BILLTYPECODE", "BILLTYPENAME", "PK_BILLTYPEID") AS 
-  SELECT pk_billtypecode,
-    billtypename,
-    pk_billtypeid
-  FROM bd_billtype
-  WHERE ( istransaction   = 'Y'
-  AND pk_group            = '0001A51000000000078A'
-  AND NVL ( islock, 'N' ) = 'N'
-  AND ( ( parentbilltype  = '30'
-  AND 1                   = 1
-  AND pk_group            = '0001A51000000000078A' ) ) )
-  ORDER BY pk_billtypecode;
---------------------------------------------------------
---  DDL for View VIEW_BPM_ORDERTYPE
---------------------------------------------------------
-
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_ORDERTYPE" ("CODE", "NAME", "MEMO", "MNECODE", "PK_DEFDOC") AS 
-  SELECT code,
-    name,
-    memo,
-    mnecode,
-    pk_defdoc
-  FROM bd_defdoc
-  WHERE 11          = 11
-  AND ( enablestate = 2 )
-  AND ( ( pk_group  = '0001A51000000000078A' )
-  AND pk_defdoclist = '1001A4100000000019GI' )
-  Order By Code;
---------------------------------------------------------
---  DDL for View VIEW_BPM_JOBLEVEL
---------------------------------------------------------
-
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_JOBLEVEL" ("CODE", "NAME", "SYSCODE", "SYSNAME", "PK_JOBLEVEL", "PK_JOBLEVELSYS") AS 
-  SELECT om_joblevel.code,
-  om_joblevel.name,
-  om_joblevelsys.code syscode,
-  om_joblevelsys.name sysname,
-  pk_joblevel,
-  om_joblevelsys.pk_joblevelsys
-FROM om_joblevel
-INNER JOIN om_joblevelsys
-ON om_joblevel.pk_joblevelsys = om_joblevelsys.pk_joblevelsys
-where om_joblevelsys.code='01'
-ORDER BY pk_joblevel;
---------------------------------------------------------
---  DDL for View VIEW_NC_ZUOYECHONGJIE
---------------------------------------------------------
-
-  CREATE OR REPLACE FORCE VIEW "VIEW_NC_ZUOYECHONGJIE" ("PK_GROUP", "PK_ORG", "PERIODID", "CDPTID", "PK_LARGEITEM", "VACTIVITYNAME", "NNUM") AS 
-  (
-select 
-mmpac_huanbao_h. pk_group,  mmpac_huanbao_h. pk_org ,
---‰ºöËÆ°ÊúüÈó¥
-mmpac_huanbao_h.periodid as periodid,
- ---ÂèóÁõäÈÉ®Èó®
-mmpac_huanbao_b.cdeptid as  cdptid,
---Âä≥Âä°È°πÁõÆ
-mmpac_huanbao_b.pk_largeitem as pk_largeitem,
-bd_activity.vactivityname  as vactivityname ,
---Ê≥®ÊÑèÔºö‰Ωú‰∏öÊ°£Ê°àÊúâ‰∏ÄÈ°π‰∏∫ ÊäòÁÆóÂ∫üÊ∞¥ÈáèÔºåÊäòÁÆóÂ∫üÊ∞¥ÈáèÂèñÊï∞ÁöÑÊó∂ÂÄôÂè™ÂêàËÆ°Â§úÁè≠ÁöÑÊï∞ÈáèÔºÅ
-case 
-when bd_activity.vactivityname='ÊäòÁÆóÂ∫üÊ∞¥Èáè' then ntotaldaynum
-when bd_activity.vactivityname='Êñ∞È≤úÊ∞¥Èáè' then ntotalnum*0.794
-else ntotalnum  end 
-as nnum  from  mmpac_huanbao_b 
-inner join mmpac_huanbao_h on mmpac_huanbao_b.pk_head = mmpac_huanbao_h.pk_head
-inner join bd_activity on mmpac_huanbao_b.pk_largeitem= bd_activity.cactivityid 
-where nvl( mmpac_huanbao_h. dr,0)=0
- and nvl( mmpac_huanbao_b. dr,0)=0 
- and bd_activity.vactivityname in ('Êñ∞È≤úÊ∞¥Èáè','Â∫üÊ∞¥Èáè','ÊäòÁÆóÂ∫üÊ∞¥Èáè')
-);
---------------------------------------------------------
 --  DDL for View VIEW_BPM_XZXM
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_XZXM" ("CODE", "NAME", "PK_WA_ITEM") AS 
-  select code, name, pk_wa_item from wa_item 
-where 11 = 11 and ( ( 1 = 1 ) and ( ( pk_org = 'GLOBLE00000000000000' or pk_org = '0001A51000000000078A' or pk_org = '0001A5100000000023GP' ) ) and ( ( isinhi = 'Y' or isinhi = 'y' ) and ( nvl ( iprivil, 0 ) = 0 ) ) ) order by code;
---------------------------------------------------------
---  DDL for View VIEW_NC_ZUOYEHUANBAO
---------------------------------------------------------
-
-  CREATE OR REPLACE FORCE VIEW "VIEW_NC_ZUOYEHUANBAO" ("PK_GROUP", "PK_ORG", "PERIODID", "CDPTID", "PK_LARGEITEM", "VACTIVITYNAME", "NNUM") AS 
-  (
----‰Ωú‰∏öÁéØ‰øùÁªüËÆ°Âçï
-select mmpac_huanbao_h. pk_group,  mmpac_huanbao_h. pk_org ,
---‰ºöËÆ°ÊúüÈó¥
-mmpac_huanbao_h.periodid as periodid,
- ---ÂèóÁõäÈÉ®Èó®
-mmpac_huanbao_b.cdeptid as  cdptid,
---Âä≥Âä°È°πÁõÆ
-mmpac_huanbao_b.pk_largeitem as pk_largeitem,
-bd_activity.vactivityname  as vactivityname ,
---Ê≥®ÊÑèÔºö‰Ωú‰∏öÊ°£Ê°àÊúâ‰∏ÄÈ°π‰∏∫ ÊäòÁÆóÂ∫üÊ∞¥ÈáèÔºåÊäòÁÆóÂ∫üÊ∞¥ÈáèÂèñÊï∞ÁöÑÊó∂ÂÄôÂè™ÂêàËÆ°Â§úÁè≠ÁöÑÊï∞ÈáèÔºÅ
-case when 
-bd_activity.vactivityname='ÊäòÁÆóÂ∫üÊ∞¥Èáè' then ntotaldaynum
-else ntotalnum  end 
-as nnum  from  mmpac_huanbao_b 
-inner join mmpac_huanbao_h on mmpac_huanbao_b.pk_head = mmpac_huanbao_h.pk_head
-inner join bd_activity on mmpac_huanbao_b.pk_largeitem= bd_activity.cactivityid 
-where nvl( mmpac_huanbao_h. dr,0)=0
- and nvl( mmpac_huanbao_b. dr,0)=0 
-);
---------------------------------------------------------
---  DDL for View VIEW_BPM_RESPPERSON
---------------------------------------------------------
-
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_RESPPERSON" ("PSNPK", "PSNCODE", "PSNNAME", "DEPPK", "DEPCODE", "DEPNAME") AS 
-  select distinct 
---‰∏ìÁÆ°‰∏öÂä°Âëò‰ø°ÊÅØ
-psnpk,
-psncode, 
-psnname,
---‰∏ìÁÆ°ÈÉ®Èó®‰ø°ÊÅØ
-DEPPK,
-depcode, 
-depname from VIEW_BPM_CUST;
---------------------------------------------------------
---  DDL for View VIEW_BPM_GWGZ
---------------------------------------------------------
-
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_GWGZ" ("PK_WA_CRT", "PK_WA_GRD", "PK_WA_PRMLV", "MAX_VALUE", "MIN_VALUE", "PK_WA_SECLV", "CRITERIONVALUE", "GRDNAME", "PRMLVNAME", "PK_WA_GRADEVER", "SECLVNAME") AS 
-  (
-SELECT wc.pk_wa_crt,
-  wc.pk_wa_grd,
-  wc.pk_wa_prmlv,
-  wc.max_value,
-  wc.min_value,
-  wc.pk_wa_seclv,
-  wc.criterionvalue,
-  wg.name grdName,
-  wp.levelname prmlvName,
-  ver.pk_wa_gradever,
-  ws.levelname seclvName
-FROM wa_seclv ws,
-  wa_grade wg,
-  wa_prmlv wp,  
-  wa_criterion wc,
-  wa_grade_ver ver
-WHERE   1 = 1
-AND wc.pk_wa_grd       = wg.pk_wa_grd
-AND wc.pk_wa_prmlv     = wp.pk_wa_prmlv
-AND wc.pk_wa_gradever  = ver.pk_wa_gradever
-AND wc.pk_wa_seclv     = ws.pk_wa_seclv
-);
---------------------------------------------------------
---  DDL for View VIEW_BPM_HTGL_CHBM
---------------------------------------------------------
-
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_HTGL_CHBM" ("ROWNO", "DATASOURCE", "VBILLCODE", "PK_MATERIAL", "INVCODE", "INVNAME", "NNUM", "NPRICE", "PK_MEASDOC", "UTCODE", "UTNAME", "BZGGNAME", "PK_BZGG") AS 
-  select ROWNUM as rowNo,t."DATASOURCE",t."VBILLCODE",t."PK_MATERIAL",t."INVCODE",t."INVNAME",t."NNUM",t."NPRICE",t."PK_MEASDOC",t."UTCODE",t."UTNAME",t."BZGGNAME",t."PK_BZGG" from (
-select distinct 'ËØ∑Ë¥≠Âçï' as DataSource,A.VBILLCODE,c.pk_material,c.code as Invcode,c.name as Invname,b.nnum,0 as nprice,d.pk_measdoc,d.code as UTcode,d.name as UTname,
-e.NAME as BZGGname,e.PK_DEFDOC as PK_BZGG
-from po_praybill_b b left join po_praybill a on a.pk_praybill =b.pk_praybill  
-left join bd_material c on b.pk_material=c.pk_material 
-left join bd_measdoc d on b.cunitid =d.pk_measdoc
-left join VIEW_BPM_PACKAGESTYPE e on b.vfree1=e.PK_DEFDOC
-) t;
---------------------------------------------------------
---  DDL for View VIEW_JL_SUPPLIER
---------------------------------------------------------
-
-  CREATE OR REPLACE FORCE VIEW "VIEW_JL_SUPPLIER" ("ÂÆ¢ÂïÜÁºñÁ†Å", "ÂÆ¢ÂïÜÂêçÁß∞", "ÂÆ¢ÂïÜÁÆÄÁß∞", "Âä©ËÆ∞Á†Å", "ÊòØÂê¶ÂõΩÂ§ñ", "CVENDEFINE1", "CVENDEFINE2") AS 
-  (
-  SELECT code AS ÂÆ¢ÂïÜÁºñÁ†Å,
-    name       AS ÂÆ¢ÂïÜÂêçÁß∞,
-    shortname  AS ÂÆ¢ÂïÜÁÆÄÁß∞,
-    mnecode    AS Âä©ËÆ∞Á†Å,
-    CASE pk_country
-      WHEN '0001Z010000000079UJJ'
-      THEN 'ÊòØ'
-      ELSE 'Âê¶'
-    END AS ÊòØÂê¶ÂõΩÂ§ñ,
-    '' cVenDefine1,
-    '' cVenDefine2
-  FROM bd_supplier
-  where nvl(dr,0)=0 
-  --ÊòØÂê¶ËÆ°Èáè
-  and nvl(def1,'N')='Y'
-  );
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_BPM_XZXM" ("CODE", "NAME", "PK_WA_ITEM") AS 
+  select code, name, pk_wa_item from wa_item;
 --------------------------------------------------------
 --  DDL for View VIEW_JL_ARR
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_JL_ARR" ("Âà∞Ë¥ßÂçïÂ≠êË°®ID", "Âà∞Ë¥ßÂçï‰∏ªË°®ID", "‰ªìÂ∫ìÁºñÁ†Å", "‰ªìÂ∫ìÂêçÁß∞", "Â≠òË¥ßÁºñÁ†Å", "Â≠òË¥ßÂêçÁß∞", "ËßÑÊ†ºÂûãÂè∑", "ËÆ°ÈáèÂçï‰Ωç", "Â∫îÂà∞Êï∞Èáè", "ÂêàÊ†ºÂÖ•Â∫ìÊï∞Èáè", "ÊâπÂè∑", "ÂåÖË£ÖËßÑÊ†º", "Âà∞Ë¥ßÂçïÂè∑", "ÂçïÊçÆÊó•Êúü", "‰æõÂ∫îÂïÜÁºñÁ†Å", "‰æõÂ∫îÂïÜÂêçÁß∞", "ÂéüÂ∏ÅÊó†Á®éÂçï‰ª∑", "ÂéüÂ∏ÅÂê´Á®éÂçï‰ª∑", "ÈááË¥≠ËÆ¢ÂçïÂè∑", "ÈááË¥≠ËÆ¢ÂçïÂ≠êË°®ID", "ÈááË¥≠Á±ªÂûã", "Á®éÁéá", "ËÅîÁ≥ªÁîµËØù", "ÈÉ®Èó®ÁºñÁ†Å", "‰∏öÂä°ÂëòÁºñÁ†Å", "‰∏öÂä°ÂëòÂêçÁß∞", "Â§áÊ≥®") AS 
-  ( SELECT arrb. pk_arriveorder_b AS Âà∞Ë¥ßÂçïÂ≠êË°®ID,
-      arrb. pk_arriveorder         AS Âà∞Ë¥ßÂçï‰∏ªË°®ID,
-      warehouse.code               AS ‰ªìÂ∫ìÁºñÁ†Å,
-      warehouse.name               AS ‰ªìÂ∫ìÂêçÁß∞,
-      inventory.code               AS Â≠òË¥ßÁºñÁ†Å,
-      inventory.name               AS Â≠òË¥ßÂêçÁß∞,
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_JL_ARR" ("µΩªıµ•◊”±ÌID", "µΩªıµ•÷˜±ÌID", "≤÷ø‚±‡¬Î", "≤÷ø‚√˚≥∆", "¥Êªı±‡¬Î", "¥Êªı√˚≥∆", "πÊ∏Ò–Õ∫≈", "º∆¡øµ•Œª", "”¶µΩ ˝¡ø", "∫œ∏Ò»Îø‚ ˝¡ø", "≈˙∫≈", "∞¸◊∞πÊ∏Ò", "µΩªıµ•∫≈", "µ•æ›»’∆⁄", "π©”¶…Ã±‡¬Î", "π©”¶…Ã√˚≥∆", "‘≠±“ŒﬁÀ∞µ•º€", "‘≠±“∫¨À∞µ•º€", "≤…π∫∂©µ•∫≈", "≤…π∫∂©µ•◊”±ÌID", "≤…π∫¿‡–Õ", "À∞¬ ", "¡™œµµÁª∞", "≤ø√≈±‡¬Î", "“µŒÒ‘±±‡¬Î", "“µŒÒ‘±√˚≥∆", "±∏◊¢") AS 
+  ( SELECT arrb. pk_arriveorder_b AS µΩªıµ•◊”±ÌID,
+      arrb. pk_arriveorder         AS µΩªıµ•÷˜±ÌID,
+      warehouse.code               AS ≤÷ø‚±‡¬Î,
+      warehouse.name               AS ≤÷ø‚√˚≥∆,
+      inventory.code               AS ¥Êªı±‡¬Î,
+      inventory.name               AS ¥Êªı√˚≥∆,
       inventory.materialspec
-      || inventory.materialtype AS ËßÑÊ†ºÂûãÂè∑,
-      ComputationUnit.name      AS ËÆ°ÈáèÂçï‰Ωç,
-      arrb.nplannum             AS Â∫îÂà∞Êï∞Èáè,
-      arrb.naccumstorenum       AS ÂêàÊ†ºÂÖ•Â∫ìÊï∞Èáè,
-      arrb.vbatchcode           AS ÊâπÂè∑,
-      bgzg.name                 AS ÂåÖË£ÖËßÑÊ†º,
-      arrh.vbillcode            AS Âà∞Ë¥ßÂçïÂè∑,
-      arrh.dbilldate            AS ÂçïÊçÆÊó•Êúü,
-      vendor.code               AS ‰æõÂ∫îÂïÜÁºñÁ†Å,
-      vendor.name               AS ‰æõÂ∫îÂïÜÂêçÁß∞,
-      arrb.norigprice           AS ÂéüÂ∏ÅÊó†Á®éÂçï‰ª∑,
-      arrb.norigtaxprice        AS ÂéüÂ∏ÅÂê´Á®éÂçï‰ª∑,
-      arrb.vsourcecode          AS ÈááË¥≠ËÆ¢ÂçïÂè∑,
-      arrb.csourcebid           AS ÈááË¥≠ËÆ¢ÂçïÂ≠êË°®ID,
-      arrh.vtrantypecode        AS ÈááË¥≠Á±ªÂûã,
-      arrb.ntaxrate             AS Á®éÁéá,
-      --        po_arriveorder.cDefine10                         AS ËÅîÁ≥ªÁîµËØù,
-      '189xxxxx' AS ËÅîÁ≥ªÁîµËØù,
-      dept.code  AS ÈÉ®Èó®ÁºñÁ†Å,
-      psn.code   AS ‰∏öÂä°ÂëòÁºñÁ†Å,
-      psn.name   AS ‰∏öÂä°ÂëòÂêçÁß∞,
-      arrh.vmemo AS Â§áÊ≥®
+      || inventory.materialtype AS πÊ∏Ò–Õ∫≈,
+      ComputationUnit.name      AS º∆¡øµ•Œª,
+      arrb.nplannum             AS ”¶µΩ ˝¡ø,
+      arrb.naccumstorenum       AS ∫œ∏Ò»Îø‚ ˝¡ø,
+      arrb.vbatchcode           AS ≈˙∫≈,
+      bgzg.name                 AS ∞¸◊∞πÊ∏Ò,
+      arrh.vbillcode            AS µΩªıµ•∫≈,
+      arrh.dbilldate            AS µ•æ›»’∆⁄,
+      vendor.code               AS π©”¶…Ã±‡¬Î,
+      vendor.name               AS π©”¶…Ã√˚≥∆,
+      arrb.norigprice           AS ‘≠±“ŒﬁÀ∞µ•º€,
+      arrb.norigtaxprice        AS ‘≠±“∫¨À∞µ•º€,
+      arrb.vsourcecode          AS ≤…π∫∂©µ•∫≈,
+      arrb.csourcebid           AS ≤…π∫∂©µ•◊”±ÌID,
+      arrh.vtrantypecode        AS ≤…π∫¿‡–Õ,
+      arrb.ntaxrate             AS À∞¬ ,
+      --        po_arriveorder.cDefine10                         AS ¡™œµµÁª∞,
+      '189xxxxx' AS ¡™œµµÁª∞,
+      dept.code  AS ≤ø√≈±‡¬Î,
+      psn.code   AS “µŒÒ‘±±‡¬Î,
+      psn.name   AS “µŒÒ‘±√˚≥∆,
+      arrh.vmemo AS ±∏◊¢
     FROM po_arriveorder arrh
     LEFT OUTER JOIN po_arriveorder_b arrb
     ON arrb.pk_arriveorder = arrh.pk_arriveorder
     LEFT OUTER JOIN bd_stordoc warehouse
-      --//  pk_receivestore  Êî∂Ë¥ß‰ªìÂ∫ì   or  pk_reqstore  ÈúÄÊ±Ç‰ªìÂ∫ì
+      --//  pk_receivestore   ’ªı≤÷ø‚   or  pk_reqstore  –Ë«Û≤÷ø‚
     ON warehouse. pk_stordoc = arrb.pk_receivestore
     LEFT OUTER JOIN bd_material inventory
     ON inventory. pk_material = arrb.pk_material
@@ -1001,22 +2168,22 @@ left join VIEW_BPM_PACKAGESTYPE e on b.vfree1=e.PK_DEFDOC
     ON inventory. pk_measdoc = ComputationUnit.pk_measdoc
     LEFT OUTER JOIN bd_supplier vendor
     ON vendor. pk_supplier = arrh. pk_supplier
-      --ÂåÖË£ÖËßÑÊ†º
+      --∞¸◊∞πÊ∏Ò
     LEFT JOIN bd_defdoc bgzg
     ON arrb.vfree1= bgzg.pk_defdoc
-      --ÈááË¥≠ÈÉ®Èó®
+      --≤…π∫≤ø√≈
     LEFT JOIN org_dept dept
     ON arrh. pk_dept = dept.pk_dept
-      --‰∏öÂä°Âëò
+      --“µŒÒ‘±
     LEFT JOIN bd_psndoc psn
     ON arrh. pk_pupsndoc             = psn. pk_psndoc
     WHERE 
     arrh.fbillstatus             =3
     AND arrb.nnum -nvl(arrb.naccumstorenum , 0) >0
-      -- ÂæÖÂÆö   warehouse.code NOT IN ('603', '604')
-      --Ê¶úÂçïÂè∑
+      -- ¥˝∂®   warehouse.code NOT IN ('603', '604')
+      --∞Òµ•∫≈
     AND arrb.vbdef20='~'
-      --Â∑≤ÁªèÊä•Ê£Ä‰∏çÈúÄË¶Å
+      --“—æ≠±®ºÏ≤ª–Ë“™
 --    AND arrb. pk_arriveorder_b NOT IN
 --      (SELECT csourcebid
 --      FROM qc_applybill_s
@@ -1029,48 +2196,94 @@ AND ( NVL ( arrb.naccumchecknum, 0 ) = 0 )
 
       );
 --------------------------------------------------------
---  DDL for View VIEW_BPM_JOBRANK
+--  DDL for View VIEW_JL_CUSTOMER
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_JOBRANK" ("JOBRANKCODE", "JOBRANKNAME", "PK_JOBRANK", "JOBRANKORDER") AS 
-  SELECT jobrankcode,
-  jobrankname,
-  pk_jobrank,
-  jobrankorder
-FROM om_jobrank;
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_JL_CUSTOMER" ("øÕ…Ã±‡¬Î", "øÕ…Ã√˚≥∆", "øÕ…ÃºÚ≥∆", "÷˙º«¬Î", " «∑Òπ˙Õ‚", "CVENDEFINE1", "CVENDEFINE2") AS 
+  (
+  SELECT code AS øÕ…Ã±‡¬Î,
+    name       AS øÕ…Ã√˚≥∆,
+    shortname  AS øÕ…ÃºÚ≥∆,
+    mnecode    AS ÷˙º«¬Î,
+    CASE pk_country
+      WHEN '0001Z010000000079UJJ'
+      THEN ' «'
+      ELSE '∑Ò'
+    END AS  «∑Òπ˙Õ‚,
+    '' cVenDefine1,
+    '' cVenDefine2
+  FROM bd_customer
+  where nvl(dr,0)=0 
+  -- «∑Òº∆¡ø
+  and nvl(def1,'N')='Y'
+  );
 --------------------------------------------------------
---  DDL for View VIEW_BPM_LZYY
+--  DDL for View VIEW_JL_INV
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_LZYY" ("CODE", "NAME", "MNECODE", "PK_DEFDOC", "PID") AS 
-  SELECT code,
-  name,
-  mnecode,
-  pk_defdoc,
-  pid
-FROM bd_defdoc
-WHERE 11          = 11
-AND ( enablestate = 2 )
-AND ( ( 1         = 1 )
-AND pk_defdoclist = '1001Z71000000000GPD1' )
-ORDER BY code;
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_JL_INV" ("¥Êªı±‡¬Î", "CINVADDCODE", "¥Êªı√˚≥∆", "πÊ∏Ò–Õ∫≈", " «∑Òœ˙ €", " «∑ÒÕ‚π∫", " «∑Ò◊‘÷∆", "÷˙º«¬Î", " «∑Òº∆¡ø", "º∆¡øµ•Œª√˚≥∆", "»Îø‚≥¨∂Ó…œœﬁ") AS 
+  (SELECT inv.code      AS ¥Êªı±‡¬Î,
+    ''                  AS cInvAddCode,
+    inv. name           AS ¥Êªı√˚≥∆,
+    inv. materialspec   AS πÊ∏Ò–Õ∫≈,
+    ' «'                 AS  «∑Òœ˙ €,
+    ' «'                 AS  «∑ÒÕ‚π∫,
+    ' «'                 AS  «∑Ò◊‘÷∆,
+    inv.materialmnecode AS ÷˙º«¬Î,
+    NVL(inv.def1,'N')   AS  «∑Òº∆¡ø,
+    meas.name           AS º∆¡øµ•Œª√˚≥∆,
+    9999999             AS »Îø‚≥¨∂Ó…œœﬁ
+  FROM bd_material inv
+  LEFT JOIN bd_measdoc meas
+  ON inv.pk_measdoc = meas.pk_measdoc
+  WHERE NVL(inv.dr,0)   =0
+    -- «∑Òº∆¡ø
+  AND NVL(inv.def1,'N')='Y'
+    --“—æ≠∆Ù”√
+  AND inv.enablestate =2
+    --  AND (cInvCCode NOT BETWEEN '0401' AND '0413')
+  );
+--------------------------------------------------------
+--  DDL for View VIEW_JL_SUPPLIER
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_JL_SUPPLIER" ("øÕ…Ã±‡¬Î", "øÕ…Ã√˚≥∆", "øÕ…ÃºÚ≥∆", "÷˙º«¬Î", " «∑Òπ˙Õ‚", "CVENDEFINE1", "CVENDEFINE2") AS 
+  (
+  SELECT code AS øÕ…Ã±‡¬Î,
+    name       AS øÕ…Ã√˚≥∆,
+    shortname  AS øÕ…ÃºÚ≥∆,
+    mnecode    AS ÷˙º«¬Î,
+    CASE pk_country
+      WHEN '0001Z010000000079UJJ'
+      THEN ' «'
+      ELSE '∑Ò'
+    END AS  «∑Òπ˙Õ‚,
+    '' cVenDefine1,
+    '' cVenDefine2
+  FROM bd_supplier
+  where nvl(dr,0)=0 
+  -- «∑Òº∆¡ø
+  and nvl(def1,'N')='Y'
+  );
 --------------------------------------------------------
 --  DDL for View VIEW_NC_ZUOYEAUTOCOST
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_NC_ZUOYEAUTOCOST" ("PK_GROUP", "PK_ORG", "PK_COSTCENTER", "CCNAME", "CPERIOD", "CCOSTOBJECTID", "PK_MEASDOC", "NNUM") AS 
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_NC_ZUOYEAUTOCOST" ("PK_GROUP", "PK_ORG", "PK_COSTCENTER", "CCTYPE", "CCNAME", "CPERIOD", "BCOST", "CCOSTOBJECTID", "CINVENTORYID", "PK_MEASDOC", "NNUM") AS 
   (
-select  pk_group,pk_org,pk_costcenter,  ccname ,cperiod,
-'1001A41000000000CU6E'  as ccostobjectid,--ÊàêÊú¨ÂØπË±°ÈªòËÆ§
-'0001Z0100000000000XT' as pk_measdoc,--ËÆ°ÈáèÂçï‰ΩçÈªòËÆ§
-100 as nnum --Êï∞ÈáèÈªòËÆ§
+select  temp.pk_group,temp.pk_org,temp.pk_costcenter, temp.cctype, temp.ccname ,temp.cperiod,temp.bcost,
+costobject.ccostobjectid as ccostobjectid, --≥…±æ∂‘œÛƒ¨»œ
+costobject.pk_material as cinventoryid,
+costobject.pk_measdoc  as pk_measdoc,--º∆¡øµ•Œªƒ¨»œ
+100 as nnum -- ˝¡øƒ¨»œ
 from(
---Êü•ËØ¢ÊØè‰∏™‰ºöËÆ°ÊúüÈó¥
-select  cs.pk_group,cs.pk_org,cs.pk_costcenter,  cs.ccname ,zuoye.cperiod,
+--≤È—Ø√ø∏ˆª·º∆∆⁄º‰
+select  cs.pk_group,cs.pk_org,cs.pk_costcenter,cctype,  cs.ccname ,zuoye.cperiod,
+nvl(wgnnum,0),nvl(xhnnum,0), nvl(zynnum,0),
 case 
-when cctype=3 and ccname in ('Á†îÂèëÊàêÊú¨‰∏≠ÂøÉ','ÈîÄÂîÆÊàêÊú¨‰∏≠ÂøÉ','ÈááË¥≠ÊàêÊú¨‰∏≠ÂøÉ') then '0'
-when cctype=2 and wgnnum >0 then 'N'
-when cctype=2 and  wgnnum =0  and (xhnnum+zynnum)>0 then '1'
+when nvl(wgnnum,0) >0 then 'N'
+when  nvl(wgnnum,0) =0 and ccname in ('—–∑¢≥…±æ÷––ƒ','œ˙ €≥…±æ÷––ƒ','≤…π∫≥…±æ÷––ƒ') then '0'
+when  nvl(wgnnum,0) =0  and (nvl(xhnnum,0)+nvl(zynnum,0))>0 then '1'
 else 'N'
 end
 as bcost
@@ -1078,276 +2291,188 @@ from resa_costcenter cs
 left join view_nc_zuoyeautocost01 zuoye
 on cs.pk_group||cs.pk_org||cs.pk_costcenter = zuoye.pk_group||zuoye.pk_org||zuoye.ccostcenterid
 where nvl(dr,0)=0 
-
 and (
-(cctype =3 and ccname in ('Á†îÂèëÊàêÊú¨‰∏≠ÂøÉ','ÈîÄÂîÆÊàêÊú¨‰∏≠ÂøÉ','ÈááË¥≠ÊàêÊú¨‰∏≠ÂøÉ')) or
+(cctype =3 and ccname in ('—–∑¢≥…±æ÷––ƒ','œ˙ €≥…±æ÷––ƒ','≤…π∫≥…±æ÷––ƒ')) or
 cctype=2
 )
 )temp
+inner join view_nc_zuoyeautocost02  costobject on temp.pk_group||temp.pk_org = costobject.pk_group||costobject.pk_org
 where bcost in('0','1')
 );
 --------------------------------------------------------
---  DDL for View VIEW_BPM_CASHFLOW
+--  DDL for View VIEW_NC_ZUOYEAUTOCOST01
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_CASHFLOW" ("ORG_PK", "ORG_CODE", "ORG_NAME", "CASH_PK", "CASH_CODE", "CASH_NAME") AS 
-  (SELECT
-    --ÁªÑÁªá‰ø°ÊÅØ
-    org.pk_org AS org_pk,
-    org.code   AS org_code,
-    org.name   AS org_name,
-    --Áé∞ÈáëÊµÅÈ°πÁõÆË°®
-    cash.pk_cashflow as cash_pk,
-    cash.code as cash_code,
-    cash.name as cash_name
-    
-  FROM bd_cashflow cash
-  INNER JOIN org_orgs org
-  ON cash. pk_org     = org.pk_org
-  WHERE NVL(cash.dr,0)=0
-  --1=Êú™ÂêØÁî®Ôºå2=Â∑≤ÂêØÁî®Ôºå3=Â∑≤ÂÅúÁî®Ôºå 
-  AND cash.enablestate=2
-  );
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_NC_ZUOYEAUTOCOST01" ("PK_GROUP", "PK_ORG", "CCOSTCENTERID", "CPERIOD", "WGNNUM", "XHNNUM", "ZYNNUM") AS 
+  (
+select pk_group,pk_org,ccostcenterid,cperiod,sum(wgnnum) as wgnnum,sum(xhnum) as xhnnum,sum(zynnum)  as zynnum  from (
+
+select pk_group,pk_org,ccostcenterid,cperiod , sum(1) as  wgnnum, 0 as xhnum, 0 as zynnum  from  cm_product where nvl(dr,0)=0
+group by pk_group,pk_org,ccostcenterid,cperiod
+union all
+
+select pk_group,pk_org,ccostcenterid,cperiod , 0 as  wgnnum, sum(1) as xhnum, 0 as zynnum from  cm_stuff where nvl(dr,0)=0
+group by pk_group,pk_org,ccostcenterid,cperiod
+union all
+
+--◊˜“µÕ≥º∆µ• (cm_actnum) 
+select pk_group,pk_org,ccostcenterid,cperiod , 0 as  wgnnum, 0 as xhnum, sum(1) as zynnum from  cm_actnum where nvl(dr,0)=0
+group by pk_group,pk_org,ccostcenterid,cperiod
+)
+group by pk_group,pk_org,ccostcenterid,cperiod
+);
 --------------------------------------------------------
---  DDL for View VIEW_BPM_BHGJYXX
+--  DDL for View VIEW_NC_ZUOYEAUTOCOST02
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_BHGJYXX" ("PK_REJECTBILL", "PK_CHECKBILL", "PK_CHECKBILL_B", "VBSAMPLECODE", "VCHECKITEMNAME", "NTOTALSAMPLE", "NACCEPTNUM", "NREJECTNUM", "NUNQUALIFIEDNUM", "FACCETPTYPE") AS 
-  SELECT 
-h.pk_rejectbill,
-chkb.pk_checkbill,
-    chkb.pk_checkbill_b,
-    vbsamplecode,
-    chkitem.vcheckitemname,
-    ntotalsample,
-    nacceptnum ,
-    nrejectnum,
-    nunqualifiednum,
-    faccetptype
-  FROM qc_checkbill_b chkb
-  LEFT JOIN qc_checkbill chk on chk.pk_checkbill =chkb.pk_checkbill
-  LEFT JOIN qc_applybill_s apl on apl.pk_applybill = chk.cfirstid
-  LEFT JOIN  qc_rejectbill h on h.pk_applybill  = apl.pk_applybill
-  LEFT JOIN  qc_rejectbill_b b ON b. pk_rejectbill = h. pk_rejectbill
-  LEFT JOIN qc_checkitem chkitem
-  ON chkb. pk_checkitem =chkitem.pk_checkitem
-  where nvl(chkb.dr,0)=0 and chkb.buseless='N';
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_NC_ZUOYEAUTOCOST02" ("PK_GROUP", "PK_ORG", "CCOSTOBJECTID", "PK_MATERIAL", "PK_MEASDOC") AS 
+  (
+select  cm_costobject.pk_group, cm_costobject.pk_org,cm_costobject.ccostobjectid, 
+bd_material.pk_material,bd_material.pk_measdoc
+from cm_costobject
+inner join bd_material on cm_costobject.cmaterialid = bd_material.pk_material
+where cm_costobject.vcostobjcode='990200000000004'
+);
 --------------------------------------------------------
---  DDL for View VIEW_BPM_PROJECT
+--  DDL for View VIEW_NC_ZUOYECHONGJIE
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_PROJECT" ("PH_PK", "PH_CODE", "PH_NAME", "ORG_PK", "ORG_CODE", "ORG_NAME") AS 
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_NC_ZUOYECHONGJIE" ("PK_GROUP", "PK_ORG", "PERIODID", "CDPTID", "PK_LARGEITEM", "VACTIVITYNAME", "NNUM") AS 
   (
 select 
---ph.pk_projectÈ°πÁõÆ‰∏ªÈîÆ
-ph.pk_project as  ph_pk,
---ph.project_code È°πÁõÆÁºñÁ†Å
-ph.project_code as ph_code,
---ph.project_name È°πÁõÆÂêçÁß∞
-ph.project_name  as ph_name,
---ÂàÜÈÖçÂà∞ÁªÑÁªá
-org.pk_org as org_pk,
-org.code as org_code,
-org.name as org_name
-from bd_project ph
-inner join bd_project_b pb
-on ph.  pk_project = pb.  pk_project 
-inner join org_orgs org on   pb.   pk_parti_org  = org.pk_org
-where nvl(ph.dr,0)=0 and nvl(pb.dr,0)=0 
---  enablestate  ÂêØÁî®Áä∂ÊÄÅ  enablestate int  ÂêØÁî®Áä∂ÊÄÅ   1=Êú™ÂêØÁî®Ôºå2=Â∑≤ÂêØÁî®Ôºå3=Â∑≤ÂÅúÁî®Ôºå 
-and ph.enablestate = 2
+mmpac_huanbao_h. pk_group,  mmpac_huanbao_h. pk_org ,
+--ª·º∆∆⁄º‰
+mmpac_huanbao_h.periodid as periodid,
+ --- ‹“Ê≤ø√≈
+mmpac_huanbao_b.cdeptid as  cdptid,
+--¿ÕŒÒœÓƒø
+mmpac_huanbao_b.pk_largeitem as pk_largeitem,
+bd_activity.vactivityname  as vactivityname ,
+--◊¢“‚£∫◊˜“µµµ∞∏”–“ªœÓŒ™ ’€À„∑œÀÆ¡ø£¨’€À„∑œÀÆ¡ø»° ˝µƒ ±∫Ú÷ª∫œº∆“π∞‡µƒ ˝¡ø£°
+case 
+when bd_activity.vactivityname='’€À„∑œÀÆ¡ø' then ntotaldaynum
+when bd_activity.vactivityname='–¬œ ÀÆ¡ø' then ntotalnum*0.794
+else ntotalnum  end 
+as nnum  from  mmpac_huanbao_b 
+inner join mmpac_huanbao_h on mmpac_huanbao_b.pk_head = mmpac_huanbao_h.pk_head
+inner join bd_activity on mmpac_huanbao_b.pk_largeitem= bd_activity.cactivityid 
+where nvl( mmpac_huanbao_h. dr,0)=0
+ and nvl( mmpac_huanbao_b. dr,0)=0 
+ and bd_activity.vactivityname in ('–¬œ ÀÆ¡ø','∑œÀÆ¡ø','’€À„∑œÀÆ¡ø')
+);
+--------------------------------------------------------
+--  DDL for View VIEW_NC_ZUOYECHUYUN
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_NC_ZUOYECHUYUN" ("PK_GROUP", "PK_ORG", "CDPTID", "CTRANTYPEID", "DBILLDATE", "TAUDITTIME", "NNUM") AS 
+  (
+---≤…π∫»Îø‚
+select  pk_group,pk_org ,cdptid as  cdptid, ctrantypeid ,   dbilldate ,taudittime , abs(ntotalnum) as nnum from  ic_purchasein_h 
+where nvl(dr,0)=0 
+union all
+---µ˜≤¶»Îø‚
+select  pk_group,pk_org ,cdptid as  cdptid, ctrantypeid , dbilldate , taudittime , abs(ntotalnum) as nnum from  ic_transin_h 
+where nvl(dr,0)=0 
+union all
+---≤˙≥…∆∑»Îø‚
+select  pk_group,pk_org ,cdptid as  cdptid, ctrantypeid , dbilldate , taudittime , abs(ntotalnum) as nnum from  ic_finprodin_h 
+where nvl(dr,0)=0 
+union all
+---∆‰À˚»Îø‚
+select  pk_group,pk_org ,cdptid as  cdptid, ctrantypeid , dbilldate , taudittime , abs(ntotalnum) as nnum from  ic_generalin_h 
+where nvl(dr,0)=0 
+union all
+--ŒØÕ–º”π§»Îø‚
+select  pk_group,pk_org ,cdptid as  cdptid, ctrantypeid , dbilldate , taudittime , abs(ntotalnum) as nnum from  ic_subcontin_h 
+where nvl(dr,0)=0 
+union all
+---…˙≤˙±®∑œ»Îø‚
+select  pk_group,pk_org ,cdptid as  cdptid, ctrantypeid , dbilldate , taudittime , abs(ntotalnum) as nnum from  ic_discardin_h 
+where nvl(dr,0)=0 
+union all
+--œ˙ €≥ˆø‚
+select  pk_group,pk_org ,   cdptid  as  cdptid ,  ctrantypeid ,  dbilldate , taudittime , abs(ntotalnum) as nnum  from  ic_saleout_h 
+where nvl(dr,0)=0 
+union all
+--µ˜≤¶≥ˆø‚
+select  pk_group,pk_org ,   cdptid  as  cdptid ,  ctrantypeid ,  dbilldate , taudittime , abs(ntotalnum) as nnum  from  ic_transout_h 
+where nvl(dr,0)=0
+
+union all
+--≤ƒ¡œ≥ˆø‚
+select  pk_group,pk_org ,   cdptid  as  cdptid ,  ctrantypeid ,  dbilldate , taudittime , abs(ntotalnum) as nnum  from  ic_material_h 
+where nvl(dr,0)=0 
+union all
+--∆‰À˚≥ˆø‚
+select  pk_group,pk_org ,   cdptid  as  cdptid ,  ctrantypeid ,  dbilldate , taudittime , abs(ntotalnum) as nnum  from  ic_generalout_h 
+where nvl(dr,0)=0 
+);
+--------------------------------------------------------
+--  DDL for View VIEW_NC_ZUOYEHUANBAO
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_NC_ZUOYEHUANBAO" ("PK_GROUP", "PK_ORG", "PERIODID", "CDPTID", "PK_LARGEITEM", "VACTIVITYNAME", "NNUM") AS 
+  (
+---◊˜“µª∑±£Õ≥º∆µ•
+select mmpac_huanbao_h. pk_group,  mmpac_huanbao_h. pk_org ,
+--ª·º∆∆⁄º‰
+mmpac_huanbao_h.periodid as periodid,
+ --- ‹“Ê≤ø√≈
+mmpac_huanbao_b.cdeptid as  cdptid,
+--¿ÕŒÒœÓƒø
+mmpac_huanbao_b.pk_largeitem as pk_largeitem,
+bd_activity.vactivityname  as vactivityname ,
+--◊¢“‚£∫◊˜“µµµ∞∏”–“ªœÓŒ™ ’€À„∑œÀÆ¡ø£¨’€À„∑œÀÆ¡ø»° ˝µƒ ±∫Ú÷ª∫œº∆“π∞‡µƒ ˝¡ø£°
+case when 
+bd_activity.vactivityname='’€À„∑œÀÆ¡ø' then ntotaldaynum
+else ntotalnum  end 
+as nnum  from  mmpac_huanbao_b 
+inner join mmpac_huanbao_h on mmpac_huanbao_b.pk_head = mmpac_huanbao_h.pk_head
+inner join bd_activity on mmpac_huanbao_b.pk_largeitem= bd_activity.cactivityid 
+where nvl( mmpac_huanbao_h. dr,0)=0
+ and nvl( mmpac_huanbao_b. dr,0)=0 
+);
+--------------------------------------------------------
+--  DDL for View VIEW_NC_ZUOYEJIANYAN
+--------------------------------------------------------
+
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_NC_ZUOYEJIANYAN" ("PK_GROUP", "PK_ORG", "CDPTID", "CTRANTYPEID", "DBILLDATE", "TAUDITTIME", "NNUM") AS 
+  (
+---÷ ºÏ±®∏Ê\
+select pk_group,pk_org,cdptid,ctrantypeid,dbilldate,taudittime, pishu*£®price+ 0.69£© as nnum from 
+view_nc_zuoyejianyan_price
 
 );
 --------------------------------------------------------
---  DDL for View VIEW_BPM_BOM
+--  DDL for View VIEW_NC_ZUOYEJIANYAN_PRICE
 --------------------------------------------------------
 
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_BOM" ("PLANORGPK", "PLANORG_CODE", "PLANORG_NAME", "BOM_PK", "PK_MATERIAL", "INV_CODE", "INV_NAME", "INV_SPEC", "INV_TYPE", "BOM_TYPE", "BOM_TYPENAME", "BOM_HVERSION", "MEASPK", "MEASCODE", "MEASNAME", "BOM_FNUM") AS 
-  (SELECT
-    --Áîü‰∫ßÁªÑÁªáÔºå‰∏ªÈîÆÔºåÁºñÁ†ÅÔºåÂêçÁß∞
-    bom. pk_org AS planorgpk,
-    org.code    AS planorg_code,
-    org.name    AS planorg_name,
-    --Áâ©Êñô‰ø°ÊÅØ
-    --cbomid bom‰∏ªÈîÆ
-    bom.cbomid AS bom_pk,
-    --Áâ©Êñô‰∏ªÈîÆ
-    inv.pk_material,
-    --inv.codeÁâ©ÊñôÁºñÁ†Å
-    inv.code AS inv_code,
-    --inv.nameÁâ©ÊñôÂêçÁß∞
-    inv.name AS inv_name,
-    --materialspec  ËßÑÊ†º
-    inv.materialspec AS inv_spec ,
-    --materialtype ÂûãÂè∑
-    inv.materialtype AS inv_type,
-    -- BOMÁ±ªÂûã  1=Áîü‰∫ßBOMÔºå2=ÂåÖË£ÖBOMÔºå3=ÈÖçÁΩÆBOM
-    bom.fbomtype AS bom_type,
-    CASE bom.fbomtype
-      WHEN 1
-      THEN 'Áîü‰∫ßBOM'
-      WHEN 2
-      THEN 'ÂåÖË£ÖBOM'
-      WHEN 3
-      THEN 'ÈÖçÁΩÆBOM'
-    END AS bom_typename,
-    --hversion ÁâàÊú¨Âè∑
-    bom.hversion AS bom_hversion,
-    --BOMÂçï‰Ωç
-    meas.pk_measdoc    AS measpk,
-    meas.code          AS meascode,
-    meas.name          AS measname,
-    bom.hnassparentnum AS bom_fnum
-  FROM bd_bom bom
-  LEFT JOIN org_orgs org ON bom.pk_org = org.pk_org
-  LEFT JOIN bd_material inv ON bom.hcmaterialid = inv.pk_material
-  LEFT JOIN bd_measdoc meas ON bom.hcmeasureid = meas.pk_measdoc
-  WHERE NVL(bom.dr,0)=0
-  );
---------------------------------------------------------
---  DDL for View VIEW_BPM_card
---------------------------------------------------------
-
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_card" ("ËµÑ‰∫ßÁºñÁ†Å", "ËµÑ‰∫ßÂêçÁß∞", "ËµÑ‰∫ßÁ±ªÂà´ÁºñÁ†Å", "ËµÑ‰∫ßÁ±ªÂà´ÂêçÁß∞", "ËßÑÊ†º", "ÂûãÂè∑", "ËÆæÂ§á‰∏ªÈîÆ", "Â≠òÊîæÂú∞ÁÇπ", "Áîü‰∫ßÂéÇÂÆ∂", "ÂºÄÂßã‰ΩøÁî®Êó•Êúü", "ÂéüÂ∏ÅÂéüÂÄº", "ÂáÄÂÄº", "‰ΩøÁî®ÊúàÈôê", "‰ΩøÁî®ÈÉ®Èó®", "ÈÉ®Èó®ÁºñÁ†Å") AS 
-  SELECT a.asset_code ËµÑ‰∫ßÁºñÁ†Å,
-    a.asset_name ËµÑ‰∫ßÂêçÁß∞ ,
-    c.cate_code ËµÑ‰∫ßÁ±ªÂà´ÁºñÁ†Å,
-    c.cate_name ËµÑ‰∫ßÁ±ªÂà´ÂêçÁß∞,
-    a.spec ËßÑÊ†º,
-    a.card_model ÂûãÂè∑,
-    a.pk_equip ËÆæÂ§á‰∏ªÈîÆ,
-    a.position Â≠òÊîæÂú∞ÁÇπ,
-    a.producer Áîü‰∫ßÂéÇÂÆ∂,
-    SUBSTR(a.begin_date,0,10) ÂºÄÂßã‰ΩøÁî®Êó•Êúü,
-    b.originvalue ÂéüÂ∏ÅÂéüÂÄº,
-    (b.localoriginvalue-b.accudep_cal) ÂáÄÂÄº,
-    b.naturemonth ‰ΩøÁî®ÊúàÈôê,
-    d.name ‰ΩøÁî®ÈÉ®Èó®,
-    d.code ÈÉ®Èó®ÁºñÁ†Å
-  FROM fa_card a
-  INNER JOIN fa_cardhistory b
-  ON a.pk_card = b.pk_card
-  INNER JOIN fa_cardsub
-  ON a.pk_card = fa_cardsub.pk_card
-  LEFT OUTER JOIN fa_category c
-  ON b.pk_category=c.pk_category
-  LEFT OUTER JOIN org_dept d
-  ON B.Pk_Mandept          =D.Pk_Dept
-  WHERE ( b.laststate_flag = 'Y'
-  OR ( b.asset_state      IN ( 'reduce', 'reduce_split', 'reduce_combin', 'redeploy_way', 'redeploy_out' )
-  And B.Laststate_Flag     = 'N' ) )
-  And Nvl(A.Dr,0)          = 0
- AND Nvl(B.Dr,0Ôºâ          = 0
- AND Nvl(Fa_Cardsub.Dr,0) = 0;
---------------------------------------------------------
---  DDL for View VIEW_BPM_REJECTBILL
---------------------------------------------------------
-
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_REJECTBILL" ("PK_ORG", "CAPPLYTIME", "VBILLCODE", "VAPPLYBILLCODE", "VREPORTBILLCODE", "PK_DEPT", "DEPT_CODE", "DEPT_NAM", "INV_CODE", "INV_NAME", "VBATCHCODE", "NAPPLYNUM", "NNUM", "PK_REJECTBILL_B", "PK_REJECTBILL", "VCHECKITEMNAME", "BACCORDED", "VSTDVALUE1", "VCHKVALUE") AS 
+  CREATE OR REPLACE FORCE VIEW "NC06192"."VIEW_NC_ZUOYEJIANYAN_PRICE" ("PK_REPORTBILL", "PK_GROUP", "PK_ORG", "CDPTID", "CTRANTYPEID", "DBILLDATE", "TAUDITTIME", "PISHU", "PRICE") AS 
   (
-  SELECT
-
-----  ‰∏çÂêàÊ†ºÂìÅÂ§ÑÁêÜÂçï‰ø°ÊÅØ+Ë°®Â§¥+Ë°®‰Ωì‰∏ÄË°åÊòéÁªÜ
-  --Â∫ìÂ≠òÁªÑÁªá
-  h.pk_org,
-  --Êä•Ê£ÄÊó∂Èó¥
-  h.capplytime,
-  --‰∏çÂêàÊ†ºÂìÅÂ§ÑÁêÜÂçïÂè∑
-  h.vbillcode,
-  -- Êä•Ê£ÄÂçïÂè∑
-  h.vapplybillcode,
-  --Ë¥®Ê£ÄÊä•ÂëäÂè∑
-  h.vreportbillcode ,
- 
-  --Êä•Ê£ÄÈÉ®Èó®‰∏ªÈîÆ
-  od.pk_dept ,
-  od.code as dept_code,
-  od.name as dept_nam,
-  --Áâ©Êñô
-  inv.code as inv_code,
-  inv.name as inv_name,
-  --Áâ©ÊñôÊâπÊ¨°
-  h. vbatchcode,
-   --Êä•Ê£Ä‰∏ªÊï∞Èáè
-  h.napplynum ,
-  --‰∏çÂêàÊ†ºÊï∞Èáè
-  b.nnum,
-  -- ‰∏çÂêàÊ†ºÂìÅÂ§ÑÁêÜÂçïÊòéÁªÜ  
-  b.pk_rejectbill_b,
-   b.pk_rejectbill,
--------------Ê£ÄÈ™åÂçïÁöÑ‰ø°ÊÅØ-------
---Ê£ÄÈ™åÈ°πÁõÆ
-chkitem.vcheckitemname ,
---    ËææÊ†á 
-chkb.baccorded,
---   Ê†áÂáÜÂÄº1  
-chkb.vstdvalue1,
---   ÂÆûÈôÖÊ£ÄÈ™åÂÄº  
-chkb.vchkvalue
-
-FROM qc_rejectbill_b b
-LEFT JOIN qc_rejectbill h
-ON b. pk_rejectbill = h. pk_rejectbill
-LEFT JOIN org_dept od
-ON h.pk_applydept = od.pk_dept
-LEFT JOIN bd_material inv
-ON h. pk_material = inv.pk_material
---Êä•Ê£ÄÂçï 
---left join qc_applybill_s apl on h.  pk_applybill  = apl.pk_applybill
---Ê£ÄÈ™åÂçï
-left join qc_checkbill chk on h.pk_applybill= chk.csourceid 
-left join qc_checkbill_b chkb on  chk.  pk_checkbill  = chkb.pk_checkbill
---Ê£ÄÈ™åÈ°πÁõÆ
-left join  qc_checkitem chkitem on chkb. pk_checkitem  =chkitem.pk_checkitem 
-
-where nvl(h.dr,0)=0 and nvl(b.dr,0)=0
-and h.fbillstatus=0
-  );
---------------------------------------------------------
---  DDL for View VIEW_BPM_REGISTE_BPM
---------------------------------------------------------
-
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_REGISTE_BPM" ("ÂçïÊçÆÁä∂ÊÄÅ", "Âá∫Á•®Êó•Êúü", "Âà∞ÊúüÊó•Êúü", "Êî∂Á•®Êó•Êúü", "Êà∑Âêç", "ÂêçÁß∞", "Ë¥¶Âè∑", "PK_REGISTER", "Á•®ÊçÆÁºñÂè∑") AS 
-  SELECT f.baseinfostatus ÂçïÊçÆÁä∂ÊÄÅ,
-    f.invoicedate Âá∫Á•®Êó•Êúü ,
-    f.enddate Âà∞ÊúüÊó•Êúü,
-    f.gatherdate Êî∂Á•®Êó•Êúü,
-    a.ACCNAME Êà∑Âêç,
-    a.name ÂêçÁß∞,
-    a.accnum Ë¥¶Âè∑,
-    f.pk_register,
-    f.fbmbillno Á•®ÊçÆÁºñÂè∑
-  FROM fbm_register f
-  LEFT OUTER JOIN bd_bankaccsub a
-  ON f.pk_payacc        =a. pk_bankaccsub
-  WHERE NVL(f.dr,0)     =0
-  AND f.BASEINFOSTATUS IN('register','has_invoice');
---------------------------------------------------------
---  DDL for View VIEW_BPM_SECLV
---------------------------------------------------------
-
-  CREATE OR REPLACE FORCE VIEW "VIEW_BPM_SECLV" ("PK_WA_CRT", "PK_WA_GRD", "PK_WA_PRMLV", "MAX_VALUE", "MIN_VALUE", "PK_WA_SECLV", "CRITERIONVALUE", "GRDNAME", "PRMLVNAME", "PK_WA_GRADEVER", "SECLVNAME") AS 
-  (
-SELECT wc.pk_wa_crt,
-  wc.pk_wa_grd,
-  wc.pk_wa_prmlv,
-  wc.max_value,
-  wc.min_value,
-  wc.pk_wa_seclv,
-  wc.criterionvalue,
-  wg.name grdName,
-  wp.levelname prmlvName,
-  ver.pk_wa_gradever,
-  ws.levelname seclvName
-FROM wa_seclv ws,
-  wa_grade wg,
-  wa_prmlv wp,
-  wa_criterion wc,
-  wa_grade_ver ver
-WHERE 1                = 1
-AND wc.pk_wa_grd       = wg.pk_wa_grd
-AND wc.pk_wa_prmlv     = wp.pk_wa_prmlv
-AND wc.pk_wa_gradever  = ver.pk_wa_gradever
-AND wc.pk_wa_seclv     = ws.pk_wa_seclv
-
+select rh.pk_reportbill, rh.pk_group, rh.pk_org ,rh.pk_applydept  as  cdptid, rh.ctrantypeid as ctrantypeid, rh.dapplydate as dbilldate, 
+rh.taudittime  as  taudittime , DECODE(rbody.vbdef1, '~', 0, rbody.vbdef1) as  pishu, bjd.price
+--qc_applybill.pk_applybill ,qc_checkbill.cfirstid,  rh.pk_chkbatch ,qc_checkbill.pk_chkbatch
+from qc_reportbill_b rbody
+inner join qc_reportbill rh on rbody.pk_reportbill =rh.pk_reportbill 
+--±®ºÏµ• 1:1--ºÏ—Èµ•--ºÏ—ÈœÓƒøµ•º€∫Õ
+ inner join (
+select pk_applybill,pk_chkbatch, sum( DECODE(qc_checkitem.vbdef1, '~', 0, qc_checkitem.vbdef1)) as  price
+ from qc_applybill 
+--ºÏ—Èµ•
+inner join qc_checkbill on  qc_applybill.pk_applybill =qc_checkbill. cfirstid 
+inner JOIN qc_checkbill_b  ON qc_checkbill.pk_checkbill= qc_checkbill_b.pk_checkbill
+--ºÏ—ÈœÓƒø
+inner join  qc_checkitem   on qc_checkbill_b. pk_checkitem =qc_checkitem.pk_checkitem
+where 
+ nvl(qc_applybill.dr,0)= 0
+AND nvl(qc_checkbill.dr,0)=0
+AND nvl(qc_checkbill_b.dr,0) = 0
+AND nvl(qc_checkbill.dr,0) = 0
+AND NVL ( qc_checkbill_b.buseless, 'N' ) = 'N'
+AND NVL ( qc_checkbill.blatest, 'N') = 'Y'
+group by pk_applybill,pk_chkbatch
+) bjd on rh.pk_applybill = bjd.pk_applybill and  rh.pk_chkbatch =bjd.pk_chkbatch
+WHERE 
+nvl(rbody.dr,0)= 0 
+and nvl(rh.dr,0)=0
 );

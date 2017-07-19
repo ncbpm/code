@@ -19,6 +19,7 @@ import nc.vo.am.proxy.AMProxy;
 import nc.vo.hi.psndoc.CtrtVO;
 import nc.vo.hi.psndoc.PsndocVO;
 import nc.vo.pub.BusinessException;
+import nc.vo.pub.lang.MultiLangText;
 import nc.vo.pub.lang.UFBoolean;
 import nc.vo.pub.lang.UFLiteralDate;
 import nc.vo.pubapp.pattern.data.IRowSet;
@@ -58,6 +59,7 @@ public class LockUserPreAlamPlugin implements IPreAlertPlugin{
 		if(datas == null){
 			retObj.setReturnType(PreAlertReturnType.RETURNNOTHING);
 		}else{
+			String info = "如下人员账号因劳动合同到期被锁定：";
 			IUserManageQuery queryUserSrv = AMProxy.lookup(IUserManageQuery.class);
 			IUserManage optSrv = AMProxy.lookup(IUserManage.class);
 			for(CtrtVO doc : datas){
@@ -65,13 +67,17 @@ public class LockUserPreAlamPlugin implements IPreAlertPlugin{
 				if(users != null){
 					//lock
 					for(UserVO user : users){
+						info += user.getUser_name() + " ";
 						user.setIsLocked(UFBoolean.valueOf(true));
 						optSrv.updateUser(user);
 					}
 				}
 			}
-			//目前不发送预警信息
-			retObj.setReturnType(PreAlertReturnType.RETURNNOTHING);
+			//发送预警信息
+			MultiLangText retMsg = new MultiLangText();
+			retMsg.setText(info);
+			retObj.setReturnObj(retMsg);
+			retObj.setReturnType(PreAlertReturnType.RETURNMULTILANGTEXT);
 		}
 		return retObj;
 	}

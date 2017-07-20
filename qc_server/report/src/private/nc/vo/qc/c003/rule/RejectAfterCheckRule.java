@@ -98,8 +98,9 @@ public class RejectAfterCheckRule implements IRule<ReportVO> {
 		if (!QCBillStatusEnum.FREE.value().equals(vo.getHVO().getFbillstatus())) {
 			return list;
 		}
-
-		if (!vo.getHVO().getBneeddeal().booleanValue()) {
+		//
+		if (vo.getHVO().getBneeddeal() == null ||
+				!vo.getHVO().getBneeddeal().booleanValue()) {
 			return list;// 不需要合格品处理
 		}
 		// 根据不合格品处理主键来判断是否已经生成不合格品处理单

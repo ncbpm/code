@@ -1,8 +1,10 @@
 package nc.bs.pu.m422x.maintain.rule.save;
 
 import nc.bs.framework.common.NCLocator;
+import nc.impl.pubapp.pattern.data.vo.VOUpdate;
 import nc.impl.pubapp.pattern.rule.IRule;
 import nc.itf.uapeai.sys.ISysDisPatcher;
+import nc.vo.pu.m422x.entity.StoreReqAppHeaderVO;
 import nc.vo.pu.m422x.entity.StoreReqAppVO;
 import nc.vo.pub.BusinessException;
 import nc.vo.pubapp.pattern.exception.ExceptionUtils;
@@ -33,6 +35,13 @@ public class SysBpmRule implements IRule<StoreReqAppVO> {
 				}
 				NCLocator.getInstance().lookup(ISysDisPatcher.class)
 						.handleRequest(vo, "bpm_422X", null);
+				
+				//更新备注和审批状态
+				vo.getHVO().setVmemo("已同步BPM");
+				//0=自由，1=提交，2=正在审批，3=审批，4=审批不通过，5=关闭，
+				vo.getHVO().setFbillstatus(2);
+				VOUpdate<StoreReqAppHeaderVO> update = new VOUpdate<StoreReqAppHeaderVO>();
+				update.update(new StoreReqAppHeaderVO[]{vo.getHVO()}, new String[]{"vmemo","fbillstatus"});
 			} catch (BusinessException e) {
 				// TODO 自动生成的 catch 块
 				e.printStackTrace();

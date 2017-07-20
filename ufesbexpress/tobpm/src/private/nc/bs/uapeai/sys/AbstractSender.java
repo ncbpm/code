@@ -42,6 +42,8 @@ public abstract class AbstractSender implements IHKSender {
 
 	private String url;
 
+	private String sharepath;
+
 	// static {
 	// String home = RuntimeEnv.getInstance().getNCHome();
 	// String fileNme = home + "/ierp/bpm/receiver.properties";
@@ -60,7 +62,7 @@ public abstract class AbstractSender implements IHKSender {
 	// }
 	//
 	// }
-	
+
 	public String transNCToCode(String docPk, String metaDataID)
 			throws PfxxException {
 		String result = null;
@@ -119,6 +121,7 @@ public abstract class AbstractSender implements IHKSender {
 			Properties p = new Properties();
 			p.load(in);
 			url = p.getProperty("url");
+			sharepath = p.getProperty("sharepath");
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -141,12 +144,62 @@ public abstract class AbstractSender implements IHKSender {
 		// parseResponDoc(result2);
 		afterSend(vo);
 
-		//没有返回值，暂时返回NULL
+		// 没有返回值，暂时返回NULL
 		return null;
 
 	}
 
-	private void sendFileWithResult(File localFile) throws PfxxException, Exception {
+	/**
+	 * 如果本地服务器映射了网络盘符
+	 * 
+	 * @param doc
+	 * @throws PfxxException
+	 * @throws Exception
+	 */
+	private void sendFileWithResult(Document doc) throws PfxxException,
+			Exception {
+		// TODO Auto-generated method stub
+		File sendFile = null;
+		String full_file_path = null;
+		String fileName = getCurBilltype() + "_" + getCurBillcode();
+		int suffixnum = 0;
+		String home = RuntimeEnv.getInstance().getNCHome();
+		String dir = sharepath;
+		String date = new UFDate().toString().substring(0, 10);
+		dir = dir + date.toString() + "/";
+		do {
+			if (dir.endsWith("/"))
+				dir = dir.substring(0, dir.length() - 1);
+			if (suffixnum == 0) {
+				full_file_path = dir + "/" + fileName + ".xml";
+				suffixnum++;
+			} else {
+				full_file_path = dir + "/" + fileName + "_" + suffixnum++
+						+ ".xml";
+			}
+			sendFile = new File(full_file_path);
+		} while (sendFile.exists());
+
+		File pFile = sendFile.getParentFile();
+		if (!pFile.exists()) {
+			pFile.mkdirs();
+		}
+		String outputEncoding = "UTF-8";
+
+		Writer writer = new OutputStreamWriter(new FileOutputStream(sendFile),
+				outputEncoding);
+		XMLUtil.printDOMTree(writer, doc, 0, outputEncoding);
+		writer.close();
+
+		StringBuffer newbuffer = new StringBuffer();
+		XMLUtil.writeXMLFormatString(newbuffer, doc, 0);
+
+		return;
+
+	}
+
+	private void sendFileWithResult(File localFile) throws PfxxException,
+			Exception {
 		// TODO 自动生成的方法存根
 		InputStream in = null;
 		OutputStream out = null;
@@ -166,12 +219,11 @@ public abstract class AbstractSender implements IHKSender {
 				out.write(buffer, 0, len);
 			}
 			out.flush(); // 刷新缓冲的输出流
-		} catch(SmbException e1){
+		} catch (SmbException e1) {
 			String msg = "同步到BPM共享文件服务器发生错误：请检查共享文件夹地址是否正常";
 			throw new BusinessException(msg);
 
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			String msg = "同步到BPM共享文件服务器发生错误：" + e.getMessage();
 			throw new BusinessException(msg);
 		} finally {
@@ -206,7 +258,7 @@ public abstract class AbstractSender implements IHKSender {
 		String fileName = getCurBilltype() + "_" + getCurBillcode();
 		int suffixnum = 0;
 		String home = RuntimeEnv.getInstance().getNCHome();
-		String dir = home + "/bpmfile/";
+		String dir = home+"/pfxxbpmfile/";
 		String date = new UFDate().toString().substring(0, 10);
 		dir = dir + date.toString() + "/";
 		do {

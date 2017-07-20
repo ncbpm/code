@@ -276,6 +276,10 @@
             </supfinance>
             <supstock>
                 <item>
+                    <!--供应商基本信息,最大长度为0,类型为:String-->
+                    <pk_supplier>a</pk_supplier>
+                    <pk_supstock>
+                    </pk_supstock>
                     <!--所属采购组织,最大长度为20,类型为:String-->
                     <pk_org>a</pk_org>
                     <!--所属集团,最大长度为20,类型为:String-->
@@ -285,25 +289,25 @@
                     <!--专管业务员,最大长度为20,类型为:String-->
                     <respperson>a</respperson>
                     <!--默认订单类型,最大长度为20,类型为:String-->
-                    <ordertypedefault>~</ordertypedefault>
-                    <!--合作期限从,最大长度为19,类型为:UFDate，可以为空，不传值-->
+                    <ordertypedefault>a</ordertypedefault>
+                    <!--合作期限从,最大长度为19,类型为:UFDate-->
                     <startdate>2017-07-18 18:21:52</startdate>
-                    <!--合作期限到,最大长度为19,类型为:UFDate,可以为空，不传值-->
+                    <!--合作期限到,最大长度为19,类型为:UFDate-->
                     <enddate>2017-07-18 18:21:52</enddate>
                     <!--默认交易币种,最大长度为20,类型为:String-->
-                    <currencydefault>~</currencydefault>
+                    <currencydefault>a</currencydefault>
                     <!--默认付款协议,最大长度为20,类型为:String-->
-                    <paytermdefault>~</paytermdefault>
+                    <paytermdefault>a</paytermdefault>
                     <!--贸易术语,最大长度为20,类型为:String-->
-                    <pk_tradeterm>~</pk_tradeterm>
+                    <pk_tradeterm>a</pk_tradeterm>
                     <!--开票供应商,最大长度为20,类型为:String-->
-                    <billingsup>~</billingsup>
+                    <billingsup>a</billingsup>
                     <!--收款供应商,最大长度为20,类型为:String-->
-                    <pk_gathering>~</pk_gathering>
+                    <pk_gathering>a</pk_gathering>
                     <!--发货供应商,最大长度为20,类型为:String-->
-                    <issuesup>~</issuesup>
+                    <issuesup>a</issuesup>
                     <!--运输方式,最大长度为20,类型为:String-->
-                    <shippingtype>~</shippingtype>
+                    <shippingtype>a</shippingtype>
                     <def1>
                     </def1>
                     <def2>
@@ -369,15 +373,15 @@
                     <!--创建时间,最大长度为19,类型为:UFDateTime-->
                     <creationtime>2017-07-18 18:21:52</creationtime>
                     <!--最后修改人,最大长度为20,类型为:String-->
-                    <modifier>~</modifier>
+                    <modifier>a</modifier>
                     <!--最后修改时间,最大长度为19,类型为:UFDateTime-->
                     <modifiedtime>2017-07-18 18:21:52</modifiedtime>
                     <!--订单冻结,最大长度为1,类型为:UFBoolean-->
                     <orderfreezeflag>N</orderfreezeflag>
-                    <!--合格有效期至,最大长度为19,类型为:UFDateTime客户为空-->
+                    <!--合格有效期至,最大长度为19,类型为:UFDateTime-->
                     <validatedate>2017-07-18 18:21:52</validatedate>
                     <!--等级,最大长度为20,类型为:String-->
-                    <supgrade>~</supgrade>
+                    <supgrade>a</supgrade>
                 </item>
             </supstock>
             <!--电话1,最大长度为50,类型为:String-->

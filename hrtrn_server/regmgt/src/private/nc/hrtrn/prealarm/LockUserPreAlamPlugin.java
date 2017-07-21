@@ -1,4 +1,4 @@
-package nc.so.prealarm;
+package nc.hrtrn.prealarm;
 
 import java.util.Vector;
 
@@ -32,26 +32,6 @@ public class LockUserPreAlamPlugin implements IPreAlertPlugin{
 	public PreAlertObject executeTask(PreAlertContext context)
 			throws BusinessException {
 		// TODO 自动生成的方法存根
-		//查询所有的人员基本信息
-		//遍历 劳动合同结束日期，如果过期，则根据pk_psndoc 到 sm_user表里查user，设置锁定 . IUserManageQuery ->UserVO[] queryUserVOsByPsnDocID(String pk_psndoc) 
-//		SqlBuilder sql = new SqlBuilder();
-//		sql.append(" select pk_psndoc from bd_psndoc psndoc ");
-//		sql.append(" where ");
-//		sql.append(" enablestate = 2");
-
-//		DataAccessUtils utils = new DataAccessUtils();
-//		IRowSet set = utils.query(sql.toString());
-//		if (set.size() == 0) {
-//			return null;
-//		}
-//		VOQuery<PsndocVO> bquery = new VOQuery<>(PsndocVO.class);
-//		PsndocVO[] userVos = bquery.query("and enablestate = 2", "");
-//		for(PsndocVO user : userVos){
-//			System.out.println(user.getPk_psndoc());
-//		}
-		//BillQuery<PsndocAggVO> query = new BillQuery<PsndocAggVO>(PsndocAggVO.class);
-		//bills = query.query(set.toOneDimensionStringArray());
-		
 		PreAlertObject retObj = new PreAlertObject();
 		//新方案： 直接根据enddate查询劳动合同，获取pk_psndoc 
 		//然后 逐一 lock

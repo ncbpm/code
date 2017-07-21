@@ -56,7 +56,7 @@ public class AfterSignRuleFivemetals implements IRule<MaterialOutVO> {
 		hvo.setPk_org(vo.getParentVO().getPk_org());
 		String condition = " and pk_group = '" + hvo.getPk_group()
 				+ "' and pk_org ='" + hvo.getPk_org()
-				+ "' and pk_fivemetals_h = '" + vo.getParentVO().getVdef20()
+				+ "' and vcardno = '" + vo.getParentVO().getVdef20()
 				+ "' ";
 		FivemetalsDao fiveDao = new FivemetalsDao();
 		FiveMetalsHVO oldvo = fiveDao.getFiveMetalsHVOByCondition(condition);

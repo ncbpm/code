@@ -16,9 +16,11 @@ import nc.vo.pubapp.AppContext;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * 提供给BPM回写请购单累计采购合同数量
- * 
- * @author Administrator
+ *
+1.审批后才执行同步,且NC审批状态修改成审批进行中
+2.BPM回写后，更新审批状态为审批通过
+3.同步是是否严格控制，不能重现同步
+ * @author liyf
  *
  */
 public class M422XForAudit extends AbstractPfxxPlugin {

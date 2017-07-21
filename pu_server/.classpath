@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="src" output="payplan/classes" path="payplan/src/public"/>
+	<classpathentry kind="src" output="payplan/classes" path="payplan/src/client"/>
+	<classpathentry kind="src" output="payplan/classes" path="payplan/src/private"/>
+	<classpathentry kind="src" output="payplan/classes" path="payplan/src/test"/>
+	<classpathentry kind="src" output="payplan/classes" path="payplan/resources"/>
 	<classpathentry kind="src" output="422X/classes" path="422X/src/public"/>
 	<classpathentry kind="src" output="422X/classes" path="422X/src/client"/>
 	<classpathentry kind="src" output="422X/classes" path="422X/src/private"/>

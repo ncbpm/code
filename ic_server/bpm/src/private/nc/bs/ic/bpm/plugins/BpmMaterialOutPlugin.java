@@ -18,10 +18,10 @@ import nc.bs.pfxx.ISwapContext;
 import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
 import nc.impl.pubapp.pattern.data.bill.BillQuery;
 import nc.impl.pubapp.pattern.data.vo.VOQuery;
-import nc.itf.ic.onhand.OnhandResService;
 import nc.itf.scmpub.reference.uap.pf.PfServiceScmUtil;
 import nc.itf.uap.pf.IPFBusiAction;
 import nc.pubitf.scmf.ic.mbatchcode.IBatchcodePubService;
+import nc.vo.ic.batch.BatchRefViewVO;
 import nc.vo.ic.batchcode.BatchSynchronizer;
 import nc.vo.ic.batchcode.ICBatchFields;
 import nc.vo.ic.fivemetals.CardStatusEnum;
@@ -31,7 +31,6 @@ import nc.vo.ic.general.define.ICBillFlag;
 import nc.vo.ic.general.define.ICBillHeadVO;
 import nc.vo.ic.general.define.ICBillVO;
 import nc.vo.ic.m4d.entity.MaterialOutBodyVO;
-import nc.vo.ic.onhand.define.ICBillPickResults;
 import nc.vo.ic.pub.calc.BusiCalculator;
 import nc.vo.ic.pub.check.VOCheckUtil;
 import nc.vo.ic.pub.define.ICPubMetaNameConst;
@@ -258,6 +257,13 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 			}
 			clientbody.setAttributeValue(key,attributeValue);
 		}
+		
+		UFDouble nnum = getUFDdoubleNullASZero(body.getNnum()).setScale(power,
+				UFDouble.ROUND_HALF_UP);// 数量
+		clientbody.setNnum(nnum);// 实发数量
+		// 交互的应发为空,暂时处理和是否一样
+		clientbody.setNshouldnum(nnum);
+		clientbody.setNshouldassistnum(nnum);
 
 		clientbody.setNcostmny(clientbody.getNcostprice().multiply(clientbody.getNnum()));
 
@@ -324,7 +330,6 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 			throw new BusinessException(
 					"根据指定的主键Csourcebillhid可以查询到物资需求申请单，但是根据Csourcebillbid未查询到物资需求申请单明细,请核对数据是否正确.");
 		}
-
 		return chgBillS.toArray(new StoreReqAppVO[0]);
 
 	}
@@ -374,7 +379,6 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 																			 * @res
 																			 * "单据不能为空"
 																			 */);
-
 		// this.checkNullValue(vo);
 		// 表头组织翻译后没有赋值，需要重表体字段重新取一边
 		if (StringUtil.isSEmptyOrNull(vo.getParentVO().getPk_org()))
@@ -496,25 +500,19 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 			// 有批次号但无批次主键时， 需要补全批次主键，有必要时(保质期管理)补全生产日期和失效日期
 			if (!StringUtils.isEmpty(body.getVbatchcode())
 					&& StringUtils.isEmpty(body.getPk_batchcode())) {
-				BatchcodeVO batchvo = batchmap.get(body.getCmaterialvid()
-						+ body.getVbatchcode());
-				if (batchvo != null) {
-					body.setPk_batchcode(batchvo.getPk_batchcode());
-					body.setDproducedate(batchvo.getDproducedate());
-					body.setDvalidate(batchvo.getDvalidate());
+				//同步的维度信息
+				BatchCodeRule batchCodeRule = new BatchCodeRule();
+				BatchRefViewVO batchRefViewVOs = batchCodeRule.getRefVO(body.getPk_org(),body.getCbodywarehouseid(),body.getCmaterialvid(), body.getVbatchcode());
+				if (batchRefViewVOs != null ) {
+					batchCodeRule.synBatch(batchRefViewVOs, body);
 				}
+				
 			}
-		
 			bodyVOCopyFromHeadVO(body, head);
 		}
-		// 利用自动拣货，设置批次维度信息:如果设置的批次，则值更新批次相关信息：入供应商寄存等
-		OnhandResService resserver = NCLocator.getInstance().lookup(
-				OnhandResService.class);
-		ICBillPickResults results = resserver.pickAuto(vo);
-		if(results == null){
-			throw new BusinessException("批次现存量不足.");
+		for (ICBillBodyVO body : vos) {
+			body.setDbizdate(head.getDbilldate());// 业务日期
 		}
-		vos = results.getPickBodys();
 		vo.setChildrenVO(vos);
 		// 同步表体批次辅助字段
 		new BatchSynchronizer(new ICBatchFields()).fillBatchVOtoBill(vos);

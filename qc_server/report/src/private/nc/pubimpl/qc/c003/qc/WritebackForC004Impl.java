@@ -74,15 +74,16 @@ public class WritebackForC004Impl implements IWritebackForC004 {
         boolean bchg = !StringUtils.isEmpty(bid_para.get(bid).getPk_chgmrl());
         item.setBchanged(UFBoolean.valueOf(bchg));
      // 2017-07-17 liyf rainbow 不合格评审的处理方式最终的判定结果如果是入库，需要同时回写质检报告库存状态为可用。
-        //1=入库  5= 不入库
-        if(1==bid_para.get(bid).getFprocessjudge() ){
+        //1=入库，2=合格入库，3=报废入库，4=返工，5=不入库，6=合格，7=料废，8=工废，9=拒收，   
+        if(1==bid_para.get(bid).getFprocessjudge() || 2==bid_para.get(bid).getFprocessjudge() 
+        		|| 6==bid_para.get(bid).getFprocessjudge() ){
         	VOQuery<StoreStateVO> query = new VOQuery<StoreStateVO>(StoreStateVO.class);
         	StoreStateVO[] query2 = query.query(" and dr=0 and vname='可用'", null);
         	if(query2!=null&&query2.length >0){
             	item.setPk_afterstockstate(query2[0].getPk_storestate());	
 
         	}
-        }else if(5==bid_para.get(bid).getFprocessjudge() ){
+        }else{
         	VOQuery<StoreStateVO> query = new VOQuery<StoreStateVO>(StoreStateVO.class);
         	StoreStateVO[] query2 = query.query(" and dr=0 and vname='不可用'", null);
         	if(query2!=null&&query2.length >0){

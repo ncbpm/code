@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding='utf-8'?>
 <businessprocessors>
-    <businessprocessor baseclassname="" billtype="bpm_plo_add" classname="nc.bpm.mmps.pfxx.PloAddPlugin" locklevel="3" metadataid="458fae9b-c6ac-44f6-b825-0419430b8ad4" name="MPR计划订单维护">
+    <businessprocessor baseclassname="" billtype="bpm_plo_add" classname="nc.bpm.mmps.pfxx.PloAdd" locklevel="3" metadataid="458fae9b-c6ac-44f6-b825-0419430b8ad4" name="MPR计划订单维护">
     </businessprocessor>
 </businessprocessors>

@@ -1,59 +1,77 @@
 <?xml version="1.0" encoding='UTF-8'?>
-<ufinterface account="0619nc" billtype="bpm_payplan_add" filename="" groupcode="" isexchange="Y" replace="Y" roottag="" sender="">
+<ufinterface account="01" billtype="bpm_payplan_add" filename="" groupcode="" isexchange="Y" replace="Y" roottag="" sender="">
     <bill id="">
-        <billhead>
-            <pk_order_payplan>
-            </pk_order_payplan>
-            <!--序号,最大长度为20,类型为:String-->
-            <crowno>a</crowno>
-            <!--账期号,最大长度为0,类型为:Integer-->
-            <iaccounttermno>0</iaccounttermno>
-            <pk_paymentch>
-            </pk_paymentch>
-            <!--付款协议,最大长度为20,类型为:String-->
-            <pk_payterm>a</pk_payterm>
-            <!--起算依据,最大长度为20,类型为:String-->
-            <feffdatetype>a</feffdatetype>
-            <!--起算日期,最大长度为19,类型为:UFDate-->
-            <dbegindate>2017-07-17 10:45:12</dbegindate>
-            <!--账期天数,最大长度为0,类型为:Integer-->
-            <iitermdays>0</iitermdays>
-            <!--账期到期日,最大长度为19,类型为:UFDate-->
-            <denddate>2017-07-17 10:45:12</denddate>
-            <!--预付款,最大长度为1,类型为:UFBoolean-->
-            <bpreflag>N</bpreflag>
-            <!--比率,最大长度为28,类型为:UFDouble-->
-            <nrate>0.00000000</nrate>
-            <!--原币金额,最大长度为28,类型为:UFDouble-->
-            <norigmny>0.00000000</norigmny>
-            <!--本币金额,最大长度为28,类型为:UFDouble-->
-            <nmny>0.00000000</nmny>
-            <!--币种,最大长度为20,类型为:String-->
-            <corigcurrencyid>a</corigcurrencyid>
-            <!--本币币种,最大长度为20,类型为:String-->
-            <ccurrencyid>a</ccurrencyid>
-            <!--折本汇率,最大长度为28,类型为:UFDouble-->
-            <nexchangerate>0.00000000</nexchangerate>
-            <!--累计付款申请金额,最大长度为28,类型为:UFDouble-->
-            <naccumpayapporgmny>0.00000000</naccumpayapporgmny>
-            <!--累计付款申请本币金额,最大长度为28,类型为:UFDouble-->
-            <naccumpayappmny>0.00000000</naccumpayappmny>
-            <!--累计付款金额,最大长度为28,类型为:UFDouble-->
-            <naccumpayorgmny>0.00000000</naccumpayorgmny>
-            <!--累计付款本币金额,最大长度为28,类型为:UFDouble-->
-            <naccumpaymny>0.00000000</naccumpaymny>
-            <!--质保金,最大长度为1,类型为:UFBoolean-->
-            <isdeposit>N</isdeposit>
-            <!--应付财务组织,最大长度为20,类型为:String-->
-            <pk_financeorg>a</pk_financeorg>
-            <!--应付财务组织,最大长度为20,类型为:String-->
-            <pk_financeorg_v>a</pk_financeorg_v>
-            <!--总付款金额,最大长度为28,类型为:UFDouble-->
-            <ntotalorigmny>0.00000000</ntotalorigmny>
-            <!--合同号,最大长度为20,类型为:String-->
-            <ccontractid>a</ccontractid>
-            <!--集团,最大长度为20,类型为:String-->
+        <billhead>           
+            <!--所属集团,最大长度为20,类型为:String-->
             <pk_group>a</pk_group>
+            <!--采购组织,最大长度为20,类型为:String-->
+            <pk_org>a</pk_org>
+            <!--采购组织,最大长度为20,类型为:String-->
+            <pk_org_v>a</pk_org_v>
+            <!--编号,最大长度为40,类型为:String-->
+            <vbillcode>a</vbillcode>
+            <!--日期,最大长度为19,类型为:UFDate-->
+            <dbilldate>2017-08-03 17:03:04</dbilldate>
+            <!--供应商,最大长度为20,类型为:String-->
+            <pk_supplier>a</pk_supplier>                     
+            <pk_order_payplan>
+                <item>
+					<!--采购订单主键,最大长度为20,类型为:String-->
+					<pk_order></pk_order>
+					<!--付款计划主键,最大长度为20,类型为:String-->
+                    <pk_order_payplan></pk_order_payplan>
+                    <!--序号,最大长度为20,类型为:String-->
+                    <crowno>a</crowno>
+                    <!--账期号,最大长度为0,类型为:Integer-->
+                    <iaccounttermno>0</iaccounttermno>
+					<!--付款协议账期主键,最大长度为20,类型为:String-->
+                    <pk_paymentch> </pk_paymentch>
+                    <!--付款协议,最大长度为20,类型为:String-->
+                    <pk_payterm>a</pk_payterm>
+                    <!--起算依据,最大长度为20,类型为:String-->
+                    <feffdatetype>a</feffdatetype>
+                    <!--起算日期,最大长度为19,类型为:UFDate-->
+                    <dbegindate>2017-08-03 17:03:04</dbegindate>
+                    <!--账期天数,最大长度为0,类型为:Integer-->
+                    <iitermdays>0</iitermdays>
+                    <!--账期到期日,最大长度为19,类型为:UFDate-->
+                    <denddate>2017-08-03 17:03:04</denddate>
+                    <!--预付款,最大长度为1,类型为:UFBoolean-->
+                    <bpreflag>N</bpreflag>
+                    <!--比率,最大长度为28,类型为:UFDouble-->
+                    <nrate>0.00000000</nrate>
+                    <!--原币金额,最大长度为28,类型为:UFDouble-->
+                    <norigmny>0.00000000</norigmny>
+                    <!--本币金额,最大长度为28,类型为:UFDouble-->
+                    <nmny>0.00000000</nmny>
+                    <!--币种,最大长度为20,类型为:String-->
+                    <corigcurrencyid>a</corigcurrencyid>
+                    <!--本币币种,最大长度为20,类型为:String-->
+                    <ccurrencyid>a</ccurrencyid>
+                    <!--折本汇率,最大长度为28,类型为:UFDouble-->
+                    <nexchangerate>0.00000000</nexchangerate>
+                    <!--累计付款申请金额,最大长度为28,类型为:UFDouble-->
+                    <naccumpayapporgmny>0.00000000</naccumpayapporgmny>
+                    <!--累计付款申请本币金额,最大长度为28,类型为:UFDouble-->
+                    <naccumpayappmny>0.00000000</naccumpayappmny>
+                    <!--累计付款金额,最大长度为28,类型为:UFDouble-->
+                    <naccumpayorgmny>0.00000000</naccumpayorgmny>
+                    <!--累计付款本币金额,最大长度为28,类型为:UFDouble-->
+                    <naccumpaymny>0.00000000</naccumpaymny>
+                    <!--质保金,最大长度为1,类型为:UFBoolean-->
+                    <isdeposit>N</isdeposit>
+                    <!--应付财务组织,最大长度为20,类型为:String-->
+                    <pk_financeorg>a</pk_financeorg>
+                    <!--应付财务组织,最大长度为20,类型为:String-->
+                    <pk_financeorg_v>a</pk_financeorg_v>
+                    <!--总付款金额,最大长度为28,类型为:UFDouble-->
+                    <ntotalorigmny>0.00000000</ntotalorigmny>
+                    <!--合同号,最大长度为20,类型为:String-->
+                    <ccontractid>a</ccontractid>
+                 
+                </item>
+            </pk_order_payplan>
+          
         </billhead>
     </bill>
 </ufinterface>

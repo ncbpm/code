@@ -9,8 +9,9 @@
  <businessprocessor baseclassname="" billtype="bpm_422X_audit" classname="nc.bpm.pu.pfxx.M422XForAudit" locklevel="3" metadataid="f8025fb7-1aa5-4de8-9c64-95e1cad22f6a" name="固定资产物资申请审批">
   </businessprocessor>
  <businessprocessor billtype="bpm_marks_add" classname="nc.bpm.pu.pfxx.MarksForBpmAdd" locklevel="3" metadataid="faa17d57-f79a-49df-9958-b98c1ef4a976" name="唛头生成请购单">
-</businessprocessor>
-  
-<businessprocessor baseclassname="" billtype="bpm_payplan_add" classname="nc.bpm.pu.pfxx.OrderPayPlan"  locklevel="3" metadataid="429fcee7-75fd-4fd8-96f6-091fc302d2dd" name="采购付款计划回写">
+</businessprocessor> 
+<businessprocessor baseclassname=" " billtype="bpm_payplan_add" classname="nc.bpm.pu.pfxx.OrderPayPlan"  locklevel="3" metadataid="8a2b1c3f-0185-40f6-b4a1-eb9d1733ebcf" name="采购付款计划回写">
   </businessprocessor>
+ <businessprocessor baseclassname=" " billtype="bpm_test_add" classname="nc.bs.pfxx.test.pub.Testout"  locklevel="3" metadataid="b4bde646-3f4d-4b95-919f-8ebe03c5f849" name="">
+  </businessprocessor>  
 </businessprocessors>

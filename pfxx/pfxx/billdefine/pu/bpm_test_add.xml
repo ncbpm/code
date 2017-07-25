@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding='gb2312'?>
+<ufinterface roottag="bill">
+    <record displayName="销售信用" metadataid="b4bde646-3f4d-4b95-919f-8ebe03c5f849" stabletag="header" tablename="billhead" tabletag="billhead" tabletype="head" typeName="表头">
+        <field desc="集团">
+            <matchtag>pk_group</matchtag>
+            <name>pk_group</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>3b6dd171-2900-47f3-bfbe-41e4483a2a65</basdoc>
+            <translator>1001Z01000000000R5MJ</translator>
+            <variablename>pk_group</variablename>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="销售组织">
+            <matchtag>pk_org</matchtag>
+            <name>pk_org</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>945f38b6-48ec-43e6-bb09-77ec89a3728f</basdoc>
+            <translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <variablename>pk_org</variablename>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+      
+        <field desc="订单类型">
+            <matchtag>ctrantypeid</matchtag>
+            <name>ctrantypeid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>b0fa41cd-a649-4309-b685-d341a5d1b0ed</basdoc>
+            <translator>1007Z810000000003NYC</translator>         
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="订单类型编码">
+            <matchtag>vtrantypecode</matchtag>
+            <name>vtrantypecode</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+       
+        <field desc="客户">
+            <matchtag>ccustomerid</matchtag>
+            <name>ccustomerid</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>yes</needexport>
+            <basdoc>e4f48eaf-5567-4383-a370-a59cb3e8a451</basdoc>
+	    	<translator>1001Z01000000000R5ML</translator>
+            <translatorParams>pk_group</translatorParams>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        </record>
+</ufinterface>

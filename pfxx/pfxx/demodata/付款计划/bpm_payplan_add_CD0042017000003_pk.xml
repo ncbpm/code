@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<ufinterface account="develop" billtype="bpm_payplan_add" filename="bpm_payplan_add15d6a" groupcode="global" isexchange="Y" replace="Y" roottag="bill" sender="bpm_pk">
+    <bill id="1001B11000000001D20X">
+        <billhead>
+            <pk_group>0001A110000000000DDM</pk_group>
+      <pk_order_payplan>
+			<item>
+			                    <pk_order>1001B11000000001D20X</pk_order>
+				<pk_order_payplan>1001B11000000001D215</pk_order_payplan>
+				<crowno>10</crowno>
+				<iaccounttermno>1</iaccounttermno>
+				<pk_paymentch>1001B11000000001D20Z</pk_paymentch>
+				<pk_payterm>
+				</pk_payterm>
+				<feffdatetype>1001Z01000000000F04K</feffdatetype>
+				<dbegindate>2017-07-20 14:29:07</dbegindate>
+				<iitermdays>7</iitermdays>
+				<denddate>2017-07-27 14:29:07</denddate>
+				<bpreflag>N</bpreflag>
+				<nrate>30</nrate>
+				<norigmny>3.3</norigmny>
+			
+			</item>
+			<item>
+			                    <pk_order>1001B11000000001D20X</pk_order>
+
+				<pk_order_payplan>1001B11000000001D216</pk_order_payplan>
+				<crowno>20</crowno>
+				<iaccounttermno>2</iaccounttermno>
+				<pk_paymentch>1001B11000000001D210</pk_paymentch>
+				<pk_payterm>
+				</pk_payterm>
+				<feffdatetype>1001Z01000000000F04P</feffdatetype>
+				<dbegindate>
+				</dbegindate>
+				<iitermdays>10</iitermdays>
+				<denddate>
+				</denddate>
+				<nrate>60</nrate>
+				<bpreflag>N</bpreflag>
+				<norigmny>6.6</norigmny>
+				
+			</item>
+			<item>
+			                    <pk_order>1001B11000000001D20X</pk_order>
+
+				<pk_order_payplan>1001B11000000001D217</pk_order_payplan>
+				<crowno>30</crowno>
+				<iaccounttermno>3</iaccounttermno>
+				<pk_paymentch>1001B11000000001D211</pk_paymentch>
+				<pk_payterm>
+				</pk_payterm>
+				<feffdatetype>1001Z01000000000F04L</feffdatetype>
+				<dbegindate>
+				</dbegindate>
+				<iitermdays>365</iitermdays>
+				<denddate>
+				</denddate>
+				<bpreflag>N</bpreflag>
+				<nrate>10</nrate>
+				<norigmny>1.1</norigmny>
+			</item>
+          </pk_order_payplan>         
+        </billhead>
+    </bill>
+</ufinterface>

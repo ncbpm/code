@@ -77,7 +77,7 @@ public class N_19B1_APPROVE extends AbstractPfAction<AggBomVO> {
      * @param processer
      */
     private void addAfterRule(CompareAroundProcesser<AggBomVO> processer) {
-    	// * 1.审批生成对应的使用组织的bom/工艺路线匹配规则
+    	// liyf 2017-07-25 1.审批生成对应的使用组织的bom/工艺路线匹配规则
     	processer.addAfterRule(new AutoToBmRtRuleForRainbowAudit());
 
     }

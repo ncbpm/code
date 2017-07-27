@@ -13,19 +13,20 @@ import nc.vo.bd.bom.bom0202.entity.BomUseOrgVO;
 import nc.vo.bd.bom.bom0202.entity.BomVO;
 import nc.vo.bd.vermatch.entity.BomMatchRtVO;
 import nc.vo.pub.BusinessException;
+import nc.vo.pub.VOStatus;
 import nc.vo.pub.lang.UFBoolean;
 import nc.vo.pub.lang.UFDate;
 import nc.vo.pubapp.pattern.exception.ExceptionUtils;
 
 /**
- * 3. .审批生成对应的使用组织的bom/工艺路线匹配规则，取消审批，删除对应的使用组织的使用规则 4.
+ * 3.审批生成对应的使用组织的bom/工艺路线匹配规则，取消审批，删除对应的使用组织的使用规则 4. *
  * 分配生成分配的组织的bom/工艺路线匹配规则，取消分配删除取消分配的bom/工艺路线匹配规则 5. 按照组织+物料+版本号控制唯一性
  * 
  * @author liyf
  * 
  */
 
-public class AutoToBmRtRuleForRainbowAudit implements IRule<AggBomVO> {
+public class AutoToBmRtRuleForRainbowSign implements IRule<AggBomVO> {
 
 	@Override
 	public void process(AggBomVO[] vos) {
@@ -42,24 +43,42 @@ public class AutoToBmRtRuleForRainbowAudit implements IRule<AggBomVO> {
 				return;
 			}
 			// 查询
-			String continon = " and cbomid='" + head.getCbomid()
-					+ "'";
-			if(1 != head.getFbomtype()){
-				continon = " and cpackbomid='" + head.getCbomid()
-						+ "'";
+			String continon = " and cbomid='" + head.getCbomid() + "'";
+			if (1 != head.getFbomtype()) {
+				continon = " and cpackbomid='" + head.getCbomid() + "'";
 			}
 			BomMatchRtVO[] bmrtvos = query.query(continon, null);
 			// 分配到对应的使用组织：
 			List<BomMatchRtVO> bmrtList = new ArrayList<BomMatchRtVO>();
+			List<BomMatchRtVO> delBmrtList = new ArrayList<BomMatchRtVO>();
+
 			for (BomUseOrgVO useOrg : useOrgs) {
-				if (isExist(bmrtvos, useOrg.getPk_useorg())) {
-					continue;
+				BomMatchRtVO rtVO = isExist(bmrtvos, useOrg.getPk_useorg());
+				// 如果是取消分配
+				if (useOrg.getStatus() == VOStatus.DELETED) {
+					if (rtVO != null) {
+						delBmrtList.add(rtVO);
+					}
+
+				} else {
+					if (isExist(bmrtvos, useOrg.getPk_useorg()) != null) {
+						continue;
+					}
+					bmrtList.add(assmbleBmrt(head, useOrg));
+
 				}
-				bmrtList.add(assmbleBmrt(head, useOrg));
+
 			}
 			try {
-				NCLocator.getInstance().lookup(IBmrtMaintain.class)
-						.insert(bmrtList.toArray(new BomMatchRtVO[0]));
+				if (bmrtList.size() > 0) {
+					NCLocator.getInstance().lookup(IBmrtMaintain.class)
+							.insert(bmrtList.toArray(new BomMatchRtVO[0]));
+				}
+				if (delBmrtList.size() > 0) {
+					NCLocator.getInstance().lookup(IBmrtMaintain.class)
+							.batchDelete(delBmrtList.toArray(new BomMatchRtVO[0]));
+				}
+
 			} catch (BusinessException e) {
 				// TODO 自动生成的 catch 块
 				ExceptionUtils.wrappException(e);
@@ -109,16 +128,16 @@ public class AutoToBmRtRuleForRainbowAudit implements IRule<AggBomVO> {
 		return vo;
 	}
 
-	private boolean isExist(BomMatchRtVO[] bmrtvos, String pk_org) {
+	private BomMatchRtVO isExist(BomMatchRtVO[] bmrtvos, String pk_org) {
 		if (bmrtvos == null || bmrtvos.length == 0) {
-			return false;
+			return null;
 		}
 		for (BomMatchRtVO bmrtvo : bmrtvos) {
 			if (pk_org.equalsIgnoreCase(bmrtvo.getPk_org())) {
-				return true;
+				return bmrtvo;
 			}
 		}
-		return false;
+		return null;
 	}
 
 }

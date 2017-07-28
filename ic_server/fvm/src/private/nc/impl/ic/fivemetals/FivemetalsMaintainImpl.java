@@ -270,6 +270,15 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 		return aggvo;
 	}
 
+	/**
+	 * 首先5月份有张卡余额1000元。我要结转到8月份，报文传的金额是300元。接
+	 * 口处理是查到5月份的余额，形成-1000的记录，然后形成1300元的8月份记录。这是保留余额
+	 * @param bill
+	 * @param oldvo
+	 * @param vsourcetype
+	 * @return
+	 * @throws BusinessException
+	 */
 	private AggFiveMetalsVO jzbill(AggFiveMetalsVO bill, FiveMetalsHVO oldvo,
 			String vsourcetype) throws BusinessException {
 
@@ -311,7 +320,9 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 
 		ArrayList<FiveMetalsBVO> al = new ArrayList<>();
 		for (FiveMetalsBVO bvo : bvos) {
-			long last = DateUtils.getPreviousMonth(new UFDate(bvo.getCperiod()
+			String year = bvo.getCperiod().substring(0, 4);
+			String month = bvo.getCperiod().substring(4, 6);
+			long last = DateUtils.getPreviousMonth(new UFDate(year+"-"+month
 					+ "-01").toDate().getTime());
 			UFDate date = new UFDate(last);
 			String period = DateUtils.getPeriod(date);

@@ -1,17 +1,36 @@
 <?xml version="1.0" encoding='gb2312'?>
 <businessprocessors>
-  <businessprocessor billtype="bpm_21_add" classname="nc.bpm.pu.pfxx.M21ForBPMAdd" locklevel="3" metadataid="8a2b1c3f-0185-40f6-b4a1-eb9d1733ebcf" name="bpm采购订单">
-  </businessprocessor>
-  <businessprocessor billtype="bpm_20_update" classname="nc.bpm.pu.pfxx.M20ForBpmUpdate" locklevel="3" metadataid="faa17d57-f79a-49df-9958-b98c1ef4a976" name="请购单回写累计合同数量">
-</businessprocessor>	
-<businessprocessor  billtype="JL_23_qc" classname="nc.bpm.pu.pfxx.M23ForJLAdd"  locklevel="3" metadataid="8fbe8162-4588-465e-9b07-78befaf383ce" name="到货单报检">
-</businessprocessor>
- <businessprocessor baseclassname="" billtype="bpm_422X_audit" classname="nc.bpm.pu.pfxx.M422XForAudit" locklevel="3" metadataid="f8025fb7-1aa5-4de8-9c64-95e1cad22f6a" name="固定资产物资申请审批">
-  </businessprocessor>
- <businessprocessor billtype="bpm_marks_add" classname="nc.bpm.pu.pfxx.MarksForBpmAdd" locklevel="3" metadataid="faa17d57-f79a-49df-9958-b98c1ef4a976" name="唛头生成请购单">
-</businessprocessor> 
-<businessprocessor baseclassname=" " billtype="bpm_payplan_add" classname="nc.bpm.pu.pfxx.OrderPayPlan"  locklevel="3" metadataid="8a2b1c3f-0185-40f6-b4a1-eb9d1733ebcf" name="采购付款计划回写">
-  </businessprocessor>
- <businessprocessor baseclassname=" " billtype="bpm_test_add" classname="nc.bs.pfxx.test.pub.Testout"  locklevel="3" metadataid="b4bde646-3f4d-4b95-919f-8ebe03c5f849" name="">
-  </businessprocessor>  
+	<businessprocessor billtype="bpm_21_add"
+		classname="nc.bpm.pu.pfxx.M21ForBPMAdd" locklevel="3"
+		metadataid="8a2b1c3f-0185-40f6-b4a1-eb9d1733ebcf" name="bpm采购订单">
+	</businessprocessor>
+	<businessprocessor billtype="bpm_20_update"
+		classname="nc.bpm.pu.pfxx.M20ForBpmUpdate" locklevel="3"
+		metadataid="faa17d57-f79a-49df-9958-b98c1ef4a976" name="请购单回写累计合同数量">
+	</businessprocessor>
+	<businessprocessor billtype="JL_23_qc"
+		classname="nc.bpm.pu.pfxx.M23ForJLAdd" locklevel="3"
+		metadataid="8fbe8162-4588-465e-9b07-78befaf383ce" name="到货单报检">
+	</businessprocessor>
+	<businessprocessor baseclassname="" billtype="bpm_422X_audit"
+		classname="nc.bpm.pu.pfxx.M422XForAudit" locklevel="3"
+		metadataid="f8025fb7-1aa5-4de8-9c64-95e1cad22f6a" name="固定资产物资申请审批">
+	</businessprocessor>
+	<businessprocessor billtype="bpm_marks_add"
+		classname="nc.bpm.pu.pfxx.MarksForBpmAdd" locklevel="3"
+		metadataid="faa17d57-f79a-49df-9958-b98c1ef4a976" name="唛头生成请购单">
+	</businessprocessor>
+	<businessprocessor baseclassname=" " billtype="bpm_payplan_add"
+		classname="nc.bpm.pu.pfxx.OrderPayPlan" locklevel="3"
+		metadataid="8a2b1c3f-0185-40f6-b4a1-eb9d1733ebcf" name="采购付款计划回写">
+	</businessprocessor>
+	<businessprocessor baseclassname=" " billtype="bpm_test_add"
+		classname="nc.bs.pfxx.test.pub.Testout" locklevel="3"
+		metadataid="b4bde646-3f4d-4b95-919f-8ebe03c5f849" name="">
+	</businessprocessor>
+
+	<businessprocessor baseclassname=" " billtype="bpm_fundplan_add"
+		classname="nc.bpm.pu.pfxx.MFundPlanForBpmUpdate" locklevel="3"
+		metadataid="8a2b1c3f-0185-40f6-b4a1-eb9d1733ebcf" name="资金计划回写">
+	</businessprocessor>
 </businessprocessors>

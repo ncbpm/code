@@ -6,7 +6,6 @@ import java.util.Map;
 
 import nc.bs.dao.BaseDAO;
 import nc.bs.dao.DAOException;
-import nc.impl.am.db.processor.KeyValueMapProcessor;
 import nc.impl.pubapp.pattern.data.vo.VOQuery;
 import nc.jdbc.framework.processor.ArrayProcessor;
 import nc.jdbc.framework.processor.ColumnListProcessor;

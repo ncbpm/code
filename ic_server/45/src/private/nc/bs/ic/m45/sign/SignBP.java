@@ -8,7 +8,6 @@ import nc.bs.ic.m45.sign.rule.AfterRuleForPush5X;
 import nc.bs.ic.m45.sign.rule.AfterRuleForRewritePUSettle;
 import nc.bs.ic.m45.sign.rule.AfterSignRuleForFinanceProcess;
 import nc.bs.ic.m45.sign.rule.AfterSignRuleForLiabilityProcess;
-import nc.bs.ic.m45.sign.rule.AfterSignRuleForReserveProcess;
 import nc.bs.ic.m45.sign.rule.BeforeRuleForCheckPU;
 import nc.impl.pubapp.pattern.rule.processer.AroundProcesser;
 import nc.vo.ic.m45.entity.PurchaseInVO;
@@ -36,10 +35,11 @@ public class SignBP implements ISignBP<PurchaseInVO>,
     processor.addAfterRule(new AfterRuleForPush5X());
     processor.addAfterRule(new AfterSignRuleForFinanceProcess());
     processor.addAfterRule(new AfterSignRuleForLiabilityProcess());
-    //2017-07-15 liyf
-//    1.产成品入库如果是按照销售订单生成的销售订单，且入库的物料是销售订单上物料，则改物料+批次动预留给该销售订单
-    processor.addAfterRule(new AfterSignRuleForReserveProcess());
+    //2017-07-30 回写付款计划
+    processor.addAfterRule(new AfterSignRuleForPayPlanProcess());
 
+    
+    
   }
 
   @Override

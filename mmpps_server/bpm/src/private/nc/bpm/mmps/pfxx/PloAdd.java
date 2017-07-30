@@ -1,9 +1,9 @@
 package nc.bpm.mmps.pfxx;
 
+import nc.bs.framework.common.NCLocator;
 import nc.bs.pfxx.ISwapContext;
 import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
 import nc.itf.mmpps.plo.IAcePoMaintainService;
-import nc.vo.am.proxy.AMProxy;
 import nc.vo.mmpps.mps0202.AggregatedPoVO;
 import nc.vo.pfxx.auxiliary.AggxsysregisterVO;
 import nc.vo.pub.BusinessException;
@@ -22,10 +22,10 @@ public class PloAdd extends AbstractPfxxPlugin {
 		// TODO 自动生成的方法存根
 		AggregatedPoVO billVOs[] = new AggregatedPoVO[1];
 		billVOs[0] = (AggregatedPoVO)vo;
-		IAcePoMaintainService service = AMProxy.lookup(IAcePoMaintainService.class);
+		IAcePoMaintainService service = NCLocator.getInstance().lookup(IAcePoMaintainService.class);
 		AggregatedPoVO retVOs[] = service.insert(billVOs);
 		if(retVOs != null && retVOs.length >0){
-			return retVOs[0];
+			return retVOs[0].getPrimaryKey();
 		}
 		return null;
 	}

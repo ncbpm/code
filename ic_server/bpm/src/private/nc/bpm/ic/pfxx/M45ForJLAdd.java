@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import nc.bs.framework.common.InvocationInfoProxy;
 import nc.bs.framework.common.NCLocator;
 import nc.bs.ic.general.plugins.CheckMnyUtil;
 import nc.bs.ic.general.plugins.CheckScaleUtil;
@@ -69,11 +70,13 @@ public class M45ForJLAdd extends AbstractPfxxPlugin {
 		// 4数据交换:按照一张到货单生成一张采购入库单场景处理
 		String rs = "";
 		for (ArriveVO chgBill : chgBillS) {
+			//长度如果等于0，说明已经有拼接，用逗号分开
 			if (rs.length() > 5) {
 				rs += ",";
 			}
 			// 根据到货单的制单人同步到采购入库单
 			bpmBill.getHead().setBillmaker(chgBill.getHVO().getBillmaker());
+			InvocationInfoProxy.getInstance().setUserId(chgBill.getHVO().getBillmaker());
 			ICBillVO[] destVos = PfServiceScmUtil
 					.executeVOChange(POBillType.Arrive.getCode(),
 							ICBillType.PurchaseIn.getCode(),

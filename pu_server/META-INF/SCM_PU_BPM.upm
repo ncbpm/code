@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="gb2312"?>
+<module name="SCM_PU_BPM1_EJB60">
+  	<public>
+    	    <!--付款计划回写-->
+	    <component priority="0" singleton="true" remote="true" tx="CMT" supportAlias="true">
+	      <interface>nc.itf.pu.m21.IOrderPayPlanWriteBack</interface>
+	      <implementation>nc.impl.pu.m21.OrderPayPlanWriteBackImpl</implementation>
+	    </component>
+	</public>
+</module>
+

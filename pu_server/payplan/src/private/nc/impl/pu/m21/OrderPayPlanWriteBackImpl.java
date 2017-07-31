@@ -287,7 +287,7 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 		String sql = "update po_order_payplan set def1 = '" + def1
 				+ "' where pk_order_payplan  = '" + pk_order_payplan + "'";
 		BaseDAO dao = new BaseDAO();
-		Object o = dao.executeUpdate(sql);
+		 dao.executeUpdate(sql);
 
 	}
 
@@ -313,5 +313,22 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 			intArray[i] = listindex.get(i).intValue();
 		}
 		return intArray;
+	}
+
+	@Override
+	public void writeBackCancelSignFor25(InvoiceVO invo)
+			throws BusinessException {
+
+		// String sql = "update po_order_payplan set def1 = '" + def1
+		// + "' where pk_order_payplan  = '" + pk_order_payplan +
+		// "' and def1 = '"+def1+"'";
+		// BaseDAO dao = new BaseDAO();
+		// dao.executeUpdate(sql);
+	}
+
+	@Override
+	public void writeBackCancelSignFor45(PurchaseInVO invo)
+			throws BusinessException {
+
 	}
 }

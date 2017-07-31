@@ -9,4 +9,8 @@ public interface IOrderPayPlanWriteBack {
 
 	void writeBackOrderPayPlanFor25(InvoiceVO invo) throws BusinessException;
 
+	void writeBackCancelSignFor25(InvoiceVO invo) throws BusinessException;
+	
+	void writeBackCancelSignFor45(PurchaseInVO invo) throws BusinessException;
+
 }

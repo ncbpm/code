@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+  <!-- 该配置文件功用：
+		配置字段修改后要触发的逻辑，如岗位变化后，要修改岗位序列的参照范围，
+		开发人员配置其写的逻辑类即可。
+		提供一个通用的superLogicProcessor，实现动态逻辑
+ -->
+  <!--
+    TODO mind of superLogicProcessor ， 1.可支持某字段变化后，使其他字段执行某方法 包含（参照变化、清空、只读/可写、置值、参照中的其他方法），可传入参数，参数可以是常量，也可以是单据中字段的值，
+    2.也可以对子集操作（如：隐藏/显示、清空、锁定/解锁）， 3.支持子集中的字段变化逻辑。 4.支持自行实现逻辑类。
+  -->
+  <!-- 提示：super只是一个尝试
+ 通过配置文件来配置逻辑是个复杂的过程，比在代码中实现出来要难读多了。
+ 因此对于你认为非常复杂并且固定的逻辑，建议不要使用super，同时提醒不要寄希望super给予所有实现。
+  -->
+  <bean id="FieldRelationUtil" class="nc.ui.hr.tools.uilogic.FieldRelationUtil">
+    <property name="fieldRelationMap">
+      <map>
+        <!-- 可以注入类引用,需要继承AbstractLogicProcessor -->
+        <entry key="idtype">
+          <ref local="idtypeTOid" />
+        </entry>
+        <!-- 可以注入类名,需要继承AbstractLogicProcessor -->
+        <entry key="FLD2">
+          <value>nc.ui.hi.register.FLD2logic</value>
+        </entry>
+        <!-- 若影响多个字段，也可以注入list,list中可以是类引用，也可以是类名 -->
+        <entry key="sex">
+          <ref local="动态逻辑样例" />
+        </entry>
+        <entry key="hi_psnjob.series">
+          <ref local="jobtype_To_job" />
+        </entry>
+        <entry key="hi_psnjob.pk_job">
+          <ref local="job_To_jobtype" />
+        </entry>
+      </map>
+    </property>
+  </bean>
+
+  <bean id="idtypeTOid" class="nc.ui.hi.register.uilogic.IDTypeTOID" />
+
+  <!--按照类名注入的processList -->
+  <bean id="FLD3processlist" class="java.util.ArrayList">
+    <constructor-arg>
+      <list>
+        <value>nc.ui.hi.register.FLD3TOFLD8_logic</value>
+        <value>nc.ui.hi.register.FLD3TOFLD9_logic</value>
+      </list>
+    </constructor-arg>
+  </bean>
+
+  <!--按照类引用注入的processList -->
+  <bean id="FLD4processlist" class="java.util.ArrayList">
+    <constructor-arg>
+      <list>
+        <ref bean="FLD4TOFLD5" />
+      </list>
+    </constructor-arg>
+  </bean>
+
+
+  <bean id="FLD4TOFLD5" class="nc.ui.hr.tools.uilogic.SuperLogicProcessor">
+    <property name="simpleMethod" value="@id_billitem@.clear()" />
+  </bean>
+
+  <bean id="动态逻辑样例" class="nc.ui.hr.tools.uilogic.SuperLogicProcessor">
+    <property name="methods">
+      <list>
+        <!--
+          <value>vareval:sex=@sex@。if('{sex}'=='F') then $pk_corp_refmodel$.addWherePart([String]and
+          1=2,[boolean]true)</value> <value>if('{sex}'=='M') then $pk_corp_refmodel$.addWherePart([String]and
+          1=1,[boolean]true)</value> <value>$pk_corp_refmodel$.reloadData()</value>
+          <value>vareval:sex=@sex@。if('{sex}'=='N') then $code_billitem$.setValue([Object]未知)</value>
+          <value>if('{sex}'=='M') then $code_billitem$.setValue([Object]性别为男)</value> <value>if('{sex}'=='F') then
+          $code_billitem$.setValue([Object]性别为女)</value> <value>if('{sex}'=='N'||'{sex}'=='M'||'{sex}'=='F') then
+          $code_billitem$.setEnabled([boolean]false)</value> <value>if('{sex}'=='') then
+          $code_billitem$.setValue([Object]性别未选)</value> <value>if('{sex}'=='') then
+          $code_billitem$.setEnabled([boolean]true)</value> <value>if('{sex}'=='F') then
+          $pk_corp_refmodel$.addWherePart([String]1=2,[boolean]true)</value> <value>if('{sex}'=='M') then
+          $pk_corp_refmodel$.addWherePart([String]1=1,[boolean]true)</value>
+        -->
+      </list>
+    </property>
+  </bean>
+  
+  <!-- 职务类别影响职务：职务参照按照职务类别进行过滤 -->
+	<!-- <bean id="jobtype_To_job" class="nc.ui.hr.tools.uilogic.SuperLogicProcessor"> 
+		<property name="methods"> <list> <value>if('@hi_psnjob.series@'!='') then 
+		$hi_psnjob.pk_job_refmodel$.addWherePart([String]and pk_jobtype='@hi_psnjob.series@',[boolean]true)</value> 
+		<value>if('@hi_psnjob.series@'=='') then $hi_psnjob.pk_job_refmodel$.addWherePart([String]null,[boolean]true)</value> 
+		<value>$hi_psnjob.pk_job_billitem$.setValue([Object]null)</value> </list> 
+		</property> </bean> 职务影响职务类别：选择职务后，职务类别自动带出 <bean id="job_To_jobtype" class="nc.ui.hr.tools.uilogic.SuperLogicProcessor"> 
+		<property name="methods"> <list> <value>var:pk_jobtype=$hi_psnjob.pk_job_refpane$.getRefValue([String]om_job.pk_jobtype)。$hi_psnjob.series_refpane$.setPK([String]{pk_jobtype})</value> 
+		</list> </property> </bean> -->
+</beans>

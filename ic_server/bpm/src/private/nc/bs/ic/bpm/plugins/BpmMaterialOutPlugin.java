@@ -123,7 +123,7 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 		headvo.setVtrantypecode("4D-01");
 		headvo.setPk_org(header.getPk_org());
 		headvo.setPk_group(header.getPk_group());
-		headvo.setDbilldate(new UFDate());
+		headvo.setDbilldate(new UFDate("2017-07-23"));
 		headvo.setCdptid(header.getPk_appdepth());
 	}
 
@@ -142,17 +142,23 @@ public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 				continue;
 			vo.setCbodytranstypecode("4D-01");
 			vo.setCbodywarehouseid(headvo.getCwarehouseid());
-			vo.setCfirstbillbid(sitem.getCfirstbid());
-			vo.setCfirstbillhid(sitem.getCfirstid());
-			vo.setCunitid(sitem.getCunitid());
-			// vo.setCfirsttranstype(cfirsttranstype);
-			vo.setCfirsttype(sitem.getCfirsttypecode());
+			if (sitem.getCfirstbid() == null) {
+				vo.setCfirstbillbid(sitem.getPk_storereq_b());
+				vo.setCfirstbillhid(sitem.getPk_storereq());
+				vo.setCfirsttype("422X");
+			} else {
+				vo.setCfirstbillbid(sitem.getCfirstbid());
+				vo.setCfirstbillhid(sitem.getCfirstid());
+				vo.setCfirsttype(sitem.getCfirsttypecode());
+			}
 			vo.setCmaterialvid(sitem.getPk_material());
+			vo.setCunitid(sitem.getCunitid());
 			vo.setCprojectid(header.getPk_project());
 			vo.setCsourcetype("422X");
 			vo.setCsrcmaterialvid(sitem.getPk_material());
 			vo.setVsourcebillcode(header.getVbillcode());
 			vo.setVsourcerowno(sitem.getCrowno());
+			vo.setDbizdate(new UFDate("2017-07-23"));
 		}
 	}
 

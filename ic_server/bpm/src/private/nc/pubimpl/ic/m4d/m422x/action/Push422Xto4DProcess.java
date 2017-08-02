@@ -17,6 +17,7 @@ public class Push422Xto4DProcess extends ICRule<MaterialOutVO> {
 		if (null == icPFParameter)
 			icPFParameter = new ICPFParameter();
 		icPFParameter.setBSafetyStockCheckFlag(true);
+		icPFParameter.setbToleranceCheckFlag(true);
 		context.setICPFParameter(icPFParameter);
 		
 		Bill422Xto4DProcess proc = new Bill422Xto4DProcess(true);

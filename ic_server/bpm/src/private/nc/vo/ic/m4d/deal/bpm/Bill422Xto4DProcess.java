@@ -2,10 +2,14 @@ package nc.vo.ic.m4d.deal.bpm;
 
 import java.util.Map;
 
+import nc.itf.scmpub.reference.uap.org.DeptPubService;
 import nc.itf.scmpub.reference.uap.pf.PfServiceScmUtil;
 import nc.vo.ic.general.define.ICBillVO;
 import nc.vo.ic.m4d.deal.BillTransTo4DProcess;
+import nc.vo.ic.m4d.entity.MaterialOutHeadVO;
 import nc.vo.ic.m4d.entity.MaterialOutVO;
+import nc.vo.ic.pub.define.ICPubMetaNameConst;
+import nc.vo.ic.pub.util.VOEntityUtil;
 
 public class Bill422Xto4DProcess extends BillTransTo4DProcess {
 
@@ -38,6 +42,24 @@ public class Bill422Xto4DProcess extends BillTransTo4DProcess {
 	// }
 	// }
 	// }
+
+	@Override
+	protected void fillValue(MaterialOutVO[] bills) {
+		super.fillValue(bills);
+		fillDeptVid(bills);
+	}
+
+	private void fillDeptVid(MaterialOutVO[] vos) {
+		MaterialOutHeadVO[] heads = VOEntityUtil.getHeadVOs(vos);
+		String[] cdeptid = VOEntityUtil.getVOsValues(heads,
+				ICPubMetaNameConst.CDPTID, String.class);
+		Map<String, String> cdptmap = DeptPubService
+				.getLastVIDSByDeptIDS(cdeptid);
+		for (MaterialOutVO vo : vos) {
+			MaterialOutHeadVO head = vo.getHead();
+			head.setCdptvid(cdptmap.get(head.getCdptid()));
+		}
+	}
 
 	@Override
 	protected void fillTranstypeCode(MaterialOutVO[] vos) {

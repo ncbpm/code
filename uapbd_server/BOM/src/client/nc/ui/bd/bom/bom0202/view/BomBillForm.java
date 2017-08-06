@@ -80,17 +80,18 @@ public class BomBillForm extends BillFormFacade {
 
     @Override
     protected void onAdd() {
-        this.getBillCardPanel().getHeadItem(BomVO.HCMATERIALID).setEdit(true);
-        this.getBillCardPanel().getHeadItem(BomVO.HCMATERIALVID).setEdit(true);
-        this.getBillCardPanel().getHeadItem(BomVO.HVERSION).setEdit(true);
-        //2-17-06-13
+        super.onAdd();
+        this.getBillCardPanel().getHeadItem(BomVO.HCMATERIALID).setEnabled(true);
+        this.getBillCardPanel().getHeadItem(BomVO.HCMATERIALVID).setEnabled(true);
+        this.getBillCardPanel().getHeadItem(BomVO.HVERSION).setEnabled(true);
+        //2017-06-13 liyf 表头自定义项字段显示
         for(int i=1;i<=10;i++){
         	BillItem headItem = getBillCardPanel().getHeadItem("vfree"+i);
         	if(headItem!=null && headItem.isShow()){
-                this.getBillCardPanel().getHeadItem("vfree"+i).setEdit(true);
+        		this.getBillCardPanel().getHeadItem("vfree"+i).setEdit(true);
+                this.getBillCardPanel().getHeadItem("vfree"+i).setEnabled(true);
         	}
         }
-        super.onAdd();
     }
 
     @Override

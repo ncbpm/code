@@ -25,14 +25,17 @@ public class BomHeadTailBeforeEditHandler extends MMEventHandler implements
 
     @Override
     public void handleAppEvent(CardHeadTailBeforeEditEvent e) {
+//      //2017-06-13 liyf 支持自由项
+      if(e.getKey().startsWith("vfree")){
+      	e.setReturnValue(null);
+      	e.setReturnValue(true);
+      	return ; 
+      }
         MMBaseHandler handler = this.getHandler(e.getKey());
         if (handler != null) {
             handler.beforeEdit(e);
         }
-//        //2017-06-13 liyf 支持自由项
-//        if(e.getKey().startsWith("vfree")){
-//        	e.setReturnValue(true);
-//        }
+
     }
 
     @Override

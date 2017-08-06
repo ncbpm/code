@@ -8,6 +8,7 @@ import nc.bs.ic.m45.sign.rule.AfterRuleForPush5X;
 import nc.bs.ic.m45.sign.rule.AfterRuleForRewritePUSettle;
 import nc.bs.ic.m45.sign.rule.AfterSignRuleForFinanceProcess;
 import nc.bs.ic.m45.sign.rule.AfterSignRuleForLiabilityProcess;
+import nc.bs.ic.m45.sign.rule.AfterSignRuleForPayPlanProcess;
 import nc.bs.ic.m45.sign.rule.BeforeRuleForCheckPU;
 import nc.impl.pubapp.pattern.rule.processer.AroundProcesser;
 import nc.vo.ic.m45.entity.PurchaseInVO;

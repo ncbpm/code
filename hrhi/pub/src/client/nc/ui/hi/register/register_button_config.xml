@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	<!-- Actions -->
+	<bean id="formEditorActions" class="nc.ui.uif2.actions.StandAloneToftPanelActionContainer">
+		<constructor-arg>
+			<ref bean="psndocFormEditor" />
+		</constructor-arg>
+		<property name="actions">
+			<list>
+				<ref bean="addPsndocAction" />
+				<ref bean="editPsndocAction" />
+				<ref bean="deletePsndocAction" />
+				<ref bean="separatorAction" />
+				<ref bean="refreshPsndocAction" />
+				<ref bean="separatorAction" />
+				<ref bean="newEntryFormAction" />
+				<ref bean="switchToDocAction" />
+				<ref bean="separatorAction" />
+				<ref bean="cardAssistGroup" />
+				<ref bean="separatorAction" />
+				<ref bean="cardRelateQueryGroup" />
+				<ref bean="separatorAction" />
+				<ref bean="cardPrintActionGroup" />
+			</list>
+		</property>
+		<property name="editActions">
+			<list>
+				<ref bean="savePsndocAction" />
+				<ref bean="saveAddPsndocAction" />
+				<ref bean="separatorAction" />
+				<ref bean="cancelPsndocAction" />
+				<ref bean="separatorAction" />
+				<ref bean="readIDCardAction" />
+			</list>
+		</property>
+		<property name="model" ref="manageAppModel" />
+	</bean>
+
+	<bean id="listViewActions" class="nc.ui.hi.psndoc.view.PsndocActionContainer">
+		<constructor-arg>
+			<ref bean="psndocListView" />
+		</constructor-arg>
+		<property name="actions">
+			<list>
+				<ref bean="addPsndocAction" />
+				<ref bean="editActionGroup" />
+				<ref bean="deletePsndocAction" />
+				<!-- <ref bean="batchEditAction" />  -->
+				<!-- <ref bean="batchAddSubSetAction" /> -->
+				<ref bean="separatorAction" />
+				<ref bean="queryPsndocAction" />
+				<ref bean="refreshPsndocAction" />
+				<ref bean="separatorAction" />
+				<ref bean="newEntryFormAction" />
+				<ref bean="switchToDocAction" />
+				<ref bean="assistGroup" />
+				<ref bean="separatorAction" />
+				<ref bean="relateQueryGroup" />
+				<ref bean="separatorAction" />
+				<ref bean="printActionGroup" />
+			</list>
+		</property>
+		<property name="dataManager" ref="psndocDataManager" />
+		<property name="adjustSortActions">
+			<list>
+				<ref bean="savePsndocAction" />
+				<ref bean="separatorAction" />
+				<ref bean="cancelPsndocAction" />
+				<ref bean="separatorAction" />
+				<ref bean="readIDCardAction" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="editActionGroup" class="nc.funcnode.ui.action.GroupAction">
+		<property name="actions">
+			<list>
+				<ref bean="editPsndocAction" />
+				<ref bean="batchEditAction" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="resourceCode" class="java.lang.String">
+		<constructor-arg value="6007psnjob" />
+	</bean>
+
+	<!-- 按钮action -->
+	<bean id="separatorAction" class="nc.funcnode.ui.action.SeparatorAction" />
+	<bean id="ActionsBarSeparator" class="nc.ui.pub.beans.ActionsBar$ActionsBarSeparator" />
+	<bean id="bodyMaxAction" class="nc.ui.hr.uif2.action.MaxBodyViewAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="cardPanel" ref="psndocFormEditor" />
+		<property name="defaultStatus" value="true" />
+		<property name="enableForAllTabs" value="true" />
+		<property name="enableWhenEditingOnly" value="false" />
+	</bean>
+
+	<bean id="headMaxAction" class="nc.ui.hr.uif2.action.MaxHeadViewAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="cardPanel" ref="psndocFormEditor" />
+		<property name="defaultStatus" value="true" />
+		<property name="enableForAllTabs" value="true" />
+		<property name="enableWhenEditingOnly" value="false" />
+	</bean>
+	<bean id="addPsndocAction" class="nc.ui.hi.psndoc.action.AddPsndocAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="formEditor" ref="psndocFormEditor" />
+		<property name="idValidator" ref="IDvalidationConfig" />
+		<property name="defaultValueProvider" ref="defaultValueProvider" />
+	</bean>
+
+	<bean id="editPsndocAction" class="nc.ui.hi.psndoc.action.EditPsndocAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="resourceCode" ref="resourceCode" />
+	</bean>
+
+	<bean id="deletePsndocAction" class="nc.ui.hi.psndoc.action.DeletePsndocAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="listView" ref="psndocListView" />
+		<property name="resourceCode" ref="resourceCode" />
+	</bean>
+	
+	<!-- 读读卡器 -->
+	<bean id="readIDCardAction" class="nc.ui.hi.psndoc.action.ReadIDCardAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="formEditor" ref="psndocFormEditor" />
+	</bean>
+	
+	<bean id="queryPsndocAction" class="nc.ui.hi.psndoc.action.QueryPsndocAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="dataManager" ref="psndocDataManager" />
+		<property name="queryDelegator">
+			<bean class="nc.ui.hi.psndoc.action.QueryPsndocDelegator">
+				<property name="context" ref="context" />
+				<property name="nodeKey" value="bd_psndoc" />
+				<property name="model" ref="manageAppModel" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="refreshPsndocAction" class="nc.ui.hi.psndoc.action.RefreshPsndocAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="dataManager" ref="psndocDataManager" />
+		<property name="formEditor" ref="psndocFormEditor" />
+	</bean>
+
+	<bean id="savePsndocAction" class="nc.ui.hi.psndoc.action.SavePsndocAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="editor" ref="psndocFormEditor" />
+		<property name="listView" ref="psndocListView" />
+		<property name="dataManager" ref="psndocDataManager" />
+		<property name="superValidator" ref="SuperValidationConfig" />
+		<property name="validationService" ref="billNotNullValidator" />
+	</bean>
+
+	<bean id="saveAddPsndocAction" class="nc.ui.hr.uif2.action.SaveAddAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="addAction" ref="addPsndocAction" />
+		<property name="saveAction" ref="savePsndocAction" />
+	</bean>
+
+	<bean id="cancelPsndocAction" class="nc.ui.hi.psndoc.action.CancelPsndocAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="dataManger" ref="psndocDataManager" />
+	</bean>
+
+	<bean id="addSubSetAction" class="nc.ui.hi.psndoc.action.AddSubSetAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="cardPanel" ref="psndocFormEditor" />
+		<property name="defaultStatus" value="true" />
+		<property name="enableForAllTabs" value="false" />
+		<property name="disableTabsSet" ref="disableTabSet" />
+		<property name="defaultValueProvider" ref="subDefaultValueProvider" />
+	</bean>
+
+	<bean id="deleteSubSetAction" class="nc.ui.hi.psndoc.action.DelSubSetAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="cardPanel" ref="psndocFormEditor" />
+		<property name="defaultStatus" value="true" />
+		<property name="enableForAllTabs" value="false" />
+		<property name="disableTabsSet" ref="disableTabSet" />
+	</bean>
+
+	<bean id="insertSubSetAction" class="nc.ui.hi.psndoc.action.InsertSubSetAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="cardPanel" ref="psndocFormEditor" />
+		<property name="defaultStatus" value="true" />
+		<property name="enableForAllTabs" value="false" />
+		<property name="disableTabsSet" ref="disableTabSet" />
+		<property name="defaultValueProvider" ref="subDefaultValueProvider" />
+	</bean>
+
+	<bean id="copySubSetAction" class="nc.ui.hi.psndoc.action.CopySubSetAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="cardPanel" ref="psndocFormEditor" />
+		<property name="defaultStatus" value="true" />
+		<property name="enableForAllTabs" value="false" />
+		<property name="disableTabsSet" ref="disableTabSet" />
+	</bean>
+
+	<bean id="pasteSubSetAction" class="nc.ui.hi.psndoc.action.PasteSubSetAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="cardPanel" ref="psndocFormEditor" />
+		<property name="defaultStatus" value="true" />
+		<property name="enableForAllTabs" value="false" />
+		<property name="disableTabsSet" ref="disableTabSet" />
+	</bean>
+
+	<bean id="adjustSubReordUpAction" class="nc.ui.hi.psndoc.action.AdjustSubReordUpAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="formEditor" ref="psndocFormEditor" />
+		<property name="defaultStatus" value="true" />
+		<property name="enableForAllTabs" value="false" />
+		<property name="disableTabsSet" ref="businessInfoSet" />
+	</bean>
+
+	<bean id="adjustSubReordDownAction" class="nc.ui.hi.psndoc.action.AdjustSubReordDownAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="formEditor" ref="psndocFormEditor" />
+		<property name="defaultStatus" value="true" />
+		<property name="enableForAllTabs" value="false" />
+		<property name="disableTabsSet" ref="businessInfoSet" />
+	</bean>
+
+	<bean id="firstLineAction" class="nc.ui.hi.psndoc.action.FirstPsndocAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="formEditor" ref="psndocFormEditor" />
+	</bean>
+
+	<bean id="preLineAction" class="nc.ui.hi.psndoc.action.PrePsndocAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="formEditor" ref="psndocFormEditor" />
+	</bean>
+
+	<bean id="nextLineAction" class="nc.ui.hi.psndoc.action.NextPsndocAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="formEditor" ref="psndocFormEditor" />
+	</bean>
+
+	<bean id="lastLineAction" class="nc.ui.hi.psndoc.action.LastPsndocAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="formEditor" ref="psndocFormEditor" />
+	</bean>
+
+	<bean id="batchEditAction" class="nc.ui.hi.psndoc.action.BatchEditPsndocAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="formEditor" ref="psndocFormEditor" />
+		<property name="listView" ref="psndocListView" />
+		<property name="resourceCode" ref="resourceCode" />
+	</bean>
+
+	<bean id="batchAddSubSetAction" class="nc.ui.hi.psndoc.action.BatchAddSubSetAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="listView" ref="psndocListView" />
+		<property name="resourceCode" ref="resourceCode" />
+	</bean>
+
+	<bean id="sortPsndocAction" class="nc.ui.hi.psndoc.action.SortPsndocAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="listView" ref="psndocListView" />
+		<property name="dataManger" ref="psndocDataManager" />
+	</bean>
+
+	<bean id="adjustSortAction" class="nc.ui.hi.psndoc.action.AdjustPsndocSortAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="listView" ref="psndocListView" />
+		<property name="dataManger" ref="psndocDataManager" />
+		<property name="treeView" ref="treeContainer" />
+		<property name="resourceCode" ref="resourceCode" />
+	</bean>
+
+	<bean id="switchToDocAction" class="nc.ui.hi.register.action.SwitchToDocAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="formEditor" ref="psndocFormEditor" />
+		<property name="resourceCode" ref="resourceCode" />
+	</bean>
+
+	<bean id="newEntryFormAction" class="nc.ui.hi.register.action.NewEntryFormAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="formEditor" ref="psndocFormEditor" />
+		<property name="resourceCode" ref="resourceCode" />
+	</bean>
+
+	<bean id="printActionGroup" class="nc.funcnode.ui.action.GroupAction">
+		<property name="actions">
+			<list>
+				<ref bean="printDirectAction" />
+				<ref bean="printPreviewAction" />
+				<ref bean="listOutputAction" />
+				<ref bean="separatorAction" />
+				<ref bean="templatePrintAction" />
+				<ref bean="templatePreviewAction" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="cardPrintActionGroup" class="nc.funcnode.ui.action.GroupAction">
+		<property name="actions">
+			<list>
+				<ref bean="templatePrintAction" />
+				<ref bean="templatePreviewAction" />
+				<ref bean="cardOutputAction" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="printPreviewAction" class="nc.ui.hr.uif2.action.print.DirectPreviewAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="listView" ref="psndocListView" />
+	</bean>
+
+	<bean id="printDirectAction" class="nc.ui.hr.uif2.action.print.DirectPrintAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="listView" ref="psndocListView" />
+	</bean>
+
+	<bean id="listOutputAction" class="nc.ui.hi.psndoc.action.ExportListPsndocAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="listView" ref="psndocListView" />
+	</bean>
+
+	<bean id="templatePreviewAction" class="nc.ui.hi.psndoc.action.TemplatePreviewPsndocAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="printDlgParentConatiner" ref="psndocFormEditor" />
+		<property name="datasource" ref="datasource" />
+		<property name="nodeKey" value="bd_psndoc" />
+	</bean>
+
+	<bean id="templatePrintAction" class="nc.ui.hi.psndoc.action.TemplatePrintPsndocAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="printDlgParentConatiner" ref="psndocFormEditor" />
+		<property name="datasource" ref="datasource" />
+		<property name="nodeKey" value="bd_psndoc" />
+	</bean>
+
+	<bean id="cardOutputAction" class="nc.ui.hi.psndoc.action.ExportCardPsndocAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="printDlgParentConatiner" ref="psndocFormEditor" />
+		<property name="datasource" ref="datasource" />
+		<property name="nodeKey" value="bd_psndoc" />
+	</bean>
+
+	<bean id="datasource" class="nc.ui.hi.psndoc.action.HIMetaDataDataSource">
+		<property name="model" ref="manageAppModel" />
+		<property name="singleData" value="true" />
+	</bean>
+
+	<bean id="relateQueryGroup" class="nc.funcnode.ui.action.MenuAction">
+		<property name="code" value="relateQuery" />
+		<property name="name">
+			<bean class="nc.ui.uif2.I18nFB">
+				<property name="resDir" value="6001uif2" />
+				<property name="resId" value="x6001uif20002" />
+				<property name="defaultValue" value="联查" />
+			</bean>
+		</property>
+		<property name="actions">
+			<list>
+				<ref bean="queryCardReptAction" />
+				<ref bean="queryListReptAction" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="cardRelateQueryGroup" class="nc.funcnode.ui.action.MenuAction">
+		<property name="code" value="relateQuery" />
+		<property name="name">
+			<bean class="nc.ui.uif2.I18nFB">
+				<property name="resDir" value="6001uif2" />
+				<property name="resId" value="x6001uif20002" />
+				<property name="defaultValue" value="联查" />
+			</bean>
+		</property>
+		<property name="actions">
+			<list>
+				<ref bean="queryCardReptAction" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="queryCardReptAction" class="nc.ui.hi.psndoc.action.QueryCardReptAction">
+		<property name="model" ref="manageAppModel" />
+	</bean>
+
+	<bean id="queryListReptAction" class="nc.ui.hi.psndoc.action.QueryListReptAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="dataManager" ref="psndocDataManager" />
+	</bean>
+
+	<bean id="attachmentAction" class="nc.ui.hi.psndoc.action.HIFileManageAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="resourceCode" ref="resourceCode" />
+	</bean>
+
+	<bean id="fileAction" class="nc.ui.hi.psndoc.action.HIFileManageAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="toolBarVisible" value="false" />
+	</bean>
+
+	<bean id="exportPhotoAction" class="nc.ui.hi.psndoc.action.ExportPhotoAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="listView" ref="psndocListView" />
+		<property name="resourceCode" ref="resourceCode" />
+	</bean>
+
+
+	<bean id="assistGroup" class="nc.funcnode.ui.action.MenuAction">
+		<property name="code" value="assist" />
+		<property name="name">
+			<bean class="nc.ui.uif2.I18nFB">
+				<property name="resDir" value="6001uif2" />
+				<property name="resId" value="x6001uif20001" />
+				<property name="defaultValue" value="辅助功能" />
+			</bean>
+		</property>
+		<property name="actions">
+			<list>
+				<ref bean="sortPsndocAction" />
+				<ref bean="adjustSortAction" />
+				<ref bean="separatorAction" />
+				<ref bean="attachmentAction" />
+				<ref bean="batchAddSubSetAction" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="cardAssistGroup" class="nc.funcnode.ui.action.MenuAction">
+		<property name="code" value="assist" />
+		<property name="name">
+			<bean class="nc.ui.uif2.I18nFB">
+				<property name="resDir" value="6001uif2" />
+				<property name="resId" value="x6001uif20001" />
+				<property name="defaultValue" value="辅助功能" />
+			</bean>
+		</property>
+		<property name="actions">
+			<list>
+				<ref bean="exportPhotoAction" />
+				<ref bean="separatorAction" />
+				<ref bean="attachmentAction" />
+			</list>
+		</property>
+	</bean>
+
+</beans>

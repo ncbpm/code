@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<!-- id字段比较特殊，单独写的校验配置 -->
+	<bean id="IDvalidationConfig" class="nc.vo.hr.validator.IDFieldValidatorConfig">
+		<property name="idValidator">
+			<map>
+				<entry key="0" value="nc.vo.hr.validator.IDCardValidator" />
+				<entry key="1" value="nc.vo.hr.validator.PassPortValidator" />
+				<entry key="3" value="nc.vo.hr.validator.HKIDCardValidator" />
+			</map>
+		</property>
+	</bean>
+
+	<bean id="billNotNullValidator" class="nc.ui.hr.uif2.validator.BillNotNullValidateService">
+		<constructor-arg ref="psndocFormEditor" />
+	</bean>
+
+	<!-- 其他校验 -->
+	<bean id="SuperValidationConfig"
+		class="nc.ui.hr.tools.supervalidator.SuperFormEditorValidatorUtil">
+		<property name="formeditor" ref="psndocFormEditor" />
+		<property name="fieldRelationMap">
+			<map>
+				<entry key="additionalValidationOfSave">
+					<ref local="additionalValidationOfSave" />
+				</entry>
+			</map>
+		</property>
+	</bean>
+
+	<!-- 保存时的额外校验 -->
+	<bean id="additionalValidationOfSave" class="nc.ui.hr.tools.uilogic.SuperLogicProcessor">
+		<property name="formeditor" ref="psndocFormEditor" />
+		<property name="methods">
+			<list>
+				<!-- 年龄校验 <value>vareval:birthdate='@birthdate@'。if('{birthdate}'=='') 
+					then exit</value> <value>var:age=$utils$.dateToAge([UFLiteralDate]{birthdate})。if({age}&lt;16) 
+					then msg2(该员工年龄未满国家法定雇佣年龄16岁)</value> -->
+			</list>
+		</property>
+	</bean>
+
+</beans>

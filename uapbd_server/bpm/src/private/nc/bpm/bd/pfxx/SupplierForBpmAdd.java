@@ -65,32 +65,10 @@ public class SupplierForBpmAdd extends AbstractPfxxPlugin {
 			supplierVO = getBasesService().pfxxInsertSupplierVO(supplierVO,
 					false);
 			voPk = supplierVO.getPk_supplier();
-//			//执行供应商分配
-//			if(!StringUtils.isEmpty(assign_orgs)){
-//				String [] pks = new String[]{voPk};
-//				String[] targets = assign_orgs.split(",");			
-//				ISupplierAssignService assignService2 = NCLocator.getInstance().lookup(ISupplierAssignService.class);
-//				
-//				assignService2.assignSupplierByPks(pks, targets,new String[]{"GLOBLE00000000000000", supplierVO.getPk_group()});
-//				
-//				assignService2.assignByPks(pks, targets, false);
-//			
-//				
-//			}
 		} else {
 			supplierVO.setStatus(VOStatus.UPDATED);
 			setUpdateValues(supplierVO, voPk);
 			getBasesService().pfxxUpdateSupplierVO(supplierVO, false);
-//			//执行供应商分配
-//			if(!StringUtils.isEmpty(assign_orgs)){
-//				String [] pks = new String[]{voPk};
-//				String[] targets = assign_orgs.split(",");			
-//				ISupplierAssignService assignService2 = NCLocator.getInstance().lookup(ISupplierAssignService.class);
-//				
-//				assignService2.assignSupplierByPks(pks, targets,new String[]{"GLOBLE00000000000000", supplierVO.getPk_group()});
-//				
-//				assignService2.assignByPks(pks, targets, true);
-//			}
 		}
 		//重新执行一次查询，
 		

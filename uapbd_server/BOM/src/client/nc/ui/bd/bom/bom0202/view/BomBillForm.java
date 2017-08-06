@@ -14,6 +14,7 @@ import nc.ui.mmf.framework.view.BillFormFacade;
 import nc.ui.pub.beans.UIRefPane;
 import nc.ui.pub.bill.BillItem;
 import nc.ui.pubapp.uif2app.view.value.IBlankChildrenFilter;
+import nc.ui.uif2.AppEvent;
 import nc.util.mmf.framework.base.MMArrayUtil;
 import nc.vo.bd.bom.bom0202.entity.AggBomVO;
 import nc.vo.bd.bom.bom0202.entity.BomItemVO;
@@ -132,6 +133,7 @@ public class BomBillForm extends BillFormFacade {
             this.getBillCardPanel().getHeadItem(BomVO.HCMATERIALVID).setEdit(false);
             this.getBillCardPanel().getHeadItem(BomVO.HVERSION).setEdit(false);
             this.getBillCardPanel().getHeadItem(BomVO.HFVERSIONTYPE).setEdit(false);
+          
         }
     }
 
@@ -211,7 +213,20 @@ public class BomBillForm extends BillFormFacade {
             }
         }
     }
-
+    @Override
+    public void handleEvent(AppEvent event) {
+    	// TODO 自动生成的方法存根
+    	super.handleEvent(event);
+    	  //2017-06-13 liyf 表头自定义项字段显示
+        for(int i=1;i<=10;i++){
+        	BillItem headItem = getBillCardPanel().getHeadItem("vfree"+i);
+        	if(headItem!=null && headItem.isShow()){
+        		this.getBillCardPanel().getHeadItem("vfree"+i).setEdit(true);
+                this.getBillCardPanel().getHeadItem("vfree"+i).setEnabled(true);
+        	}
+        }
+    	
+    }
     /***
      * 修订审核态可以修改的项目：表头<br>
      * 齐套，备注

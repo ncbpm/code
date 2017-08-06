@@ -1,6 +1,5 @@
 package nc.bs.qc.c003.maintain.rule.insert;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -8,20 +7,15 @@ import nc.bs.framework.common.NCLocator;
 import nc.bs.qc.c003.writeback.AbstractWriteC001;
 import nc.impl.pubapp.bill.rewrite.BillRewriter;
 import nc.impl.pubapp.bill.rewrite.RewritePara;
-import nc.impl.pubapp.pattern.data.bill.BillQuery;
-import nc.impl.pubapp.pattern.data.bill.BillUpdate;
 import nc.impl.pubapp.pattern.rule.IRule;
 import nc.pubitf.qc.c001.qc.IWritebackForC003;
 import nc.pubitf.qc.c001.qc.WritebackForC003Para;
-import nc.pubitf.qc.checkstandard.QueryStdChkItemPara;
 import nc.vo.pub.BusinessException;
 import nc.vo.pubapp.pattern.exception.ExceptionUtils;
-import nc.vo.qc.c001.entity.ApplyVO;
 import nc.vo.qc.c003.entity.ReportVO;
 import nc.vo.scmpub.res.billtype.QCBillType;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * @description 质检报告新增保存时回写报检单的规则类

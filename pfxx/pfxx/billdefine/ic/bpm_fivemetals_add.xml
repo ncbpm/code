@@ -311,7 +311,7 @@
             <name>vremark</name>
             <type>String</type>
             <nullallowed>yes</nullallowed>
-            <maxLength>50</maxLength>
+            <maxLength>4000</maxLength>
             <needexport>yes</needexport>
             <checkTranslatedPK>no</checkTranslatedPK>
         </field>

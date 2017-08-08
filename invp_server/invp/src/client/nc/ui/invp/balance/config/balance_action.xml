@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<!--鎸夐挳浜嬩欢鍏冪礌##########################################################-->
+	<!-- 
+		Actions ###########################################################
+	-->
+	<import resource="balance_m422Xquery.xml" />
+	<import resource="balance_m4B36query.xml" />
+	 
+	<!-- 鏋勯�鏂规硶涓紶鍏ョ殑鐣岄潰鏄剧ず鏃讹紝閰嶇疆鐨凙ction鎵嶅彲瑙�-->	
+	 <!-- 鍗曟嵁鑿滃崟鎸夐挳鍔ㄤ綔 -->	
+	<bean id="refreshAction" class="nc.ui.invp.balance.action.RefreshAction">
+	  <property name="model" ref="manageAppModel" />
+	  <!-- <property name="dataManager" ref="modelDataManager" />-->
+	  <property name="interceptor" ref="listViewShowUpComponentInterceptor" />
+	</bean>
+	<!-- 鍙栨秷姹囨� -->	
+	<bean id="cancelGatherAction" class="nc.ui.invp.balance.action.CancelGatherAction">
+	  <property name="model" ref="manageAppModel" />
+	  <!--<property name="dataManager" ref="modelDataManager" />-->
+	  <property name="interceptor" ref="listViewShowUpComponentInterceptor" />
+	</bean>
+	<bean id="queryAction" class="nc.ui.invp.balance.action.QueryAction">
+	    <property name="qryCondDLGInitializer" ref="qryCondDLGInitializer"/>
+		<property name="nodeKey" value="4007400101"/>
+		<property name="model" ref="manageAppModel" />
+		<property name="m422XQueryInfo" ref="m422Xqueryinfo" />
+	    <property name="m4B36QueryInfo" ref="m4B36queryinfo" />
+
+<!--		<property name="m4AQueryInfo" ref="m4aqueryinfo" />-->
+<!--		<property name="m47QueryInfo" ref="m47queryinfo" />-->
+<!--		<property name="m45QueryInfo" ref="m45queryinfo" />-->
+	</bean>
+	
+	  
+<!--	<bean id="queryAction" class="nc.ui.pubapp.uif2app.query2.action.DefaultQueryAction">-->
+<!--	  <property name="model" ref="manageAppModel" />-->
+<!--	  <property name="dataManager" ref="modelDataManager" />-->
+<!--	  <property name="qryCondDLGInitializer" ref="qryCondDLGInitializer"></property>-->
+<!--	  <property name="showUpComponent" ref="listView" />-->
+<!--	  <property name="templateContainer" ref="queryTemplateContainer"></property>-->
+<!--	</bean>-->
+		
+	<bean id="qryCondDLGInitializer" class="nc.ui.invp.balance.query.BalanceQueryDLGInitializer">
+	</bean>	
+	<!-- 鎵撳嵃鎸夐挳 -->
+	<bean id="printAction" class="nc.ui.invp.balance.action.BalancePrintAction">
+	    <property name="list" ref="listView"/>
+       <property name="model" ref="manageAppModel"/>
+       <property name="directPrint" value="true" />
+	</bean>		
+		
+
+
+	<bean id="preViewAction" class="nc.ui.invp.balance.action.BalancePrintAction">
+	   <property name="list" ref="listView"/>
+       <property name="model" ref="manageAppModel"/>
+       <property name="directPrint" value="false" />
+	</bean>
+	<bean id="printGroup" class="nc.funcnode.ui.action.GroupAction">
+	  <property name="code" value="printGroup" />
+	 <!--  <property name="name" value="鎵撳嵃" />
+	  <property name="tooltip" value="鎵撳嵃(Alt+P)" />--> 
+	  <property name="actions">
+	  <list>
+	   <ref bean="printAction" />
+	   <ref bean="preViewAction" />
+	  </list>
+	  </property>
+	</bean>	
+	<!-- 姹囨� -->
+	<bean id="gatherAction" class="nc.ui.invp.balance.action.GatherAction">
+	  <property name="model" ref="manageAppModel" />
+	  <property name="dataManager" ref="modelDataManager" />
+	  <property name="list" ref="listView" />
+	</bean>
+	<!-- 搴撳瓨骞宠　 -->
+	<bean id="balanceAction" class="nc.ui.invp.balance.action.BalanceAction">
+	  <property name="model" ref="manageAppModel" />
+	  <property name="treemodel" ref="balancetreemodel"/>
+	  <property name="dataManager" ref="modelDataManager" />
+	  <property name="list" ref="listView" />
+	  <property name="treeview" ref="balanceTreeView" />
+	  <property name="showUpComponent" ref="balanceTreeView" />
+	</bean>
+	<!-- 闇�眰鍚堝苟渚濇嵁 -->
+	<bean id="gatherRuleAction" class="nc.ui.invp.balance.action.GatherRuleAction">
+	  <property name="model" ref="manageAppModel" />
+	  <property name="dataManager" ref="modelDataManager" />
+	  <property name="list" ref="listView" />
+	</bean>
+	<!-- 骞宠　渚涚粰瑙勫垯 -->
+	<bean id="balanceRuleAction" class="nc.ui.invp.balance.action.BalanceRuleAction">
+	  <property name="model" ref="manageAppModel" />
+	  <property name="dataManager" ref="modelDataManager" />
+	  <property name="list" ref="listView" />
+	</bean>
+	
+	<!-- 鍙栨秷骞宠　 -->
+	<bean id="cancelBalanceAction" class="nc.ui.invp.balance.action.CancelBalanceAction">
+	  <property name="model" ref="manageAppModel" />
+	  <property name="dataManager" ref="modelDataManager" />
+	  <property name="list" ref="listView" />
+	</bean>
+	
+	<!-- 鍙栨秷 -->
+	<bean id="cancelAction" class="nc.ui.invp.balance.action.CancelAction">
+		<property name="model" ref="manageAppModel" />
+		<property name="showUpComponent" ref="listView" />
+		<property name="list" ref="listView" />
+		<property name="billModel" ref="manageAppModel" />
+	</bean>
+	
+	<!-- 纭畾 -->
+	<bean id="confirmAction" class="nc.ui.invp.balance.action.ConfirmAction">
+		<property name="model" ref="manageAppModel" />
+		  <property name="treemodel" ref="balancetreemodel"/>
+		  <property name="dataManager" ref="modelDataManager" />
+		  <property name="list" ref="listView" />
+		  <property name="treeview" ref="balanceTreeView" />
+		  <property name="showUpComponent" ref="listView" />
+	</bean>
+	
+	<bean id="preViewBalanceAction" class="nc.ui.invp.balance.action.BalancePrintAction">
+	  <property name="list" ref="balanceTreeView"/>
+       <property name="model" ref="balancetreemodel"/>
+       <property name="directPrint" value="false" />
+	</bean>
+		
+	<!-- 鎵撳嵃鎸夐挳 -->
+	<bean id="printBalanceAction" class="nc.ui.invp.balance.action.BalancePrintAction">
+	   <property name="list" ref="balanceTreeView"/>
+       <property name="model" ref="balancetreemodel"/>
+       <property name="directPrint" value="true" />
+	</bean>		
+	<bean id="printBalanceGroup" class="nc.funcnode.ui.action.GroupAction">
+	  <property name="code" value="printGroup" />
+	  <!--  <property name="name" value="鎵撳嵃" />
+	  <property name="tooltip" value="鎵撳嵃(Alt+P)" />-->
+	  <property name="actions">
+	  <list>
+	   <ref bean="printBalanceAction" />
+	   <ref bean="preViewBalanceAction" />
+	  </list>
+	  </property>
+	</bean>		
+	<bean id="bodyseparatorAction" class="nc.ui.pub.beans.ActionsBar$ActionsBarSeparator" />
+	<bean id="separatorAction" class="nc.funcnode.ui.action.SeparatorAction" />
+	
+	<!-- 存量显示/隐藏 -->
+	<bean id="atpQueryAction" class="nc.ui.invp.balance.action.QueryOnhandAction">
+		<property name="model" ref="manageAppModel"/>
+		<property name="list" ref="listView" />
+	</bean>
+</beans>

@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<import resource="balance_action.xml" />
+	<import resource="balance_event.xml" /> 
+	<!-- 鐜鍙橀噺 -->
+	  <bean id="context" class="nc.vo.uif2.LoginContext" />
+	 <!-- 搴旂敤鏈嶅姟绫伙紝璐熻矗杩涜妯″瀷鎿嶄綔鐨勫鐞�-->
+	  <bean id="ManageModelService" class="nc.ui.invp.balance.model.BalanceModelService">	    
+	  </bean>
+	  <!-- 鍓嶅彴搴旂敤妯″瀷绠＄悊鍣ㄨ缃�-->
+	  <bean id="manageAppModel" class="nc.ui.invp.balance.model.BalanceBillManageModel">
+	    <property name="service" ref="ManageModelService" />
+	    <property name="businessObjectAdapterFactory" ref="boadatorfactory" />
+	    <property name="context" ref="context" />
+	  </bean>
+	  
+	  <!-- 瀵硅薄杞崲鍣ㄥ伐鍘傦紝鐢辨鑾峰彇鎿嶄綔瀵硅薄鐨勭壒寰佷俊鎭�-->
+	  <bean id="boadatorfactory"
+	    class="nc.ui.pubapp.uif2app.view.value.AggVOMetaBDObjectAdapterFactory" />	    
+	    
+	  <bean id="boadatorTreefactory"
+	    class="nc.vo.bd.meta.BDObjectAdpaterFactory" />
+	   <!-- 鍒楄〃鎺т欢 -->
+	  <bean id="listView" class="nc.ui.invp.balance.view.BalanceBillListView"
+	    init-method="initUI">
+	    <property name="model" ref="manageAppModel" />
+	    <property name="multiSelectionEnable" value="true" />
+	    <property name="multiSelectionMode" value="1" />
+	    <property name="templateContainer" ref="templateContainer" />
+		<property name="UserdefitemListPreparator">
+			<bean class="nc.ui.pubapp.uif2app.view.CompositeBillListDataPrepare">
+				<property name="billListDataPrepares">
+					<list>
+					<ref bean="userdefitemlistPreparator" />
+					<ref bean="marAsstPreparator" />
+					</list>
+				</property>
+			</bean>
+		</property>
+	  </bean>
+	
+	  <!-- 鎷︽埅鍣ㄥ畾涔�--> 	
+	  <bean id="listViewShowUpComponentInterceptor"
+	    class="nc.ui.pubapp.uif2app.actions.interceptor.ShowUpComponentInterceptor">
+	    <property name="showUpComponent" ref="listView" />
+	  </bean>	
+	 
+	  <!-- 妯℃澘瀹瑰櫒锛屼富瑕佽礋璐ｅ姞杞藉崟鎹ā鏉�-->
+	  <bean id="templateContainer" class="nc.ui.invp.balance.view.BalanceTemplateContainer"
+	    init-method="load">
+	    <property name="context" ref="context" />
+	  </bean>
+	   <!-- 鍓嶅彴鏁版嵁妯″瀷绠＄悊鍣ㄨ缃紝涓昏璐熻矗鍚勭鏂瑰紡鐨勬ā鍨嬪垵濮嬪寲 -->
+	  <bean id="modelDataManager" class="nc.ui.pubapp.uif2app.query2.model.ModelDataManager">
+	    <property name="model" ref="manageAppModel" />
+	    <property name="service" ref="ManageModelService" />
+	  </bean>	
+	  
+	<!-- 鐣岄潰甯冨眬鎬昏 -->
+	  <bean id="container" class="nc.ui.uif2.TangramContainer"
+		init-method="initUI">
+		<property name="model" ref="manageAppModel" />
+		<property name="tangramLayoutRoot">
+			<bean class="nc.ui.uif2.tangramlayout.node.TBNode">
+				<property name="showMode" value="CardLayout"></property>
+				<property name="tabs">
+					<list>
+						<bean class="nc.ui.uif2.tangramlayout.node.CNode">
+							<property name="name">
+								<bean class="nc.ui.uif2.I18nFB">
+									<property name="resDir" value="common" />
+									<property name="resId" value="UC001-0000107" />
+									<property name="defaultValue" value="鍒楄〃" />
+								</bean>
+							</property>
+							<property name="component" ref="listView" />
+						</bean>
+						<bean class="nc.ui.uif2.tangramlayout.node.CNode">
+							<property name="name">
+								<bean class="nc.ui.uif2.I18nFB">
+									<property name="resDir" value="common" />
+									<property name="resId" value="UC001-0000107" />
+									<property name="defaultValue" value="鍒楄〃" />
+								</bean>
+							</property>
+							<property name="component" ref="balanceTreeView" />
+						</bean>
+					</list>
+				</property>
+			</bean>
+		</property>
+		 <!-- 鎸夐挳 -->
+		<property name="actions">
+			<list>
+				 <ref bean="queryAction" />
+			      <ref bean="refreshAction" />
+			      <ref bean="separatorAction" />
+			      
+				  <ref bean="gatherAction" />
+				  <ref bean="cancelGatherAction"/>
+				  <ref bean="separatorAction" />	
+				  
+				  <ref bean="balanceAction" />
+				  <ref bean="separatorAction" />	
+				  
+				  <ref bean="gatherRuleAction" />
+				  <ref bean="separatorAction" />	
+				  
+				  <ref bean="balanceRuleAction" />
+				  <ref bean="separatorAction" />	
+				  
+				  <ref bean="cancelBalanceAction" />
+				  <ref bean="separatorAction" />	
+				  
+			      <ref bean="printGroup" />
+			      <ref bean="separatorAction" />	
+			      
+			      <ref bean="atpQueryAction" />
+			      <ref bean="separatorAction" />	
+			</list>
+		</property>
+		<property name="editActions">
+			<list>
+				<ref bean="confirmAction" />
+				<ref bean="cancelAction" />
+				<ref bean="separatorAction" />	
+				 <ref bean="printBalanceGroup" />
+					
+			</list>
+		</property>
+	</bean>
+	
+	  
+	<bean id="balanceTreeView" class="nc.ui.invp.balance.view.BalanceTreeView" init-method="initUI">
+		<property name="templateContainer" ref="templateContainer"></property>		
+		<property name="model" ref="balancetreemodel"></property>
+		<property name="name"><value>tree</value> </property>		
+		<property name="UserdefitemListPreparator">
+			<bean class="nc.ui.pubapp.uif2app.view.CompositeBillListDataPrepare">
+				<property name="billListDataPrepares">
+					<list>
+					<ref bean="userdefitemlistPreparator" />
+					<ref bean="marAsstPreparator" />
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="balancetreemodel" class="nc.ui.invp.balance.view.BalanceTreeModel">
+	  	<property name="service"><ref bean="ManageModelService"/></property>
+	  	<property name="context"><ref bean="context"/></property>
+	  	<property name="treeCreateStrategy"><ref bean="treeCreateStrategy"/></property>
+	  	<property name="businessObjectAdapterFactory"><ref bean="boadatorTreefactory"/></property>
+	</bean>
+	
+	<bean id="treeCreateStrategy" class="nc.vo.bd.meta.BDObjectTreeCreateStrategy">
+  		<property name="factory"><ref bean="boadatorTreefactory"/></property>
+  		<property name="className"><value>nc.vo.invp.result.entity.BalanceResultVO</value></property>  		
+	</bean>
+	
+	
+	  <bean id="queryInfo" class="nc.ui.uif2.tangramlayout.CardLayoutToolbarPanel">
+	    <property name="model" ref="manageAppModel" />
+	  </bean>
+	   <!-- 杩滅▼璋冪敤鍚堝苟鏌ヨ妯℃澘鍔犺浇bean -->
+	  <bean id="queryTemplateContainer" class="nc.ui.uif2.editor.QueryTemplateContainer">
+	    <property name="context" ref="context" />
+	  </bean>
+	  
+	
+	<!-- 鐗╂枡杈呭姪灞炴�缁勪欢鐨勯厤缃�-->
+	<bean id="marAsstPreparator"
+		class="nc.ui.pubapp.uif2app.view.material.assistant.MarAsstPreparator">
+		<property name="model" ref="manageAppModel" />
+		<property name="container" ref="userdefitemContainer" />
+		<property name="prefix" value="vfree" />
+		<property name="materialField" value="cmaterialoid" />
+	</bean>
+	
+	<bean id="userdefitemContainer" class="nc.ui.uif2.userdefitem.UserDefItemContainer">
+		<property name="context" ref="context" />
+		<property name="params">
+			<list>
+				<bean class="nc.ui.uif2.userdefitem.QueryParam">
+					<property name="mdfullname" value="invp.invp_balance_result" />
+				</bean>
+				<bean class="nc.ui.uif2.userdefitem.QueryParam">
+					<property name="mdfullname" value="pu.po_storereq" />
+				</bean>
+				<bean class="nc.ui.uif2.userdefitem.QueryParam">
+					<property name="mdfullname" value="pu.po_storereq_b" />
+				</bean>
+				<bean class="nc.ui.uif2.userdefitem.QueryParam">
+					<property name="rulecode" value="materialassistant" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 鍒楄〃鑷畾涔夐」澶勭悊 -->
+	<bean name="userdefitemlistPreparator" class="nc.ui.uif2.editor.UserdefitemContainerListPreparator">
+		<property name="container" ref="userdefitemContainer" />
+		<property name="params">
+			<list>
+				<bean class="nc.ui.uif2.editor.UserdefQueryParam">
+					<property name="mdfullname" value="pu.po_storereq" />
+					<property name="pos" value="0" />
+					<property name="prefix" value="vdef" />
+				</bean>
+				<bean class="nc.ui.uif2.editor.UserdefQueryParam">
+					<property name="mdfullname" value="pu.po_storereq_b" />
+					<property name="pos" value="0" />
+					<property name="prefix" value="vbdef" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+</beans>

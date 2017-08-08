@@ -14,6 +14,7 @@ import nc.itf.pu.m21.IOrderEditRecordQuery;
 import nc.itf.pu.m21.IOrderPayPlan;
 import nc.itf.pu.m21.IOrderPayPlanQuery;
 import nc.itf.pu.m21.IOrderPayPlanWriteBack;
+import nc.itf.pu.m21.IOrderQuery;
 import nc.jdbc.framework.processor.ColumnProcessor;
 import nc.pubitf.uapbd.CurrencyRateUtil;
 import nc.vo.bd.meta.BatchOperateVO;
@@ -22,6 +23,7 @@ import nc.vo.ic.m45.entity.PurchaseInBodyVO;
 import nc.vo.ic.m45.entity.PurchaseInVO;
 import nc.vo.ic.pub.util.StringUtil;
 import nc.vo.pu.m21.entity.AggPayPlanVO;
+import nc.vo.pu.m21.entity.OrderItemVO;
 import nc.vo.pu.m21.entity.OrderVO;
 import nc.vo.pu.m21.entity.PayPlanVO;
 import nc.vo.pu.m21.entity.PayPlanViewVO;
@@ -29,6 +31,7 @@ import nc.vo.pu.m25.entity.InvoiceItemVO;
 import nc.vo.pu.m25.entity.InvoiceVO;
 import nc.vo.pub.BusinessException;
 import nc.vo.pub.ISuperVO;
+import nc.vo.pub.lang.UFBoolean;
 import nc.vo.pub.lang.UFDate;
 import nc.vo.pub.lang.UFDateTime;
 import nc.vo.pub.lang.UFDouble;
@@ -61,14 +64,14 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 			if (!"21".equals(sourcetype)) {
 				continue;
 			}
-			// 根据订单id汇总金额
+			// 根据订单id汇总数量
 			String sourceid = body.getCfirstbillhid();
 			if (StringUtil.isSEmptyOrNull(sourceid))
 				continue;
 			if (map.containsKey(sourceid)) {
 				temp = SafeCompute.add(map.get(sourceid), temp);
 			} else {
-				temp = body.getNorigtaxmny();
+				temp = body.getNnum();
 			}
 			map.put(sourceid, temp);
 		}
@@ -93,7 +96,7 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 		Map<String, UFDouble> map = new HashMap<>();
 		for (InvoiceItemVO body : bodys) {
 			UFDouble temp = UFDouble.ZERO_DBL;
-			// 根据订单id汇总金额
+			// 根据订单id汇总数量
 			String sourceid = body.getPk_order();
 
 			if (StringUtil.isSEmptyOrNull(sourceid))
@@ -101,12 +104,12 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 			if (map.containsKey(sourceid)) {
 				temp = SafeCompute.add(map.get(sourceid), temp);
 			} else {
-				temp = body.getNorigtaxmny();
+				temp = body.getNnum();
 			}
 			map.put(sourceid, temp);
 		}
 		UFDate dbegindate = invo.getParentVO().getTaudittime();
-		dealPayPlanViewVO(map, "采购发票日期", invo.getParentVO().getPrimaryKey(),
+		dealPayPlanViewVO(map, "采购发票审核日期", invo.getParentVO().getPrimaryKey(),
 				dbegindate);
 	}
 
@@ -128,11 +131,37 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 
 		for (Map.Entry<String, UFDouble> entry : map.entrySet()) {
 
+			IOrderQuery orderservice = NCLocator.getInstance().lookup(
+					IOrderQuery.class);
+
+			String[] orderids = new String[] { entry.getKey() };
+			OrderVO[] orders = orderservice.queryOrderVOsByIds(orderids,
+					UFBoolean.FALSE);
+
+			if (orders == null || orders.length == 0)
+				continue;
+
+			// 汇总订单金额 数量
+			UFDouble ordernum = UFDouble.ZERO_DBL;
+			UFDouble ordernmny = UFDouble.ZERO_DBL;
+			for (OrderVO order : orders) {
+				OrderItemVO[] items = order.getBVO();
+				if (items == null || items.length == 0) {
+					continue;
+				}
+				for (OrderItemVO item : items) {
+					ordernum = SafeCompute.add(item.getNnum(), ordernum);
+					ordernmny = SafeCompute.add(item.getNmny(), ordernmny);
+				}
+			}
+
+			if (ordernum.compareTo(UFDouble.ZERO_DBL) == 0
+					|| ordernmny.compareTo(UFDouble.ZERO_DBL) == 0)
+				continue;
 			// 查询该订单下的 付款计划
 			IOrderPayPlanQuery service = NCLocator.getInstance().lookup(
 					IOrderPayPlanQuery.class);
-			AggPayPlanVO[] vos = service.queryPayPlanVOs(new String[] { entry
-					.getKey() });
+			AggPayPlanVO[] vos = service.queryPayPlanVOs(orderids);
 
 			PayPeriodVO periodvo = getPayPeriodVO(name);
 			for (AggPayPlanVO aggvo : vos) {
@@ -150,6 +179,10 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 				List<PayPlanVO> list = new ArrayList<>();
 				// 汇总该定下的所有数据
 				List<PayPlanVO> updatelist1 = new ArrayList<>();
+
+				// 汇总计算比例
+
+				UFDouble fkbl = UFDouble.ZERO_DBL;
 				for (PayPlanVO plan : plans) {
 					String feffdatetype = plan.getFeffdatetype();
 					if (StringUtil.isSEmptyOrNull(feffdatetype)) {
@@ -169,13 +202,18 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 								totalNmny = SafeCompute.add(totalNmny,
 										plan.getNorigmny());
 							}
+							fkbl = SafeCompute.add(fkbl, plan.getNrate());
 						}
 					}
 				}
 				if (list == null || list.size() == 0)
 					return;
 
-				UFDouble purinNmny = entry.getValue();
+				// 本次回写付款计划金额 =本次入库数量/总数量*比例*总金额
+				// 总数量 = 订单数量 总金额 =订单金额
+				UFDouble purinNmny = SafeCompute.multiply(SafeCompute.multiply(
+						SafeCompute.div(entry.getValue(), ordernum), fkbl),
+						ordernmny);
 				if (totalNmny.compareTo(purinNmny) == 0) {// 全部入库
 					for (PayPlanVO plan : list) {
 						// 更新def1
@@ -219,7 +257,7 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 						if (purinNmny.compareTo(UFDouble.ZERO_DBL) <= 0) {
 							updatelist1.add(plan);
 						} else {
-							// 本行计划金额小于入库数量
+							// 本行计划金额小于入库金额
 							if (norigmny.compareTo(purinNmny) <= 0) {
 								updatePayPlanDef1(plan.getPrimaryKey(),
 										sourceid, plan);

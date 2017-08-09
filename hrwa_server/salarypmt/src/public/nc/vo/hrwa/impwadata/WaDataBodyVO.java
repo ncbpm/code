@@ -143,6 +143,21 @@ public class WaDataBodyVO extends nc.vo.pub.SuperVO {
 	private nc.vo.pub.lang.UFDouble f_118;
 	private nc.vo.pub.lang.UFDouble f_119;
 	private nc.vo.pub.lang.UFDouble f_120;
+	private java.lang.String c_1;
+	private java.lang.String c_2;
+	private java.lang.String c_3;
+	private java.lang.String c_4;
+	private java.lang.String c_5;
+	private java.lang.String c_6;
+	private java.lang.String c_7;
+	private java.lang.String c_8;
+	private java.lang.String c_9;
+	private java.lang.String c_10;
+	private nc.vo.pub.lang.UFDate d_1;
+	private nc.vo.pub.lang.UFDate d_2;
+	private nc.vo.pub.lang.UFDate d_3;
+	private nc.vo.pub.lang.UFDate d_4;
+	private nc.vo.pub.lang.UFDate d_5;
 	private java.lang.Integer dr = 0;
 	private nc.vo.pub.lang.UFDateTime ts;
 
@@ -270,6 +285,21 @@ public class WaDataBodyVO extends nc.vo.pub.SuperVO {
 	public static final String F_118 = "f_118";
 	public static final String F_119 = "f_119";
 	public static final String F_120 = "f_120";
+	public static final String C_1 = "c_1";
+    public static final String C_2 = "c_2";
+    public static final String C_3 = "c_3";
+    public static final String C_4 = "c_4";
+    public static final String C_5 = "c_5";
+    public static final String C_6 = "c_6";
+    public static final String C_7 = "c_7";
+    public static final String C_8 = "c_8";
+    public static final String C_9 = "c_9";
+    public static final String C_10 = "c_10";
+    public static final String D_1 = "d_1";
+    public static final String D_2 = "d_2";
+    public static final String D_3 = "d_3";
+    public static final String D_4 = "d_4";
+    public static final String D_5 = "d_5";
 
 	/**
 	 * 属性 pk_impwadata的Getter方法.属性名：parentPK 创建日期:2017-6-17
@@ -2627,6 +2657,261 @@ public class WaDataBodyVO extends nc.vo.pub.SuperVO {
 		this.f_120 = newF_120;
 	}
 
+	/**
+	 * 属性 c_1的Getter方法.属性名：薪资发放项目121
+	 *  创建日期:2017-8-9
+	 * @return java.lang.String
+	 */
+	public java.lang.String getC_1 () {
+		return c_1;
+	}   
+	/**
+	 * 属性c_1的Setter方法.属性名：薪资发放项目121
+	 * 创建日期:2017-8-9
+	 * @param newC_1 java.lang.String
+	 */
+	public void setC_1 (java.lang.String newC_1 ) {
+	 	this.c_1 = newC_1;
+	} 	 
+	
+	/**
+	 * 属性 c_2的Getter方法.属性名：薪资发放项目122
+	 *  创建日期:2017-8-9
+	 * @return java.lang.String
+	 */
+	public java.lang.String getC_2 () {
+		return c_2;
+	}   
+	/**
+	 * 属性c_2的Setter方法.属性名：薪资发放项目122
+	 * 创建日期:2017-8-9
+	 * @param newC_2 java.lang.String
+	 */
+	public void setC_2 (java.lang.String newC_2 ) {
+	 	this.c_2 = newC_2;
+	} 	 
+	
+	/**
+	 * 属性 c_3的Getter方法.属性名：薪资发放项目123
+	 *  创建日期:2017-8-9
+	 * @return java.lang.String
+	 */
+	public java.lang.String getC_3 () {
+		return c_3;
+	}   
+	/**
+	 * 属性c_3的Setter方法.属性名：薪资发放项目123
+	 * 创建日期:2017-8-9
+	 * @param newC_3 java.lang.String
+	 */
+	public void setC_3 (java.lang.String newC_3 ) {
+	 	this.c_3 = newC_3;
+	} 	 
+	
+	/**
+	 * 属性 c_4的Getter方法.属性名：薪资发放项目124
+	 *  创建日期:2017-8-9
+	 * @return java.lang.String
+	 */
+	public java.lang.String getC_4 () {
+		return c_4;
+	}   
+	/**
+	 * 属性c_4的Setter方法.属性名：薪资发放项目124
+	 * 创建日期:2017-8-9
+	 * @param newC_4 java.lang.String
+	 */
+	public void setC_4 (java.lang.String newC_4 ) {
+	 	this.c_4 = newC_4;
+	} 	 
+	
+	/**
+	 * 属性 c_5的Getter方法.属性名：薪资发放项目125
+	 *  创建日期:2017-8-9
+	 * @return java.lang.String
+	 */
+	public java.lang.String getC_5 () {
+		return c_5;
+	}   
+	/**
+	 * 属性c_5的Setter方法.属性名：薪资发放项目125
+	 * 创建日期:2017-8-9
+	 * @param newC_5 java.lang.String
+	 */
+	public void setC_5 (java.lang.String newC_5 ) {
+	 	this.c_5 = newC_5;
+	} 	 
+	
+	/**
+	 * 属性 c_6的Getter方法.属性名：薪资发放项目126
+	 *  创建日期:2017-8-9
+	 * @return java.lang.String
+	 */
+	public java.lang.String getC_6 () {
+		return c_6;
+	}   
+	/**
+	 * 属性c_6的Setter方法.属性名：薪资发放项目126
+	 * 创建日期:2017-8-9
+	 * @param newC_6 java.lang.String
+	 */
+	public void setC_6 (java.lang.String newC_6 ) {
+	 	this.c_6 = newC_6;
+	} 	 
+	
+	/**
+	 * 属性 c_7的Getter方法.属性名：薪资发放项目127
+	 *  创建日期:2017-8-9
+	 * @return java.lang.String
+	 */
+	public java.lang.String getC_7 () {
+		return c_7;
+	}   
+	/**
+	 * 属性c_7的Setter方法.属性名：薪资发放项目127
+	 * 创建日期:2017-8-9
+	 * @param newC_7 java.lang.String
+	 */
+	public void setC_7 (java.lang.String newC_7 ) {
+	 	this.c_7 = newC_7;
+	} 	 
+	
+	/**
+	 * 属性 c_8的Getter方法.属性名：薪资发放项目128
+	 *  创建日期:2017-8-9
+	 * @return java.lang.String
+	 */
+	public java.lang.String getC_8 () {
+		return c_8;
+	}   
+	/**
+	 * 属性c_8的Setter方法.属性名：薪资发放项目128
+	 * 创建日期:2017-8-9
+	 * @param newC_8 java.lang.String
+	 */
+	public void setC_8 (java.lang.String newC_8 ) {
+	 	this.c_8 = newC_8;
+	} 	 
+	
+	/**
+	 * 属性 c_9的Getter方法.属性名：薪资发放项目129
+	 *  创建日期:2017-8-9
+	 * @return java.lang.String
+	 */
+	public java.lang.String getC_9 () {
+		return c_9;
+	}   
+	/**
+	 * 属性c_9的Setter方法.属性名：薪资发放项目129
+	 * 创建日期:2017-8-9
+	 * @param newC_9 java.lang.String
+	 */
+	public void setC_9 (java.lang.String newC_9 ) {
+	 	this.c_9 = newC_9;
+	} 	 
+	
+	/**
+	 * 属性 c_10的Getter方法.属性名：薪资发放项目130
+	 *  创建日期:2017-8-9
+	 * @return java.lang.String
+	 */
+	public java.lang.String getC_10 () {
+		return c_10;
+	}   
+	/**
+	 * 属性c_10的Setter方法.属性名：薪资发放项目130
+	 * 创建日期:2017-8-9
+	 * @param newC_10 java.lang.String
+	 */
+	public void setC_10 (java.lang.String newC_10 ) {
+	 	this.c_10 = newC_10;
+	} 	 
+	
+	/**
+	 * 属性 d_1的Getter方法.属性名：薪资发放项目131
+	 *  创建日期:2017-8-9
+	 * @return nc.vo.pub.lang.UFDate
+	 */
+	public nc.vo.pub.lang.UFDate getD_1 () {
+		return d_1;
+	}   
+	/**
+	 * 属性d_1的Setter方法.属性名：薪资发放项目131
+	 * 创建日期:2017-8-9
+	 * @param newD_1 nc.vo.pub.lang.UFDate
+	 */
+	public void setD_1 (nc.vo.pub.lang.UFDate newD_1 ) {
+	 	this.d_1 = newD_1;
+	} 	 
+	
+	/**
+	 * 属性 d_2的Getter方法.属性名：薪资发放项目132
+	 *  创建日期:2017-8-9
+	 * @return nc.vo.pub.lang.UFDate
+	 */
+	public nc.vo.pub.lang.UFDate getD_2 () {
+		return d_2;
+	}   
+	/**
+	 * 属性d_2的Setter方法.属性名：薪资发放项目132
+	 * 创建日期:2017-8-9
+	 * @param newD_2 nc.vo.pub.lang.UFDate
+	 */
+	public void setD_2 (nc.vo.pub.lang.UFDate newD_2 ) {
+	 	this.d_2 = newD_2;
+	} 	 
+	
+	/**
+	 * 属性 d_3的Getter方法.属性名：薪资发放项目133
+	 *  创建日期:2017-8-9
+	 * @return nc.vo.pub.lang.UFDate
+	 */
+	public nc.vo.pub.lang.UFDate getD_3 () {
+		return d_3;
+	}   
+	/**
+	 * 属性d_3的Setter方法.属性名：薪资发放项目133
+	 * 创建日期:2017-8-9
+	 * @param newD_3 nc.vo.pub.lang.UFDate
+	 */
+	public void setD_3 (nc.vo.pub.lang.UFDate newD_3 ) {
+	 	this.d_3 = newD_3;
+	} 	 
+	
+	/**
+	 * 属性 d_4的Getter方法.属性名：薪资发放项目134
+	 *  创建日期:2017-8-9
+	 * @return nc.vo.pub.lang.UFDate
+	 */
+	public nc.vo.pub.lang.UFDate getD_4 () {
+		return d_4;
+	}   
+	/**
+	 * 属性d_4的Setter方法.属性名：薪资发放项目134
+	 * 创建日期:2017-8-9
+	 * @param newD_4 nc.vo.pub.lang.UFDate
+	 */
+	public void setD_4 (nc.vo.pub.lang.UFDate newD_4 ) {
+	 	this.d_4 = newD_4;
+	} 	 
+	
+	/**
+	 * 属性 d_5的Getter方法.属性名：薪资发放项目135
+	 *  创建日期:2017-8-9
+	 * @return nc.vo.pub.lang.UFDate
+	 */
+	public nc.vo.pub.lang.UFDate getD_5 () {
+		return d_5;
+	}   
+	/**
+	 * 属性d_5的Setter方法.属性名：薪资发放项目135
+	 * 创建日期:2017-8-9
+	 * @param newD_5 nc.vo.pub.lang.UFDate
+	 */
+	public void setD_5 (nc.vo.pub.lang.UFDate newD_5 ) {
+	 	this.d_5 = newD_5;
+	} 
+	
 	/**
 	 * 属性 dr的Getter方法.属性名：dr 创建日期:2017-6-17
 	 * 

@@ -245,8 +245,8 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 				if (list == null || list.size() == 0)
 					return;
 
-				UFDouble purinNmny = SafeCompute.multiply(entry.getValue(),
-						fkbl).setScale(2, 0);// 本次入库金额
+				UFDouble purinNmny =SafeCompute.div(SafeCompute.multiply(entry.getValue(),
+						fkbl), OrderPayPlanWriteBackImpl.UF100) .setScale(2, 0);// 本次入库金额
 				if (totalNmny.compareTo(purinNmny) == 0) {// 全部入库
 					for (PayPlanVO plan : list) {
 						// 更新def1

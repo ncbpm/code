@@ -12,7 +12,6 @@ import nc.bs.framework.common.NCLocator;
 import nc.bs.ic.pub.env.ICBSContext;
 import nc.impl.pu.m20.action.PraybillInsertAction;
 import nc.impl.pubapp.pattern.data.bill.BillQuery;
-import nc.impl.pubapp.pattern.data.vo.VOQuery;
 import nc.itf.scmpub.reference.uap.pf.PfServiceScmUtil;
 import nc.itf.uap.pf.IPFBusiAction;
 import nc.pubitf.org.cache.IBasicOrgUnitPubService_C;
@@ -37,7 +36,6 @@ import nc.vo.pubapp.AppContext;
 import nc.vo.pubapp.pattern.exception.ExceptionUtils;
 import nc.vo.pubapp.util.VORowNoUtils;
 import nc.vo.scmf.ic.mbatchcode.BatchcodeVO;
-import nc.vo.so.m30.entity.SaleOrderHVO;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -117,13 +115,6 @@ public class MarksForBpmPray {
 		// TODO 自动生成的方法存根
 		// 根据需货单单号+组织查询销售订单
 		PraybillHeaderVO head = bill.getHVO();
-		VOQuery<SaleOrderHVO> query = new VOQuery<SaleOrderHVO>(
-				SaleOrderHVO.class);
-		SaleOrderHVO[] hvos = query.query(" and vbillcode='" + head.getVmemo()+ "'", null);
-		if (hvos == null || hvos.length == 0) {
-			throw new BusinessException("根据需货单号" + head.getVmemo()
-					+ "未查询到NC销售订单");
-		}
 		//
 		ICBSContext context = new ICBSContext();
 		this.headVOProcess(head, context);

@@ -1189,5 +1189,129 @@
             <needexport>yes</needexport>
             <checkTranslatedPK>no</checkTranslatedPK>
         </field>
+		 <field desc="薪资发放项目121">
+            <matchtag>c_1</matchtag>
+            <name>c_1</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+		<field desc="薪资发放项目124">
+            <matchtag>c_4</matchtag>
+            <name>c_4</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+		<field desc="薪资发放项目122">
+            <matchtag>c_2</matchtag>
+            <name>c_2</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>4000</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+		<field desc="薪资发放项目123">
+            <matchtag>c_3</matchtag>
+            <name>c_3</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field><field desc="薪资发放项目125">
+            <matchtag>c_5</matchtag>
+            <name>c_5</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field><field desc="薪资发放项目126">
+            <matchtag>c_6</matchtag>
+            <name>c_6</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field><field desc="薪资发放项目127">
+            <matchtag>c_7</matchtag>
+            <name>c_7</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field><field desc="薪资发放项目128">
+            <matchtag>c_8</matchtag>
+            <name>c_8</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field><field desc="薪资发放项目129">
+            <matchtag>c_9</matchtag>
+            <name>c_9</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field><field desc="薪资发放项目130">
+            <matchtag>c_10</matchtag>
+            <name>c_10</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field><field desc="薪资发放项目131">
+            <matchtag>d_1</matchtag>
+            <name>d_1</name>
+            <type>UFDate</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>19</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field><field desc="薪资发放项目132">
+            <matchtag>d_2</matchtag>
+            <name>d_2</name>
+            <type>UFDate</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field><field desc="薪资发放项目133">
+            <matchtag>d_3</matchtag>
+            <name>d_3</name>
+            <type>UFDate</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field><field desc="薪资发放项目134">
+            <matchtag>d_4</matchtag>
+            <name>d_4</name>
+            <type>UFDate</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field><field desc="薪资发放项目135">
+            <matchtag>d_5</matchtag>
+            <name>d_5</name>
+            <type>UFDate</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>50</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
     </record>
 </ufinterface>

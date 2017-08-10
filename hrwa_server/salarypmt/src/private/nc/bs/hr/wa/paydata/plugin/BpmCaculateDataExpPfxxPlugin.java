@@ -28,6 +28,7 @@ import nc.vo.hrwa.impwadata.WaDataHeadVO;
 import nc.vo.pfxx.auxiliary.AggxsysregisterVO;
 import nc.vo.pub.BusinessException;
 import nc.vo.pub.lang.UFBoolean;
+import nc.vo.pub.lang.UFDate;
 import nc.vo.sm.UserVO;
 import nc.vo.wa.classitem.WaClassItemVO;
 import nc.vo.wa.paydata.AggPayDataVO;
@@ -107,7 +108,7 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 
 		if (list == null || list.size() == 0)
 			throw new BusinessException("人员信息不能为空");
-
+		
 		WaLoginContext loginContext = createContext(waPeriod, pk_wa_class,
 				pk_group, pk_org);
 
@@ -191,27 +192,31 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 			sqlBuffer.setLength(0);
 			sqlBuffer.append(" update wa_data set caculateflag ='N'"); // 1
 			for (String key : getMap().keySet()) {
-				if (data.getAttributeValue(key) != null) {
-					// if (value instanceof UFDouble) {
-					// value = (UFDouble) data.getAttributeValue(key);
-					// } else if (value instanceof String) {
-					// value = (String) data.getAttributeValue(key);
-					// } else if (value instanceof UFDate) {
-					// value = (UFDate) data.getAttributeValue(key);
-					// } else {
-					// value = data.getAttributeValue(key);
-					// }
-					value = data.getAttributeValue(key);
-				}
 				String name = getMap().get(key);
-				String itemkey = getItemKey(name, loginContext);
+				if (name == null)
+					continue;
 
+				String itemkey = getItemKey(name, loginContext);
 				if (itemkey == null)
 					continue;
-				sqlBuffer.append(",");
-				sqlBuffer.append(itemkey);
-				sqlBuffer.append("=");
-				sqlBuffer.append(value);
+
+				value = data.getAttributeValue(itemkey);
+				
+				if (value == null)
+					continue;
+				
+				if (key.startsWith("f")) {
+					sqlBuffer.append("," + itemkey);
+					sqlBuffer.append("=" + value);
+				} else if (key.startsWith("c")) {
+					sqlBuffer.append("," + itemkey);
+					sqlBuffer.append("='" + value + "'");
+				} else if (key.startsWith("d")) {
+					sqlBuffer.append("," + itemkey);
+					sqlBuffer.append("='" + ((UFDate)value).toString()+"'");
+				} else {
+					continue;
+				}
 			}
 			sqlBuffer
 					.append(" where cperiod =? and cyear =? and pk_group =?  and  pk_org =?   and  pk_wa_class  =?  and pk_psndoc  =? ");

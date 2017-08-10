@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="src" output="plo/classes" path="plo/src/public"/>
+	<classpathentry kind="src" output="plo/classes" path="plo/src/client"/>
+	<classpathentry kind="src" output="plo/classes" path="plo/src/private"/>
+	<classpathentry kind="src" output="plo/classes" path="plo/src/test"/>
+	<classpathentry kind="src" output="plo/classes" path="plo/resources"/>
 	<classpathentry kind="src" output="bpm/classes" path="bpm/src/public"/>
 	<classpathentry kind="src" output="bpm/classes" path="bpm/src/client"/>
 	<classpathentry kind="src" output="bpm/classes" path="bpm/src/private"/>
@@ -12,7 +17,11 @@
 	<classpathentry kind="con" path="com.yonyou.studio.udt.core.container/Framework_Library"/>
 	<classpathentry kind="con" path="com.yonyou.studio.udt.core.container/Module_Public_Library"/>
 	<classpathentry kind="con" path="com.yonyou.studio.udt.core.container/Module_Client_Library"/>
-	<classpathentry kind="con" path="com.yonyou.studio.udt.core.container/Module_Private_Library"/>
+	<classpathentry kind="con" path="com.yonyou.studio.udt.core.container/Module_Private_Library">
+		<accessrules>
+			<accessrule kind="accessible" pattern="**"/>
+		</accessrules>
+	</classpathentry>
 	<classpathentry kind="con" path="com.yonyou.studio.udt.core.container/Module_Lang_Library"/>
 	<classpathentry kind="con" path="com.yonyou.studio.udt.core.container/Generated_EJB"/>
 	<classpathentry kind="output" path="bin"/>

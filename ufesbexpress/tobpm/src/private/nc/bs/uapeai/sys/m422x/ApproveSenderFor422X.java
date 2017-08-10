@@ -54,7 +54,9 @@ public class ApproveSenderFor422X extends AbstractSender {
 		xmlStr.append("<pk_psndoc>"+hvo.getPk_apppsnh()+"</pk_psndoc>");//申请人
 		xmlStr.append("<pk_dept>"+hvo.getPk_appdepth()+"</pk_dept>");//请购部门主键
 		String pk_org = bill.getHVO().getPk_org();
+		String orgcode=transNCToCode(pk_org, "5d69ee35-57d0-4f7b-b454-deff4fc73689");
 		xmlStr.append("<pk_org>" + pk_org + "</pk_org>");// ---库存组织主键
+		xmlStr.append("<orgCode>" + orgcode + "</orgCode>");// ---库存组织主键
 		xmlStr.append(" </RF_CW_gdzcxz>");
 		xmlStr.append("</xml>");
 

@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<import resource="balance_action.xml" />
+	<import resource="balance_event.xml" />
+	<!-- 环境变量 -->
+	  <bean id="context" class="nc.vo.uif2.LoginContext" />
+	 <!-- 应用服务类，负责进行模型操作的处理 -->
+	  <bean id="ManageModelService" class="nc.ui.invp.balance.model.BalanceModelService">	    
+	  </bean>
+	  <!-- 前台应用模型管理器设置 -->
+	  <bean id="manageAppModel" class="nc.ui.invp.balance.model.BalanceBillManageModel">
+	    <property name="service" ref="ManageModelService" />
+	    <property name="businessObjectAdapterFactory" ref="boadatorfactory" />
+	    <property name="context" ref="context" />
+	  </bean>
+	  
+	  <!-- 对象转换器工厂，由此获取操作对象的特征信息 -->
+	  <bean id="boadatorfactory"
+	    class="nc.ui.pubapp.uif2app.view.value.AggVOMetaBDObjectAdapterFactory" />	    
+	    
+	  <bean id="boadatorTreefactory"
+	    class="nc.vo.bd.meta.BDObjectAdpaterFactory" />
+	   <!-- 列表控件 -->
+	  <bean id="listView" class="nc.ui.invp.balance.view.BalanceBillListView"
+	    init-method="initUI">
+	    <property name="model" ref="manageAppModel" />
+	    <property name="multiSelectionEnable" value="true" />
+	    <property name="multiSelectionMode" value="1" />
+	    <property name="templateContainer" ref="templateContainer" />
+		<property name="UserdefitemListPreparator">
+			<bean class="nc.ui.pubapp.uif2app.view.CompositeBillListDataPrepare">
+				<property name="billListDataPrepares">
+					<list>
+					<ref bean="userdefitemlistPreparator" />
+					<ref bean="marAsstPreparator" />
+					</list>
+				</property>
+			</bean>
+		</property>
+	  </bean>
+	
+	  <!-- 拦截器定义 --> 	
+	  <bean id="listViewShowUpComponentInterceptor"
+	    class="nc.ui.pubapp.uif2app.actions.interceptor.ShowUpComponentInterceptor">
+	    <property name="showUpComponent" ref="listView" />
+	  </bean>	
+	 
+	  <!-- 模板容器，主要负责加载单据模板 -->
+	  <bean id="templateContainer" class="nc.ui.invp.balance.view.BalanceTemplateContainer"
+	    init-method="load">
+	    <property name="context" ref="context" />
+	  </bean>
+	   <!-- 前台数据模型管理器设置，主要负责各种方式的模型初始化 -->
+	  <bean id="modelDataManager" class="nc.ui.pubapp.uif2app.query2.model.ModelDataManager">
+	    <property name="model" ref="manageAppModel" />
+	    <property name="service" ref="ManageModelService" />
+	  </bean>	
+	  
+	<!-- 界面布局总装 -->
+	  <bean id="container" class="nc.ui.uif2.TangramContainer"
+		init-method="initUI">
+		<property name="model" ref="manageAppModel" />
+		<property name="tangramLayoutRoot">
+			<bean class="nc.ui.uif2.tangramlayout.node.TBNode">
+				<property name="showMode" value="CardLayout"></property>
+				<property name="tabs">
+					<list>
+						<bean class="nc.ui.uif2.tangramlayout.node.CNode">
+							<property name="name">
+								<bean class="nc.ui.uif2.I18nFB">
+									<property name="resDir" value="common" />
+									<property name="resId" value="UC001-0000107" />
+									<property name="defaultValue" value="列表" />
+								</bean>
+							</property>
+							<property name="component" ref="listView" />
+						</bean>
+						<bean class="nc.ui.uif2.tangramlayout.node.CNode">
+							<property name="name">
+								<bean class="nc.ui.uif2.I18nFB">
+									<property name="resDir" value="common" />
+									<property name="resId" value="UC001-0000107" />
+									<property name="defaultValue" value="列表" />
+								</bean>
+							</property>
+							<property name="component" ref="balanceTreeView" />
+						</bean>
+					</list>
+				</property>
+			</bean>
+		</property>
+		 <!-- 按钮 -->
+		<property name="actions">
+			<list>
+				 <ref bean="queryAction" />
+			      <ref bean="refreshAction" />
+			      <ref bean="separatorAction" />
+			      
+				  <ref bean="gatherAction" />
+				  <ref bean="cancelGatherAction"/>
+				  <ref bean="separatorAction" />	
+				  
+				  <ref bean="balanceAction" />
+				  <ref bean="separatorAction" />	
+				  
+				  <ref bean="gatherRuleAction" />
+				  <ref bean="separatorAction" />	
+				  
+				  <ref bean="balanceRuleAction" />
+				  <ref bean="separatorAction" />	
+				  
+				  <ref bean="cancelBalanceAction" />
+				  <ref bean="separatorAction" />	
+				  
+			      <ref bean="printGroup" />
+			      <ref bean="separatorAction" />	
+			</list>
+		</property>
+		<property name="editActions">
+			<list>
+				<ref bean="confirmAction" />
+				<ref bean="cancelAction" />
+				<ref bean="separatorAction" />	
+				 <ref bean="printBalanceGroup" />
+					
+			</list>
+		</property>
+	</bean>
+	
+	  
+	<bean id="balanceTreeView" class="nc.ui.invp.balance.view.BalanceTreeView" init-method="initUI">
+		<property name="templateContainer" ref="templateContainer"></property>		
+		<property name="model" ref="balancetreemodel"></property>
+		<property name="name"><value>tree</value> </property>		
+		<property name="UserdefitemListPreparator">
+			<bean class="nc.ui.pubapp.uif2app.view.CompositeBillListDataPrepare">
+				<property name="billListDataPrepares">
+					<list>
+					<ref bean="userdefitemlistPreparator" />
+					<ref bean="marAsstPreparator" />
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="balancetreemodel" class="nc.ui.invp.balance.view.BalanceTreeModel">
+	  	<property name="service"><ref bean="ManageModelService"/></property>
+	  	<property name="context"><ref bean="context"/></property>
+	  	<property name="treeCreateStrategy"><ref bean="treeCreateStrategy"/></property>
+	  	<property name="businessObjectAdapterFactory"><ref bean="boadatorTreefactory"/></property>
+	</bean>
+	
+	
+	
+	
+	<bean id="treeCreateStrategy" class="nc.vo.bd.meta.BDObjectTreeCreateStrategy">
+  		<property name="factory"><ref bean="boadatorTreefactory"/></property>
+  		<property name="className"><value>nc.vo.invp.result.entity.BalanceResultVO</value></property>  		
+	</bean>
+	
+	
+	  <bean id="queryInfo" class="nc.ui.uif2.tangramlayout.CardLayoutToolbarPanel">
+	    <property name="model" ref="manageAppModel" />
+	  </bean>
+	   <!-- 远程调用合并查询模板加载bean -->
+	  <bean id="queryTemplateContainer" class="nc.ui.uif2.editor.QueryTemplateContainer">
+	    <property name="context" ref="context" />
+	  </bean>
+	  
+	
+	<!-- 物料辅助属性组件的配置 -->
+	<bean id="marAsstPreparator"
+		class="nc.ui.pubapp.uif2app.view.material.assistant.MarAsstPreparator">
+		<property name="model" ref="manageAppModel" />
+		<property name="container" ref="userdefitemContainer" />
+		<property name="prefix" value="vfree" />
+		<property name="materialField" value="cmaterialoid" />
+	</bean>
+	
+	<bean id="userdefitemContainer" class="nc.ui.uif2.userdefitem.UserDefItemContainer">
+		<property name="context" ref="context" />
+		<property name="params">
+			<list>
+				<bean class="nc.ui.uif2.userdefitem.QueryParam">
+					<property name="mdfullname" value="invp.invp_balance_result" />
+				</bean>
+				<bean class="nc.ui.uif2.userdefitem.QueryParam">
+					<property name="mdfullname" value="pu.po_storereq" />
+				</bean>
+				<bean class="nc.ui.uif2.userdefitem.QueryParam">
+					<property name="mdfullname" value="pu.po_storereq_b" />
+				</bean>
+				<bean class="nc.ui.uif2.userdefitem.QueryParam">
+					<property name="rulecode" value="materialassistant" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 列表自定义项处理 -->
+	<bean name="userdefitemlistPreparator" class="nc.ui.uif2.editor.UserdefitemContainerListPreparator">
+		<property name="container" ref="userdefitemContainer" />
+		<property name="params">
+			<list>
+				<bean class="nc.ui.uif2.editor.UserdefQueryParam">
+					<property name="mdfullname" value="pu.po_storereq" />
+					<property name="pos" value="0" />
+					<property name="prefix" value="vdef" />
+				</bean>
+				<bean class="nc.ui.uif2.editor.UserdefQueryParam">
+					<property name="mdfullname" value="pu.po_storereq_b" />
+					<property name="pos" value="0" />
+					<property name="prefix" value="vbdef" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+</beans>

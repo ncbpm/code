@@ -17,6 +17,7 @@ import nc.bs.logging.Logger;
 import nc.bs.pfxx.ISwapContext;
 import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
 import nc.impl.pubapp.pattern.data.bill.BillQuery;
+import nc.impl.pubapp.pattern.data.vo.VOQuery;
 import nc.itf.scmpub.reference.uap.pf.PfServiceScmUtil;
 import nc.itf.uap.pf.IPFBusiAction;
 import nc.pubitf.scmf.ic.mbatchcode.IBatchcodePubService;
@@ -29,6 +30,7 @@ import nc.vo.ic.pub.calc.BusiCalculator;
 import nc.vo.ic.pub.define.ICPubMetaNameConst;
 import nc.vo.ic.pub.util.StringUtil;
 import nc.vo.ic.pub.util.ValueCheckUtil;
+import nc.vo.ic.storestate.StoreStateVO;
 import nc.vo.pfxx.auxiliary.AggxsysregisterVO;
 import nc.vo.pu.m23.entity.ArriveItemVO;
 import nc.vo.pu.m23.entity.ArriveVO;
@@ -440,6 +442,13 @@ public class M45ForJLAdd extends AbstractPfxxPlugin {
 
 		ICBillHeadVO head = vo.getHead();
 		Map<String, BatchcodeVO> batchmap = this.getBatchcodeVO(vos);
+		VOQuery<StoreStateVO> query = new VOQuery<StoreStateVO>(StoreStateVO.class);
+    	StoreStateVO[] query2 = query.query(" and dr=0 and vname='¿ÉÓÃ'", null);
+//    	 cstateid  ¿â´æ×´Ì¬  
+    	String  cstateid = "~";
+    	if(query2!=null&&query2.length >0){
+        	 cstateid = query2[0].getPk_storestate();
+    	}
 		for (ICBillBodyVO body : vos) {
 			body.setStatus(VOStatus.NEW);
 			if (StringUtil.isSEmptyOrNull(body.getCmaterialoid())
@@ -472,6 +481,8 @@ public class M45ForJLAdd extends AbstractPfxxPlugin {
 					body.setDvalidate(batchvo.getDvalidate());
 				}
 			}
+			//¿â´æ×´Ì¬£¬Ä¬ÈÏ¿ÉÓÃ
+			body.setCstateid(cstateid);
 			bodyVOCopyFromHeadVO(body, head);
 		}
 	}

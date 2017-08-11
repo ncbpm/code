@@ -200,11 +200,11 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 				if (itemkey == null)
 					continue;
 
-				value = data.getAttributeValue(itemkey);
+				value = data.getAttributeValue(key);
 				
 				if (value == null)
 					continue;
-				
+				System.out.println(key);
 				if (key.startsWith("f")) {
 					sqlBuffer.append("," + itemkey);
 					sqlBuffer.append("=" + value);

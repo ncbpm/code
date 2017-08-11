@@ -32,7 +32,7 @@ public class AfterSignRuleForPayPlanProcess implements IRule<PurchaseInVO> {
 						|| !vo.getHead().getFreplenishflag().booleanValue()) {
 					service.writeBackOrderPayPlanFor45(vo);
 				} else {
-					service.writeBackOrderPayPlanForBack45(vo);
+//					service.writeBackOrderPayPlanForBack45(vo);
 				}
 			}
 		} catch (BusinessException e) {

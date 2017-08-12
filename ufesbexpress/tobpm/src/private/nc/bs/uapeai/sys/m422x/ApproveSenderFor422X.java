@@ -38,7 +38,7 @@ public class ApproveSenderFor422X extends AbstractSender {
 		xmlStr.append("<?xml version=\"1.0\" encoding=\'UTF-8\'?>");
 		xmlStr.append(" <xml>");
 		xmlStr.append("<RF_CW_gdzcxz>"); // ----------只有表头，没有表体
-		xmlStr.append("<Date>" + hvo.getDbilldate() + "</Date>---申请日期");
+		xmlStr.append("<Date>" + hvo.getDbilldate() + "</Date>");//-----申请日期
 		IMaterialBaseInfoQueryService mquery = NCLocator.getInstance().lookup(IMaterialBaseInfoQueryService.class);
 		MaterialVO  invvo = mquery.queryDataByPks(new String[]{body.getPk_material()})[0];
 		xmlStr.append("<Gname>"+invvo.getName()+"</Gname>");//固定资产名称
@@ -47,8 +47,8 @@ public class ApproveSenderFor422X extends AbstractSender {
 		xmlStr.append("<Gadress></Gadress>");//>存放地点 
 		xmlStr.append("<Gnumber>"+body.getNnum()+"</Gnumber>");// ------采购数量
 		xmlStr.append("<Gbudge>预算内</Gbudge>");//预算外
-//		xmlStr.append("<Greason>"++"</Greason>");//申请原因及具体要求
-//		xmlStr.append("<YJJinE>"++"</YJJinE>");//预计金额
+		xmlStr.append("<Greason>"+hvo.getVmemo()+"</Greason>");//申请原因及具体要求
+		xmlStr.append("<YJJinE>"+body.getNtaxmny()+"</YJJinE>");//预计金额
 		xmlStr.append("<pk_storereq>"+hvo.getPrimaryKey()+"</pk_storereq>");//物资需求申请主键
 		xmlStr.append("<WZNO>" + hvo.getVbillcode() + "</WZNO>");// -----------物资需求申请单号
 		xmlStr.append("<pk_psndoc>"+hvo.getPk_apppsnh()+"</pk_psndoc>");//申请人
@@ -57,6 +57,11 @@ public class ApproveSenderFor422X extends AbstractSender {
 		String orgcode=transNCToCode(pk_org, "5d69ee35-57d0-4f7b-b454-deff4fc73689");
 		xmlStr.append("<pk_org>" + pk_org + "</pk_org>");// ---库存组织主键
 		xmlStr.append("<orgCode>" + orgcode + "</orgCode>");// ---库存组织主键
+		
+		String pk_porject = bill.getHVO().getPk_project();
+		String projectName=transNCToCode(pk_porject, "2ee58f9b-781b-469f-b1d8-1816842515c3");
+		xmlStr.append("<project>" + projectName + "</project>");// ---NC项目名称
+
 		xmlStr.append(" </RF_CW_gdzcxz>");
 		xmlStr.append("</xml>");
 

@@ -75,12 +75,16 @@ public class BomHeadTailAfterEditHandler extends MMEventHandler implements IAppE
             materialidhandler.setBillForm(this.getBillForm());
             materialidhandler.setSunBillform(this.getSunBillform());
             materialidhandler.afterEdit(e);
+        	e.getBillCardPanel().setHeadItem("vfree3", e.getBillCardPanel().getHeadItem(BomVO.HVERSION).getValueObject());
+
         }
         else if (BomVO.HCMATERIALVID.equals(e.getKey())) {
             BomHeadTailMaterialvidHandler materialvidhandler = new BomHeadTailMaterialvidHandler();
             materialvidhandler.setBillForm(this.getBillForm());
             materialvidhandler.setSunBillform(this.getSunBillform());
             materialvidhandler.afterEdit(e);
+        	e.getBillCardPanel().setHeadItem("vfree3", e.getBillCardPanel().getHeadItem(BomVO.HVERSION).getValueObject());
+
         }
         else if (BomVO.HCASSMEASUREID.equals(e.getKey())) {
             BomHeadTailAssMeasureHandler assmeasurehandler = new BomHeadTailAssMeasureHandler();
@@ -104,12 +108,14 @@ public class BomHeadTailAfterEditHandler extends MMEventHandler implements IAppE
         // e.getBillCardPanel().execHeadTailEditFormulas();
         // 头字段改变，主产品改变
         this.headMainOutputHandler(e);
+        if(BomVO.HVERSION.equals(e.getKey())){
+        	e.getBillCardPanel().setHeadItem("vfree3", e.getValue());
+        }
         
         //2017-06-13 liyf 表头自定义项字段显示
         for(int i=1;i<=10;i++){
         	BillItem headItem = e.getBillCardPanel().getHeadItem("vfree"+i);
         	if(headItem!=null && headItem.isShow()){
-        		 e.getBillCardPanel().getHeadItem("vfree"+i).setEdit(true);
         		 e.getBillCardPanel().getHeadItem("vfree"+i).setEnabled(true);
         	}
         }

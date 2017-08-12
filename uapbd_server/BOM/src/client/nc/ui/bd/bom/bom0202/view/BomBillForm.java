@@ -89,7 +89,6 @@ public class BomBillForm extends BillFormFacade {
         for(int i=1;i<=10;i++){
         	BillItem headItem = getBillCardPanel().getHeadItem("vfree"+i);
         	if(headItem!=null && headItem.isShow()){
-        		this.getBillCardPanel().getHeadItem("vfree"+i).setEdit(true);
                 this.getBillCardPanel().getHeadItem("vfree"+i).setEnabled(true);
         	}
         }
@@ -134,6 +133,7 @@ public class BomBillForm extends BillFormFacade {
             this.getBillCardPanel().getHeadItem(BomVO.HVERSION).setEdit(false);
             this.getBillCardPanel().getHeadItem(BomVO.HFVERSIONTYPE).setEdit(false);
           
+            
         }
     }
 
@@ -218,13 +218,7 @@ public class BomBillForm extends BillFormFacade {
     	// TODO 自动生成的方法存根
     	super.handleEvent(event);
     	  //2017-06-13 liyf 表头自定义项字段显示
-        for(int i=1;i<=10;i++){
-        	BillItem headItem = getBillCardPanel().getHeadItem("vfree"+i);
-        	if(headItem!=null && headItem.isShow()){
-        		this.getBillCardPanel().getHeadItem("vfree"+i).setEdit(true);
-                this.getBillCardPanel().getHeadItem("vfree"+i).setEnabled(true);
-        	}
-        }
+       
     	
     }
     /***

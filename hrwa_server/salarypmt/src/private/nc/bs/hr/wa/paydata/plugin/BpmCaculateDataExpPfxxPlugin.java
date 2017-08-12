@@ -28,7 +28,7 @@ import nc.vo.hrwa.impwadata.WaDataHeadVO;
 import nc.vo.pfxx.auxiliary.AggxsysregisterVO;
 import nc.vo.pub.BusinessException;
 import nc.vo.pub.lang.UFBoolean;
-import nc.vo.pub.lang.UFDouble;
+import nc.vo.pub.lang.UFDate;
 import nc.vo.sm.UserVO;
 import nc.vo.wa.classitem.WaClassItemVO;
 import nc.vo.wa.paydata.AggPayDataVO;
@@ -108,7 +108,7 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 
 		if (list == null || list.size() == 0)
 			throw new BusinessException("人员信息不能为空");
-
+		
 		WaLoginContext loginContext = createContext(waPeriod, pk_wa_class,
 				pk_group, pk_org);
 
@@ -118,9 +118,9 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 		} else {
 			InvocationInfoProxy.getInstance().setUserId(headvo.getCuserid());
 		}
-		
+
 		updateDataVO(headvo, bodyvos, loginContext);
-		
+
 		InSQLCreator inSQLCreator = new InSQLCreator();
 		String pks = inSQLCreator
 				.getInSQL(list.toArray(new String[list.size()]));
@@ -187,23 +187,36 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 		StringBuffer sqlBuffer = new StringBuffer();
 
 		BaseDAO baseDao = new BaseDAO();
-		UFDouble value = UFDouble.ZERO_DBL;
+		Object value = null;
 		for (WaDataBodyVO data : bodyvos) {
 			sqlBuffer.setLength(0);
 			sqlBuffer.append(" update wa_data set caculateflag ='N'"); // 1
 			for (String key : getMap().keySet()) {
-				if (data.getAttributeValue(key) != null) {
-					value = (UFDouble) data.getAttributeValue(key);
-				}
 				String name = getMap().get(key);
-				String itemkey = getItemKey(name, loginContext);
+				if (name == null)
+					continue;
 
+				String itemkey = getItemKey(name, loginContext);
 				if (itemkey == null)
 					continue;
-				sqlBuffer.append(",");
-				sqlBuffer.append(itemkey);
-				sqlBuffer.append("=");
-				sqlBuffer.append(value);
+
+				value = data.getAttributeValue(key);
+				
+				if (value == null)
+					continue;
+				System.out.println(key);
+				if (key.startsWith("f")) {
+					sqlBuffer.append("," + itemkey);
+					sqlBuffer.append("=" + value);
+				} else if (key.startsWith("c")) {
+					sqlBuffer.append("," + itemkey);
+					sqlBuffer.append("='" + value + "'");
+				} else if (key.startsWith("d")) {
+					sqlBuffer.append("," + itemkey);
+					sqlBuffer.append("='" + ((UFDate)value).toString()+"'");
+				} else {
+					continue;
+				}
 			}
 			sqlBuffer
 					.append(" where cperiod =? and cyear =? and pk_group =?  and  pk_org =?   and  pk_wa_class  =?  and pk_psndoc  =? ");
@@ -232,9 +245,9 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 			throws BusinessException {
 		WaClassItemVO[] items1 = getWaClassItemVO(loginContext);
 
-		if(items1 == null || items1.length ==0)
+		if (items1 == null || items1.length == 0)
 			throw new BusinessException("获取用户有权限的薪资项目出错");
-			
+
 		for (WaClassItemVO item : items1) {
 			if (item.getName() == null)
 				continue;
@@ -252,8 +265,8 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 				map = new HashMap<>();
 				String home = RuntimeEnv.getInstance().getNCHome();
 				String fileNme = home + "/pfxx/bpmpayitem.properties";
-				InputStreamReader  input = new InputStreamReader (new FileInputStream(
-						fileNme),"utf-8");
+				InputStreamReader input = new InputStreamReader(
+						new FileInputStream(fileNme), "utf-8");
 				Properties properties = new Properties();
 				properties.load(input);
 				Iterator it = properties.entrySet().iterator();

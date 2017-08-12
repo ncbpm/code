@@ -32,7 +32,7 @@ public class AfterCancelSignRuleForPayPlanProcess implements
 						|| !vo.getHead().getFreplenishflag().booleanValue()) {
 					service.writeBackCancelSignFor45(vo);
 				} else {
-					service.writeBackCancelSignForBack45(vo);
+//					service.writeBackCancelSignForBack45(vo);
 				}
 
 			}

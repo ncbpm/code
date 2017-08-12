@@ -2,26 +2,26 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
 	<import resource="balance_action.xml" />
-	<import resource="balance_event.xml" /> 
-	<!-- 鐜鍙橀噺 -->
+	<import resource="balance_event.xml" />
+	<!-- 环境变量 -->
 	  <bean id="context" class="nc.vo.uif2.LoginContext" />
-	 <!-- 搴旂敤鏈嶅姟绫伙紝璐熻矗杩涜妯″瀷鎿嶄綔鐨勫鐞�-->
+	 <!-- 应用服务类，负责进行模型操作的处理 -->
 	  <bean id="ManageModelService" class="nc.ui.invp.balance.model.BalanceModelService">	    
 	  </bean>
-	  <!-- 鍓嶅彴搴旂敤妯″瀷绠＄悊鍣ㄨ缃�-->
+	  <!-- 前台应用模型管理器设置 -->
 	  <bean id="manageAppModel" class="nc.ui.invp.balance.model.BalanceBillManageModel">
 	    <property name="service" ref="ManageModelService" />
 	    <property name="businessObjectAdapterFactory" ref="boadatorfactory" />
 	    <property name="context" ref="context" />
 	  </bean>
 	  
-	  <!-- 瀵硅薄杞崲鍣ㄥ伐鍘傦紝鐢辨鑾峰彇鎿嶄綔瀵硅薄鐨勭壒寰佷俊鎭�-->
+	  <!-- 对象转换器工厂，由此获取操作对象的特征信息 -->
 	  <bean id="boadatorfactory"
 	    class="nc.ui.pubapp.uif2app.view.value.AggVOMetaBDObjectAdapterFactory" />	    
 	    
 	  <bean id="boadatorTreefactory"
 	    class="nc.vo.bd.meta.BDObjectAdpaterFactory" />
-	   <!-- 鍒楄〃鎺т欢 -->
+	   <!-- 列表控件 -->
 	  <bean id="listView" class="nc.ui.invp.balance.view.BalanceBillListView"
 	    init-method="initUI">
 	    <property name="model" ref="manageAppModel" />
@@ -40,24 +40,24 @@
 		</property>
 	  </bean>
 	
-	  <!-- 鎷︽埅鍣ㄥ畾涔�--> 	
+	  <!-- 拦截器定义 --> 	
 	  <bean id="listViewShowUpComponentInterceptor"
 	    class="nc.ui.pubapp.uif2app.actions.interceptor.ShowUpComponentInterceptor">
 	    <property name="showUpComponent" ref="listView" />
 	  </bean>	
 	 
-	  <!-- 妯℃澘瀹瑰櫒锛屼富瑕佽礋璐ｅ姞杞藉崟鎹ā鏉�-->
+	  <!-- 模板容器，主要负责加载单据模板 -->
 	  <bean id="templateContainer" class="nc.ui.invp.balance.view.BalanceTemplateContainer"
 	    init-method="load">
 	    <property name="context" ref="context" />
 	  </bean>
-	   <!-- 鍓嶅彴鏁版嵁妯″瀷绠＄悊鍣ㄨ缃紝涓昏璐熻矗鍚勭鏂瑰紡鐨勬ā鍨嬪垵濮嬪寲 -->
+	   <!-- 前台数据模型管理器设置，主要负责各种方式的模型初始化 -->
 	  <bean id="modelDataManager" class="nc.ui.pubapp.uif2app.query2.model.ModelDataManager">
 	    <property name="model" ref="manageAppModel" />
 	    <property name="service" ref="ManageModelService" />
 	  </bean>	
 	  
-	<!-- 鐣岄潰甯冨眬鎬昏 -->
+	<!-- 界面布局总装 -->
 	  <bean id="container" class="nc.ui.uif2.TangramContainer"
 		init-method="initUI">
 		<property name="model" ref="manageAppModel" />
@@ -71,7 +71,7 @@
 								<bean class="nc.ui.uif2.I18nFB">
 									<property name="resDir" value="common" />
 									<property name="resId" value="UC001-0000107" />
-									<property name="defaultValue" value="鍒楄〃" />
+									<property name="defaultValue" value="列表" />
 								</bean>
 							</property>
 							<property name="component" ref="listView" />
@@ -81,7 +81,7 @@
 								<bean class="nc.ui.uif2.I18nFB">
 									<property name="resDir" value="common" />
 									<property name="resId" value="UC001-0000107" />
-									<property name="defaultValue" value="鍒楄〃" />
+									<property name="defaultValue" value="列表" />
 								</bean>
 							</property>
 							<property name="component" ref="balanceTreeView" />
@@ -90,7 +90,7 @@
 				</property>
 			</bean>
 		</property>
-		 <!-- 鎸夐挳 -->
+		 <!-- 按钮 -->
 		<property name="actions">
 			<list>
 				 <ref bean="queryAction" />
@@ -164,13 +164,13 @@
 	  <bean id="queryInfo" class="nc.ui.uif2.tangramlayout.CardLayoutToolbarPanel">
 	    <property name="model" ref="manageAppModel" />
 	  </bean>
-	   <!-- 杩滅▼璋冪敤鍚堝苟鏌ヨ妯℃澘鍔犺浇bean -->
+	   <!-- 远程调用合并查询模板加载bean -->
 	  <bean id="queryTemplateContainer" class="nc.ui.uif2.editor.QueryTemplateContainer">
 	    <property name="context" ref="context" />
 	  </bean>
 	  
 	
-	<!-- 鐗╂枡杈呭姪灞炴�缁勪欢鐨勯厤缃�-->
+	<!-- 物料辅助属性组件的配置 -->
 	<bean id="marAsstPreparator"
 		class="nc.ui.pubapp.uif2app.view.material.assistant.MarAsstPreparator">
 		<property name="model" ref="manageAppModel" />
@@ -199,7 +199,7 @@
 		</property>
 	</bean>
 	
-	<!-- 鍒楄〃鑷畾涔夐」澶勭悊 -->
+	<!-- 列表自定义项处理 -->
 	<bean name="userdefitemlistPreparator" class="nc.ui.uif2.editor.UserdefitemContainerListPreparator">
 		<property name="container" ref="userdefitemContainer" />
 		<property name="params">

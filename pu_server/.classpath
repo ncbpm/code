@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" output="25/classes" path="25/src/public"/>
-	<classpathentry kind="src" output="25/classes" path="25/src/client"/>
 	<classpathentry kind="src" output="25/classes" path="25/src/private"/>
+	<classpathentry kind="src" output="25/classes" path="25/src/client"/>
 	<classpathentry kind="src" output="25/classes" path="25/src/test"/>
 	<classpathentry kind="src" output="25/classes" path="25/resources"/>
 	<classpathentry kind="src" output="payplan/classes" path="payplan/src/public"/>

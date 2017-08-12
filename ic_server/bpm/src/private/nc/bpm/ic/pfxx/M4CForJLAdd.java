@@ -62,7 +62,7 @@ import org.apache.commons.lang.StringUtils;
 public class M4CForJLAdd extends AbstractPfxxPlugin {
 
 	private List<String> updateIndex = new ArrayList<String>();
-	private int power = 2;// 精度
+	private int power = 8;// 精度
 
 	@Override
 	protected Object processBill(Object vo, ISwapContext swapContext,

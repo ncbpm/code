@@ -59,7 +59,7 @@ import org.apache.commons.lang.StringUtils;
 public class BpmMaterialOutPlugin extends AbstractPfxxPlugin {
 
 	private List<String> updateIndex = new ArrayList<String>();
-	private int power = 2;// 精度
+	private int power = 8;// 精度
 	private String billtype = "4D";
 
 	@Override

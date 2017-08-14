@@ -10,7 +10,6 @@ public class ApproveFilterFor422X extends AbstractFilter {
 			throws BusinessException {
 		
 		StoreReqAppVO bill = (StoreReqAppVO) aggvo;
-		
 		//当前按照单据交易类型编码进行判断的,是否固定资产类型请购，422X-Cxx-01
 		if(!"422X-Cxx-01".equalsIgnoreCase(bill.getHVO().getVtrantypecode())){
 			return null;

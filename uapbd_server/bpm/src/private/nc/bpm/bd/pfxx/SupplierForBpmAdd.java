@@ -8,7 +8,6 @@ import nc.bs.framework.common.InvocationInfoProxy;
 import nc.bs.framework.common.NCLocator;
 import nc.bs.pfxx.ISwapContext;
 import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
-import nc.bs.uap.bd.supplier.ISupplierConst;
 import nc.itf.bd.supplier.baseinfo.ISupplierBaseInfoService;
 import nc.itf.bd.supplier.suporg.ISupOrgService;
 import nc.md.data.access.NCObject;

@@ -82,7 +82,7 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 	String[] headattributeNames = new String[] { "pk_order", "pk_group",
 			"vmemo", "pk_org", "pk_org_v", "vbillcode", "dbilldate",
 			"pk_supplier", "pk_dept_v", "pk_dept", "vtrantypecode",
-			"pk_invcsupllier", "pk_payterm", "billmaker", "forderstatus",
+			"pk_invcsupllier", "pk_payterm", "billmaker",
 			"approver", "bisreplenish", "breturn", "iprintcount",
 			"creationtime", "taudittime", "bcooptoso", "bsocooptome",
 			"ntotalastnum", "ntotalorigmny", "bfrozen", "pk_busitype",
@@ -377,7 +377,6 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 		Integer nversion = hvo.getNversion();
 		OrderHeaderVO hvo_bpm = order.getHVO();
 		for (String attr : headattributeNames) {
-
 			hvo.setAttributeValue(attr, hvo_bpm.getAttributeValue(attr));
 		}
 

@@ -76,7 +76,8 @@ public class M45ForJLAdd extends AbstractPfxxPlugin {
 			if (rs.length() > 5) {
 				rs += ",";
 			}
-			// 根据到货单的制单人同步到采购入库单
+			
+			// 根据到货单的制单人同步到采购入库单,后续会判断，如果传过来，就会重新根据传过来地方赋值
 			bpmBill.getHead().setBillmaker(chgBill.getHVO().getBillmaker());
 			InvocationInfoProxy.getInstance().setUserId(chgBill.getHVO().getBillmaker());
 			ICBillVO[] destVos = PfServiceScmUtil

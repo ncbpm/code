@@ -364,14 +364,16 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 			index++;
 		}
 
-		PayPlanViewVO[] delviews = AggPayPlanVO
-				.getPayPlanViewVO(new AggPayPlanVO[] { aggvo });
+		if (delaggvo != null) {
+			PayPlanViewVO[] delviews = AggPayPlanVO
+					.getPayPlanViewVO(new AggPayPlanVO[] { delaggvo });
 
-		if (delviews != null && delviews.length > 0) {
-			for (PayPlanViewVO view : delviews) {
-				dellistindex.add(index);
-				dellist.add(view);
-				index++;
+			if (delviews != null && delviews.length > 0) {
+				for (PayPlanViewVO view : delviews) {
+					dellistindex.add(index);
+					dellist.add(view);
+					index++;
+				}
 			}
 		}
 
@@ -544,7 +546,8 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 		// return;
 		//
 		// try {
-		// cancelWriteBackPayPlan("采购发票审核日期", invo.getParentVO().getPrimaryKey());
+		// cancelWriteBackPayPlan("采购发票审核日期",
+		// invo.getParentVO().getPrimaryKey());
 		// } catch (BusinessException e) {
 		// ExceptionUtils.wrappException(e);
 		// }
@@ -652,48 +655,48 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 						}
 					}
 				}
-			}
 
-			PayPlanVO planclone = null;
-			UFDouble norigmny = UFDouble.ZERO_DBL;// 未回写金额
-			if (writelist == null || writelist.size() == 0) {
-				continue;
-			} else {
-				planclone = (PayPlanVO) writelist.get(0).clone();
-				for (PayPlanVO vo : writelist) {
-					norigmny = SafeCompute.add(vo.getNorigmny(), norigmny);
+				PayPlanVO planclone = null;
+				UFDouble norigmny = UFDouble.ZERO_DBL;// 未回写金额
+				if (writelist == null || writelist.size() == 0) {
+					continue;
+				} else {
+					planclone = (PayPlanVO) writelist.get(0).clone();
+					for (PayPlanVO vo : writelist) {
+						norigmny = SafeCompute.add(vo.getNorigmny(), norigmny);
+					}
 				}
+
+				// 不存在未回写 增新建一条数据 然后 汇总 入库单金额 如果有未回写的 则合并
+				if (nwritelist == null || nwritelist.size() == 0) {
+					planclone.setPrimaryKey(null);
+					planclone.setNorigmny(norigmny);
+					planclone.setDbegindate(null);
+					planclone.setDenddate(null);
+					nwritelist.add(planclone);
+					setRowNo(planclone, updatelist1);
+				} else {
+					planclone = (PayPlanVO) nwritelist.get(0);
+					norigmny = SafeCompute.add(planclone.getNorigmny(),
+							norigmny);
+					planclone.setNorigmny(norigmny);
+				}
+
+				for (PayPlanVO plan : nwritelist) {
+					updatelist1.add(plan);
+				}
+				// 计算比例
+				plans = updatelist1.toArray(new PayPlanVO[updatelist1.size()]);
+				calcMnyByRate(plans);
+				aggvo.setParentVO(aggvo.getParentVO());
+				aggvo.setPayPlanVO(plans);
+
+				AggPayPlanVO aggvo1 = new AggPayPlanVO();
+				aggvo1.setParentVO(aggvo.getParentVO());
+				aggvo1.setPayPlanVO(writelist.toArray(new PayPlanVO[writelist
+						.size()]));
+				savePayPlanViewVO(aggvo, aggvo1);
 			}
-
-			// 不存在未回写 增新建一条数据 然后 汇总 入库单金额 如果有未回写的 则合并
-			if (nwritelist == null || nwritelist.size() == 0) {
-				planclone.setPrimaryKey(null);
-				planclone.setNorigmny(norigmny);
-				planclone.setDbegindate(null);
-				planclone.setDenddate(null);
-				nwritelist.add(planclone);
-				setRowNo(planclone, updatelist1);
-			} else {
-				planclone = (PayPlanVO) nwritelist.get(0).clone();
-				norigmny = SafeCompute.add(planclone.getNorigmny(), norigmny);
-				planclone.setNorigmny(norigmny);
-			}
-
-			for (PayPlanVO plan : nwritelist) {
-				updatelist1.add(plan);
-			}
-			AggPayPlanVO aggvo = new AggPayPlanVO();
-			// 计算比例
-			PayPlanVO[] plans = updatelist1.toArray(new PayPlanVO[updatelist1
-					.size()]);
-			calcMnyByRate(plans);
-			aggvo.setPayPlanVO(plans);
-
-			AggPayPlanVO aggvo1 = new AggPayPlanVO();
-			aggvo1.setPayPlanVO(writelist.toArray(new PayPlanVO[writelist
-					.size()]));
-			savePayPlanViewVO(aggvo, aggvo1);
-
 		}
 	}
 

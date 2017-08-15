@@ -294,6 +294,9 @@ public class M30HistoryForBPMAdd extends AbstractPfxxPlugin {
 				if(attr.endsWith("nnum") && ! attr.equalsIgnoreCase("nnum")){
 					continue;
 				}
+				if(bpm.getAttributeValue(attr) == null){
+					continue;
+				}
 				orderItemVO
 						.setAttributeValue(attr, bpm.getAttributeValue(attr));
 			}
@@ -315,10 +318,14 @@ public class M30HistoryForBPMAdd extends AbstractPfxxPlugin {
 			if("iversion".equalsIgnoreCase(attr)){
 				continue;
 			}
-						
+			if("fstatusflag".equalsIgnoreCase(attr)){
+				continue;
+			}
+			if(hvo_bpm.getAttributeValue(attr) == null){
+				continue;
+			}
 			hvo.setAttributeValue(attr, hvo_bpm.getAttributeValue(attr));
 		}
-//		hvo.setIversion(++nversion);
 	}
 
 	private SaleOrderVO queryVOByPk(String csaleorderid)

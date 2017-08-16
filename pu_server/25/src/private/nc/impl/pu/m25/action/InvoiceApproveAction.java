@@ -99,7 +99,8 @@ public class InvoiceApproveAction {
         PuBusiLogActionCode.approve.getCode()));
     // 更新审批后信息
     prcr.addAfterFinalRule(new UpdateApproveInfoRule());
-
+   // 回写付款计划
+    prcr.addAfterRule(new AfterApproveRuleForPayPlanProcess());
     // 审批的后规则，只过滤到所有已经审批过的VO，后续规则注意判断空
     prcr.addAfterFinalRule(new ApprovedVOFilterRule<InvoiceVO>());
     // 业务事件 后
@@ -114,8 +115,6 @@ public class InvoiceApproveAction {
     // 平台脚本中还是原来的VO，则还会驱动下游
     prcr.addAfterFinalRule(new UpdatePflowVORule<InvoiceVO>(pfParameterVO));
     
- // 回写付款计划
-    prcr.addAfterRule(new AfterApproveRuleForPayPlanProcess());
   }
 
 }

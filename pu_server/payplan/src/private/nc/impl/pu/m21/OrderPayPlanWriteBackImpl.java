@@ -510,6 +510,8 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 
 	// ÉèÖÃÕËÆÚ
 	private void setDate(PayPlanVO plan, UFDate dbegindate) {
+		if (dbegindate == null)
+			dbegindate = new UFDate();
 		int iitermdays = plan.getIitermdays().intValue();
 		UFDate denddate = dbegindate.getDateAfter(iitermdays);
 		plan.setDbegindate(dbegindate);

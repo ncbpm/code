@@ -7,8 +7,12 @@ import nc.bs.framework.common.NCLocator;
 import nc.impl.pubapp.pattern.database.DataAccessUtils;
 import nc.impl.pubapp.pattern.rule.IRule;
 import nc.itf.ic.reserve.IReserveAssist;
+import nc.itf.ic.reserve.IReserveMaintenance;
+import nc.vo.am.proxy.AMProxy;
 import nc.vo.ic.general.define.ICBillBodyVO;
 import nc.vo.ic.m46.entity.FinProdInVO;
+import nc.vo.ic.reserve.entity.PreReserveVO;
+import nc.vo.ic.reserve.entity.ReserveBillVO;
 import nc.vo.ic.reserve.entity.ReserveVO;
 import nc.vo.ic.reserve.pub.ResRequireQueryParam;
 import nc.vo.pub.BusinessException;
@@ -47,12 +51,21 @@ public class AfterSignRuleForReserveProcess implements IRule<FinProdInVO> {
 		if (saleOrderCode == null || "~".equalsIgnoreCase(saleOrderCode)) {
 			return;
 		}
+		
 		// 根据销售订单来查询，未考虑合单生产
 		IReserveAssist reserve = NCLocator.getInstance().lookup(
 				IReserveAssist.class);
+		
 		ResRequireQueryParam param = assmbleQueryParam(vo);
 
 		ReserveVO[] queryReqBill = reserve.queryReqBill(param);
+		
+		//根据销售订单-> 生成对应的 预留单
+		IReserveMaintenance saveService = AMProxy.lookup(IReserveMaintenance.class);
+		ReserveBillVO[] bills = reserve.allocReserve(queryReqBill);
+		if(bills != null){
+			saveService.insert(bills);
+		}
 	}
 
 	private String getSaleOrderCode(ICBillBodyVO icBillBodyVO) {

@@ -78,6 +78,8 @@ public class InvoiceUnApproveAction {
   private void addRule(CompareAroundProcesser<InvoiceVO> prcr) {
     // 发票可取消审批状态检查
     prcr.addBeforeFinalRule(new UnApproveStatusChkRule());
+    // 回写付款计划
+    prcr.addAfterRule(new AfterUnApproveRuleForPayPlanProcess());
     // 是否已经参与结算检查
     prcr.addBeforeFinalRule(new SettledCheckRule());
     prcr.addBeforeRule(new ApproverPermissionRule<InvoiceVO>(POBillType.Invoice
@@ -92,7 +94,5 @@ public class InvoiceUnApproveAction {
     prcr.addAfterFinalRule(new WriteOperateLogRule<InvoiceVO>(
         PuBusiLogPathCode.invoiceApprovePath.getCode(),
         PuBusiLogActionCode.unapprove.getCode()));
-    // 回写付款计划
-    prcr.addAfterRule(new AfterUnApproveRuleForPayPlanProcess());
   }
 }

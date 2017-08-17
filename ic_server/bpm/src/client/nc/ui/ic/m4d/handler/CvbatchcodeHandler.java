@@ -28,34 +28,31 @@ public class CvbatchcodeHandler extends ICCardEditEventHandler {
 		// TODO 自动生成的方法存根
 	  if(this.getEditorModel().getICBillType().equals(ICBillType.MaterialOut)){
       	ISaleOrderMaintain queryService = AMProxy.lookup(ISaleOrderMaintain.class);
-      	//IMDPersistenceQueryService queryService = AMProxy.lookup(IMDPersistenceQueryService.class);
       	String pkOrg = this.getEditorModel().getCardPanelWrapper().getBillCardPanel().getHeadItem("pk_org").getValueObject().toString();
       	DataAccessUtils dbWrapper = new DataAccessUtils();
   		String saleorderBillId = null;
   		int rows = this.getEditorModel().getCardPanelWrapper().getBillCardPanel().getRowCount();
       	for(int i=0; i< rows; i++){
       		try {
+      			//按照左侧9位和11位检索即可 现在编码旧的是9位，新的是11位
       			Object vbillcode = this.getEditorModel().getCardPanelWrapper().getBillCardPanel().getBodyValueAt(i, "vbatchcode");
-  				//NCObject[] orders = queryService.queryBillOfNCObjectByCond(SaleOrderVO.class, "vbillcode="+item.getVbatchcode(), false);
   				if(vbillcode == null){
   					//设置成本对象为null
-  					//this.getEditorModel().getCardPanelWrapper().getBillCardPanel().setBodyValueAt(null, i, "ccostobject");
+  					this.getEditorModel().getCardPanelWrapper().getBillCardPanel().setBodyValueAt(null, i, "ccostobject");
   					continue;
   				}
-  				SaleOrderVO[] orders = queryService.querySaleOrder("select csaleorderid from so_saleorder where vbillcode='"+vbillcode.toString()+"'");
+  				SaleOrderVO[] orders = queryService.querySaleOrder("select csaleorderid from so_saleorder where "
+  						+ " nvl(dr,0)=0 and pk_org='"+pkOrg+"' and  (vbillcode=substr('"+vbillcode.toString()+"',1,9) or vbillcode=substr('"+vbillcode.toString()+"',1,11))");
   				if(orders != null && orders.length >0){
   					SaleOrderBVO[] bodyList = orders[0].getChildrenVO();
   	  				//找第一个非赠品物料
   	  				for(SaleOrderBVO ele : bodyList){
-  	  					if(!ele.getBlargessflag().booleanValue()){
-  	  						//item.setCcostobject(ele.getCmaterialvid());
-  	  						//System.out.println(this.getEditorModel().getCardPanelWrapper().getBillCardPanel().getBodyValueAt(i, "ccostobject"));
+  	  					if(!ele.getBlargessflag().booleanValue()){  	  						
   	  						this.getEditorModel().getCardPanelWrapper().getBillCardPanel().setBodyValueAt(ele.getCmaterialvid(), i, "ccostobject");
   	  						break;
   	  					}
   	  				}
   				}
-  				//System.out.println(orders[0].getChildrenVO()[0].getCmaterialvid() + " " +orders[0].getChildrenVO()[0].getBlargessflag() );
   			} catch (BusinessException e) {
   				// TODO 自动生成的 catch 块
   				e.printStackTrace();

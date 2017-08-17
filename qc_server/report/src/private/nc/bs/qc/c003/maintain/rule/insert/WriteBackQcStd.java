@@ -17,7 +17,12 @@ import nc.vo.qc.c002.entity.CheckBillHeaderVO;
 import nc.vo.qc.c003.entity.ReportVO;
 
 import org.apache.commons.lang.StringUtils;
+/**
+ *  2017-07-30 如果修改了质检单的检验标准,则回写更新报检单
 
+ * @author liyf
+ *
+ */
 public class WriteBackQcStd {
 
 	public void writebackStd(ReportVO reportbill) {

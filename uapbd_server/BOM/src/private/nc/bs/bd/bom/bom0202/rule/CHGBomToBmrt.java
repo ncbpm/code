@@ -48,6 +48,11 @@ public class CHGBomToBmrt {
 			String key = "vfree" + i;
 			vo.setAttributeValue(key, head.getAttributeValue(key));
 		}
+		//BOM同步，如果BOM号为空，则默认等于BOM 版本号
+		if("~".equals(vo.getAttributeValue("vfree3")) || vo.getAttributeValue("vfree3") == null 
+				|| "".equals(vo.getAttributeValue("vfree3"))){
+			vo.setAttributeValue("vfree3", head.getHversion());
+		}
 		return vo;
 	}
 

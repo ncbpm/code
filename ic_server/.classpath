@@ -29,5 +29,6 @@
 	</classpathentry>
 	<classpathentry kind="con" path="com.yonyou.studio.udt.core.container/Module_Lang_Library"/>
 	<classpathentry kind="con" path="com.yonyou.studio.udt.core.container/Generated_EJB"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/pu_server"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -2,6 +2,7 @@ package nc.ui.ic.m4d.handler;
 
 import nc.bs.framework.common.NCLocator;
 import nc.itf.so.m30.self.ISaleOrderMaintain;
+import nc.ui.ic.general.handler.VbatchcodeHandler;
 import nc.ui.ic.pub.handler.card.ICCardEditEventHandler;
 import nc.ui.pub.bill.BillItem;
 import nc.ui.pubapp.uif2app.event.card.CardBodyAfterEditEvent;
@@ -12,15 +13,11 @@ import nc.vo.so.m30.entity.SaleOrderBVO;
 import nc.vo.so.m30.entity.SaleOrderVO;
 
 //如果是材料出库单 billType： 4D ，则需要根据批次号（为销售订单的单据号）， 查 销售订单，将非赠品的第一行记录 设置为 当前的 产成品
-public class CvbatchcodeHandler extends ICCardEditEventHandler {
+public class VbatchcodeHandlerFor4D extends VbatchcodeHandler {
 
-	@Override
-		public void beforeCardBodyBatchEdit(CardBodyBeforeBatchEditEvent event) {
-			// TODO 自动生成的方法存根
-			super.beforeCardBodyBatchEdit(event);
-		}
-  @Override
-	public void afterCardBodyEdit(CardBodyAfterEditEvent event) {
+
+  public void afterCardBodyEdit(CardBodyAfterEditEvent event) {
+	  super.afterCardBodyEdit(event);
 		// TODO 自动生成的方法存根
 	  if(this.getEditorModel().getICBillType().equals(ICBillType.MaterialOut)){
       	ISaleOrderMaintain queryService = NCLocator.getInstance().lookup(ISaleOrderMaintain.class);

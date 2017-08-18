@@ -1,12 +1,3 @@
-/**
- * $文件说明$
- * 
- * @author tianft
- * @version 6.0
- * @see
- * @since 6.0
- * @time 2010-6-1 下午06:12:19
- */
 package nc.vo.qc.c003.rule;
 
 import nc.impl.pubapp.pattern.rule.IRule;
@@ -57,7 +48,7 @@ public class RejectBeforCheckRule implements IRule<ReportVO> {
 			boolean bisAutoDeal = false;
 			if ("C003-0001".equalsIgnoreCase(vtrantypecode)
 					|| "C003-0002".equalsIgnoreCase(vtrantypecode)
-					|| "C003-Cxx_05".equalsIgnoreCase(vtrantypecode)) {
+					|| "C003-Cxx-05".equalsIgnoreCase(vtrantypecode)) {
 				bisAutoDeal = true;
 			}
 			if (!bisAutoDeal) {

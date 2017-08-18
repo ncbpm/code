@@ -58,7 +58,7 @@ public class RejectAfterCheckRule implements IRule<ReportVO> {
 			boolean bisAutoDeal = false;
 			if ("C003-0001".equalsIgnoreCase(vtrantypecode)
 					|| "C003-0002".equalsIgnoreCase(vtrantypecode)
-					|| "C003-Cxx_05".equalsIgnoreCase(vtrantypecode)) {
+					|| "C003-Cxx-05".equalsIgnoreCase(vtrantypecode)) {
 				bisAutoDeal = true;
 			}
 			if (!bisAutoDeal) {

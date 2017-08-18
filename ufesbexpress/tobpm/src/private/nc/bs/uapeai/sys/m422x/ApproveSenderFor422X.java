@@ -1,6 +1,3 @@
-/**
- * 
- */
 package nc.bs.uapeai.sys.m422x;
 
 import nc.bs.framework.common.NCLocator;
@@ -11,6 +8,7 @@ import nc.vo.pu.m422x.entity.StoreReqAppHeaderVO;
 import nc.vo.pu.m422x.entity.StoreReqAppItemVO;
 import nc.vo.pu.m422x.entity.StoreReqAppVO;
 import nc.vo.pub.BusinessException;
+import nc.vo.pub.lang.UFDouble;
 import nc.vo.uapeai.syn.SysBillInfor;
 
 import org.w3c.dom.Document;
@@ -29,7 +27,20 @@ public class ApproveSenderFor422X extends AbstractSender {
 		String xmlstr = getXml(bill);
 		return getDocumentByXMLStr(xmlstr);
 	}
+	
+	public String getStringNullAsSpace(String value){
+		if(value == null){
+			return "";
+		}
+		return value;
+	}
 
+	public UFDouble getUFdoubleNullAsZero(UFDouble value){
+		if(value == null){
+			return UFDouble.ZERO_DBL;
+		}
+		return value;
+	}
 	private String getXml(StoreReqAppVO bill) throws BusinessException {
 		// TODO 自动生成的方法存根
 		StringBuffer xmlStr = new StringBuffer();
@@ -42,26 +53,24 @@ public class ApproveSenderFor422X extends AbstractSender {
 		IMaterialBaseInfoQueryService mquery = NCLocator.getInstance().lookup(IMaterialBaseInfoQueryService.class);
 		MaterialVO  invvo = mquery.queryDataByPks(new String[]{body.getPk_material()})[0];
 		xmlStr.append("<Gname>"+invvo.getName()+"</Gname>");//固定资产名称
-		xmlStr.append("<GSpecification>"+(invvo.getMaterialspec()+invvo.getMaterialtype())+"</GSpecification>");//规格型号
-		xmlStr.append("<Gpurpose>"+body.getVbmemo()+"</Gpurpose>");//申请用途
-		xmlStr.append("<Gadress>"+body.getVbdef2()+"</Gadress>");//>存放地点 
-		xmlStr.append("<Gnumber>"+body.getNnum()+"</Gnumber>");// ------采购数量
+		xmlStr.append("<GSpecification>"+(getStringNullAsSpace(invvo.getMaterialspec())+getStringNullAsSpace(invvo.getMaterialtype()))+"</GSpecification>");//规格型号
+		xmlStr.append("<Gpurpose>"+getStringNullAsSpace(body.getVbmemo())+"</Gpurpose>");//申请用途
+		xmlStr.append("<Gadress>"+getStringNullAsSpace(body.getVbdef2())+"</Gadress>");//>存放地点 
+		xmlStr.append("<Gnumber>"+getUFdoubleNullAsZero(body.getNnum())+"</Gnumber>");// ------采购数量
 		xmlStr.append("<Gbudge>预算内</Gbudge>");//预算外
-		xmlStr.append("<Greason>"+hvo.getVmemo()+"</Greason>");//申请原因及具体要求
-		xmlStr.append("<YJJinE>"+body.getNtaxmny()+"</YJJinE>");//预计金额
+		xmlStr.append("<Greason>"+getStringNullAsSpace(hvo.getVmemo())+"</Greason>");//申请原因及具体要求
+		xmlStr.append("<YJJinE>"+getUFdoubleNullAsZero(body.getNtaxmny())+"</YJJinE>");//预计金额
 		xmlStr.append("<pk_storereq>"+hvo.getPrimaryKey()+"</pk_storereq>");//物资需求申请主键
 		xmlStr.append("<WZNO>" + hvo.getVbillcode() + "</WZNO>");// -----------物资需求申请单号
-		xmlStr.append("<pk_psndoc>"+hvo.getPk_apppsnh()+"</pk_psndoc>");//申请人
-		xmlStr.append("<pk_dept>"+hvo.getPk_appdepth()+"</pk_dept>");//请购部门主键
+		xmlStr.append("<pk_psndoc>"+getStringNullAsSpace(hvo.getPk_apppsnh())+"</pk_psndoc>");//申请人
+		xmlStr.append("<pk_dept>"+getStringNullAsSpace(hvo.getPk_appdepth())+"</pk_dept>");//请购部门主键
 		String pk_org = bill.getHVO().getPk_org();
 		String orgcode=transNCToCode(pk_org, "5d69ee35-57d0-4f7b-b454-deff4fc73689");
 		xmlStr.append("<pk_org>" + pk_org + "</pk_org>");// ---库存组织主键
 		xmlStr.append("<orgCode>" + orgcode + "</orgCode>");// ---库存组织主键
-		
 		String pk_porject = bill.getHVO().getPk_project();
 		String projectName=transNCToCode(pk_porject, "2ee58f9b-781b-469f-b1d8-1816842515c3");
-		xmlStr.append("<project>" + projectName + "</project>");// ---NC项目名称
-
+		xmlStr.append("<project>" + getStringNullAsSpace(projectName)+ "</project>");// ---NC项目名称
 		xmlStr.append(" </RF_CW_gdzcxz>");
 		xmlStr.append("</xml>");
 

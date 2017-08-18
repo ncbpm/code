@@ -73,6 +73,7 @@ public class ReportInsertBP {
 		processer.addAfterFinalRule(new WriteC002WhenInsertRule());
 		// 新增保存后批次号处理
 		processer.addAfterFinalRule(new InsertBatchCodeAfterRule());
+
 		// 2017-06-25
 		// 1. 保存判断表体合格品没有勾选，则认为是不合格品，需要自动将表头的需要不合格品处理 勾选
 		// 2. 保存判断表体合格品没有勾选，则认为是不合格，自动生成不合格品处理单

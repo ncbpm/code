@@ -1,36 +1,31 @@
 package nc.ui.ic.m4d.handler;
 
-import nc.impl.pubapp.pattern.database.DataAccessUtils;
+import nc.bs.framework.common.NCLocator;
 import nc.itf.so.m30.self.ISaleOrderMaintain;
-import nc.ui.ic.pub.deal.RefFilter;
 import nc.ui.ic.pub.handler.card.ICCardEditEventHandler;
-import nc.ui.pub.beans.UIRefPane;
 import nc.ui.pub.bill.BillItem;
 import nc.ui.pubapp.uif2app.event.card.CardBodyAfterEditEvent;
-import nc.ui.pubapp.uif2app.event.card.CardBodyBeforeEditEvent;
-import nc.vo.am.proxy.AMProxy;
-import nc.vo.ic.general.define.ICBillBodyVO;
-import nc.vo.ic.m4d.entity.MaterialOutBodyVO;
-import nc.vo.ic.m4d.entity.MaterialOutHeadVO;
+import nc.ui.pubapp.uif2app.event.card.CardBodyBeforeBatchEditEvent;
 import nc.vo.pub.BusinessException;
-import nc.vo.pub.lang.UFBoolean;
-import nc.vo.pubapp.pattern.pub.SqlBuilder;
 import nc.vo.scmpub.res.billtype.ICBillType;
 import nc.vo.so.m30.entity.SaleOrderBVO;
 import nc.vo.so.m30.entity.SaleOrderVO;
 
 //如果是材料出库单 billType： 4D ，则需要根据批次号（为销售订单的单据号）， 查 销售订单，将非赠品的第一行记录 设置为 当前的 产成品
-@SuppressWarnings("restriction")
 public class CvbatchcodeHandler extends ICCardEditEventHandler {
 
+	@Override
+		public void beforeCardBodyBatchEdit(CardBodyBeforeBatchEditEvent event) {
+			// TODO 自动生成的方法存根
+			super.beforeCardBodyBatchEdit(event);
+		}
   @Override
 	public void afterCardBodyEdit(CardBodyAfterEditEvent event) {
 		// TODO 自动生成的方法存根
 	  if(this.getEditorModel().getICBillType().equals(ICBillType.MaterialOut)){
-      	ISaleOrderMaintain queryService = AMProxy.lookup(ISaleOrderMaintain.class);
+      	ISaleOrderMaintain queryService = NCLocator.getInstance().lookup(ISaleOrderMaintain.class);
       	String pkOrg = this.getEditorModel().getCardPanelWrapper().getBillCardPanel().getHeadItem("pk_org").getValueObject().toString();
-      	DataAccessUtils dbWrapper = new DataAccessUtils();
-  		String saleorderBillId = null;
+      
   		int rows = this.getEditorModel().getCardPanelWrapper().getBillCardPanel().getRowCount();
       	for(int i=0; i< rows; i++){
       		try {
@@ -49,6 +44,14 @@ public class CvbatchcodeHandler extends ICCardEditEventHandler {
   	  				for(SaleOrderBVO ele : bodyList){
   	  					if(!ele.getBlargessflag().booleanValue()){  	  						
   	  						this.getEditorModel().getCardPanelWrapper().getBillCardPanel().setBodyValueAt(ele.getCmaterialvid(), i, "ccostobject");
+  	  						//10个物料自由属性
+  	  						for(int m=1;m<=10;m++){
+  	  							String key = "vfree"+m;
+  	  							BillItem bodyItem = getEditorModel().getCardPanelWrapper().getBillCardPanel().getBodyItem(key);
+  	  							if(bodyItem!=null && bodyItem.isShowFlag()){
+  	  								this.getEditorModel().getCardPanelWrapper().getBillCardPanel().setBodyValueAt(ele.getAttributeValue(key), i, key);
+  	  							}
+  	  						}
   	  						break;
   	  					}
   	  				}

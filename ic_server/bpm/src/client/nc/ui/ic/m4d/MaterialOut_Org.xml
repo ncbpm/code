@@ -448,8 +448,6 @@
 	<!-- 物料编辑事件 -->
 	<bean id="cmaterialvidHandler" class="nc.ui.ic.m4d.handler.CMaterialSubstiHandlerFor4D" />
 	<bean id="cmffileidHandler" class="nc.ui.ic.m4d.handler.CmffileidHandlerFor4D" />
-	
-	<bean id="vbatchHandler" class="nc.ui.ic.m4d.handler.CvbatchcodeHandler" />
 
 	<!-- 编辑事件处理 -->
 	<bean id=" childCardEditHandlerMap" class="nc.ui.ic.pub.handler.card.ICCardEditEventHandlerMap">
@@ -497,7 +495,11 @@
 				<entry key="cconstructvendorid">
 					<bean class="nc.ui.ic.m4d.handler.CconstructvendoridHandler" />
 				</entry>
-			
+				<!-- 批次号 -->
+				<entry key="vbatchcode">
+					<bean class="nc.ui.ic.m4d.handler.VbatchcodeHandlerFor4D" />
+				</entry>
+				
 			</map>
 		</property>
 	</bean>

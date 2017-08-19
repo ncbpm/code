@@ -79,16 +79,14 @@ public class M4CForJLAdd extends AbstractPfxxPlugin {
 			if (rs.length() > 5) {
 				rs += ",";
 			}
-			// 根据发货单的制单人同步到销售出库单
-			bpmBill.getHead()
-					.setBillmaker(chgBill.getParentVO().getBillmaker());
-			InvocationInfoProxy.getInstance().setUserId(
-					chgBill.getParentVO().getBillmaker());
+			
 			ICBillVO[] destVos = PfServiceScmUtil.executeVOChange(
 					SOBillType.Delivery.getCode(),
 					ICBillType.SaleOut.getCode(), new DeliveryVO[] { chgBill });
 			// 根据BPM回写的发货单信息更新
 			ICBillVO clientVO = destVos[0];
+			// 根据到货单的制单人同步到采购入库单,后续会判断，如果传过来，就会重新根据传过来地方赋值
+			clientVO.getHead().setBillmaker(bpmBill.getHead().getBillmaker());
 			updateClientVO(bpmBill, clientVO);
 			// 保存
 			ICBillVO saveVO = doSave(clientVO);
@@ -115,10 +113,9 @@ public class M4CForJLAdd extends AbstractPfxxPlugin {
 		this.checkCanInster(icbill);
 		Logger.info("保存新单据前处理...");
 		this.processBeforeSave(icbill);
-
-		// TODO 单据设置有辅助信息，aggxsysvo为用户配置的具体辅助信息
-
 		Logger.info("保存新单据...");
+		//设置当前登录人
+		InvocationInfoProxy.getInstance().setUserId(icbill.getHead().getBillmaker());
 		IPFBusiAction service = NCLocator.getInstance().lookup(
 				IPFBusiAction.class);
 		ICBillVO[] icbills = (ICBillVO[]) service.processAction(
@@ -146,6 +143,8 @@ public class M4CForJLAdd extends AbstractPfxxPlugin {
 		// 签字时间等于单据日期
 		icbill.getHead().setTaudittime(icbill.getHead().getDbilldate());
 		icbill.getHead().setApprover(icbill.getHead().getBillmaker());
+		//设置当前登录人
+		InvocationInfoProxy.getInstance().setUserId(icbill.getHead().getApprover());
 		Logger.info("签字新单据...");
 		IPFBusiAction service = NCLocator.getInstance().lookup(
 				IPFBusiAction.class);

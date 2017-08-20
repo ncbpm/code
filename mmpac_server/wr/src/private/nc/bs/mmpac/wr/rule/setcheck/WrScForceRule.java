@@ -13,6 +13,7 @@ import nc.bs.mmpac.wr.rule.setcheck.bo.WrScForceCollectionDataBO;
 import nc.bs.mmpac.wr.util.rewrite.prodin.WrProdInCommonCacheUtil;
 import nc.bsutil.mmpac.pacpub.PACParameterManager;
 import nc.impl.pubapp.pattern.rule.IRule;
+import nc.ui.pcm.view.AskDialog;
 import nc.util.mmf.framework.base.MMMapUtil;
 import nc.util.mmf.framework.base.MMValueCheck;
 import nc.vo.bd.bom.bom0202.enumeration.OutputTypeEnum;
@@ -54,25 +55,27 @@ public class WrScForceRule implements IRule<AggWrVO> {
         // 过滤出可以进行完工齐套检查的表体行
         List<WrItemVO> results = new ArrayList<WrItemVO>();
         WrProdInCommonCacheUtil util = new WrProdInCommonCacheUtil();
-        for (WrItemVO itemVO : vos) {
-            // 过滤掉无订单报产行或联副产品行
-            if (MMValueCheck.isEmpty(itemVO.getCbmoid())
-                    || !OutputTypeEnum.MAIN_PRODUCT.equalsValue(itemVO.getFbproducttype())) {
-                continue;
-            }
-            // 完工齐套标识为null或false时继续需要进行完工齐套检查
-            if (UFBoolean.TRUE.equals(itemVO.getBbsetmark())) {
-                continue;
-            }
-            // 完工齐套检查工厂参数的判断
-            PACParameterManager orgPara = util.getOrgPara(itemVO.getPk_org());
-            // 完工齐套的工厂参照是否启用
-            if (!orgPara.isWorkDoneSetCheck()) {
-                // 没有启用则不做任何操作
-                continue;
-            }
-            results.add(itemVO);
-        }
+        //后台不做完工检查
+//        for (WrItemVO itemVO : vos) {
+//            // 过滤掉无订单报产行或联副产品行
+//            if (MMValueCheck.isEmpty(itemVO.getCbmoid())
+//                    || !OutputTypeEnum.MAIN_PRODUCT.equalsValue(itemVO.getFbproducttype())) {
+//                continue;
+//            }
+//            // 完工齐套标识为null或false时继续需要进行完工齐套检查
+//            if (UFBoolean.TRUE.equals(itemVO.getBbsetmark())) {
+//                continue;
+//            }
+//            
+//            // 完工齐套检查工厂参数的判断
+//            PACParameterManager orgPara = util.getOrgPara(itemVO.getPk_org());
+//            // 完工齐套的工厂参照是否启用
+//            if (!orgPara.isWorkDoneSetCheck()) {
+//                // 没有启用则不做任何操作
+//                continue;
+//            }
+//            results.add(itemVO);
+//        }
         if (MMValueCheck.isEmpty(results)) {
             return;
         }
@@ -107,7 +110,7 @@ public class WrScForceRule implements IRule<AggWrVO> {
             if (Integer.valueOf(IMaterialEnumConst.PRODMODE_SEPPROD).equals(prodMode)) {
                 if (!MMValueCheck.isEmpty(itemVO.getCbmoid())) {
                     if (UFBoolean.FALSE.equals(resultMap.get(itemVO.getCbmoid()))) {
-                        ExceptionUtils.wrappBusinessException(WrptLangConst.SETCHECK_WRMSG());
+                    	ExceptionUtils.wrappBusinessException(WrptLangConst.SETCHECK_WRMSG());
                     }
                 }
             }

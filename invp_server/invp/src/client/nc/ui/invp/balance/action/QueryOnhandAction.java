@@ -2,20 +2,24 @@ package nc.ui.invp.balance.action;
 
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import nc.funcnode.ui.FuncletInitData;
 import nc.ui.ic.onhand.OnhandDialog;
+import nc.ui.ic.onhand.model.OnhandDataBillManageModel;
 import nc.ui.pub.beans.constenum.DefaultConstEnum;
 import nc.ui.pub.bill.BillItem;
 import nc.ui.pub.bill.BillModel;
 import nc.ui.pubapp.uif2app.model.BillManageModel;
 import nc.ui.pubapp.uif2app.view.BillListView;
 import nc.ui.scmpub.action.SCMActionInitializer;
+import nc.ui.uif2.AppEvent;
 import nc.ui.uif2.NCAction;
 import nc.vo.ic.onhand.entity.OnhandDimVO;
+import nc.vo.ic.onhand.entity.OnhandDlgConst;
 import nc.vo.ic.pub.util.NCBaseTypeUtils;
 import nc.vo.invp.result.entity.BalanceResultVO;
 import nc.vo.pu.onhand.entity.OnhandDlgPUHeaderVO;
@@ -23,7 +27,7 @@ import nc.vo.pub.lang.UFDouble;
 import nc.vo.pubapp.pattern.model.entity.view.IDataView;
 import nc.vo.pubapp.pattern.model.meta.entity.view.DataViewMeta;
 import nc.vo.scmpub.res.SCMActionCode;
- 
+
 /**
  * 存量查拣action
  * 
@@ -31,7 +35,7 @@ import nc.vo.scmpub.res.SCMActionCode;
  */
 public class QueryOnhandAction extends NCAction {
 
-	private static final String path = "nc/ui/pu/pub/action/queryonhand.xml";
+	private static final String path = "nc/ui/pu/pub/action/InvQueryOnHand.xml";
 
 	private static final long serialVersionUID = -7228894679966512759L;
 
@@ -56,7 +60,7 @@ public class QueryOnhandAction extends NCAction {
 		Map<String, String> bodyDims = this.getBodyDims();
 
 		List<IDataView> headVOs = new ArrayList<IDataView>();
-		int row = this.list.getBillListPanel().getHeadTable().getRowCount();
+		int row = this.list.getBillListPanel().getHeadTable().getSelectedRow();
 		BillModel bm = this.list.getBillListPanel().getHeadBillModel();
 		if (row != -1 && bm != null) {
 			this.setDialogData(headVOs, bodyDims, row, bm);
@@ -68,6 +72,24 @@ public class QueryOnhandAction extends NCAction {
 		this.dlg.initUI(this.getModel().getContext(), QueryOnhandAction.path,
 				initData, false);
 		this.dlg.showModal();
+		String[] groupObjectsKeys = new String[] { "pk_org", "cwarehouseid",
+				"cmaterialoid", "castunitid", "cvendorid" };
+		OnhandDataBillManageModel model = (OnhandDataBillManageModel) dlg
+				.getBeanByName("manageAppModel");
+		model.setGroupFiled(Arrays.asList(groupObjectsKeys));
+		// // 分组维度修改后清空缓存
+		// this.getModel().clearResultMap();
+		// // 发送事件，执行查询nc.ui.ic.onhand.OnhandDataManager.refresh()
+		model.fireEvent(new AppEvent(OnhandDlgConst.ONHAND_NEED_REFRESH));
+
+	}
+
+	private List<String> getAssignedKeys(String[] groupObjects) {
+		List<String> groupFields = new ArrayList<String>();
+		for (String oneGroupObj : groupObjects) {
+			groupFields.add(oneGroupObj);
+		}
+		return groupFields;
 	}
 
 	/**
@@ -119,47 +141,44 @@ public class QueryOnhandAction extends NCAction {
 	 * @param dimvo
 	 */
 	private void setDialogData(List<IDataView> headVOs,
-			Map<String, String> bodyDims, int rowcount, BillModel bm) {
-		for (int i = 0; i < rowcount; i++) {
-			BillItem item = bm.getItemByKey(BalanceResultVO.CMATERIALOID);
-			if (item == null) {
+			Map<String, String> bodyDims, int row, BillModel bm) {
+		BillItem item = bm.getItemByKey(BalanceResultVO.CMATERIALOID);
+		if (item == null) {
+			return;
+		}
+		if (NCBaseTypeUtils.isNull(bm.getValueAt(row,
+				BalanceResultVO.CMATERIALOID))) {
+			return;
+		}
+		OnhandDimVO dimvo = new OnhandDimVO();
+		for (Map.Entry<String, String> entry : bodyDims.entrySet()) {
+			String value = entry.getValue();
+			BillItem bodyitem = bm.getItemByKey(value);
+			if (bodyitem == null) {
 				continue;
 			}
-			if (NCBaseTypeUtils.isNull(bm.getValueAt(i,
-					BalanceResultVO.CMATERIALOID))) {
-				continue;
-			}
-			OnhandDimVO dimvo = new OnhandDimVO();
-			for (Map.Entry<String, String> entry : bodyDims.entrySet()) {
-				String value = entry.getValue();
-				BillItem bodyitem = bm.getItemByKey(value);
-				if (bodyitem == null) {
-					continue;
-				}
-				Object dimValue = bm.getValueObjectAt(i, value);// 默认现存量维度字段同表体字段相同
-				if (dimValue instanceof DefaultConstEnum) {
-					dimValue = ((DefaultConstEnum) dimValue).getValue();
-				}
-				dimvo.setAttributeValue(entry.getKey(), dimValue);
-			}
-			OnhandDlgPUHeaderVO headVO = new OnhandDlgPUHeaderVO();
-			DataViewMeta dataViewMeta = new DataViewMeta(dimvo.getClass());
-			headVO.setDataViewMeta(dataViewMeta);
-			headVO.setVO(dimvo);
-			// 主单位
-			Object dimValue = bm.getValueObjectAt(i, BalanceResultVO.CUNITID);
+			Object dimValue = bm.getValueObjectAt(row, value);// 默认现存量维度字段同表体字段相同
 			if (dimValue instanceof DefaultConstEnum) {
 				dimValue = ((DefaultConstEnum) dimValue).getValue();
 			}
-			headVO.setCunitid(dimValue.toString());
-			headVO.setCrowno((String) bm.getValueAt(i,
-					BalanceResultVO.VREQROWNO));
-			headVO.setOnhandshouldnum((UFDouble) bm.getValueAt(i,
-					BalanceResultVO.NNUM));
-			// headVO.setOnhandshouldassnum((UFDouble) bm.getValueAt(i,
-			// BalanceResultVO.NASTNUM));
-			headVOs.add(headVO);
+			dimvo.setAttributeValue(entry.getKey(), dimValue);
 		}
+		OnhandDlgPUHeaderVO headVO = new OnhandDlgPUHeaderVO();
+		DataViewMeta dataViewMeta = new DataViewMeta(dimvo.getClass());
+		headVO.setDataViewMeta(dataViewMeta);
+		headVO.setVO(dimvo);
+		// 主单位
+		Object dimValue = bm.getValueObjectAt(row, BalanceResultVO.CUNITID);
+		if (dimValue instanceof DefaultConstEnum) {
+			dimValue = ((DefaultConstEnum) dimValue).getValue();
+		}
+		headVO.setCunitid(dimValue.toString());
+		headVO.setCrowno((String) bm.getValueAt(row, BalanceResultVO.VREQROWNO));
+		headVO.setOnhandshouldnum((UFDouble) bm.getValueAt(row,
+				BalanceResultVO.NNUM));
+		// headVO.setOnhandshouldassnum((UFDouble) bm.getValueAt(i,
+		// BalanceResultVO.NASTNUM));
+		headVOs.add(headVO);
 
 	}
 

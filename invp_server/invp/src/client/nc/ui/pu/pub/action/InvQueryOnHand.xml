@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	 <bean id="headtemplateContainer" parent="headtemplateContainerBase">
+		<property name="funcode" value="40074001" />
+		<property name="nodeKeies">
+			<list>
+				<value>400740012</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="bodytemplateContainer" parent="bodytemplateContainerBase">
+		<property name="funcode" value="40074001" />
+		<property name="nodeKeies">
+			<list>
+				<value>400740011</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="topInfoPanelBase" class="nc.ui.ic.onhand.ref.OnhandDialogRefHeadListView"
+		init-method="initUI">
+		<property name="model" ref="headModel"></property>
+		<property name="templateContainer" ref="headtemplateContainer" />
+		<property name="billListPanelValueSetter">
+			<bean class="nc.ui.ic.onhand.ref.OnhandRefVOBillListPanelValueSetter" />
+		</property>
+		<property name="headValueChangedListener" ref="onHandListViewValueListener"></property>
+		<property name="nodekey" value="400740012"></property>
+	</bean>
+	
+	<bean id="numChoosenTypeModelBase" abstract="true"	
+	class="nc.ui.pu.onhand.model.PUNumChoosenTypeModel" init-method="init"/>
+	
+	<bean id="topInfoPanel" parent="topInfoPanelBase" />
+	
+	<bean id="onhandListView" parent="onhandListViewBase">
+		<property name="nodekey" value="400740011" />
+	</bean>
+	
+	<bean id="topPanelValueSetter" class="nc.ui.ic.onhand.ref.OnhandRefTopPanelValueSetter">
+		<property name="headModel" ref="headModel" />
+	</bean>
+	<bean id="InitDataListener" parent="InitDataListenerBase">
+		<property name="topPanelValueSetter" ref="topPanelValueSetter" />
+	</bean>
+	
+	<bean id="defaultGroupField" class="java.util.ArrayList">
+		<constructor-arg>
+			<list>
+				<value>pk_org</value>
+				<value>cmaterialoid</value>
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<bean id="selectGroupFiled" class="java.util.ArrayList">
+		<constructor-arg>
+			<list>
+				<value>pk_org</value>
+				<value>cwarehouseid</value>
+				<value>clocationid</value>
+				<value>cmaterialoid</value>
+				<value>cmaterialvid</value>
+				<value>castunitid</value>
+				<value>vchangerate</value>
+				<value>vbatchcode</value>
+				<value>cvendorid</value>
+				<value>cproductorid</value>
+				<value>cprojectid</value>
+				<value>casscustid</value>
+				<value>cstateid</value>
+				<value>cffileid</value>
+				<value>vfree1</value>
+				<value>vfree2</value>
+				<value>vfree3</value>
+				<value>vfree4</value>
+				<value>vfree5</value>
+				<value>vfree6</value>
+				<value>vfree7</value>
+				<value>vfree8</value>
+				<value>vfree9</value>
+				<value>vfree10</value>
+				<value>ctplcustomerid</value>
+				<value>cvmivenderid</value>
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<bean id="onhandQueryAreaModel" parent="onhandQueryAreaModelBase">
+		<property name="isBatch" value="false" />
+		<property name="defaultQueryType" value="atp" />
+		<property name="defaultMatchType" value="bybill" />
+		<property name="defualtZeroOnhandType" value="nonezero" />
+	</bean>
+	
+	<bean id="onhandHeadScalePrcMediator" class="nc.ui.ic.onhand.OnhandHeadScalePrcMediator" init-method="proScale">
+		<property name="topInfoPanel" ref="topInfoPanel" />
+		<property name="context" ref="context"></property>
+	</bean>
+	
+	<bean id="onhandDataManagerBase" abstract="true"
+		class="nc.ui.ic.onhand.OnhandDataManager1">
+		<property name="onhandCompositeModel" ref="onhandCompositeModel"/>
+		<property name="billListView" ref="onhandListView" />
+	</bean>
+</beans>

@@ -217,4 +217,28 @@
 			</list>
 		</property>
 	</bean>
+	
+	<bean id="headtemplateContainerBase" abstract="true"
+		class="nc.ui.uif2.editor.TemplateContainer" init-method="load">
+		<property name="funcode" value="4008080802" />
+	</bean>
+	<bean id="headtemplateContainer" parent="headtemplateContainerBase"></bean>
+
+	<bean id="bodytemplateContainerBase" abstract="true"
+		class="nc.ui.uif2.editor.TemplateContainer" init-method="load">
+		<property name="funcode" value="40074001" />
+		<property name="nodeKeies">
+			<list>
+				<value>400740011</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="bodytemplateContainer" parent="bodytemplateContainerBase"></bean>
+	
+	<bean id="templateContainerPreprocessor" class="nc.ui.ic.onhand.OnHandTemplateContainerPreprocessor"
+		init-method="init">
+		<property name="context" ref="context" />
+		<property name="headTemplateContainer" ref="headtemplateContainer" />
+		<property name="bodyTemplateContainer" ref="bodytemplateContainer" />
+	</bean>
 </beans>

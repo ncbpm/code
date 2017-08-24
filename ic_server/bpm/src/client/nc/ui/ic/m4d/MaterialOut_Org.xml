@@ -25,7 +25,7 @@
 		<property name="pos" value="1" />
 		<property name="prefix" value="vbdef" />
 	</bean>
-	   <!-- 注册分页 -->
+	<!-- 注册分页 -->
 	<bean id="pageQuery" class="nc.ui.ic.general.model.ICGenRevisePageService">
 		<property name="voClassName" value="nc.vo.ic.m4d.entity.MaterialOutVO" />
 		<property name="billType" value="4D" />
@@ -239,9 +239,9 @@
 	</bean>
 	<!-- 打印次数查询 -->
 	<bean id="printCountQueryAction" class="nc.ui.ic.pub.action.ICPrintCountQueryAction">
-	<!-- 单据日期属性名称 -->
-	    <property name="billdateFieldName" value=""/>
-	    <property name="model" ref="icBizModel" />
+		<!-- 单据日期属性名称 -->
+		<property name="billdateFieldName" value="" />
+		<property name="model" ref="icBizModel" />
 	</bean>
 
 	<!-- 出库单关联功能管理动作（浏览状态下） -->
@@ -437,7 +437,7 @@
 			</list>
 		</property>
 	</bean>
-
+	
 	<bean id="pk_orgHandler" class="nc.ui.ic.m4d.handler.Pk_orgHandlerFor4D">
 		<property name="editorModel" ref="icBizEditorModel" />
 		<property name="context" ref="icUIContext" />
@@ -454,7 +454,7 @@
 		<property name="handlerMap">
 			<map>
 				<entry key="cmffileid">
-					<ref bean="cmffileidHandler"/>
+					<ref bean="cmffileidHandler" />
 				</entry>
 				<entry key="cdrawcalbodyvid">
 					<bean class="nc.ui.ic.m4d.handler.CdrawcalbodyvidHandler" />
@@ -497,14 +497,31 @@
 				</entry>
 				<!-- 批次号 -->
 				<entry key="vbatchcode">
-					<bean class="nc.ui.ic.m4d.handler.VbatchcodeHandlerFor4D" />
+					<ref bean="batchCodeHandler" />
 				</entry>
-				
+
 			</map>
 		</property>
 	</bean>
 
-
+<!-- 2017-08-22 为自动检货按钮配置拦截器 实现自动取成本对象的数据 -->
+	<bean class="nc.ui.pubapp.plugin.action.ActionInterceptorInfo">
+		<property name="target" ref="pickAutoAction" />
+		<property name="interceptor" ref="pickAutoInterceptoor"/>
+	</bean>
+	<bean id="pickAutoInterceptoor" class="nc.ui.ic.m4d.handler.PickAutoAcitonInterceptor">
+		<property name="tool" ref="costTool" />
+	</bean>
+	
+	<bean id="costTool" class="nc.ui.ic.m4d.handler.CostObjectDealTool">
+		<property name="editorModel" ref="icBizEditorModel" />
+	</bean>
+		<bean id="batchCodeHandler" class="nc.ui.ic.m4d.handler.VbatchcodeHandlerFor4D">
+		<property name="tool" ref="costTool" />
+	</bean>
+	
+	<!-- 2017-08-22 为自动检货按钮配置拦截器 实现自动取成本对象的数据 -->
+	
 	<bean name="InitDataListener"
 		class="nc.ui.pubapp.uif2app.model.DefaultFuncNodeInitDataListener">
 		<property name="processorMap">
@@ -585,9 +602,9 @@
 		<property name="model" ref="icBizModel" />
 	</bean>
 
-	<!--	转单后公共代码处理 -转单精度处理-精度控制  -->
-    <bean id="scalePrcStrategy" class="nc.ui.ic.m4d.deal.MaterialBillScaleProcessor">
-    </bean>
+	<!-- 转单后公共代码处理 -转单精度处理-精度控制 -->
+	<bean id="scalePrcStrategy" class="nc.ui.ic.m4d.deal.MaterialBillScaleProcessor">
+	</bean>
 	<!-- 自由项、自定义项组件的卡片配置 -->
 	<bean id="userdefAndMarAsstCardPreparator" class="nc.ui.pubapp.uif2app.view.CompositeBillDataPrepare">
 		<property name="billDataPrepares">
@@ -611,7 +628,7 @@
 			</list>
 		</property>
 	</bean>
-	
+
 	<!-- 普通单取消签字动作 -->
 	<bean id="cancelSignAction" class="nc.ui.ic.m4d.action.CancelSignAction">
 		<property name="model" ref="icBizModel" />
@@ -633,11 +650,11 @@
 		<property name="productorField" value="cprodproductorid" />
 		<property name="customerField" value="cprodasscustid" />
 	</bean>
-	
+
 	<!-- 材料出库单查询对话框初始化处理 -->
-	<bean id="qryDLGInitializer" class="nc.ui.ic.m4d.deal.MaterialOutQueryDLGInitializer" >	
-		<property name="model" ref="icBizModel"/>
-	<!-- <property name="scmBatchRef" ref="scmBatchRef"/> -->
+	<bean id="qryDLGInitializer" class="nc.ui.ic.m4d.deal.MaterialOutQueryDLGInitializer">
+		<property name="model" ref="icBizModel" />
+		<!-- <property name="scmBatchRef" ref="scmBatchRef"/> -->
 	</bean>
 
 	<!-- 交叉校验规则 -->
@@ -645,5 +662,5 @@
 		init-method="init">
 		<property name="model" ref="icBizModel" />
 		<property name="billType" value="4D" />
-	</bean> 
+	</bean>
 </beans>

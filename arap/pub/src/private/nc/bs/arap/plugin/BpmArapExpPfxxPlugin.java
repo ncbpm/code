@@ -56,86 +56,17 @@ public class BpmArapExpPfxxPlugin<T extends BaseAggVO> extends
 	 * @return
 	 * @throws BusinessException
 	 */
-	@SuppressWarnings("unchecked")
 	protected Object processBill(Object vo, ISwapContext swapContext,
 			AggxsysregisterVO aggxsysvo) throws BusinessException {
 
 		BaseAggVO newBill = null;
-
 		// 1.得到转换后的VO数据,取决于向导第一步注册的VO信息
 		BaseAggVO bill = (BaseAggVO) vo;
+		checkData(bill.getHeadVO());
+		// 设置当前操作人
+		InvocationInfoProxy.getInstance().setUserId(
+				bill.getHeadVO().getBillmaker());
 		BaseBillVO head = setHeaderDefault(bill.getHeadVO());
-		if (head.getPk_billtype() == null) {
-			throw new BusinessException(nc.vo.ml.NCLangRes4VoTransl
-					.getNCLangRes().getStrByID("2006pub_0", "02006pub-0316")/*
-																			 * @res
-																			 * "单据的单据类型编码字段不能为空，请输入值"
-																			 */);
-		}
-		if (!head.getPk_billtype().equals(IArapBillTypeCons.F0)
-				&& !head.getPk_billtype().equals(IArapBillTypeCons.F1)
-				&& !head.getPk_billtype().equals(IArapBillTypeCons.F2)
-				&& !head.getPk_billtype().equals(IArapBillTypeCons.F3)) {
-			throw new BusinessException(nc.vo.ml.NCLangRes4VoTransl
-					.getNCLangRes().getStrByID("2006pub_0", "02006pub-0650")/*
-																			 * @res
-																			 * "单据的单据类型编码字段错误"
-																			 */);
-		}
-		if (head.getPk_tradetype() == null) {
-			throw new BusinessException(nc.vo.ml.NCLangRes4VoTransl
-					.getNCLangRes().getStrByID("2006pub_0", "02006pub-0649")/*
-																			 * @res
-																			 * "单据的交易类型编码字段不能为空，请输入值"
-																			 */);
-		}
-		if (head.getPk_group() == null) {
-			throw new BusinessException(nc.vo.ml.NCLangRes4VoTransl
-					.getNCLangRes().getStrByID("2006pub_0", "02006pub-0317")/*
-																			 * @res
-																			 * "单据的所属集团字段不能为空，请输入值"
-																			 */);
-		}
-		if (head.getPk_org() == null) {
-			throw new BusinessException(nc.vo.ml.NCLangRes4VoTransl
-					.getNCLangRes().getStrByID("2006pub_0", "02006pub-0318")/*
-																			 * @res
-																			 * "单据的财务组织字段不能为空，请输入值"
-																			 */);
-		}
-
-		// 设置业务流程
-		try {
-			IPFConfig ipf = NCLocator.getInstance().lookup(IPFConfig.class);
-			if (!StringUtils.isEmpty(head.getPk_billtype())
-					&& !StringUtils.isEmpty(head.getPk_tradetype())) {
-				if (head.getCreator() == null) {
-					head.setCreator(InvocationInfoProxy.getInstance()
-							.getUserId());
-				}
-				String pk_busitype = ipf.retBusitypeCanStart(
-						head.getPk_billtype(), head.getPk_tradetype(),
-						head.getPk_org(), head.getCreator());
-				if (pk_busitype == null) {
-					throw new BusinessException("busitype is null");
-				}
-				head.setPk_busitype(pk_busitype);
-			}
-		} catch (Exception e) {
-			String msg = nc.vo.ml.NCLangRes4VoTransl.getNCLangRes().getStrByID(
-					"2006pub_0", "02006pub-0127")/* @res "交易类型" */
-					+ head.getPk_tradetype()
-					+ nc.vo.ml.NCLangRes4VoTransl.getNCLangRes().getStrByID(
-							"2006pub_0", "02006pub-0239")/*
-														 * @res
-														 * "没有找到相应的流程,请在[业务流定义]配置"
-														 */
-					+ head.getPk_tradetype()
-					+ nc.vo.ml.NCLangRes4VoTransl.getNCLangRes().getStrByID(
-							"2006pub_0", "02006pub-0240")/* @res "自制流程" */;
-			throw new BusinessRuntimeException(msg);
-		}
-
 		setBodyDefault(head, (BaseItemVO[]) bill.getChildrenVO());
 		BillMoneyVUtils
 				.sumBodyToHead(head, (BaseItemVO[]) bill.getChildrenVO());
@@ -144,7 +75,6 @@ public class BpmArapExpPfxxPlugin<T extends BaseAggVO> extends
 		String oldPk = PfxxPluginUtils.queryBillPKBeforeSaveOrUpdate(
 				swapContext.getBilltype(), swapContext.getDocID());
 		if (oldPk != null) {
-
 			// 这个判断，好像平台已经过，如果单据已导入，且replace="N"，那么平台就会抛出异常，提示不可重复
 			if (swapContext.getReplace().equalsIgnoreCase("N"))
 				throw new BusinessException(nc.vo.ml.NCLangRes4VoTransl
@@ -209,6 +139,51 @@ public class BpmArapExpPfxxPlugin<T extends BaseAggVO> extends
 		PfxxPluginUtils.addDocIDVsPKContrast(swapContext.getBilltype(),
 				swapContext.getDocID(), pk);
 		return pk;
+	}
+
+	private void checkData(BaseBillVO head) throws BusinessException {
+		// TODO 自动生成的方法存根
+		if (head.getPk_billtype() == null) {
+			throw new BusinessException(nc.vo.ml.NCLangRes4VoTransl
+					.getNCLangRes().getStrByID("2006pub_0", "02006pub-0316")/*
+																			 * @res
+																			 * "单据的单据类型编码字段不能为空，请输入值"
+																			 */);
+		}
+		if (!head.getPk_billtype().equals(IArapBillTypeCons.F0)
+				&& !head.getPk_billtype().equals(IArapBillTypeCons.F1)
+				&& !head.getPk_billtype().equals(IArapBillTypeCons.F2)
+				&& !head.getPk_billtype().equals(IArapBillTypeCons.F3)) {
+			throw new BusinessException(nc.vo.ml.NCLangRes4VoTransl
+					.getNCLangRes().getStrByID("2006pub_0", "02006pub-0650")/*
+																			 * @res
+																			 * "单据的单据类型编码字段错误"
+																			 */);
+		}
+		if (head.getPk_tradetype() == null) {
+			throw new BusinessException(nc.vo.ml.NCLangRes4VoTransl
+					.getNCLangRes().getStrByID("2006pub_0", "02006pub-0649")/*
+																			 * @res
+																			 * "单据的交易类型编码字段不能为空，请输入值"
+																			 */);
+		}
+		if (head.getPk_group() == null) {
+			throw new BusinessException(nc.vo.ml.NCLangRes4VoTransl
+					.getNCLangRes().getStrByID("2006pub_0", "02006pub-0317")/*
+																			 * @res
+																			 * "单据的所属集团字段不能为空，请输入值"
+																			 */);
+		}
+		if (head.getPk_org() == null) {
+			throw new BusinessException(nc.vo.ml.NCLangRes4VoTransl
+					.getNCLangRes().getStrByID("2006pub_0", "02006pub-0318")/*
+																			 * @res
+																			 * "单据的财务组织字段不能为空，请输入值"
+																			 */);
+		}
+		if (head.getBillmaker() == null) {
+			throw new BusinessException("billmaker不能为空");
+		}
 	}
 
 	private BaseAggVO insertBill(BaseAggVO bill) throws BusinessException {
@@ -295,33 +270,63 @@ public class BpmArapExpPfxxPlugin<T extends BaseAggVO> extends
 	 * @return
 	 * @throws BusinessException
 	 */
-	private BaseBillVO setHeaderDefault(BaseBillVO header)
+	private BaseBillVO setHeaderDefault(BaseBillVO head)
 			throws BusinessException {
 		Integer ZERO = Integer.valueOf(0);
 		/* 单据状态为未审核 */
-		header.setBillstatus(BillEnumCollection.BillSatus.Save.VALUE);
-		header.setEffectstatus(BillEnumCollection.InureSign.NOINURE.VALUE);
-		header.setDr(ZERO);
+		head.setBillstatus(BillEnumCollection.BillSatus.Save.VALUE);
+		head.setEffectstatus(BillEnumCollection.InureSign.NOINURE.VALUE);
+		head.setDr(ZERO);
 		// 来源系统是外部交换平台
-		header.setSrc_syscode(BillEnumCollection.FromSystem.WBJHPT.VALUE);
-		header.setCreationtime(new UFDateTime());
-		header.setCoordflag(null);
+		head.setSrc_syscode(BillEnumCollection.FromSystem.WBJHPT.VALUE);
+		head.setCreationtime(new UFDateTime());
+		head.setCoordflag(null);
 
 		// 设置会计年和会计期间。若根据日期查不到会计期间，则捕获异常，不作处理
 		try {
-			AccountCalendar ac = AccountCalendar.getInstanceByPk_org(header
+			AccountCalendar ac = AccountCalendar.getInstanceByPk_org(head
 					.getPk_org());
-			ac.setDate(header.getBilldate());
-			header.setBillyear(ac.getYearVO().getPeriodyear());
-			header.setBillperiod(ac.getMonthVO().getAccperiodmth());
+			ac.setDate(head.getBilldate());
+			head.setBillyear(ac.getYearVO().getPeriodyear());
+			head.setBillperiod(ac.getMonthVO().getAccperiodmth());
 		} catch (BusinessException ex) {
 		}
 
 		// 设置交易类型pk
-		header.setPk_tradetypeid(PfDataCache.getBillTypeInfo(
-				header.getPk_group(), header.getPk_tradetype())
-				.getPk_billtypeid());
-		return header;
+		head.setPk_tradetypeid(PfDataCache.getBillTypeInfo(head.getPk_group(),
+				head.getPk_tradetype()).getPk_billtypeid());
+		// 设置业务流程
+		try {
+			IPFConfig ipf = NCLocator.getInstance().lookup(IPFConfig.class);
+			if (!StringUtils.isEmpty(head.getPk_billtype())
+					&& !StringUtils.isEmpty(head.getPk_tradetype())) {
+				if (head.getCreator() == null) {
+					head.setCreator(InvocationInfoProxy.getInstance()
+							.getUserId());
+				}
+				String pk_busitype = ipf.retBusitypeCanStart(
+						head.getPk_billtype(), head.getPk_tradetype(),
+						head.getPk_org(), head.getCreator());
+				if (pk_busitype == null) {
+					throw new BusinessException("busitype is null");
+				}
+				head.setPk_busitype(pk_busitype);
+			}
+		} catch (Exception e) {
+			String msg = nc.vo.ml.NCLangRes4VoTransl.getNCLangRes().getStrByID(
+					"2006pub_0", "02006pub-0127")/* @res "交易类型" */
+					+ head.getPk_tradetype()
+					+ nc.vo.ml.NCLangRes4VoTransl.getNCLangRes().getStrByID(
+							"2006pub_0", "02006pub-0239")/*
+														 * @res
+														 * "没有找到相应的流程,请在[业务流定义]配置"
+														 */
+					+ head.getPk_tradetype()
+					+ nc.vo.ml.NCLangRes4VoTransl.getNCLangRes().getStrByID(
+							"2006pub_0", "02006pub-0240")/* @res "自制流程" */;
+			throw new BusinessRuntimeException(msg);
+		}
+		return head;
 	}
 
 	void setBodyDefault(BaseBillVO head, BaseItemVO[] items)

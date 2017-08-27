@@ -621,10 +621,12 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 
 			PayPeriodVO periodvo = getPayPeriodVO(name);
 
-			// 未回写行
-			List<PayPlanVO> nwritelist = new ArrayList<>();
-			// 已回写行
-			List<PayPlanVO> writelist = new ArrayList<>();
+			// 按照账期记录未回写行
+			Map<Integer, List<PayPlanVO>> nomap = new HashMap<>();
+			// 按照账期记录回写行
+
+			Map<Integer, List<PayPlanVO>> map = new HashMap<>();
+
 			// 汇总该定下的所有数据
 			List<PayPlanVO> updatelist1 = new ArrayList<>();
 
@@ -638,21 +640,40 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 					if (StringUtil.isSEmptyOrNull(feffdatetype)) {
 						updatelist1.add(plan);
 					} else {
-						// 如果是入库 或是发票行 找到需要更新的行数据
+						// 如果是入库 或是发票行 找到需要更新的行数据（根据起算依据判断）
 						if (!feffdatetype.equalsIgnoreCase(periodvo
 								.getPrimaryKey())) {
 							updatelist1.add(plan);
 						} else {
+							// def1 存的来源信息
 							String def1 = getPayPlanDef1(plan.getPrimaryKey());
+							// 账期 根据账期分组
+							Integer def12 = plan.getIitermdays();
 							// def1 存的来源信息 如果存在来源 证明是回写行
 							if (!StringUtil.isSEmptyOrNull(def1)) {
 								if (def1.equalsIgnoreCase(sourceid)) {
+									// 回写行
+									List<PayPlanVO> writelist = null;
+									if (nomap.containsKey(def12)) {
+										writelist = map.get(def12);
+									} else {
+										writelist = new ArrayList<>();
+									}
 									writelist.add(plan);
+									map.put(def12, writelist);
 								} else {
 									updatelist1.add(plan);
 								}
 							} else {
-								nwritelist.add(plan);
+								// 未回写行
+								List<PayPlanVO> nowritelist = null;
+								if (nomap.containsKey(def12)) {
+									nowritelist = nomap.get(def12);
+								} else {
+									nowritelist = new ArrayList<>();
+								}
+								nowritelist.add(plan);
+								nomap.put(def12, nowritelist);
 							}
 						}
 					}
@@ -660,33 +681,45 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 
 				PayPlanVO planclone = null;
 				UFDouble norigmny = UFDouble.ZERO_DBL;// 未回写金额
-				if (writelist == null || writelist.size() == 0) {
+				List<PayPlanVO> writelisttotal = new ArrayList<>();
+				// 无回写行
+				if (map == null || map.size() == 0)
 					continue;
-				} else {
-					planclone = (PayPlanVO) writelist.get(0).clone();
-					for (PayPlanVO vo : writelist) {
-						norigmny = SafeCompute.add(vo.getNorigmny(), norigmny);
+
+				for (Map.Entry<Integer, List<PayPlanVO>> entry : map.entrySet()) {
+					List<PayPlanVO> writelist = entry.getValue();
+					if (writelist == null || writelist.size() == 0) {
+						continue;
+					} else {
+						planclone = (PayPlanVO) writelist.get(0).clone();
+						for (PayPlanVO vo : writelist) {
+							norigmny = SafeCompute.add(vo.getNorigmny(),
+									norigmny);
+							writelisttotal.add(vo);
+						}
+					}
+
+					List<PayPlanVO> nowritelist = nomap.get(entry.getKey());
+
+					// 不存在未回写 增新建一条数据 然后 汇总 入库单金额 如果有未回写的 则合并
+					if (nowritelist == null || nowritelist.size() == 0) {
+						planclone.setPrimaryKey(null);
+						planclone.setNorigmny(norigmny);
+						planclone.setDbegindate(null);
+						planclone.setDenddate(null);
+						nowritelist.add(planclone);
+						setRowNo(planclone, updatelist1);
+					} else {
+						planclone = (PayPlanVO) nowritelist.get(0);
+						norigmny = SafeCompute.add(planclone.getNorigmny(),
+								norigmny);
+						planclone.setNorigmny(norigmny);
+					}
+					for (PayPlanVO plan : nowritelist) {
+						updatelist1.add(plan);
 					}
 				}
 
-				// 不存在未回写 增新建一条数据 然后 汇总 入库单金额 如果有未回写的 则合并
-				if (nwritelist == null || nwritelist.size() == 0) {
-					planclone.setPrimaryKey(null);
-					planclone.setNorigmny(norigmny);
-					planclone.setDbegindate(null);
-					planclone.setDenddate(null);
-					nwritelist.add(planclone);
-					setRowNo(planclone, updatelist1);
-				} else {
-					planclone = (PayPlanVO) nwritelist.get(0);
-					norigmny = SafeCompute.add(planclone.getNorigmny(),
-							norigmny);
-					planclone.setNorigmny(norigmny);
-				}
-
-				for (PayPlanVO plan : nwritelist) {
-					updatelist1.add(plan);
-				}
 				// 计算比例
 				plans = updatelist1.toArray(new PayPlanVO[updatelist1.size()]);
 				calcMnyByRate(plans);
@@ -695,8 +728,8 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 
 				AggPayPlanVO aggvo1 = new AggPayPlanVO();
 				aggvo1.setParentVO(aggvo.getParentVO());
-				aggvo1.setPayPlanVO(writelist.toArray(new PayPlanVO[writelist
-						.size()]));
+				aggvo1.setPayPlanVO(writelisttotal
+						.toArray(new PayPlanVO[writelisttotal.size()]));
 				savePayPlanViewVO(aggvo, aggvo1);
 			}
 		}

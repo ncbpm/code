@@ -1,96 +1,26 @@
-package nc.ui.invp.balance.action;
+package nc.ui.ic.onhand;
 
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import nc.funcnode.ui.FuncletInitData;
-import nc.ui.ic.onhand.OnhandDialog;
-import nc.ui.ic.onhand.model.OnhandDataBillManageModel;
 import nc.ui.pub.beans.constenum.DefaultConstEnum;
 import nc.ui.pub.bill.BillItem;
+import nc.ui.pub.bill.BillListPanel;
 import nc.ui.pub.bill.BillModel;
-import nc.ui.pubapp.uif2app.model.BillManageModel;
-import nc.ui.pubapp.uif2app.view.BillListView;
-import nc.ui.scmpub.action.SCMActionInitializer;
-import nc.ui.uif2.AppEvent;
-import nc.ui.uif2.NCAction;
+import nc.vo.ic.onhand.entity.OnhandDimAdapterFactory;
 import nc.vo.ic.onhand.entity.OnhandDimVO;
-import nc.vo.ic.onhand.entity.OnhandDlgConst;
+import nc.vo.ic.onhand.entity.OnhandVO;
 import nc.vo.ic.pub.util.NCBaseTypeUtils;
 import nc.vo.invp.result.entity.BalanceResultVO;
 import nc.vo.pu.onhand.entity.OnhandDlgPUHeaderVO;
 import nc.vo.pub.lang.UFDouble;
 import nc.vo.pubapp.pattern.model.entity.view.IDataView;
 import nc.vo.pubapp.pattern.model.meta.entity.view.DataViewMeta;
-import nc.vo.scmpub.res.SCMActionCode;
+import nc.vo.uif2.LoginContext;
 
-/**
- * 存量查拣action
- * 
- * @author wangceb
- */
-public class QueryOnhandAction extends NCAction {
-
-	private static final String path = "nc/ui/pu/pub/action/InvQueryOnHand.xml";
-
-	private static final long serialVersionUID = -7228894679966512759L;
-
-	private OnhandDialog dlg;
-
-	private BillListView list;
-
-	private BillManageModel model;
-
-	public QueryOnhandAction() {
-		SCMActionInitializer.initializeAction(this,
-				SCMActionCode.IC_ONHANDDISPHIDE);
-	}
-
-	@Override
-	public void doAction(ActionEvent e) throws Exception {
-
-		this.dlg = new OnhandDialog(this.getModel().getContext()
-				.getEntranceUI(), true);
-
-		// 获得表体维度，以便从数据中取值
-		Map<String, String> bodyDims = this.getBodyDims();
-
-		List<IDataView> headVOs = new ArrayList<IDataView>();
-		int row = this.list.getBillListPanel().getHeadTable().getSelectedRow();
-		BillModel bm = this.list.getBillListPanel().getHeadBillModel();
-		if (row != -1 && bm != null) {
-			this.setDialogData(headVOs, bodyDims, row, bm);
-		}
-		FuncletInitData initData = new FuncletInitData();
-
-		initData.setInitData(headVOs.toArray(new IDataView[headVOs.size()]));
-
-		this.dlg.initUI(this.getModel().getContext(), QueryOnhandAction.path,
-				initData, false);
-		this.dlg.showModal();
-		String[] groupObjectsKeys = new String[] { "pk_org", "cwarehouseid",
-				"cmaterialoid", "castunitid", "cvendorid" ,"cvmivenderid"};
-		OnhandDataBillManageModel model = (OnhandDataBillManageModel) dlg
-				.getBeanByName("manageAppModel");
-		model.setGroupFiled(Arrays.asList(groupObjectsKeys));
-		// // 分组维度修改后清空缓存
-		// this.getModel().clearResultMap();
-		// // 发送事件，执行查询nc.ui.ic.onhand.OnhandDataManager.refresh()
-		model.fireEvent(new AppEvent(OnhandDlgConst.ONHAND_NEED_REFRESH));
-
-	}
-
-	private List<String> getAssignedKeys(String[] groupObjects) {
-		List<String> groupFields = new ArrayList<String>();
-		for (String oneGroupObj : groupObjects) {
-			groupFields.add(oneGroupObj);
-		}
-		return groupFields;
-	}
+public class OnhandValueSet {
 
 	/**
 	 * 获得存量维度
@@ -115,22 +45,6 @@ public class QueryOnhandAction extends NCAction {
 		bodyDims.put(OnhandDimVO.CWAREHOUSEID, BalanceResultVO.PK_REQSTORDOC);
 
 		return bodyDims;
-	}
-
-	public BillListView getList() {
-		return this.list;
-	}
-
-	public BillManageModel getModel() {
-		return this.model;
-	}
-
-	public void setList(BillListView list) {
-		this.list = list;
-	}
-
-	public void setModel(BillManageModel model) {
-		this.model = model;
 	}
 
 	/**
@@ -179,7 +93,28 @@ public class QueryOnhandAction extends NCAction {
 		// headVO.setOnhandshouldassnum((UFDouble) bm.getValueAt(i,
 		// BalanceResultVO.NASTNUM));
 		headVOs.add(headVO);
+	}
 
+	public void setOnHandVO(BillListPanel listPanel, LoginContext context) {
+
+		// 获得表体维度，以便从数据中取值
+		Map<String, String> bodyDims = this.getBodyDims();
+
+		List<IDataView> headVOs = new ArrayList<IDataView>();
+		int row = listPanel.getHeadTable().getSelectedRow();
+		BillModel bm = listPanel.getHeadBillModel();
+		if (row != -1 && bm != null) {
+			this.setDialogData(headVOs, bodyDims, row, bm);
+			OnhandDimVO onhandDimVO = new OnhandDimAdapterFactory()
+					.createOnhandDim(headVOs.get(0));
+			OnhandDimVO cloendOnhandDimVO = (OnhandDimVO) onhandDimVO.clone();
+
+			OnhandDataManager2 handManager = new OnhandDataManager2();
+			handManager.setContext(context);
+			OnhandVO[] hands = handManager.queryOnhand(cloendOnhandDimVO);
+			listPanel.getBodyBillModel().setBodyDataVO(hands);
+			listPanel.getBodyBillModel().execLoadFormula();
+		}
 	}
 
 }

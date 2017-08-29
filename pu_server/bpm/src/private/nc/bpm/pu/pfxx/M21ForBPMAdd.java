@@ -478,15 +478,33 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 		parentVO.setForderstatus(POEnumBillStatus.FREE.toInteger());
 
 		// 表头默认值
-		parentVO.setIprintcount(0);
-		parentVO.setBrefwhenreturn(UFBoolean.FALSE);
-		parentVO.setBfrozen(UFBoolean.FALSE);
-		parentVO.setBisreplenish(UFBoolean.FALSE);
-		parentVO.setBfinalclose(UFBoolean.FALSE);
-		parentVO.setBpublish(UFBoolean.FALSE);
-		parentVO.setBislatest(UFBoolean.TRUE);
-		parentVO.setNversion(1);
-		parentVO.setBislatest(UFBoolean.TRUE);
+		if(parentVO.getAttributeValue(OrderHeaderVO.IPRINTCOUNT) == null){
+			parentVO.setAttributeValue(OrderHeaderVO.IPRINTCOUNT, 0);
+		}
+		if(parentVO.getAttributeValue(OrderHeaderVO.BREFWHENRETURN) == null){
+			parentVO.setAttributeValue(OrderHeaderVO.BREFWHENRETURN, UFBoolean.TRUE);
+		}
+		if(parentVO.getAttributeValue(OrderHeaderVO.BFROZEN) == null){
+			parentVO.setAttributeValue(OrderHeaderVO.BFROZEN, UFBoolean.FALSE);
+		}
+		if(parentVO.getAttributeValue(OrderHeaderVO.BISREPLENISH) == null){
+			parentVO.setAttributeValue(OrderHeaderVO.BISREPLENISH, UFBoolean.FALSE);
+		}
+		if(parentVO.getAttributeValue(OrderHeaderVO.BFINALCLOSE) == null){
+			parentVO.setAttributeValue(OrderHeaderVO.BFINALCLOSE, UFBoolean.FALSE);
+		}
+		if(parentVO.getAttributeValue(OrderHeaderVO.BPUBLISH) == null){
+			parentVO.setAttributeValue(OrderHeaderVO.BPUBLISH, UFBoolean.FALSE);
+		}
+		if(parentVO.getAttributeValue(OrderHeaderVO.BPUBLISH) == null){
+			parentVO.setAttributeValue(OrderHeaderVO.BPUBLISH, UFBoolean.FALSE);
+		}
+		if(parentVO.getAttributeValue(OrderHeaderVO.BISLATEST) == null){
+			parentVO.setAttributeValue(OrderHeaderVO.BISLATEST, UFBoolean.TRUE);
+		}
+		if(parentVO.getAttributeValue(OrderHeaderVO.NVERSION) == null){
+			parentVO.setAttributeValue(OrderHeaderVO.NVERSION, 1);
+		}
 		//
 		// --表体根据来源查询设置
 		// <vsourcetrantype>0001A510000000001SOR</vsourcetrantype>
@@ -516,24 +534,37 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 			bvo.setCqtunitid(bvo.getCunitid());
 			bvo.setVqtunitrate(bvo.getVchangerate());
 			// --表体默认值
-			// <fisactive>0</fisactive>
-			bvo.setFisactive(0);
-			// <btriatradeflag>N</btriatradeflag>
-			bvo.setBtriatradeflag(UFBoolean.FALSE);
-			// <bborrowpur>N</bborrowpur>
-			bvo.setBborrowpur(UFBoolean.FALSE);
-			// <binvoiceclose>N</binvoiceclose>
-			bvo.setBinvoiceclose(UFBoolean.FALSE);
-			// <barriveclose>N</barriveclose>
-			bvo.setBarriveclose(UFBoolean.FALSE);
-			// <bpayclose>N</bpayclose>
-			bvo.setBpayclose(UFBoolean.FALSE);
-			// <breceiveplan>N</breceiveplan>
-			bvo.setBreceiveplan(UFBoolean.FALSE);
-			// <blargess>N</blargess>
-			bvo.setBlargess(UFBoolean.FALSE);
-			// <btransclosed>N</btransclosed>
-			bvo.setBtransclosed(UFBoolean.FALSE);
+			
+			if(bvo.getAttributeValue(OrderItemVO.FISACTIVE) == null){
+				bvo.setAttributeValue(OrderItemVO.FISACTIVE, 0);
+			}
+			if(bvo.getAttributeValue(OrderItemVO.BTRIATRADEFLAG) == null){
+				bvo.setAttributeValue(OrderItemVO.BTRIATRADEFLAG, UFBoolean.FALSE);
+			}
+			if(bvo.getAttributeValue(OrderItemVO.BBORROWPUR) == null){
+				bvo.setAttributeValue(OrderItemVO.BBORROWPUR, UFBoolean.FALSE);
+			}
+			if(bvo.getAttributeValue(OrderItemVO.BINVOICECLOSE) == null){
+				bvo.setAttributeValue(OrderItemVO.BINVOICECLOSE, UFBoolean.FALSE);
+			}
+			if(bvo.getAttributeValue(OrderItemVO.BARRIVECLOSE) == null){
+				bvo.setAttributeValue(OrderItemVO.BARRIVECLOSE, UFBoolean.FALSE);
+			}
+			if(bvo.getAttributeValue(OrderItemVO.BARRIVECLOSE) == null){
+				bvo.setAttributeValue(OrderItemVO.BARRIVECLOSE, UFBoolean.FALSE);
+			}
+			if(bvo.getAttributeValue(OrderItemVO.BPAYCLOSE) == null){
+				bvo.setAttributeValue(OrderItemVO.BPAYCLOSE, UFBoolean.FALSE);
+			}
+			if(bvo.getAttributeValue(OrderItemVO.BRECEIVEPLAN) == null){
+				bvo.setAttributeValue(OrderItemVO.BRECEIVEPLAN, UFBoolean.FALSE);
+			}
+			if(bvo.getAttributeValue(OrderItemVO.BLARGESS) == null){
+				bvo.setAttributeValue(OrderItemVO.BLARGESS, UFBoolean.FALSE);
+			}
+			if(bvo.getAttributeValue(OrderItemVO.BTRANSCLOSED) == null){
+				bvo.setAttributeValue(OrderItemVO.BTRANSCLOSED, UFBoolean.FALSE);
+			}
 			
 			if ("30".equalsIgnoreCase(bvo.getCsourcetypecode())) {
 //				1. BPM来源信息记录的是BPM的销售订单信息

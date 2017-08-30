@@ -312,6 +312,8 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 								setDate(planclone, dbegindate);
 								setRowNo(planclone, updatelist1);
 								updatelist1.add(planclone);
+								// 入库金额为零 不在继续拆分
+								purinNmny = UFDouble.ZERO_DBL;
 							}
 						}
 					}
@@ -680,12 +682,13 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 				}
 
 				PayPlanVO planclone = null;
-				UFDouble norigmny = UFDouble.ZERO_DBL;// 未回写金额
+				UFDouble norigmny = UFDouble.ZERO_DBL;// 回写金额
 				List<PayPlanVO> writelisttotal = new ArrayList<>();
 				// 无回写行
 				if (map == null || map.size() == 0)
 					continue;
 
+				// 回写行账期数据处理
 				for (Map.Entry<Integer, List<PayPlanVO>> entry : map.entrySet()) {
 					List<PayPlanVO> writelist = entry.getValue();
 					if (writelist == null || writelist.size() == 0) {
@@ -717,6 +720,19 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 					}
 					for (PayPlanVO plan : nowritelist) {
 						updatelist1.add(plan);
+					}
+				}
+
+				// 取出账期不在 回写行账期的数据
+				for (Map.Entry<Integer, List<PayPlanVO>> entry : nomap
+						.entrySet()) {
+
+					Integer key = entry.getKey();
+					if (!map.containsKey(key)) {
+						List<PayPlanVO> nowritelist = entry.getValue();
+						for (PayPlanVO plan : nowritelist) {
+							updatelist1.add(plan);
+						}
 					}
 				}
 

@@ -163,7 +163,7 @@ public class OnhandQryCondBuilder1 {
 		listdims.add(OnhandDimVO.CMATERIALOID);
 		listdims.add(OnhandDimVO.PK_ORG);
 		String[] groupObjectsKeys = new String[] { "pk_org", "cwarehouseid",
-				"cmaterialoid", "castunitid", "cvendorid","cvmivenderid " };
+				"cmaterialoid", "castunitid", "cvendorid","cvmivenderid" };
 		listdims.addAll(Arrays.asList(groupObjectsKeys));
 		listdims.addAll(Arrays
 				.asList(new String[] { "pk_org", "cmaterialoid" }));

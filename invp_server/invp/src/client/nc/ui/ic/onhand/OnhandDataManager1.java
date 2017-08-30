@@ -85,7 +85,7 @@ public class OnhandDataManager1 extends OnhandDataManager implements AppEventLis
 		
 		// 执行查询
 				String[] groupObjectsKeys = new String[] { "pk_org", "cwarehouseid",
-						"cmaterialoid", "castunitid", "cvendorid","cvmivenderid " };
+						"cmaterialoid", "castunitid", "cvendorid","cvmivenderid" };
 				OnhandDataBillManageModel model =this.getOnhandCompositeModel().getModel();
 				model.setGroupFiled(Arrays.asList(groupObjectsKeys));
 				// // 分组维度修改后清空缓存

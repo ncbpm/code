@@ -36,7 +36,7 @@ public class OnhandDataManager2 {
 
 	LoginContext context = null;
 	String[] groupObjectsKeys = new String[] { "pk_org", "cwarehouseid",
-			"cmaterialoid", "castunitid", "cvendorid","cvmivenderid " };
+			"cmaterialoid", "castunitid", "cvendorid","cvmivenderid" };
 	// 多组织处理
 	private String[] pk_orgs;
 

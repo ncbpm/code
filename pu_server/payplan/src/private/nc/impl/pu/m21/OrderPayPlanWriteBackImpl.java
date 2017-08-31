@@ -13,6 +13,7 @@ import nc.itf.pu.m21.IOrderPayPlan;
 import nc.itf.pu.m21.IOrderPayPlanQuery;
 import nc.itf.pu.m21.IOrderPayPlanWriteBack;
 import nc.jdbc.framework.processor.ColumnProcessor;
+import nc.pubitf.uapbd.CurrencyRateUtil;
 import nc.vo.bd.meta.BatchOperateVO;
 import nc.vo.bd.payperiod.PayPeriodVO;
 import nc.vo.ic.m45.entity.PurchaseInBodyVO;
@@ -28,6 +29,9 @@ import nc.vo.pub.BusinessException;
 import nc.vo.pub.ISuperVO;
 import nc.vo.pub.lang.UFDate;
 import nc.vo.pub.lang.UFDouble;
+import nc.vo.pubapp.pattern.exception.ExceptionUtils;
+import nc.vo.pubapp.pattern.pub.MathTool;
+import nc.vo.scmpub.payterm.pay.AbstractPayPlanVO;
 import nc.vo.trade.voutils.SafeCompute;
 
 public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
@@ -153,7 +157,7 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 						continue;
 					}
 
-					UFDouble nmny = plan.getNmny();
+					UFDouble nmny = plan.getNorigmny();
 					if (nmny == null)
 						nmny = UFDouble.ZERO_DBL;
 					if (nmny.compareTo(entry.getValue()) == 0) {
@@ -182,22 +186,29 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 							planclone.setPrimaryKey(null);
 							planclone.setNorigmny(SafeCompute.sub(
 									entry.getValue(), nmny));
+							planclone.setNtotalorigmny(SafeCompute.sub(
+									entry.getValue(), nmny));
+							setNmny(plan);
 							updatelist1.add(planclone);
 						}
 
 					} else {
 						// 部分入库 剩余的部分金额
 						plan.setNorigmny(SafeCompute.sub(nmny, entry.getValue()));
+						plan.setNtotalorigmny(SafeCompute.sub(nmny, entry.getValue()));
+						setNmny(plan);
 						updatelist1.add(plan);
 
 						// 部分入库 新增的部分金额
 						PayPlanVO planclone = (PayPlanVO) plan.clone();
 						planclone.setPrimaryKey(null);
-						planclone.setNorigmny(nmny);
-						int iitermdays = plan.getIitermdays().intValue();
+						planclone.setNorigmny(entry.getValue());
+						planclone.setNtotalorigmny(entry.getValue());
+						setNmny(planclone);
+						int iitermdays = planclone.getIitermdays().intValue();
 						UFDate denddate = dbegindate.getDateAfter(iitermdays);
-						plan.setDbegindate(dbegindate);
-						plan.setDenddate(denddate);
+						planclone.setDbegindate(dbegindate);
+						planclone.setDenddate(denddate);
 						updatelist1.add(planclone);
 					}
 				}
@@ -287,7 +298,7 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 		String sql = "update po_order_payplan set def1 = '" + def1
 				+ "' where pk_order_payplan  = '" + pk_order_payplan + "'";
 		BaseDAO dao = new BaseDAO();
-		 dao.executeUpdate(sql);
+		dao.executeUpdate(sql);
 
 	}
 
@@ -313,6 +324,26 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 			intArray[i] = listindex.get(i).intValue();
 		}
 		return intArray;
+	}
+
+	private void setNmny(PayPlanVO plan) {
+		String corigcurrencyid = plan.getCorigcurrencyid();
+		String ccurrencyid = (String) plan
+				.getAttributeValue(AbstractPayPlanVO.CCURRENCYID);
+		UFDouble nexchangerate = (UFDouble) plan
+				.getAttributeValue(AbstractPayPlanVO.NEXCHANGERATE);
+		CurrencyRateUtil util = CurrencyRateUtil.getInstanceByOrg(plan
+				.getPk_financeorg());
+		try {
+
+			UFDouble ntempMny = util.getAmountByOpp(corigcurrencyid,
+					ccurrencyid, plan.getNorigmny(), nexchangerate,
+					new UFDate());
+			plan.setNmny(ntempMny);
+		} catch (BusinessException e) {
+			ExceptionUtils.wrappException(e);
+		}
+
 	}
 
 	@Override

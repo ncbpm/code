@@ -54,6 +54,18 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 				false);
 	}
 
+	/**
+	 * 4:// 充值 卡号不存在 建卡 存在 直接充值 (保留余额) 
+	 * 			保留余额 指当前传进来金额 直接充值 传多少充多少
+	 * 7:// 充值 卡号不存在 建卡 存在 直接充值 (作废余额) 
+	 * 			作废余额 指当前传进来金额 直接充值 传多少充多少 但是需要将当月已经存在的余额作废掉，也就是生成一个负的当月余额记录冲抵
+	 * 3:// 消费 
+	 * 			根据材料出库生成一条消费记录。
+	 * 5:// 挂失 
+	 * 			注销 当前卡号状态变为不可用。
+	 * 6:// 结转（上月余额结转到下月） 
+	 * 			指当前传进来金额 直接结转 传多少结转多少 生成一条上月负数记录冲抵 和本月的正式记录。
+	 */
 	@Override
 	public AggFiveMetalsVO operatebill(AggFiveMetalsVO bill)
 			throws BusinessException {
@@ -91,7 +103,7 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 			vo = savebill(bill, oldvo, vsourcetype);
 			break;
 		case 4:
-			// 充值 卡号不存在 建卡 存在 直接充值 (保留余额)
+			// 充值 卡号不存在 建卡 存在 直接充值 (当月保留余额)
 			bvos = (FiveMetalsBVO[]) bill.getChildrenVO();
 			if (bvos == null || bvos.length == 0)
 				throw new BusinessException("传入表体信息不完整");
@@ -104,7 +116,7 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 			vo = savebill(bill, oldvo, vsourcetype);
 			break;
 		case 7:
-			// 充值 卡号不存在 建卡 存在 直接充值 (作废余额)
+			// 充值 卡号不存在 建卡 存在 直接充值 (当月作废余额)
 			bvos = (FiveMetalsBVO[]) bill.getChildrenVO();
 			if (bvos == null || bvos.length == 0)
 				throw new BusinessException("传入表体信息不完整");
@@ -122,7 +134,7 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 			vo = disableAggFiveMetalsVO(oldvo);
 			break;
 		case 6:
-			// 结转
+			// 结转（上月余额结转到下月）
 			vsourcetype = "五金预算结转";
 			vo = jzbill(bill, oldvo, vsourcetype);
 			break;
@@ -177,6 +189,7 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 		return returnvos[0];
 	}
 
+	// 作废余额
 	private AggFiveMetalsVO savebill1(AggFiveMetalsVO bill,
 			FiveMetalsHVO oldvo, String vsourcetype) throws BusinessException {
 
@@ -224,6 +237,7 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 		return returnvos[0];
 	}
 
+	// 作废余额 取当月余额作废掉 （如果存在不连续结转 可能会出现问题）
 	private FiveMetalsBVO[] createFiveMetalsBVO1(FiveMetalsBVO[] bvos,
 			String pk_fivemetals_h) throws DAOException {
 
@@ -246,7 +260,6 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 					bvo1.setNmny(SafeCompute.multiply(
 							new UFDouble(i.doubleValue()), new UFDouble(-1)));
 				}
-
 				bvo1.setVremark("作废余额");
 				al.add(bvo1);
 			}
@@ -256,6 +269,7 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 
 	}
 
+	// 挂失注销 将卡号停用
 	private AggFiveMetalsVO disableAggFiveMetalsVO(FiveMetalsHVO oldvo)
 			throws BusinessException {
 
@@ -273,6 +287,7 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 	/**
 	 * 首先5月份有张卡余额1000元。我要结转到8月份，报文传的金额是300元。接
 	 * 口处理是查到5月份的余额，形成-1000的记录，然后形成1300元的8月份记录。这是保留余额
+	 *  2017-08-30  此处注释有问题 by zhw
 	 * @param bill
 	 * @param oldvo
 	 * @param vsourcetype
@@ -322,8 +337,8 @@ public class FivemetalsMaintainImpl implements IFivemetalsMaintain {
 		for (FiveMetalsBVO bvo : bvos) {
 			String year = bvo.getCperiod().substring(0, 4);
 			String month = bvo.getCperiod().substring(4, 6);
-			long last = DateUtils.getPreviousMonth(new UFDate(year+"-"+month
-					+ "-01").toDate().getTime());
+			long last = DateUtils.getPreviousMonth(new UFDate(year + "-"
+					+ month + "-01").toDate().getTime());
 			UFDate date = new UFDate(last);
 			String period = DateUtils.getPeriod(date);
 			FiveMetalsBVO bvo1 = (FiveMetalsBVO) bvo.clone();

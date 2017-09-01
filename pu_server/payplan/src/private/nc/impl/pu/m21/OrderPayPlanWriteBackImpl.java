@@ -2,6 +2,7 @@ package nc.impl.pu.m21;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -9,6 +10,7 @@ import nc.bs.dao.BaseDAO;
 import nc.bs.dao.DAOException;
 import nc.bs.framework.common.NCLocator;
 import nc.impl.pubapp.pattern.data.vo.VOQuery;
+import nc.itf.pu.m21.IOrderEditRecordQuery;
 import nc.itf.pu.m21.IOrderPayPlan;
 import nc.itf.pu.m21.IOrderPayPlanQuery;
 import nc.itf.pu.m21.IOrderPayPlanWriteBack;
@@ -20,21 +22,25 @@ import nc.vo.ic.m45.entity.PurchaseInBodyVO;
 import nc.vo.ic.m45.entity.PurchaseInVO;
 import nc.vo.ic.pub.util.StringUtil;
 import nc.vo.pu.m21.entity.AggPayPlanVO;
+import nc.vo.pu.m21.entity.OrderVO;
 import nc.vo.pu.m21.entity.PayPlanVO;
 import nc.vo.pu.m21.entity.PayPlanViewVO;
-import nc.vo.pu.m21.rule.PayPlanRateCalcByMnyUtil;
 import nc.vo.pu.m25.entity.InvoiceItemVO;
 import nc.vo.pu.m25.entity.InvoiceVO;
 import nc.vo.pub.BusinessException;
 import nc.vo.pub.ISuperVO;
 import nc.vo.pub.lang.UFDate;
+import nc.vo.pub.lang.UFDateTime;
 import nc.vo.pub.lang.UFDouble;
 import nc.vo.pubapp.pattern.exception.ExceptionUtils;
 import nc.vo.pubapp.pattern.pub.MathTool;
+import nc.vo.pubapp.util.VORowNoUtils;
 import nc.vo.scmpub.payterm.pay.AbstractPayPlanVO;
 import nc.vo.trade.voutils.SafeCompute;
 
 public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
+
+	public static final UFDouble UF100 = new UFDouble(100);
 
 	// 采购入库回写付款计划
 	@Override
@@ -121,6 +127,8 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 			return;
 
 		for (Map.Entry<String, UFDouble> entry : map.entrySet()) {
+
+			// 查询该订单下的 付款计划
 			IOrderPayPlanQuery service = NCLocator.getInstance().lookup(
 					IOrderPayPlanQuery.class);
 			AggPayPlanVO[] vos = service.queryPayPlanVOs(new String[] { entry
@@ -135,81 +143,106 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 				if (plans == null || plans.length == 0)
 					continue;
 
+				// 按照起算依据汇总未回写的金额
+				UFDouble totalNmny = UFDouble.ZERO_DBL;
+
+				// 按照起算依据未回写的金额
 				List<PayPlanVO> list = new ArrayList<>();
+				// 汇总该定下的所有数据
+				List<PayPlanVO> updatelist1 = new ArrayList<>();
 				for (PayPlanVO plan : plans) {
 					String feffdatetype = plan.getFeffdatetype();
-
-					if (StringUtil.isSEmptyOrNull(feffdatetype))
-						continue;
-					// 如果是入库 或是发票行 找到需要更新的行数据
-					if (feffdatetype.equalsIgnoreCase(periodvo.getPrimaryKey())) {
-						list.add(plan);
+					if (StringUtil.isSEmptyOrNull(feffdatetype)) {
+						updatelist1.add(plan);
+					} else {
+						// 如果是入库 或是发票行 找到需要更新的行数据
+						if (!feffdatetype.equalsIgnoreCase(periodvo
+								.getPrimaryKey())) {
+							updatelist1.add(plan);
+						} else {
+							String def1 = getPayPlanDef1(plan.getPrimaryKey());
+							// def1 存的来源信息 如果存在来源 证明是回写行 不需要更新
+							if (!StringUtil.isSEmptyOrNull(def1)) {
+								updatelist1.add(plan);
+							} else {
+								list.add(plan);
+								totalNmny = SafeCompute.add(totalNmny,
+										plan.getNorigmny());
+							}
+						}
 					}
 				}
+				if (list == null || list.size() == 0)
+					return;
 
-				// 根据def1 是否为空判断是否更新了数据
-				List<PayPlanVO> updatelist1 = new ArrayList<>();
-				for (PayPlanVO plan : list) {
-					String def1 = getPayPlanDef1(plan.getPrimaryKey());
-					// 如果存在来源 证明是回写行 不需要更新
-					if (!StringUtil.isSEmptyOrNull(def1)) {
+				UFDouble purinNmny = entry.getValue();
+				if (totalNmny.compareTo(purinNmny) == 0) {// 全部入库
+					for (PayPlanVO plan : list) {
+						// 更新def1
+						updatePayPlanDef1(plan.getPrimaryKey(), sourceid, plan);
+						setDate(plan, dbegindate);
 						updatelist1.add(plan);
-						continue;
+					}
+				} else if (purinNmny.compareTo(totalNmny) > 0) { // // 超量入库
+					// 判断是否有修订 如果有的话 拆分行 没有按照全部入库处理
+					// 更新def1
+					boolean flag = false;
+					// 查询是否存在修订
+					IOrderEditRecordQuery service1 = NCLocator.getInstance()
+							.lookup(IOrderEditRecordQuery.class);
+					List<String> pkList = new ArrayList<String>();
+					pkList.add(entry.getKey());
+					OrderVO[] editRecords = service1.queryOrderPrice(pkList);
+					if (editRecords != null && editRecords.length > 0)
+						flag = true;
+
+					for (PayPlanVO plan : list) {
+						// 更新def1
+						updatePayPlanDef1(plan.getPrimaryKey(), sourceid, plan);
+						setDate(plan, dbegindate);
+						updatelist1.add(plan);
+					}
+					if (flag) {// 有修订
+						UFDouble temp = SafeCompute.sub(purinNmny, totalNmny);
+						PayPlanVO planclone = (PayPlanVO) list.get(0).clone();
+						planclone.setPrimaryKey(null);
+						planclone.setNorigmny(temp);
+						setRowNo(planclone, updatelist1);
+						updatelist1.add(planclone);
 					}
 
-					UFDouble nmny = plan.getNorigmny();
-					if (nmny == null)
-						nmny = UFDouble.ZERO_DBL;
-					if (nmny.compareTo(entry.getValue()) == 0) {
-						// 全部入库
-						// 更新def1
-						updatePayPlanDef1(plan.getPrimaryKey(), sourceid);
-						plan.setDbegindate(dbegindate);
-						int iitermdays = plan.getIitermdays().intValue();
-						UFDate denddate = dbegindate.getDateAfter(iitermdays);
-						plan.setDbegindate(dbegindate);
-						plan.setDenddate(denddate);
-						updatelist1.add(plan);
-					} else if (nmny.compareTo(entry.getValue()) < 0) {
-						// 超量入库
-						// 判断是否有修订 如果有的话 拆分行 没有按照全部入库处理
-						// 更新def1
-						boolean flag = true;
-						updatePayPlanDef1(plan.getPrimaryKey(), sourceid);
-						int iitermdays = plan.getIitermdays().intValue();
-						UFDate denddate = dbegindate.getDateAfter(iitermdays);
-						plan.setDbegindate(dbegindate);
-						plan.setDenddate(denddate);
-						updatelist1.add(plan);
-						if (!flag) {
-							PayPlanVO planclone = (PayPlanVO) plan.clone();
-							planclone.setPrimaryKey(null);
-							planclone.setNorigmny(SafeCompute.sub(
-									entry.getValue(), nmny));
-							planclone.setNtotalorigmny(SafeCompute.sub(
-									entry.getValue(), nmny));
-							setNmny(plan);
-							updatelist1.add(planclone);
+				} else {// 部分入库
+					for (PayPlanVO plan : list) {
+
+						UFDouble norigmny = plan.getNorigmny();
+
+						if (purinNmny.compareTo(UFDouble.ZERO_DBL) <= 0) {
+							updatelist1.add(plan);
+						} else {
+							// 本行计划金额小于入库数量
+							if (norigmny.compareTo(purinNmny) <= 0) {
+								updatePayPlanDef1(plan.getPrimaryKey(),
+										sourceid, plan);
+								setDate(plan, dbegindate);
+								updatelist1.add(plan);
+								purinNmny = SafeCompute
+										.sub(purinNmny, norigmny);
+							} else {
+								// 本行剩余金额
+								UFDouble temp = SafeCompute.sub(norigmny,
+										purinNmny);
+								plan.setNorigmny(temp);
+								updatelist1.add(plan);
+
+								// 新增的部分金额
+								PayPlanVO planclone = (PayPlanVO) plan.clone();
+								planclone.setPrimaryKey(null);
+								planclone.setNorigmny(purinNmny);
+								setDate(planclone, dbegindate);
+								setRowNo(planclone, updatelist1);
+								updatelist1.add(planclone);
+							}
 						}
-
-					} else {
-						// 部分入库 剩余的部分金额
-						plan.setNorigmny(SafeCompute.sub(nmny, entry.getValue()));
-						plan.setNtotalorigmny(SafeCompute.sub(nmny, entry.getValue()));
-						setNmny(plan);
-						updatelist1.add(plan);
-
-						// 部分入库 新增的部分金额
-						PayPlanVO planclone = (PayPlanVO) plan.clone();
-						planclone.setPrimaryKey(null);
-						planclone.setNorigmny(entry.getValue());
-						planclone.setNtotalorigmny(entry.getValue());
-						setNmny(planclone);
-						int iitermdays = planclone.getIitermdays().intValue();
-						UFDate denddate = dbegindate.getDateAfter(iitermdays);
-						planclone.setDbegindate(dbegindate);
-						planclone.setDenddate(denddate);
-						updatelist1.add(planclone);
 					}
 				}
 
@@ -217,12 +250,8 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 					continue;
 
 				// 计算比例
-
 				plans = updatelist1.toArray(new PayPlanVO[updatelist1.size()]);
-				PayPlanRateCalcByMnyUtil util = new PayPlanRateCalcByMnyUtil();
-				util.calcMnyByRate(plans.length - 1,
-						plans[plans.length - 1].getNorigmny(), plans);
-
+				calcMnyByRate(plans);
 				aggvo.setPayPlanVO(plans);
 				BatchOperateVO batch = savePayPlanViewVO(aggvo);
 				PayPlanViewVO[] addplans = (PayPlanViewVO[]) batch.getAddObjs();
@@ -230,7 +259,7 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 				// 更新新增行的 def1
 				if (addplans != null && addplans.length > 0) {
 					for (PayPlanViewVO plan : addplans) {
-						updatePayPlanDef1(plan.getPrimaryKey(), sourceid);
+						updatePayPlanDef1(plan.getPrimaryKey(), sourceid, null);
 					}
 				}
 			}
@@ -293,13 +322,19 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 
 	}
 
-	private void updatePayPlanDef1(String pk_order_payplan, String def1)
-			throws DAOException {
+	// 更新付款计划来源
+	private void updatePayPlanDef1(String pk_order_payplan, String def1,
+			PayPlanVO plan) throws DAOException {
 		String sql = "update po_order_payplan set def1 = '" + def1
 				+ "' where pk_order_payplan  = '" + pk_order_payplan + "'";
 		BaseDAO dao = new BaseDAO();
 		dao.executeUpdate(sql);
-
+		if (plan != null) {
+			sql = " select ts from po_order_payplan where pk_order_payplan  = '"
+					+ pk_order_payplan + "'";
+			Object o = dao.executeQuery(sql, new ColumnProcessor());
+			plan.setTs(new UFDateTime((String) o));
+		}
 	}
 
 	private PayPeriodVO getPayPeriodVO(String name) throws BusinessException {
@@ -310,7 +345,6 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 		if (hvos == null || hvos.length == 0) {
 			throw new BusinessException("检查起算依据[" + name + "]是否存在");
 		}
-
 		return hvos[0];
 	}
 
@@ -326,20 +360,103 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 		return intArray;
 	}
 
-	private void setNmny(PayPlanVO plan) {
-		String corigcurrencyid = plan.getCorigcurrencyid();
-		String ccurrencyid = (String) plan
+	// 设置本币金额 原币金额 累计金额 比例
+
+	public void calcMnyByRate(PayPlanVO[] plans) throws BusinessException {
+
+		if (plans == null || plans.length == 0)
+			return;
+		UFDouble accOrigMny = UFDouble.ZERO_DBL;
+		String corigcurrencyid = (String) plans[0]
+				.getAttributeValue(AbstractPayPlanVO.CORIGCURRENCYID);
+		String ccurrencyid = (String) plans[0]
 				.getAttributeValue(AbstractPayPlanVO.CCURRENCYID);
-		UFDouble nexchangerate = (UFDouble) plan
+		UFDouble nexchangerate = (UFDouble) plans[0]
 				.getAttributeValue(AbstractPayPlanVO.NEXCHANGERATE);
-		CurrencyRateUtil util = CurrencyRateUtil.getInstanceByOrg(plan
-				.getPk_financeorg());
-		try {
+		String pk_fiorg = (String) plans[0]
+				.getAttributeValue(AbstractPayPlanVO.PK_FINANCEORG);
+		CurrencyRateUtil util = CurrencyRateUtil.getInstanceByOrg(pk_fiorg);
+		UFDouble ntotallocalmny = UFDouble.ZERO_DBL;
+		for (int i = 0; i < plans.length; i++) {
+			PayPlanVO planvo = plans[i];
+			UFDouble inorigmny = (UFDouble) planvo
+					.getAttributeValue(AbstractPayPlanVO.NORIGMNY);
+			accOrigMny = MathTool.add(accOrigMny, inorigmny);
+
+			ntotallocalmny = MathTool.nvl(util.getAmountByOpp(corigcurrencyid,
+					ccurrencyid, accOrigMny, nexchangerate, new UFDate()));
 
 			UFDouble ntempMny = util.getAmountByOpp(corigcurrencyid,
-					ccurrencyid, plan.getNorigmny(), nexchangerate,
+					ccurrencyid, planvo.getNorigmny(), nexchangerate,
 					new UFDate());
-			plan.setNmny(ntempMny);
+			planvo.setNmny(ntempMny);
+			planvo.setAttributeValue(AbstractPayPlanVO.NTOTALORIGMNY,
+					ntotallocalmny);
+		}
+
+		UFDouble nrate = null;
+		UFDouble sumrate = UFDouble.ZERO_DBL;
+		int j = 0;
+		for (int i = 0; i < plans.length; i++) {
+			PayPlanVO planvo = plans[i];
+
+			UFDouble indexNorigmny = (UFDouble) planvo
+					.getAttributeValue(AbstractPayPlanVO.NORIGMNY);
+			if (indexNorigmny == null) {
+				return;
+			}
+			nrate = indexNorigmny.div(accOrigMny, UFDouble.DEFAULT_POWER)
+					.multiply(OrderPayPlanWriteBackImpl.UF100, 2);
+			j++;
+			if (j == plans.length) {
+				nrate = MathTool.sub(OrderPayPlanWriteBackImpl.UF100, sumrate);
+			} else {
+				sumrate = sumrate.add(nrate);
+			}
+			planvo.setAttributeValue(AbstractPayPlanVO.NRATE, nrate);
+		}
+
+	}
+
+	// 设置账期
+	private void setDate(PayPlanVO plan, UFDate dbegindate) {
+		int iitermdays = plan.getIitermdays().intValue();
+		UFDate denddate = dbegindate.getDateAfter(iitermdays);
+		plan.setDbegindate(dbegindate);
+		plan.setDenddate(denddate);
+	}
+
+	public void setRowNo(PayPlanVO toVO, List<PayPlanVO> list) {
+		String toHid = toVO.getPk_order();
+		UFDouble max = UFDouble.ZERO_DBL;
+		for (Iterator<PayPlanVO> iter = list.iterator(); iter.hasNext();) {
+			PayPlanVO view = iter.next();
+			if (null == view) {
+				continue;
+			}
+			if (!toHid.equals(view.getPk_order())) {
+				continue;
+			}
+
+			UFDouble crowno = VORowNoUtils.getUFDouble(view.getCrowno());
+			if (max.compareTo(crowno) < 0) {
+				max = crowno;
+			}
+		}
+		max = max.add(VORowNoUtils.STEP_VALUE);
+
+		toVO.setCrowno(VORowNoUtils.getCorrectString(max));
+	}
+
+	@Override
+	public void writeBackCancelSignFor25(InvoiceVO invo)
+			throws BusinessException {
+
+		if (invo == null)
+			return;
+
+		try {
+			cancelWriteBackPayPlan("采购发票日期", invo.getParentVO().getPrimaryKey());
 		} catch (BusinessException e) {
 			ExceptionUtils.wrappException(e);
 		}
@@ -347,19 +464,29 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 	}
 
 	@Override
-	public void writeBackCancelSignFor25(InvoiceVO invo)
-			throws BusinessException {
-
-		// String sql = "update po_order_payplan set def1 = '" + def1
-		// + "' where pk_order_payplan  = '" + pk_order_payplan +
-		// "' and def1 = '"+def1+"'";
-		// BaseDAO dao = new BaseDAO();
-		// dao.executeUpdate(sql);
-	}
-
-	@Override
 	public void writeBackCancelSignFor45(PurchaseInVO invo)
 			throws BusinessException {
+
+		if (invo == null)
+			return;
+
+		try {
+			cancelWriteBackPayPlan("入库签字日期", invo.getHead().getPrimaryKey());
+		} catch (BusinessException e) {
+			ExceptionUtils.wrappException(e);
+		}
+
+	}
+
+	// 取消签字清空来源
+	private void cancelWriteBackPayPlan(String name, String sourceid)
+			throws BusinessException {
+		PayPeriodVO periodvo = getPayPeriodVO(name);
+
+		String sql = "update po_order_payplan set def1 = null, dbegindate =null,dbegindate =null where feffdatetype   = '"
+				+ periodvo.getPrimaryKey() + "' and def1 = '" + sourceid + "'";
+		BaseDAO dao = new BaseDAO();
+		dao.executeUpdate(sql);
 
 	}
 }

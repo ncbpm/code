@@ -1,4 +1,4 @@
-package nc.bs.ic.m45.sign.rule;
+package nc.bs.ic.m45.cancelsign.rule;
 
 import nc.bs.framework.common.NCLocator;
 import nc.impl.pubapp.pattern.rule.IRule;
@@ -12,7 +12,8 @@ import nc.vo.pubapp.pattern.exception.ExceptionUtils;
  * @author 
  *
  */
-public class AfterSignRuleForPayPlanProcess implements IRule<PurchaseInVO> {
+public class AfterCancelSignRuleForPayPlanProcess implements
+		IRule<PurchaseInVO> {
 
 	@Override
 	public void process(PurchaseInVO[] vos) {
@@ -24,7 +25,7 @@ public class AfterSignRuleForPayPlanProcess implements IRule<PurchaseInVO> {
 			IOrderPayPlanWriteBack service = NCLocator.getInstance().lookup(
 					IOrderPayPlanWriteBack.class);
 			for (PurchaseInVO vo : vos) {
-				service.writeBackOrderPayPlanFor45(vo);
+				service.writeBackCancelSignFor45(vo);
 			}
 		} catch (BusinessException e) {
 			ExceptionUtils.wrappBusinessException(e.getMessage());

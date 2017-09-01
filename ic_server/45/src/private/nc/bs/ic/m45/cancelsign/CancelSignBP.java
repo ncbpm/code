@@ -6,6 +6,7 @@ import nc.bs.ic.general.cancelsign.ICancelSignRuleProvider;
 import nc.bs.ic.general.cancelsign.rule.CancelSignCheckAssetFlag;
 import nc.bs.ic.m45.base.BPPlugInPoint;
 import nc.bs.ic.m45.cancelsign.rule.AfterCancelSignRuleForLiabilityProcess;
+import nc.bs.ic.m45.cancelsign.rule.AfterCancelSignRuleForPayPlanProcess;
 import nc.bs.ic.m45.cancelsign.rule.AfterRuleForCancelRewritePUSettle;
 import nc.bs.ic.m45.cancelsign.rule.AfterUnsignRuleForFinanceProcess;
 import nc.bs.ic.m45.cancelsign.rule.BeforeRuleForDelete5X;
@@ -38,6 +39,7 @@ public class CancelSignBP
     processor.addAfterRule( new AfterRuleForCancelRewritePUSettle() );
     processor.addAfterRule( new AfterUnsignRuleForFinanceProcess() );
     processor.addAfterRule( new AfterCancelSignRuleForLiabilityProcess() );
+    processor.addAfterRule( new AfterCancelSignRuleForPayPlanProcess() );
   }
 
   @Override

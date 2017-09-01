@@ -1,10 +1,15 @@
 package nc.bs.ic.m46.insert.rule;
 
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 import nc.bs.framework.common.NCLocator;
 import nc.bs.ic.pub.base.ICRule;
+import nc.bs.logging.Logger;
 import nc.impl.pubapp.pattern.database.DataAccessUtils;
 import nc.itf.ic.reserve.IReserveAssist;
 import nc.itf.ic.reserve.IReserveMaintenance;
@@ -20,11 +25,13 @@ import nc.vo.ic.m46.entity.FinProdInVO;
 import nc.vo.ic.pub.util.CollectionUtils;
 import nc.vo.ic.pub.util.NCBaseTypeUtils;
 import nc.vo.ic.pub.util.StringUtil;
+import nc.vo.ic.reserve.entity.PreReserveVO;
 import nc.vo.ic.reserve.entity.ReserveBillVO;
 import nc.vo.ic.reserve.entity.ReserveVO;
 import nc.vo.ic.reserve.pub.ResRequireQueryParam;
 import nc.vo.ml.NCLangRes4VoTransl;
 import nc.vo.pub.BusinessException;
+import nc.vo.pub.CircularlyAccessibleValueObject;
 import nc.vo.pub.lang.UFBoolean;
 import nc.vo.pub.query.ConditionVO;
 import nc.vo.pubapp.pattern.data.IRowSet;
@@ -51,26 +58,75 @@ public class AddReserveBillRule extends ICRule<FinProdInVO> {
   }
 
   private void dealAutoReserve(FinProdInVO vo) throws BusinessException {
+	  try {
+		  BufferedWriter out=new BufferedWriter(new FileWriter("e:\\log.txt"));
+		
 		// 如果源头是销售订单才执行
-		String saleOrderCode = getSaleOrderCode(vo.getChildrenVO()[0]);
-		if (saleOrderCode == null || "~".equalsIgnoreCase(saleOrderCode)) {
-			return;
-		}
-		
-		// 根据销售订单来查询，未考虑合单生产
-		IReserveAssist reserve = NCLocator.getInstance().lookup(
-				IReserveAssist.class);
-		
-		ResRequireQueryParam param = assmbleQueryParam(vo);
+				String saleOrderCode = getSaleOrderCode(vo.getChildrenVO()[0]);
+				if (saleOrderCode == null || "~".equalsIgnoreCase(saleOrderCode)) {
+					return;
+				}
+				out.write("sale_order_code:" + saleOrderCode);
+				// 根据销售订单来查询，未考虑合单生产
+				IReserveAssist reserve = NCLocator.getInstance().lookup(
+						IReserveAssist.class);
+				
+				ResRequireQueryParam param = assmbleQueryParam(vo);
 
-		ReserveVO[] queryReqBill = reserve.queryReqBill(param);
+				ReserveVO[] queryReqBill = reserve.queryReqBill(param);
+				for(ReserveVO ele : queryReqBill){
+					out.write(ele.getCreqbillid() + " " + ele.getCreqbillbid());
+					if(ele.getVreqbillcode().equals(saleOrderCode)){
+						System.out.println(saleOrderCode);
+					}
+					if(ele.getCreqbillid().equals(saleOrderCode)){
+						System.out.println(saleOrderCode);
+					}
+					if(ele.getCreqbillbid().equals(saleOrderCode)){
+						System.out.println(saleOrderCode);
+					}
+				}
+				System.out.flush();
+				//根据销售订单-> 生成对应的 预留单
+				IReserveMaintenance saveService = AMProxy.lookup(IReserveMaintenance.class);
+				ReserveBillVO[] bills = reserve.allocReserve(queryReqBill);
+				if(bills != null){
+					//过滤掉没有表体的，以及表体行数据为null的 : 查询出来的数据调用alloc后 会有 OnhandReserveVO 和 PrereserveVO 两种
+					int total = 0;
+					for(int i=0; i < bills.length; i++){
+						PreReserveVO[] childs = bills[i].getPreReserveVO();
+						if(childs != null && childs.length >0){
+							for(PreReserveVO sub : childs){
+								//设置预留数据 为  可预留数量
+								sub.setNrsnum(sub.getNcanrsnum());
+							}
+							total += 1;
+						}else{
+							//无表体的，设置空
+							bills[i] = null;
+						}
+					}
+					if(total > 0){
+						ReserveBillVO[] targetBills = new  ReserveBillVO[total];
+						int pos = 0;
+						for(int i=0; i < bills.length; i++){
+							if(bills[i] != null){
+								ReserveBillVO temp = new ReserveBillVO();
+								temp.setTableVO(PreReserveVO.PK_PRERESERVE, bills[i].getPreReserveVO());
+								targetBills[pos] = temp;
+								pos += 1;
+							}
+						}
+						saveService.insert(targetBills);
+					}
+					
+				}
+	} catch (Exception e) {
+		// TODO 自动生成的 catch 块
+		e.printStackTrace();
+	}
+	  
 		
-		//根据销售订单-> 生成对应的 预留单
-		IReserveMaintenance saveService = AMProxy.lookup(IReserveMaintenance.class);
-		ReserveBillVO[] bills = reserve.allocReserve(queryReqBill);
-		if(bills != null){
-			saveService.insert(bills);
-		}
 	}
 
 	private String getSaleOrderCode(ICBillBodyVO icBillBodyVO) {

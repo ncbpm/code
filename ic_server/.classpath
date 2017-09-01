@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="src" output="46/classes" path="46/src/public"/>
+	<classpathentry kind="src" output="46/classes" path="46/src/private"/>
+	<classpathentry kind="src" output="46/classes" path="46/src/client"/>
+	<classpathentry kind="src" output="46/classes" path="46/src/test"/>
+	<classpathentry kind="src" output="46/classes" path="46/resources"/>
 	<classpathentry kind="src" output="45/classes" path="45/src/public"/>
 	<classpathentry kind="src" output="45/classes" path="45/src/client"/>
 	<classpathentry kind="src" output="45/classes" path="45/src/private"/>

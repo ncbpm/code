@@ -514,7 +514,10 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 	private void setDate(PayPlanVO plan, UFDate dbegindate) {
 		if (dbegindate == null)
 			dbegindate = new UFDate();
-		int iitermdays = plan.getIitermdays().intValue();
+		int iitermdays = 0;
+		if(plan.getIitermdays() !=null){
+			iitermdays = plan.getIitermdays().intValue();
+		}
 		UFDate denddate = dbegindate.getDateAfter(iitermdays);
 		plan.setDbegindate(dbegindate);
 		plan.setDenddate(denddate);
@@ -656,7 +659,7 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 								if (def1.equalsIgnoreCase(sourceid)) {
 									// »ØÐ´ÐÐ
 									List<PayPlanVO> writelist = null;
-									if (nomap.containsKey(def12)) {
+									if (map.containsKey(def12)) {
 										writelist = map.get(def12);
 									} else {
 										writelist = new ArrayList<>();

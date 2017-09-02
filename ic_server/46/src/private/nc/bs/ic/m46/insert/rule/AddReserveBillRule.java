@@ -1,23 +1,15 @@
 package nc.bs.ic.m46.insert.rule;
 
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import nc.bs.framework.common.NCLocator;
 import nc.bs.ic.pub.base.ICRule;
-import nc.bs.logging.Logger;
 import nc.impl.pubapp.pattern.database.DataAccessUtils;
 import nc.itf.ic.reserve.IReserveAssist;
 import nc.itf.ic.reserve.IReserveMaintenance;
-import nc.itf.scmpub.reference.uap.group.SysInitGroupQuery;
-import nc.pubitf.bd.bom.ic.IPubBomServiceForInbound;
 import nc.vo.am.proxy.AMProxy;
-import nc.vo.bd.bom.bom0202.enumeration.OutputTypeEnum;
-import nc.vo.bd.bom.bom0202.paramvo.ic.BomParamForInbound;
 import nc.vo.ic.general.define.ICBillBodyVO;
 import nc.vo.ic.m46.entity.FinProdInBodyVO;
 import nc.vo.ic.m46.entity.FinProdInHeadVO;
@@ -25,10 +17,12 @@ import nc.vo.ic.m46.entity.FinProdInVO;
 import nc.vo.ic.pub.util.CollectionUtils;
 import nc.vo.ic.pub.util.NCBaseTypeUtils;
 import nc.vo.ic.pub.util.StringUtil;
+import nc.vo.ic.pub.util.ValueCheckUtil;
 import nc.vo.ic.reserve.entity.PreReserveVO;
 import nc.vo.ic.reserve.entity.ReserveBillVO;
 import nc.vo.ic.reserve.entity.ReserveVO;
 import nc.vo.ic.reserve.pub.ResRequireQueryParam;
+import nc.vo.ic.reserve.pub.ReserveVOUtil;
 import nc.vo.ml.NCLangRes4VoTransl;
 import nc.vo.pub.BusinessException;
 import nc.vo.pub.CircularlyAccessibleValueObject;
@@ -58,80 +52,50 @@ public class AddReserveBillRule extends ICRule<FinProdInVO> {
   }
 
   private void dealAutoReserve(FinProdInVO vo) throws BusinessException {
-	  try {
-		  BufferedWriter out=new BufferedWriter(new FileWriter("e:\\log.txt"));
-		
+			
 		// 如果源头是销售订单才执行
-				String saleOrderCode = getSaleOrderCode(vo.getChildrenVO()[0]);
-				if (saleOrderCode == null || "~".equalsIgnoreCase(saleOrderCode)) {
-					return;
-				}
-				out.write("sale_order_code:" + saleOrderCode);
-				// 根据销售订单来查询，未考虑合单生产
-				IReserveAssist reserve = NCLocator.getInstance().lookup(
-						IReserveAssist.class);
-				
-				ResRequireQueryParam param = assmbleQueryParam(vo);
-
-				ReserveVO[] queryReqBill = reserve.queryReqBill(param);
-				for(ReserveVO ele : queryReqBill){
-					out.write(ele.getCreqbillid() + " " + ele.getCreqbillbid());
-					if(ele.getVreqbillcode().equals(saleOrderCode)){
-						System.out.println(saleOrderCode);
-					}
-					if(ele.getCreqbillid().equals(saleOrderCode)){
-						System.out.println(saleOrderCode);
-					}
-					if(ele.getCreqbillbid().equals(saleOrderCode)){
-						System.out.println(saleOrderCode);
-					}
-				}
-				System.out.flush();
-				//根据销售订单-> 生成对应的 预留单
-				IReserveMaintenance saveService = AMProxy.lookup(IReserveMaintenance.class);
-				ReserveBillVO[] bills = reserve.allocReserve(queryReqBill);
-				if(bills != null){
-					//过滤掉没有表体的，以及表体行数据为null的 : 查询出来的数据调用alloc后 会有 OnhandReserveVO 和 PrereserveVO 两种
-					int total = 0;
-					for(int i=0; i < bills.length; i++){
-						PreReserveVO[] childs = bills[i].getPreReserveVO();
-						if(childs != null && childs.length >0){
-							for(PreReserveVO sub : childs){
-								//设置预留数据 为  可预留数量
-								sub.setNrsnum(sub.getNcanrsnum());
-							}
-							total += 1;
-						}else{
-							//无表体的，设置空
-							bills[i] = null;
-						}
-					}
-					if(total > 0){
-						ReserveBillVO[] targetBills = new  ReserveBillVO[total];
-						int pos = 0;
-						for(int i=0; i < bills.length; i++){
-							if(bills[i] != null){
-								ReserveBillVO temp = new ReserveBillVO();
-								temp.setTableVO(PreReserveVO.PK_PRERESERVE, bills[i].getPreReserveVO());
-								targetBills[pos] = temp;
-								pos += 1;
-							}
-						}
-						saveService.insert(targetBills);
-					}
-					
-				}
-	} catch (Exception e) {
-		// TODO 自动生成的 catch 块
-		e.printStackTrace();
-	}
-	  
+		String saleOrderCode = getSaleOrderCode(vo.getChildrenVO()[0]);
+		if (saleOrderCode == null || "~".equalsIgnoreCase(saleOrderCode)) {
+			return;
+		}
+		// 根据销售订单来查询，未考虑合单生产
+		IReserveAssist reserve = NCLocator.getInstance().lookup(
+				IReserveAssist.class);
 		
+		ResRequireQueryParam param = assmbleQueryParam(vo);
+
+		
+		ReserveVO[] queryReqBill = reserve.queryReqBill(param);
+		//ReserveVOUtil.calcNlackNum(queryReqBill);
+		
+		//根据销售订单-> 生成对应的 预留单
+		IReserveMaintenance saveService = AMProxy.lookup(IReserveMaintenance.class);
+		ReserveBillVO[] bills = reserve.allocReserve(queryReqBill);
+		
+		if(bills != null){
+			ReserveBillVO bill = bills[0];
+			//更新预留数量
+			if (!ValueCheckUtil.isNullORZeroLength(bill.getOnhandReserveVO())) {
+			      for (int i = 0; i < bill.getOnhandReserveVO().length; i++) {
+			        bill.getOnhandReserveVO()[i].setNrsnum(bill.getOnhandReserveVO()[i]
+			            .getNmakersnum());
+			      }
+			}
+		    if (!ValueCheckUtil.isNullORZeroLength(bill.getPreReserveVO())) {
+		      for (int i = 0; i < bill.getPreReserveVO().length; i++) {
+		        bill.getPreReserveVO()[i].setNrsnum(bill.getPreReserveVO()[i]
+		            .getNmakersnum());
+		      }
+		    }
+			saveService.insert(bills);
+		}
+		 //throw new BusinessException();
 	}
 
 	private String getSaleOrderCode(ICBillBodyVO icBillBodyVO) {
 		// TODO 自动生成的方法存根
-		String sql = " select vbfirstcode mm_wr_product from mm_wr_product where vbfirsttype='30' and  pk_wr_product in("
+		//根据销售订单号查pk
+		String sql = "select vbfirstcode mm_wr_product from mm_wr_product where vbfirsttype='30' and  pk_wr_product in("
 				+ " select vsourcerowno   from ic_finprodin_b where cgeneralbid='"
 				+ icBillBodyVO.getCgeneralbid() + "') ";
 		DataAccessUtils utils = new DataAccessUtils();
@@ -140,6 +104,7 @@ public class AddReserveBillRule extends ICRule<FinProdInVO> {
 		while (rs.next()) {
 			vsaleorderBillCode = rs.getString(0);
 		}
+		
 		return vsaleorderBillCode;
 	}
 
@@ -156,6 +121,25 @@ public class AddReserveBillRule extends ICRule<FinProdInVO> {
 				cmaterial.add(bvo.getCmaterialoid());
 			}
 		}
+		//根据物料pk -》 查 物料code
+		DataAccessUtils utils = new DataAccessUtils();
+		String[] materialCodes = new String[cmaterial.size()];
+		int i=0;
+		for(String mpk : cmaterial){
+			String sql = "select code from bd_material_v where pk_material ='"
+					+ mpk + "'";
+			String code = null;
+			IRowSet rs = utils.query(sql);
+			while (rs.next()) {
+				code = rs.getString(0);
+			}
+			if(code != null){
+				materialCodes[i] = code;
+				i++;
+			}
+		}
+		
+		
 		ResRequireQueryParam parm = new ResRequireQueryParam();
 		parm.setPk_group(vo.getHead().getPk_group());
 		parm.addBillType("30");
@@ -169,31 +153,36 @@ public class AddReserveBillRule extends ICRule<FinProdInVO> {
 		cvo.setOperaCode("=");
 		cvo.setOperaName("等于");
 		cvo.setValue(vo.getHead().getPk_org());
-
+		//data-type = 5
+		cvo.setDataType(5);
+		
 		for (String billcode : cfirstbillcode) {
 			// 来源单据信息
 			ConditionVO cvo2 = new ConditionVO();
 			listvo.add(cvo2);
 			cvo2.setFieldCode("vreqbillcode");
-			cvo2.setFieldName("需求单号");
-			cvo2.setValue(vo.getHead().getPk_org());
+			cvo2.setFieldName("需求单据号");
+			//cvo2.setValue(vo.getHead().getPk_org());
 			cvo2.setOrderSequence(0);
 			cvo2.setOperaCode("=");
 			cvo2.setOperaName("等于");
 			cvo2.setValue(billcode);
 		}
 		// 物料信息cmaterialoid.code
-		for (String mpk : cmaterial) {
+		for (String mpk : materialCodes) {
 			ConditionVO cm = new ConditionVO();
 			listvo.add(cm);
-			cm.setFieldCode("cmaterialvid");
-			cm.setFieldName("需求单号");
-			cm.setValue(vo.getHead().getPk_org());
+			cm.setFieldCode("cmaterialoid.code");
+			cm.setFieldName("物料编码");
 			cm.setOrderSequence(0);
 			cm.setOperaCode("=");
 			cm.setOperaName("等于");
 			cm.setValue(mpk);
+			//data-type=5
+			cm.setDataType(5);
 		}
+		
+		parm.setConditionvos(listvo.toArray(new ConditionVO[0]));
 		return parm;
 	}
 }

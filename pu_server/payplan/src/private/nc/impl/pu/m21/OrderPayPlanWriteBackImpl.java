@@ -489,4 +489,142 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 		dao.executeUpdate(sql);
 
 	}
+
+	// 采购退库回写付款计划
+	@Override
+	public void writeBackCancelSignForBack45(PurchaseInVO invo)
+			throws BusinessException {
+		if (invo == null)
+			return;
+
+		PurchaseInBodyVO[] bodys = invo.getBodys();
+		if (bodys == null || bodys.length == 0)
+			return;
+
+		Map<String, UFDouble> map = new HashMap<>();
+		for (PurchaseInBodyVO body : bodys) {
+			UFDouble temp = UFDouble.ZERO_DBL;
+			String sourcetype = body.getCfirsttype();
+			if (!"21".equals(sourcetype)) {
+				continue;
+			}
+			// 根据订单id汇总金额
+			String sourceid = body.getCfirstbillhid();
+			if (StringUtil.isSEmptyOrNull(sourceid))
+				continue;
+			if (map.containsKey(sourceid)) {
+				temp = SafeCompute.add(map.get(sourceid), temp);
+			} else {
+				temp = body.getNorigtaxmny();
+			}
+			map.put(sourceid, temp);
+		}
+		UFDate dbegindate = invo.getHead().getTaudittime();
+		dealBack45PayPlanViewVO(map, "入库签字日期", invo.getHead().getPrimaryKey(),
+				dbegindate);
+	}
+
+	// 采购退库回写付款计划
+	@Override
+	public void writeBackOrderPayPlanForBack45(PurchaseInVO invo)
+			throws BusinessException {
+		PayPeriodVO periodvo = getPayPeriodVO("入库签字日期");
+
+		String sql = "update po_order_payplan set dr =1,def1 = null, dbegindate =null,dbegindate =null where feffdatetype   = '"
+				+ periodvo.getPrimaryKey()
+				+ "' and def1 = '"
+				+ invo.getHead().getPrimaryKey() + "'";
+		BaseDAO dao = new BaseDAO();
+		dao.executeUpdate(sql);
+	}
+
+	/**
+	 * 
+	 * @param map
+	 *            订单汇总的金额
+	 * @param name
+	 *            起算依据
+	 * @param sourceid
+	 *            来源单据id
+	 * @throws BusinessException
+	 */
+	private void dealBack45PayPlanViewVO(Map<String, UFDouble> map,
+			String name, String sourceid, UFDate dbegindate)
+			throws BusinessException {
+
+		if (map == null || map.size() == 0)
+			return;
+
+		for (Map.Entry<String, UFDouble> entry : map.entrySet()) {
+
+			// 查询该订单下的 付款计划
+			IOrderPayPlanQuery service = NCLocator.getInstance().lookup(
+					IOrderPayPlanQuery.class);
+			AggPayPlanVO[] vos = service.queryPayPlanVOs(new String[] { entry
+					.getKey() });
+
+			PayPeriodVO periodvo = getPayPeriodVO(name);
+			for (AggPayPlanVO aggvo : vos) {
+				// if(view.getfe)
+				// 如果是超量如果，需要判断是否因为有修订（增加行，或者改大数量），如果是，则增加一行付款计划进去。
+				// vdef1 记录来源信息
+				PayPlanVO[] plans = aggvo.getPayPlanVO();
+				if (plans == null || plans.length == 0)
+					continue;
+
+				// 汇总该定下的所有数据
+				List<PayPlanVO> updatelist1 = new ArrayList<>();
+				PayPlanVO tempplanvo = null;
+				for (PayPlanVO plan : plans) {
+					String feffdatetype = plan.getFeffdatetype();
+					if (StringUtil.isSEmptyOrNull(feffdatetype)) {
+						updatelist1.add(plan);
+					} else {
+						// 如果是入库 或是发票行 找到需要更新的行数据
+						if (!feffdatetype.equalsIgnoreCase(periodvo
+								.getPrimaryKey())) {
+							updatelist1.add(plan);
+						} else {
+							tempplanvo = plan;
+						}
+					}
+				}
+
+				if (tempplanvo != null) {
+					if (UFDouble.ZERO_DBL.compareTo(entry.getValue()) != 0) {
+						// 新增的部分金额
+						PayPlanVO planclone = (PayPlanVO) tempplanvo.clone();
+						planclone.setPrimaryKey(null);
+						planclone.setNorigmny(SafeCompute.multiply(
+								entry.getValue(), new UFDouble(-1)));
+						planclone.setNrate(UFDouble.ZERO_DBL);
+						planclone.setNmny(SafeCompute.multiply(
+								entry.getValue(), new UFDouble(-1)));
+						setDate(planclone, dbegindate);
+						setRowNo(planclone, updatelist1);
+						updatelist1.add(planclone);
+						if (updatelist1 == null || updatelist1.size() == 0)
+							continue;
+
+						// 计算比例
+						plans = updatelist1.toArray(new PayPlanVO[updatelist1
+								.size()]);
+						calcMnyByRate(plans);
+						aggvo.setPayPlanVO(plans);
+						BatchOperateVO batch = savePayPlanViewVO(aggvo);
+						PayPlanViewVO[] addplans = (PayPlanViewVO[]) batch
+								.getAddObjs();
+
+						// 更新新增行的 def1
+						if (addplans != null && addplans.length > 0) {
+							for (PayPlanViewVO plan : addplans) {
+								updatePayPlanDef1(plan.getPrimaryKey(),
+										sourceid, null);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }

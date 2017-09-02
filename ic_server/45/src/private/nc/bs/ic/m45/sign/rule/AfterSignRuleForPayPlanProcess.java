@@ -9,8 +9,9 @@ import nc.vo.pubapp.pattern.exception.ExceptionUtils;
 
 /**
  * 回写付款计划
- * @author 
- *
+ * 
+ * @author
+ * 
  */
 public class AfterSignRuleForPayPlanProcess implements IRule<PurchaseInVO> {
 
@@ -24,7 +25,15 @@ public class AfterSignRuleForPayPlanProcess implements IRule<PurchaseInVO> {
 			IOrderPayPlanWriteBack service = NCLocator.getInstance().lookup(
 					IOrderPayPlanWriteBack.class);
 			for (PurchaseInVO vo : vos) {
-				service.writeBackOrderPayPlanFor45(vo);
+
+				if (vo.getHead() == null)
+					continue;
+				if (vo.getHead().getFreplenishflag() == null
+						|| !vo.getHead().getFreplenishflag().booleanValue()) {
+					service.writeBackOrderPayPlanFor45(vo);
+				} else {
+					service.writeBackOrderPayPlanForBack45(vo);
+				}
 			}
 		} catch (BusinessException e) {
 			ExceptionUtils.wrappBusinessException(e.getMessage());

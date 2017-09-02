@@ -56,11 +56,10 @@ public class QueryOnhandAction extends NCAction {
 		Map<String, String> bodyDims = this.getBodyDims();
 
 		List<IDataView> headVOs = new ArrayList<IDataView>();
-		int rowcount = this.list.getBillListPanel().getChildListPanel()
-				.getTable().getRowCount();
-		BillModel bm = this.list.getBillListPanel().getBodyBillModel();
-		if (rowcount != -1 && bm != null) {
-			this.setDialogData(headVOs, bodyDims, rowcount, bm);
+		int row = this.list.getBillListPanel().getHeadTable().getRowCount();
+		BillModel bm = this.list.getBillListPanel().getHeadBillModel();
+		if (row != -1 && bm != null) {
+			this.setDialogData(headVOs, bodyDims, row, bm);
 		}
 		FuncletInitData initData = new FuncletInitData();
 

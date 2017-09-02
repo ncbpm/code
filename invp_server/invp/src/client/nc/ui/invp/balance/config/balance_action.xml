@@ -2,21 +2,21 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-	<!--鎸夐挳浜嬩欢鍏冪礌##########################################################-->
-	<!-- 
+	<!--按钮事件元素##########################################################-->
+	<!--
 		Actions ###########################################################
 	-->
 	<import resource="balance_m422Xquery.xml" />
 	<import resource="balance_m4B36query.xml" />
 	 
-	<!-- 鏋勯�鏂规硶涓紶鍏ョ殑鐣岄潰鏄剧ず鏃讹紝閰嶇疆鐨凙ction鎵嶅彲瑙�-->	
-	 <!-- 鍗曟嵁鑿滃崟鎸夐挳鍔ㄤ綔 -->	
+	<!-- 构造方法中传入的界面显示时，配置的Action才可见 -->	
+	 <!-- 单据菜单按钮动作 -->	
 	<bean id="refreshAction" class="nc.ui.invp.balance.action.RefreshAction">
 	  <property name="model" ref="manageAppModel" />
 	  <!-- <property name="dataManager" ref="modelDataManager" />-->
 	  <property name="interceptor" ref="listViewShowUpComponentInterceptor" />
 	</bean>
-	<!-- 鍙栨秷姹囨� -->	
+	<!-- 取消汇总 -->	
 	<bean id="cancelGatherAction" class="nc.ui.invp.balance.action.CancelGatherAction">
 	  <property name="model" ref="manageAppModel" />
 	  <!--<property name="dataManager" ref="modelDataManager" />-->
@@ -45,7 +45,7 @@
 		
 	<bean id="qryCondDLGInitializer" class="nc.ui.invp.balance.query.BalanceQueryDLGInitializer">
 	</bean>	
-	<!-- 鎵撳嵃鎸夐挳 -->
+	<!-- 打印按钮 -->
 	<bean id="printAction" class="nc.ui.invp.balance.action.BalancePrintAction">
 	    <property name="list" ref="listView"/>
        <property name="model" ref="manageAppModel"/>
@@ -61,8 +61,8 @@
 	</bean>
 	<bean id="printGroup" class="nc.funcnode.ui.action.GroupAction">
 	  <property name="code" value="printGroup" />
-	 <!--  <property name="name" value="鎵撳嵃" />
-	  <property name="tooltip" value="鎵撳嵃(Alt+P)" />--> 
+	 <!--  <property name="name" value="打印" />
+	  <property name="tooltip" value="打印(Alt+P)" />--> 
 	  <property name="actions">
 	  <list>
 	   <ref bean="printAction" />
@@ -70,13 +70,13 @@
 	  </list>
 	  </property>
 	</bean>	
-	<!-- 姹囨� -->
+	<!-- 汇总 -->
 	<bean id="gatherAction" class="nc.ui.invp.balance.action.GatherAction">
 	  <property name="model" ref="manageAppModel" />
 	  <property name="dataManager" ref="modelDataManager" />
 	  <property name="list" ref="listView" />
 	</bean>
-	<!-- 搴撳瓨骞宠　 -->
+	<!-- 库存平衡 -->
 	<bean id="balanceAction" class="nc.ui.invp.balance.action.BalanceAction">
 	  <property name="model" ref="manageAppModel" />
 	  <property name="treemodel" ref="balancetreemodel"/>
@@ -85,27 +85,27 @@
 	  <property name="treeview" ref="balanceTreeView" />
 	  <property name="showUpComponent" ref="balanceTreeView" />
 	</bean>
-	<!-- 闇�眰鍚堝苟渚濇嵁 -->
+	<!-- 需求合并依据 -->
 	<bean id="gatherRuleAction" class="nc.ui.invp.balance.action.GatherRuleAction">
 	  <property name="model" ref="manageAppModel" />
 	  <property name="dataManager" ref="modelDataManager" />
 	  <property name="list" ref="listView" />
 	</bean>
-	<!-- 骞宠　渚涚粰瑙勫垯 -->
+	<!-- 平衡供给规则 -->
 	<bean id="balanceRuleAction" class="nc.ui.invp.balance.action.BalanceRuleAction">
 	  <property name="model" ref="manageAppModel" />
 	  <property name="dataManager" ref="modelDataManager" />
 	  <property name="list" ref="listView" />
 	</bean>
 	
-	<!-- 鍙栨秷骞宠　 -->
+	<!-- 取消平衡 -->
 	<bean id="cancelBalanceAction" class="nc.ui.invp.balance.action.CancelBalanceAction">
 	  <property name="model" ref="manageAppModel" />
 	  <property name="dataManager" ref="modelDataManager" />
 	  <property name="list" ref="listView" />
 	</bean>
 	
-	<!-- 鍙栨秷 -->
+	<!-- 取消 -->
 	<bean id="cancelAction" class="nc.ui.invp.balance.action.CancelAction">
 		<property name="model" ref="manageAppModel" />
 		<property name="showUpComponent" ref="listView" />
@@ -113,7 +113,7 @@
 		<property name="billModel" ref="manageAppModel" />
 	</bean>
 	
-	<!-- 纭畾 -->
+	<!-- 确定 -->
 	<bean id="confirmAction" class="nc.ui.invp.balance.action.ConfirmAction">
 		<property name="model" ref="manageAppModel" />
 		  <property name="treemodel" ref="balancetreemodel"/>
@@ -129,7 +129,7 @@
        <property name="directPrint" value="false" />
 	</bean>
 		
-	<!-- 鎵撳嵃鎸夐挳 -->
+	<!-- 打印按钮 -->
 	<bean id="printBalanceAction" class="nc.ui.invp.balance.action.BalancePrintAction">
 	   <property name="list" ref="balanceTreeView"/>
        <property name="model" ref="balancetreemodel"/>
@@ -137,8 +137,8 @@
 	</bean>		
 	<bean id="printBalanceGroup" class="nc.funcnode.ui.action.GroupAction">
 	  <property name="code" value="printGroup" />
-	  <!--  <property name="name" value="鎵撳嵃" />
-	  <property name="tooltip" value="鎵撳嵃(Alt+P)" />-->
+	  <!--  <property name="name" value="打印" />
+	  <property name="tooltip" value="打印(Alt+P)" />-->
 	  <property name="actions">
 	  <list>
 	   <ref bean="printBalanceAction" />

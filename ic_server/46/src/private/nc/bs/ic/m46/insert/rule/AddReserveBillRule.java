@@ -67,29 +67,45 @@ public class AddReserveBillRule extends ICRule<FinProdInVO> {
 		
 		ReserveVO[] queryReqBill = reserve.queryReqBill(param);
 		//ReserveVOUtil.calcNlackNum(queryReqBill);
-		
+		if(queryReqBill == null){
+			return;
+			//throw new BusinessException("查找不到可预留数据，无法生存预留单！");
+		}
 		//根据销售订单-> 生成对应的 预留单
 		IReserveMaintenance saveService = AMProxy.lookup(IReserveMaintenance.class);
 		ReserveBillVO[] bills = reserve.allocReserve(queryReqBill);
 		
 		if(bills != null){
-			ReserveBillVO bill = bills[0];
-			//更新预留数量
-			if (!ValueCheckUtil.isNullORZeroLength(bill.getOnhandReserveVO())) {
-			      for (int i = 0; i < bill.getOnhandReserveVO().length; i++) {
-			        bill.getOnhandReserveVO()[i].setNrsnum(bill.getOnhandReserveVO()[i]
-			            .getNmakersnum());
-			      }
+			//可能会有多个单据
+			for(ReserveBillVO bill: bills){
+				//ReserveBillVO bill = bills[0];
+				ReserveBillVO tempBill = new ReserveBillVO();
+				PreReserveVO[] preVOs = bill.getPreReserveVO();
+				if(preVOs != null){
+					PreReserveVO[] targetVO = new PreReserveVO[vo.getChildrenVO().length];
+					FinProdInBodyVO[] bodyVOs = vo.getBodys();
+					//匹配对应 生产单号的 预留单
+					int i = 0;
+					for(FinProdInBodyVO item : bodyVOs){
+						for(PreReserveVO ele : preVOs){
+							if(ele.getCsupplycode().equals(item.getVproductbatch())
+							  /*&& ele.getCsupplyrowno().equals(item.getvpro)*/){
+								ele.setNrsnum(ele.getNcanrsnum());
+								targetVO[i] = ele;
+								i++;
+								break;
+							}
+						}
+					}
+					if(i>0){
+						bill.setChildrenVO(targetVO);
+						ReserveBillVO[] ret = saveService.insert(new ReserveBillVO[]{bill});
+						break;
+					}
+				}
 			}
-		    if (!ValueCheckUtil.isNullORZeroLength(bill.getPreReserveVO())) {
-		      for (int i = 0; i < bill.getPreReserveVO().length; i++) {
-		        bill.getPreReserveVO()[i].setNrsnum(bill.getPreReserveVO()[i]
-		            .getNmakersnum());
-		      }
-		    }
-			saveService.insert(bills);
 		}
-		 //throw new BusinessException();
+		//throw new BusinessException();
 	}
 
 	private String getSaleOrderCode(ICBillBodyVO icBillBodyVO) {
@@ -169,6 +185,7 @@ public class AddReserveBillRule extends ICRule<FinProdInVO> {
 			cvo2.setValue(billcode);
 		}
 		// 物料信息cmaterialoid.code
+		/* 不能加物料编码：完工单上是产品编码，销售单上是物料编码
 		for (String mpk : materialCodes) {
 			ConditionVO cm = new ConditionVO();
 			listvo.add(cm);
@@ -180,7 +197,7 @@ public class AddReserveBillRule extends ICRule<FinProdInVO> {
 			cm.setValue(mpk);
 			//data-type=5
 			cm.setDataType(5);
-		}
+		}*/
 		
 		parm.setConditionvos(listvo.toArray(new ConditionVO[0]));
 		return parm;

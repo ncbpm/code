@@ -278,14 +278,22 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 		List<PayPlanViewVO> addlist = new ArrayList<PayPlanViewVO>();
 		List<Integer> updatelistindex = new ArrayList<Integer>();
 		List<PayPlanViewVO> updatelist = new ArrayList<PayPlanViewVO>();
+		List<Integer> dellistindex = new ArrayList<Integer>();
+		List<PayPlanViewVO> dellist = new ArrayList<PayPlanViewVO>();
 		int index = 0;
 		for (PayPlanViewVO view : views) {
 			if (StringUtil.isSEmptyOrNull(view.getPk_order_payplan())) {
 				addlistindex.add(index);
 				addlist.add(view);
 			} else {
-				updatelistindex.add(index);
-				updatelist.add(view);
+				if (UFDouble.ZERO_DBL.compareTo(view.getNorigmny()) < 0) {
+					updatelistindex.add(index);
+					updatelist.add(view);
+				} else {
+					dellistindex.add(index);
+					dellist.add(view);
+				}
+
 			}
 			index++;
 		}
@@ -302,6 +310,12 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 					.size()]));
 			int[] intArray = integerListToIntArray(updatelistindex);
 			batchVO.setUpdIndexs(intArray);
+		}
+
+		if (dellist != null && dellist.size() > 0) {
+			batchVO.setDelObjs(dellist.toArray(new PayPlanViewVO[dellist.size()]));
+			int[] intArray = integerListToIntArray(dellistindex);
+			batchVO.setDelIndexs(intArray);
 		}
 
 		IOrderPayPlan service = NCLocator.getInstance().lookup(
@@ -382,16 +396,6 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 			UFDouble inorigmny = (UFDouble) planvo
 					.getAttributeValue(AbstractPayPlanVO.NORIGMNY);
 			accOrigMny = MathTool.add(accOrigMny, inorigmny);
-
-			ntotallocalmny = MathTool.nvl(util.getAmountByOpp(corigcurrencyid,
-					ccurrencyid, accOrigMny, nexchangerate, new UFDate()));
-
-			UFDouble ntempMny = util.getAmountByOpp(corigcurrencyid,
-					ccurrencyid, planvo.getNorigmny(), nexchangerate,
-					new UFDate());
-			planvo.setNmny(ntempMny);
-			planvo.setAttributeValue(AbstractPayPlanVO.NTOTALORIGMNY,
-					ntotallocalmny);
 		}
 
 		UFDouble nrate = null;
@@ -414,8 +418,15 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 				sumrate = sumrate.add(nrate);
 			}
 			planvo.setAttributeValue(AbstractPayPlanVO.NRATE, nrate);
+			ntotallocalmny = MathTool.nvl(util.getAmountByOpp(corigcurrencyid,
+					ccurrencyid, accOrigMny, nexchangerate, new UFDate()));
+			planvo.setAttributeValue(AbstractPayPlanVO.NTOTALORIGMNY,
+					ntotallocalmny);
+			UFDouble ntempMny = util.getAmountByOpp(corigcurrencyid,
+					ccurrencyid, planvo.getNorigmny(), nexchangerate,
+					new UFDate());
+			planvo.setNmny(ntempMny);
 		}
-
 	}
 
 	// 设置账期
@@ -541,28 +552,36 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 					continue;
 				// 汇总该定下的所有数据
 				List<PayPlanVO> updatelist1 = new ArrayList<>();
+				PayPlanVO templan = null;
 				for (PayPlanVO plan : plans) {
 					if (UFDouble.ZERO_DBL.compareTo(plan.getNorigmny()) < 0) {
 						updatelist1.add(plan);
+					} else {
+						templan = plan;
 					}
 				}
 
 				if (updatelist1 == null || updatelist1.size() == 0)
 					continue;
 
-				plans = updatelist1.toArray(new PayPlanVO[updatelist1.size()]);
-				calcMnyByRate(plans);
-				aggvo.setPayPlanVO(plans);
+				updatelist1.toArray(new PayPlanVO[updatelist1.size()]);
+				calcMnyByRate(updatelist1.toArray(new PayPlanVO[updatelist1
+						.size()]));
+				if (templan != null)
+					updatelist1.add(templan);
+				aggvo.setPayPlanVO(updatelist1
+						.toArray(new PayPlanVO[updatelist1.size()]));
 				savePayPlanViewVO(aggvo);
 			}
 		}
-//		PayPeriodVO periodvo = getPayPeriodVO("入库签字日期");
-//		String sql = "update po_order_payplan set dr =1,def1 = null, dbegindate =null,denddate =null where feffdatetype   = '"
-//				+ periodvo.getPrimaryKey()
-//				+ "' and def1 = '"
-//				+ invo.getHead().getPrimaryKey() + "'";
-//		BaseDAO dao = new BaseDAO();
-//		dao.executeUpdate(sql);
+		// PayPeriodVO periodvo = getPayPeriodVO("入库签字日期");
+		// String sql =
+		// "update po_order_payplan set dr =1,def1 = null, dbegindate =null,denddate =null where feffdatetype   = '"
+		// + periodvo.getPrimaryKey()
+		// + "' and def1 = '"
+		// + invo.getHead().getPrimaryKey() + "'";
+		// BaseDAO dao = new BaseDAO();
+		// dao.executeUpdate(sql);
 	}
 
 	// 采购退库回写付款计划

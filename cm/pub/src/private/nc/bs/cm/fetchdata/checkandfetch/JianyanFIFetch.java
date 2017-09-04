@@ -87,15 +87,11 @@ public class JianyanFIFetch extends  AbstractCheckAndFetch<IMMFetchData> {
 		if (FetchDataSchemaEnum.PERIODSCHEMA.equalsValue(fetchscheme)) {
 			beginDay = paramvo.getBeginEndDate()[0];
 			endDay = paramvo.getBeginEndDate()[1];
-//			costCenterid = paramvo.getCcostcenterid();
-//			this.setWkidAndDept(wkids, deptids, costCenterid);
 		} else if (FetchDataSchemaEnum.WEEKSCHEMA.equalsValue(fetchscheme)) {
 			// 周期取数，只是一条数据
 			beginDay = paramvo.getBeginenddate().get(0).get(0); // 周期取数，只是一条数据
 			endDay = paramvo.getBeginenddate().get(0).get(1);
-//			costCenterid = Arrays.asList(FIAdapter
-//					.getAllCostCenterByOrg(this.pkOrg));
-//			this.setWkidAndDept(wkids, deptids, costCenterid);
+
 		}
 		PullDataStateVO pullData = paramvo.getPullDataStateVOArr()[0];
 

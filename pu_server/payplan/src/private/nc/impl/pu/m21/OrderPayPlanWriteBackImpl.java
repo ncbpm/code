@@ -223,21 +223,47 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 					if (StringUtil.isSEmptyOrNull(feffdatetype)) {
 						updatelist1.add(plan);
 					} else {
-						// 如果是入库 或是发票行 找到需要更新的行数据
+						// 如果起算依据是入库 或是发票行 找到需要更新的行数据
 						if (!feffdatetype.equalsIgnoreCase(periodvo
 								.getPrimaryKey())) {
 							updatelist1.add(plan);
 						} else {
 							String def1 = getPayPlanDef1(plan.getPrimaryKey());
 							// def1 存的来源信息 如果存在来源 证明是回写行 不需要更新
-							if (!StringUtil.isSEmptyOrNull(def1)) {
+							if (plan.getIsdeposit() != null
+									&& plan.getIsdeposit().booleanValue()) {
+								// 如果是质保金行 不参与计算 订单的最后一笔入库 直接更新日期
+								VOQuery query = new VOQuery(OrderItemVO.class);
+								OrderItemVO[] items = (OrderItemVO[]) query
+										.query("and pk_order = '"
+												+ plan.getPk_order() + "' ",
+												null);
+
+								if (items != null && items.length > 0) {
+									boolean isupdate = true;
+
+									for (OrderItemVO item : items) {
+										if (item.getBstockclose() == null
+												|| !item.getBstockclose()
+														.booleanValue()) {
+											isupdate = false;
+											break;
+										}
+									}
+									if (isupdate) {
+										setDate(plan, dbegindate);
+									}
+								}
 								updatelist1.add(plan);
 							} else {
-								list.add(plan);
-								totalNmny = SafeCompute.add(totalNmny,
-										plan.getNorigmny());
+								if (!StringUtil.isSEmptyOrNull(def1)) {
+									updatelist1.add(plan);
+								}else {
+									list.add(plan);
+									totalNmny = SafeCompute.add(totalNmny,plan.getNorigmny());
+								}
+								fkbl = SafeCompute.add(fkbl,plan.getNrate());
 							}
-							fkbl = SafeCompute.add(fkbl, plan.getNrate());
 						}
 					}
 				}
@@ -515,7 +541,7 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 		if (dbegindate == null)
 			dbegindate = new UFDate();
 		int iitermdays = 0;
-		if(plan.getIitermdays() !=null){
+		if (plan.getIitermdays() != null) {
 			iitermdays = plan.getIitermdays().intValue();
 		}
 		UFDate denddate = dbegindate.getDateAfter(iitermdays);
@@ -645,40 +671,49 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 					if (StringUtil.isSEmptyOrNull(feffdatetype)) {
 						updatelist1.add(plan);
 					} else {
-						// 如果是入库 或是发票行 找到需要更新的行数据（根据起算依据判断）
+						// 如果是起算依据入库 或是发票行 找到需要更新的行数据（根据起算依据判断）
 						if (!feffdatetype.equalsIgnoreCase(periodvo
 								.getPrimaryKey())) {
 							updatelist1.add(plan);
 						} else {
-							// def1 存的来源信息
-							String def1 = getPayPlanDef1(plan.getPrimaryKey());
-							// 账期 根据账期分组
-							Integer def12 = plan.getIitermdays();
-							// def1 存的来源信息 如果存在来源 证明是回写行
-							if (!StringUtil.isSEmptyOrNull(def1)) {
-								if (def1.equalsIgnoreCase(sourceid)) {
-									// 回写行
-									List<PayPlanVO> writelist = null;
-									if (map.containsKey(def12)) {
-										writelist = map.get(def12);
-									} else {
-										writelist = new ArrayList<>();
-									}
-									writelist.add(plan);
-									map.put(def12, writelist);
-								} else {
-									updatelist1.add(plan);
-								}
+							if (plan.getIsdeposit() != null
+									&& plan.getIsdeposit().booleanValue()) {
+								// 如果是质保金行 入库取消清空质保
+								plan.setDbegindate(null);
+								plan.setDenddate(null);
+								updatelist1.add(plan);
 							} else {
-								// 未回写行
-								List<PayPlanVO> nowritelist = null;
-								if (nomap.containsKey(def12)) {
-									nowritelist = nomap.get(def12);
+								// def1 存的来源信息
+								String def1 = getPayPlanDef1(plan
+										.getPrimaryKey());
+								// 账期 根据账期分组
+								Integer def12 = plan.getIitermdays();
+								// def1 存的来源信息 如果存在来源 证明是回写行
+								if (!StringUtil.isSEmptyOrNull(def1)) {
+									if (def1.equalsIgnoreCase(sourceid)) {
+										// 回写行
+										List<PayPlanVO> writelist = null;
+										if (map.containsKey(def12)) {
+											writelist = map.get(def12);
+										} else {
+											writelist = new ArrayList<>();
+										}
+										writelist.add(plan);
+										map.put(def12, writelist);
+									} else {
+										updatelist1.add(plan);
+									}
 								} else {
-									nowritelist = new ArrayList<>();
+									// 未回写行
+									List<PayPlanVO> nowritelist = null;
+									if (nomap.containsKey(def12)) {
+										nowritelist = nomap.get(def12);
+									} else {
+										nowritelist = new ArrayList<>();
+									}
+									nowritelist.add(plan);
+									nomap.put(def12, nowritelist);
 								}
-								nowritelist.add(plan);
-								nomap.put(def12, nowritelist);
 							}
 						}
 					}

@@ -258,11 +258,12 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 							} else {
 								if (!StringUtil.isSEmptyOrNull(def1)) {
 									updatelist1.add(plan);
-								}else {
+								} else {
 									list.add(plan);
-									totalNmny = SafeCompute.add(totalNmny,plan.getNorigmny());
+									totalNmny = SafeCompute.add(totalNmny,
+											plan.getNorigmny());
 								}
-								fkbl = SafeCompute.add(fkbl,plan.getNrate());
+								fkbl = SafeCompute.add(fkbl, plan.getNrate());
 							}
 						}
 					}
@@ -575,33 +576,37 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 	public void writeBackCancelSignFor25(InvoiceVO invo)
 			throws BusinessException {
 
-		// if (invo == null)
-		// return;
-		//
-		// try {
-		// cancelWriteBackPayPlan("采购发票审核日期",
-		// invo.getParentVO().getPrimaryKey());
-		// } catch (BusinessException e) {
-		// ExceptionUtils.wrappException(e);
-		// }
+		if (invo == null)
+			return;
+
+		InvoiceItemVO[] bodys = invo.getChildrenVO();
+		if (bodys == null || bodys.length == 0)
+			return;
+
+		List<String> list = new ArrayList<String>();
+		for (InvoiceItemVO body : bodys) {
+
+			String sourceid = body.getPk_order();
+			if (StringUtil.isSEmptyOrNull(sourceid))
+				continue;
+			if (!list.contains(sourceid)) {
+				list.add(sourceid);
+			}
+		}
+
+		if (list == null || list.size() == 0)
+			return;
+		cancelWriteBackPayPlan(list, "采购发票审核日期", invo.getParentVO()
+				.getPrimaryKey());
 	}
 
 	@Override
 	public void writeBackCancelSignFor45(PurchaseInVO invo)
 			throws BusinessException {
 
-		// if (invo == null)
-		// return;
-		//
-		// try {
-		// cancelWriteBackPayPlan("入库签字日期", invo.getHead().getPrimaryKey());
-		// } catch (BusinessException e) {
-		// ExceptionUtils.wrappException(e);
-		// }
-
 		if (invo == null)
 			return;
-
+ 
 		PurchaseInBodyVO[] bodys = invo.getBodys();
 		if (bodys == null || bodys.length == 0)
 			return;
@@ -744,6 +749,7 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 
 					// 不存在未回写 增新建一条数据 然后 汇总 入库单金额 如果有未回写的 则合并
 					if (nowritelist == null || nowritelist.size() == 0) {
+						nowritelist = new ArrayList<>();
 						planclone.setPrimaryKey(null);
 						planclone.setNorigmny(norigmny);
 						planclone.setDbegindate(null);

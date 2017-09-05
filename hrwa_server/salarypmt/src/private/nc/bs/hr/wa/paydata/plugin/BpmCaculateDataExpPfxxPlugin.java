@@ -94,7 +94,7 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 		String pk_org = headvo.getPk_org();
 
 		CaculateTypeVO caculateTypeVO = new CaculateTypeVO();
-		caculateTypeVO.setRange(UFBoolean.TRUE);
+		caculateTypeVO.setRange(UFBoolean.FALSE);
 		caculateTypeVO.setType(UFBoolean.TRUE);
 
 		WaDataBodyVO[] bodyvos = (WaDataBodyVO[]) bill.getChildrenVO();

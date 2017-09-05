@@ -43,13 +43,17 @@ public class HeadTailAfterEditHandler implements
 				return;
 			}
 			String bkey = "pk_qualitylv_b";
+			Pk_qualitylv_b bhdander = new Pk_qualitylv_b(e.getContext());
 			for (int i = 0; i < rowCount; i++) {
 				Object oldValue = util.getBodyValue(i, bkey);
+				
+				util.setBodyValue(e.getValue(), i, bkey);		
+				card.getBillModel("report_b").loadEditRelationItemValue(i, bkey);
+				
 				CardBodyAfterEditEvent be = new CardBodyAfterEditEvent(card,
 						"report_b", i, bkey, e.getValue(), oldValue);
-				util.setBodyValue(e.getValue(), i, bkey);
 				// 质量等级
-				new Pk_qualitylv_b(e.getContext()).afterEdit(be);
+				bhdander.afterEdit(be,(String)e.getValue());
 			}
 
 		} else if ("vdef3".equalsIgnoreCase(key)) {
@@ -61,12 +65,13 @@ public class HeadTailAfterEditHandler implements
 				return;
 			}
 			String bkey = "vbatchcode";
+			Vbatchcode bhdander = new Vbatchcode(e.getContext());
 			for (int i = 0; i < rowCount; i++) {
 				Object oldValue = util.getBodyValue(i, bkey);
+				util.setBodyValue(e.getValue(), i, bkey);
 				CardBodyAfterEditEvent be = new CardBodyAfterEditEvent(card,
 						"report_b", i, bkey, e.getValue(), oldValue);
-				util.setBodyValue(e.getValue(), i, bkey);
-				new Vbatchcode(e.getContext()).afterEdit(be);
+				bhdander.afterEdit(be);
 			}
 		} else if ("vdef4".equalsIgnoreCase(key)) {
 			// 不合格类型

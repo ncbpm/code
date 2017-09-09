@@ -57,9 +57,8 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 		if (bodys == null || bodys.length == 0)
 			return;
 
-		Map<String, UFDouble> map = new HashMap<>();
+		List<String> list = new ArrayList<String>();
 		for (PurchaseInBodyVO body : bodys) {
-			UFDouble temp = UFDouble.ZERO_DBL;
 			String sourcetype = body.getCfirsttype();
 			if (!"21".equals(sourcetype)) {
 				continue;
@@ -68,10 +67,46 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 			String sourceid = body.getCfirstbillhid();
 			if (StringUtil.isSEmptyOrNull(sourceid))
 				continue;
+			if (!list.contains(sourceid)) {
+				list.add(sourceid);
+			}
+		}
+
+		if (list == null || list.size() == 0)
+			return;
+
+		IOrderQuery orderservice = NCLocator.getInstance().lookup(
+				IOrderQuery.class);
+
+		OrderVO[] orders = orderservice.queryOrderVOsByIds(
+				list.toArray(new String[list.size()]), UFBoolean.FALSE);
+
+		Map<String, UFDouble> pmap = new HashMap<>();
+		for (OrderVO order : orders) {
+			OrderItemVO[] items = order.getBVO();
+			if (items == null || items.length == 0) {
+				continue;
+			}
+			for (OrderItemVO item : items) {
+				pmap.put(item.getPrimaryKey(), item.getNtaxprice());
+			}
+		}
+
+		Map<String, UFDouble> map = new HashMap<>();
+		for (PurchaseInBodyVO body : bodys) {
+			UFDouble temp = UFDouble.ZERO_DBL;
+			String sourcetype = body.getCfirsttype();
+			if (!"21".equals(sourcetype)) {
+				continue;
+			}
+			// 根据订单id汇总金额 金额 = 订单含税单价*数量
+			String sourceid = body.getCfirstbillhid();
+			if (StringUtil.isSEmptyOrNull(sourceid))
+				continue;
+			temp = SafeCompute.multiply(body.getNnum(),
+					pmap.get(body.getCfirstbillbid()));
 			if (map.containsKey(sourceid)) {
 				temp = SafeCompute.add(map.get(sourceid), temp);
-			} else {
-				temp = body.getNnum();
 			}
 			map.put(sourceid, temp);
 		}
@@ -93,18 +128,48 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 		if (bodys == null || bodys.length == 0)
 			return;
 
+		List<String> list = new ArrayList<String>();
+		for (InvoiceItemVO body : bodys) {
+
+			String sourceid = body.getPk_order();
+			if (StringUtil.isSEmptyOrNull(sourceid))
+				continue;
+			if (!list.contains(sourceid)) {
+				list.add(sourceid);
+			}
+		}
+
+		if (list == null || list.size() == 0)
+			return;
+
+		IOrderQuery orderservice = NCLocator.getInstance().lookup(
+				IOrderQuery.class);
+
+		OrderVO[] orders = orderservice.queryOrderVOsByIds(
+				list.toArray(new String[list.size()]), UFBoolean.FALSE);
+
+		Map<String, UFDouble> pmap = new HashMap<>();
+		for (OrderVO order : orders) {
+			OrderItemVO[] items = order.getBVO();
+			if (items == null || items.length == 0) {
+				continue;
+			}
+			for (OrderItemVO item : items) {
+				pmap.put(item.getPrimaryKey(), item.getNtaxprice());
+			}
+		}
+
 		Map<String, UFDouble> map = new HashMap<>();
 		for (InvoiceItemVO body : bodys) {
 			UFDouble temp = UFDouble.ZERO_DBL;
-			// 根据订单id汇总数量
+			// 根据订单id汇总金额 金额 = 订单含税单价*数量
 			String sourceid = body.getPk_order();
-
 			if (StringUtil.isSEmptyOrNull(sourceid))
 				continue;
+			temp = SafeCompute.multiply(body.getNnum(),
+					pmap.get(body.getPk_order_b()));
 			if (map.containsKey(sourceid)) {
 				temp = SafeCompute.add(map.get(sourceid), temp);
-			} else {
-				temp = body.getNnum();
 			}
 			map.put(sourceid, temp);
 		}
@@ -131,33 +196,7 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 
 		for (Map.Entry<String, UFDouble> entry : map.entrySet()) {
 
-			IOrderQuery orderservice = NCLocator.getInstance().lookup(
-					IOrderQuery.class);
-
 			String[] orderids = new String[] { entry.getKey() };
-			OrderVO[] orders = orderservice.queryOrderVOsByIds(orderids,
-					UFBoolean.FALSE);
-
-			if (orders == null || orders.length == 0)
-				continue;
-
-			// 汇总订单金额 数量
-			UFDouble ordernum = UFDouble.ZERO_DBL;
-			UFDouble ordernmny = UFDouble.ZERO_DBL;
-			for (OrderVO order : orders) {
-				OrderItemVO[] items = order.getBVO();
-				if (items == null || items.length == 0) {
-					continue;
-				}
-				for (OrderItemVO item : items) {
-					ordernum = SafeCompute.add(item.getNnum(), ordernum);
-					ordernmny = SafeCompute.add(item.getNmny(), ordernmny);
-				}
-			}
-
-			if (ordernum.compareTo(UFDouble.ZERO_DBL) == 0
-					|| ordernmny.compareTo(UFDouble.ZERO_DBL) == 0)
-				continue;
 			// 查询该订单下的 付款计划
 			IOrderPayPlanQuery service = NCLocator.getInstance().lookup(
 					IOrderPayPlanQuery.class);
@@ -179,9 +218,6 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 				List<PayPlanVO> list = new ArrayList<>();
 				// 汇总该定下的所有数据
 				List<PayPlanVO> updatelist1 = new ArrayList<>();
-
-				// 汇总计算比例
-
 				UFDouble fkbl = UFDouble.ZERO_DBL;
 				for (PayPlanVO plan : plans) {
 					String feffdatetype = plan.getFeffdatetype();
@@ -209,11 +245,8 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 				if (list == null || list.size() == 0)
 					return;
 
-				// 本次回写付款计划金额 =本次入库数量/总数量*比例*总金额
-				// 总数量 = 订单数量 总金额 =订单金额
-				UFDouble purinNmny = SafeCompute.multiply(SafeCompute.multiply(
-						SafeCompute.div(entry.getValue(), ordernum), fkbl),
-						ordernmny);
+				UFDouble purinNmny = SafeCompute.multiply(entry.getValue(),
+						fkbl).setScale(2, 0);// 本次入库金额
 				if (totalNmny.compareTo(purinNmny) == 0) {// 全部入库
 					for (PayPlanVO plan : list) {
 						// 更新def1

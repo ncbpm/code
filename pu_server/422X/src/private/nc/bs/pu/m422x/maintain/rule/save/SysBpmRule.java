@@ -31,6 +31,10 @@ public class SysBpmRule implements IRule<StoreReqAppVO> {
 				if (vo.getBVO() == null) {
 					continue;
 				}
+				
+				if(vo.getHVO().getFbillstatus() !=3 ){
+					continue;
+				}
 
 				if (vo.getBVO().length > 1) {
 					for (StoreReqAppItemVO body : vo.getBVO()) {
@@ -52,7 +56,7 @@ public class SysBpmRule implements IRule<StoreReqAppVO> {
 				VOUpdate<StoreReqAppHeaderVO> update = new VOUpdate<StoreReqAppHeaderVO>();
 				update.update(new StoreReqAppHeaderVO[] { vo.getHVO() },
 						new String[] { "vmemo", "fbillstatus" });
-			} catch (BusinessException e) {
+			} catch (Exception e) {
 				// TODO 自动生成的 catch 块
 				e.printStackTrace();
 				ExceptionUtils.wrappBusinessException("同步到BPM出错:"

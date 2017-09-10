@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<ufinterface account="01" billtype="bpm_422X_audit" filename="" groupcode="01" isexchange="Y" replace="Y" roottag="" sender="bpm_pk">
+    <bill id="">
+        <billhead>
+			<pk_group>0001A110000000000DDM</pk_group>
+            <pk_org>0001A110000000002RJR</pk_org>
+			<!--主键,最大长度为20,类型为:String-->
+            <pk_storereq>1001A3100000000086PN</pk_storereq>           
+            <!--审批人,最大长度为20,类型为:String-->
+            <approver>1001A3100000000066YA</approver>     
+			<!--审批状态3=审批，4=审批不通过，5=关闭，类型为:Integer-->
+			<fbillstatus>5</fbillstatus>    
+            <!--备注,最大长度为181,类型为:String-->
+            <vmemo></vmemo>         
+        </billhead>
+    </bill>
+</ufinterface>

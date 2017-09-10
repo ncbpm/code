@@ -58,6 +58,7 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * 采购订单同步和变更
+ * 
  * @author liyf
  * 
  */
@@ -82,13 +83,13 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 	String[] headattributeNames = new String[] { "pk_order", "pk_group",
 			"vmemo", "pk_org", "pk_org_v", "vbillcode", "dbilldate",
 			"pk_supplier", "pk_dept_v", "pk_dept", "vtrantypecode",
-			"pk_invcsupllier", "pk_payterm", "billmaker",
-			"approver", "bisreplenish", "breturn", "iprintcount",
-			"creationtime", "taudittime", "bcooptoso", "bsocooptome",
-			"ntotalastnum", "ntotalorigmny", "bfrozen", "pk_busitype",
-			"fhtaxtypeflag", "corigcurrencyid", "brefwhenreturn",
-			"ntotalweight", "ntotalvolume", "ntotalpiece", "bfinalclose",
-			"creator", "ctrantypeid", "bpublish" };
+			"pk_invcsupllier", "pk_payterm", "billmaker", "approver",
+			"bisreplenish", "breturn", "iprintcount", "creationtime",
+			"taudittime", "bcooptoso", "bsocooptome", "ntotalastnum",
+			"ntotalorigmny", "bfrozen", "pk_busitype", "fhtaxtypeflag",
+			"corigcurrencyid", "brefwhenreturn", "ntotalweight",
+			"ntotalvolume", "ntotalpiece", "bfinalclose", "creator",
+			"ctrantypeid", "bpublish" };
 
 	@Override
 	protected Object processBill(Object vo, ISwapContext swapContext,
@@ -106,9 +107,9 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 			OrderHeaderVO hvo = bpmOrder.getHVO();
 			String approver = hvo.getApprover();
 			UFDate taudittime = hvo.getTaudittime();
-			//保存
+			// 保存
 			AggregatedValueObject savevo = insert(resvo);
-			//审批
+			// 审批
 			OrderVO orderVO = this.approve(savevo, approver, taudittime);
 			return orderVO.getParentVO().getPrimaryKey();
 		} else {
@@ -140,7 +141,8 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 
 	}
 
-	private void delOrderItem(OrderVO queryVo, OrderVO bpmOrder) throws BusinessException {
+	private void delOrderItem(OrderVO queryVo, OrderVO bpmOrder)
+			throws BusinessException {
 		// TODO 自动生成的方法存根
 		String vopk = bpmOrder.getPrimaryKey();
 		// 有行操作 --行关闭或者行打开，执行
@@ -235,7 +237,7 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 		if (add_row.size() > 0) {
 			addBody(queryVo, add_row);
 		}
-		calculate(queryVo);
+		calculateForModify(queryVo);
 	}
 
 	private void addBody(OrderVO queryVo, List<OrderItemVO> add_row) {
@@ -262,7 +264,6 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 					"vsourcerowno->getColValue(so_saleorder_b,crowno,  vbdef20  ,csourcebid)",
 					"csourceid->getColValue(so_saleorder_b,csaleorderid ,  vbdef20  ,csourcebid)",
 					"csourcebid->getColValue(so_saleorder_b, csaleorderbid ,  vbdef20  ,csourcebid)"
-
 
 			};
 			SuperVOUtil.execFormulaWithVOs(vos, formulas);
@@ -478,31 +479,34 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 		parentVO.setForderstatus(POEnumBillStatus.FREE.toInteger());
 
 		// 表头默认值
-		if(parentVO.getAttributeValue(OrderHeaderVO.IPRINTCOUNT) == null){
+		if (parentVO.getAttributeValue(OrderHeaderVO.IPRINTCOUNT) == null) {
 			parentVO.setAttributeValue(OrderHeaderVO.IPRINTCOUNT, 0);
 		}
-		if(parentVO.getAttributeValue(OrderHeaderVO.BREFWHENRETURN) == null){
-			parentVO.setAttributeValue(OrderHeaderVO.BREFWHENRETURN, UFBoolean.TRUE);
+		if (parentVO.getAttributeValue(OrderHeaderVO.BREFWHENRETURN) == null) {
+			parentVO.setAttributeValue(OrderHeaderVO.BREFWHENRETURN,
+					UFBoolean.TRUE);
 		}
-		if(parentVO.getAttributeValue(OrderHeaderVO.BFROZEN) == null){
+		if (parentVO.getAttributeValue(OrderHeaderVO.BFROZEN) == null) {
 			parentVO.setAttributeValue(OrderHeaderVO.BFROZEN, UFBoolean.FALSE);
 		}
-		if(parentVO.getAttributeValue(OrderHeaderVO.BISREPLENISH) == null){
-			parentVO.setAttributeValue(OrderHeaderVO.BISREPLENISH, UFBoolean.FALSE);
+		if (parentVO.getAttributeValue(OrderHeaderVO.BISREPLENISH) == null) {
+			parentVO.setAttributeValue(OrderHeaderVO.BISREPLENISH,
+					UFBoolean.FALSE);
 		}
-		if(parentVO.getAttributeValue(OrderHeaderVO.BFINALCLOSE) == null){
-			parentVO.setAttributeValue(OrderHeaderVO.BFINALCLOSE, UFBoolean.FALSE);
+		if (parentVO.getAttributeValue(OrderHeaderVO.BFINALCLOSE) == null) {
+			parentVO.setAttributeValue(OrderHeaderVO.BFINALCLOSE,
+					UFBoolean.FALSE);
 		}
-		if(parentVO.getAttributeValue(OrderHeaderVO.BPUBLISH) == null){
+		if (parentVO.getAttributeValue(OrderHeaderVO.BPUBLISH) == null) {
 			parentVO.setAttributeValue(OrderHeaderVO.BPUBLISH, UFBoolean.FALSE);
 		}
-		if(parentVO.getAttributeValue(OrderHeaderVO.BPUBLISH) == null){
+		if (parentVO.getAttributeValue(OrderHeaderVO.BPUBLISH) == null) {
 			parentVO.setAttributeValue(OrderHeaderVO.BPUBLISH, UFBoolean.FALSE);
 		}
-		if(parentVO.getAttributeValue(OrderHeaderVO.BISLATEST) == null){
+		if (parentVO.getAttributeValue(OrderHeaderVO.BISLATEST) == null) {
 			parentVO.setAttributeValue(OrderHeaderVO.BISLATEST, UFBoolean.TRUE);
 		}
-		if(parentVO.getAttributeValue(OrderHeaderVO.NVERSION) == null){
+		if (parentVO.getAttributeValue(OrderHeaderVO.NVERSION) == null) {
 			parentVO.setAttributeValue(OrderHeaderVO.NVERSION, 1);
 		}
 		//
@@ -519,7 +523,7 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 			};
 			SuperVOUtil.execFormulaWithVOs(bvos, formulas);
 
-		} 
+		}
 		for (OrderItemVO bvo : bvos) {
 			bvo.setStatus(VOStatus.NEW);
 			// --表体根据表头设置
@@ -534,60 +538,74 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 			bvo.setCqtunitid(bvo.getCunitid());
 			bvo.setVqtunitrate(bvo.getVchangerate());
 			// --表体默认值
-			
-			if(bvo.getAttributeValue(OrderItemVO.FISACTIVE) == null){
+
+			if (bvo.getAttributeValue(OrderItemVO.FISACTIVE) == null) {
 				bvo.setAttributeValue(OrderItemVO.FISACTIVE, 0);
 			}
-			if(bvo.getAttributeValue(OrderItemVO.BTRIATRADEFLAG) == null){
-				bvo.setAttributeValue(OrderItemVO.BTRIATRADEFLAG, UFBoolean.FALSE);
+			if (bvo.getAttributeValue(OrderItemVO.BTRIATRADEFLAG) == null) {
+				bvo.setAttributeValue(OrderItemVO.BTRIATRADEFLAG,
+						UFBoolean.FALSE);
 			}
-			if(bvo.getAttributeValue(OrderItemVO.BBORROWPUR) == null){
+			if (bvo.getAttributeValue(OrderItemVO.BBORROWPUR) == null) {
 				bvo.setAttributeValue(OrderItemVO.BBORROWPUR, UFBoolean.FALSE);
 			}
-			if(bvo.getAttributeValue(OrderItemVO.BINVOICECLOSE) == null){
-				bvo.setAttributeValue(OrderItemVO.BINVOICECLOSE, UFBoolean.FALSE);
+			if (bvo.getAttributeValue(OrderItemVO.BINVOICECLOSE) == null) {
+				bvo.setAttributeValue(OrderItemVO.BINVOICECLOSE,
+						UFBoolean.FALSE);
 			}
-			if(bvo.getAttributeValue(OrderItemVO.BARRIVECLOSE) == null){
+			if (bvo.getAttributeValue(OrderItemVO.BARRIVECLOSE) == null) {
 				bvo.setAttributeValue(OrderItemVO.BARRIVECLOSE, UFBoolean.FALSE);
 			}
-			if(bvo.getAttributeValue(OrderItemVO.BARRIVECLOSE) == null){
+			if (bvo.getAttributeValue(OrderItemVO.BARRIVECLOSE) == null) {
 				bvo.setAttributeValue(OrderItemVO.BARRIVECLOSE, UFBoolean.FALSE);
 			}
-			if(bvo.getAttributeValue(OrderItemVO.BPAYCLOSE) == null){
+			if (bvo.getAttributeValue(OrderItemVO.BPAYCLOSE) == null) {
 				bvo.setAttributeValue(OrderItemVO.BPAYCLOSE, UFBoolean.FALSE);
 			}
-			if(bvo.getAttributeValue(OrderItemVO.BRECEIVEPLAN) == null){
+			if (bvo.getAttributeValue(OrderItemVO.BRECEIVEPLAN) == null) {
 				bvo.setAttributeValue(OrderItemVO.BRECEIVEPLAN, UFBoolean.FALSE);
 			}
-			if(bvo.getAttributeValue(OrderItemVO.BLARGESS) == null){
+			if (bvo.getAttributeValue(OrderItemVO.BLARGESS) == null) {
 				bvo.setAttributeValue(OrderItemVO.BLARGESS, UFBoolean.FALSE);
 			}
-			if(bvo.getAttributeValue(OrderItemVO.BTRANSCLOSED) == null){
+			if (bvo.getAttributeValue(OrderItemVO.BTRANSCLOSED) == null) {
 				bvo.setAttributeValue(OrderItemVO.BTRANSCLOSED, UFBoolean.FALSE);
 			}
-			
-			if ("30".equalsIgnoreCase(bvo.getCsourcetypecode())) {
-//				1. BPM来源信息记录的是BPM的销售订单信息
-//				2. NC的销售订单表体  vbdef20记录的BPM的销售订单信息（明细主键全局唯一）
-//				3. 采购订单根据记录的 BPM来源单据明细去NC销售订单
-				 VOQuery<SaleOrderBVO> query = new VOQuery<SaleOrderBVO>(SaleOrderBVO.class);
-				 SaleOrderBVO[] orderbvos = query.query(" and  vbdef20='"+bvo.getCsourcebid()+"'", null);
-				 if(orderbvos == null ||orderbvos.length ==0){
-					 throw new BusinessException("根据BPM销售订单明细主键:"+bvo.getCsourcebid()+",未查询到对应的NC销售订单,请根据以下sql核对:  select * from so_saleorder_b where nvl(dr,0)=0 and  vbdef20='"+bvo.getCsourcebid()+"'");
-				 }
-				 if(orderbvos.length >1){
-					 throw new BusinessException("根据BPM销售订单明细主键:"+bvo.getCsourcebid()+",未查询到多条的NC销售订单明细,请根据以下sql核对:  select * from so_saleorder_b where nvl(dr,0)=0 and  vbdef20='"+bvo.getCsourcebid()+"'");
-				 }
-				 VOQuery<SaleOrderHVO>  hqury= new VOQuery<SaleOrderHVO>(SaleOrderHVO.class);
-				 SaleOrderHVO[] saleOrderHVOs = hqury.query(new String[]{orderbvos[0].getCsaleorderid()});
-				 
-				 bvo.setCsourceid(orderbvos[0].getCsaleorderid());
-				 bvo.setCsourcebid(orderbvos[0].getCsaleorderbid());
-				 bvo.setVsourcerowno(orderbvos[0].getCrowno());
 
-				 bvo.setVsourcecode(saleOrderHVOs[0].getVbillcode());
-				 bvo.setVsourcetrantype(saleOrderHVOs[0].getCtrantypeid());
-				 
+			if ("30".equalsIgnoreCase(bvo.getCsourcetypecode())) {
+				// 1. BPM来源信息记录的是BPM的销售订单信息
+				// 2. NC的销售订单表体 vbdef20记录的BPM的销售订单信息（明细主键全局唯一）
+				// 3. 采购订单根据记录的 BPM来源单据明细去NC销售订单
+				VOQuery<SaleOrderBVO> query = new VOQuery<SaleOrderBVO>(
+						SaleOrderBVO.class);
+				SaleOrderBVO[] orderbvos = query.query(
+						" and  vbdef20='" + bvo.getCsourcebid() + "'", null);
+				if (orderbvos == null || orderbvos.length == 0) {
+					throw new BusinessException(
+							"根据BPM销售订单明细主键:"
+									+ bvo.getCsourcebid()
+									+ ",未查询到对应的NC销售订单,请根据以下sql核对:  select * from so_saleorder_b where nvl(dr,0)=0 and  vbdef20='"
+									+ bvo.getCsourcebid() + "'");
+				}
+				if (orderbvos.length > 1) {
+					throw new BusinessException(
+							"根据BPM销售订单明细主键:"
+									+ bvo.getCsourcebid()
+									+ ",未查询到多条的NC销售订单明细,请根据以下sql核对:  select * from so_saleorder_b where nvl(dr,0)=0 and  vbdef20='"
+									+ bvo.getCsourcebid() + "'");
+				}
+				VOQuery<SaleOrderHVO> hqury = new VOQuery<SaleOrderHVO>(
+						SaleOrderHVO.class);
+				SaleOrderHVO[] saleOrderHVOs = hqury
+						.query(new String[] { orderbvos[0].getCsaleorderid() });
+
+				bvo.setCsourceid(orderbvos[0].getCsaleorderid());
+				bvo.setCsourcebid(orderbvos[0].getCsaleorderbid());
+				bvo.setVsourcerowno(orderbvos[0].getCrowno());
+
+				bvo.setVsourcecode(saleOrderHVOs[0].getVbillcode());
+				bvo.setVsourcetrantype(saleOrderHVOs[0].getCtrantypeid());
+
 			}
 
 			// 润丰同步的业务源只有请购和协同销售订单
@@ -609,7 +627,7 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 		// --表体所有的单价和以金额信息
 		calculate(bill);
 		// 根据表头的付款协议主键，补全表体的付款协议
-//		paymentInfor(bill);
+		// paymentInfor(bill);
 
 		// 补全行号
 		fillupRowNo(bill);
@@ -650,6 +668,25 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 		cal.calculate(vo, "nnum");
 		cal.calculate(vo, "norigtaxmny");
 	}
+	
+	private void calculateForModify(OrderVO vo) {
+		RelationCalculate cal = new RelationCalculate();
+		OrderItemVO[] items = vo.getBVO();
+		// 清空单价：根据金额和数量重算
+		String[] attributeNames = items[0].getAttributeNames();
+		for (OrderItemVO bvo : items) {
+			bvo.setCqtunitid(bvo.getCunitid());
+			bvo.setVqtunitrate(bvo.getVqtunitrate());
+			for (String attname : attributeNames) {
+				if (attname.endsWith("price")) {
+					bvo.setAttributeValue(attname, null);
+				}
+			}
+		}
+		//
+//		cal.calculate(vo, "nnum");
+		cal.calculate(vo, "norigtaxmny");
+	}
 
 	private boolean isFixUnitRate(String material, String cunitid,
 			String castunitid) {
@@ -671,7 +708,7 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 			throw new BusinessException("表体不允许为空");
 		}
 		OrderVO order = (OrderVO) resvo;
-		if (order.getPaymentVO()== null || order.getPaymentVO().length == 0) {
+		if (order.getPaymentVO() == null || order.getPaymentVO().length == 0) {
 			throw new BusinessException("表体付款协议不允许为空");
 		}
 		String approver = order.getHVO().getApprover();

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import nc.bs.framework.common.InvocationInfoProxy;
 import nc.bs.framework.common.NCLocator;
 import nc.bs.pfxx.ISwapContext;
 import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
@@ -147,60 +148,65 @@ public class M30HistoryForBPMAdd extends AbstractPfxxPlugin {
 		if (add_row.size() > 0) {
 			addBody(hisvo, add_row);
 		}
-		
+
 		SaleOrderHistoryVO historyVO = saveAndApproveHistory(hisvo);
-	
-		
-		return "销售订单修订完成:最新版本"+historyVO.getParentVO().getIversion();
+
+		return "销售订单修订完成:最新版本" + historyVO.getParentVO().getIversion();
 	}
-	
-	
-	private SaleOrderHistoryVO saveAndApproveHistory(SaleOrderHistoryVO oldbill) throws BusinessException {
+
+	private SaleOrderHistoryVO saveAndApproveHistory(SaleOrderHistoryVO oldbill)
+			throws BusinessException {
 		// TODO 自动生成的方法存根
 		SaleOrderHistoryVO bill = new SaleOrderHistoryVO();
 		bill.setParentVO(oldbill.getParentVO());
 		bill.setChildrenVO(oldbill.getChildrenVO());
-		//重现计算单价等》
+		// 重现计算单价等》
 		int rows[] = new int[bill.getChildrenVO().length];
-		for (int i = 0; i <bill.getChildrenVO().length; i++) {
+		for (int i = 0; i < bill.getChildrenVO().length; i++) {
 			rows[i] = i;
 			bill.getChildrenVO()[i].setCorderhistorybid(null);
 			bill.getChildrenVO()[i].setStatus(VOStatus.NEW);
 		}
-		//设置伪列
+		// 设置伪列
 		bill.getParentVO().setAttributeValue("pseudocolumn", 0);
-		
-		//清空单价：根据金额和数量重算
-		String[] attributeNames =bill.getChildrenVO()[0].getAttributeNames();
-		//报价信息
-		for(SaleOrderBVO bvo:bill.getChildrenVO()){
-			for(String attname:attributeNames){
-				if(attname.endsWith("price")){
+
+		// 清空单价：根据金额和数量重算
+		String[] attributeNames = bill.getChildrenVO()[0].getAttributeNames();
+		// 报价信息
+		for (SaleOrderBVO bvo : bill.getChildrenVO()) {
+			for (String attname : attributeNames) {
+				if (attname.endsWith("price")) {
 					bvo.setAttributeValue(attname, null);
 				}
 			}
 		}
-		//计算税码信息
-	    IKeyValue keyValue = new VOKeyValue<IBill>(bill);
-	    // 询税
-	    SOTaxInfoRule taxInfo = new SOTaxInfoRule(keyValue);
-	    taxInfo.setOnlyTaxCodeByBodyPos(rows);
-	    //国外销售-设置税率
-	    if( bill.getChildrenVO()[0].getNtaxrate() == null || bill.getChildrenVO()[0].getNtaxrate().doubleValue() == 0){
-	    	taxInfo.setTaxTypeAndRate(rows);
-	    }
+		// 计算税码信息
+		IKeyValue keyValue = new VOKeyValue<IBill>(bill);
+		// 询税
+		SOTaxInfoRule taxInfo = new SOTaxInfoRule(keyValue);
+		taxInfo.setOnlyTaxCodeByBodyPos(rows);
+		// 国外销售-设置税率
+		if (bill.getChildrenVO()[0].getNtaxrate() == null
+				|| bill.getChildrenVO()[0].getNtaxrate().doubleValue() == 0) {
+			taxInfo.setTaxTypeAndRate(rows);
+		}
 		SaleOrderVOCalculator cal = new SaleOrderVOCalculator(bill);
-		cal.calculate(rows, "norigtaxmny");			
+		cal.calculate(rows, "norigtaxmny");
 		IM30ReviseMaintain maintainsrv = NCLocator.getInstance().lookup(
 				IM30ReviseMaintain.class);
+		if (!StringUtils.isEmpty(
+				bill.getParentVO().getCreator())) {
+			InvocationInfoProxy.getInstance().setUserId(
+					bill.getParentVO().getCreator());
+		}
 		// ReviseSaveSaleOrderAction action = new ReviseSaveSaleOrderAction();
 		// 调用新的方法，传入的bills 是销售订单修订历史vo
-		SaleOrderHistoryVO[] ret = maintainsrv.reviseOrderHisVOSave(new SaleOrderHistoryVO[]{bill});
-		//审批
+		SaleOrderHistoryVO[] ret = maintainsrv
+				.reviseOrderHisVOSave(new SaleOrderHistoryVO[] { bill });
+		// 审批
 		approve(ret[0]);
-		return  ret[0];
+		return ret[0];
 	}
-
 
 	protected AggregatedValueObject approve(AggregatedValueObject billvo)
 			throws BusinessException {
@@ -211,7 +217,6 @@ public class M30HistoryForBPMAdd extends AbstractPfxxPlugin {
 				billvo, null, null);
 		return null;
 	}
-
 
 	private void addBody(SaleOrderHistoryVO bill,
 			List<SaleOrderHistoryBVO> add_row) {
@@ -224,9 +229,8 @@ public class M30HistoryForBPMAdd extends AbstractPfxxPlugin {
 			bvo.setStatus(VOStatus.NEW);
 			asList.add(bvo);
 		}
-		
+
 		bill.setChildrenVO(asList.toArray(new SaleOrderHistoryBVO[0]));
-	
 
 	}
 
@@ -278,29 +282,29 @@ public class M30HistoryForBPMAdd extends AbstractPfxxPlugin {
 			}
 
 			for (String attr : attributeNames) {
-				if("ts".equalsIgnoreCase(attr)){
+				if ("ts".equalsIgnoreCase(attr)) {
 					continue;
 				}
-				if("csaleorderid".equalsIgnoreCase(attr)){
+				if ("csaleorderid".equalsIgnoreCase(attr)) {
 					continue;
 				}
-				if("csaleorderbid".equalsIgnoreCase(attr)){
+				if ("csaleorderbid".equalsIgnoreCase(attr)) {
 					continue;
 				}
-				if("ctaxcodeid".equalsIgnoreCase(attr)){
+				if ("ctaxcodeid".equalsIgnoreCase(attr)) {
 					continue;
 				}
-				//清空非主数量的信息
-				if(attr.endsWith("nnum") && ! attr.equalsIgnoreCase("nnum")){
+				// 清空非主数量的信息
+				if (attr.endsWith("nnum") && !attr.equalsIgnoreCase("nnum")) {
 					continue;
 				}
-				if(bpm.getAttributeValue(attr) == null){
+				if (bpm.getAttributeValue(attr) == null) {
 					continue;
 				}
 				orderItemVO
 						.setAttributeValue(attr, bpm.getAttributeValue(attr));
 			}
-	
+
 		}
 
 	}
@@ -312,16 +316,16 @@ public class M30HistoryForBPMAdd extends AbstractPfxxPlugin {
 		Integer nversion = hvo.getIversion();
 		SaleOrderHistoryHVO hvo_bpm = bill.getParentVO();
 		for (String attr : attributeNames) {
-			if("ts".equalsIgnoreCase(attr)){
+			if ("ts".equalsIgnoreCase(attr)) {
 				continue;
 			}
-			if("iversion".equalsIgnoreCase(attr)){
+			if ("iversion".equalsIgnoreCase(attr)) {
 				continue;
 			}
-			if("fstatusflag".equalsIgnoreCase(attr)){
+			if ("fstatusflag".equalsIgnoreCase(attr)) {
 				continue;
 			}
-			if(hvo_bpm.getAttributeValue(attr) == null){
+			if (hvo_bpm.getAttributeValue(attr) == null) {
 				continue;
 			}
 			hvo.setAttributeValue(attr, hvo_bpm.getAttributeValue(attr));

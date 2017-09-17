@@ -40,6 +40,8 @@ import nc.vo.pubapp.util.VORowNoUtils;
 import nc.vo.scmpub.payterm.pay.AbstractPayPlanVO;
 import nc.vo.trade.voutils.SafeCompute;
 
+import org.apache.commons.lang.ArrayUtils;
+
 public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 
 	public static final UFDouble UF100 = new UFDouble(100);
@@ -606,7 +608,7 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 
 		if (invo == null)
 			return;
- 
+
 		PurchaseInBodyVO[] bodys = invo.getBodys();
 		if (bodys == null || bodys.length == 0)
 			return;
@@ -649,7 +651,7 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 
 		for (String str : list) {
 
-			String[] orderids = new String[] { str };
+			String[] orderids = new String[] { str };   
 			// 查询该订单下的 付款计划
 			IOrderPayPlanQuery service = NCLocator.getInstance().lookup(
 					IOrderPayPlanQuery.class);
@@ -725,7 +727,7 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 				}
 
 				PayPlanVO planclone = null;
-				UFDouble norigmny = UFDouble.ZERO_DBL;// 回写金额
+				
 				List<PayPlanVO> writelisttotal = new ArrayList<>();
 				// 无回写行
 				if (map == null || map.size() == 0)
@@ -733,6 +735,7 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 
 				// 回写行账期数据处理
 				for (Map.Entry<Integer, List<PayPlanVO>> entry : map.entrySet()) {
+					UFDouble norigmny = UFDouble.ZERO_DBL;// 回写金额
 					List<PayPlanVO> writelist = entry.getValue();
 					if (writelist == null || writelist.size() == 0) {
 						continue;
@@ -785,14 +788,41 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 				calcMnyByRate(plans);
 				aggvo.setParentVO(aggvo.getParentVO());
 				aggvo.setPayPlanVO(plans);
+				PayPlanVO[] delplans = writelisttotal
+						.toArray(new PayPlanVO[writelisttotal.size()]);
+//				StringBuilder sb = new StringBuilder();
+//				this.check(delplans, sb);
+//				if (sb.length() > 0) {
+//					ExceptionUtils.wrappBusinessException("付款计划已经生成后续单据 ，不允许弃审");
+//					return; 
+//				}
 
 				AggPayPlanVO aggvo1 = new AggPayPlanVO();
 				aggvo1.setParentVO(aggvo.getParentVO());
-				aggvo1.setPayPlanVO(writelisttotal
-						.toArray(new PayPlanVO[writelisttotal.size()]));
+				aggvo1.setPayPlanVO(delplans);
 				savePayPlanViewVO(aggvo, aggvo1);
 			}
 		}
+	}
+
+	private void check(PayPlanVO[] payplanVOs, StringBuilder sb) {
+
+		if (ArrayUtils.isEmpty(payplanVOs)) {
+			return;
+		}
+		for (PayPlanVO payplanVO : payplanVOs) {
+			if (MathTool.compareTo(payplanVO.getNaccumpayapporgmny(),
+					UFDouble.ZERO_DBL) > 0
+					|| MathTool.compareTo(payplanVO.getNaccumpayorgmny(),
+							UFDouble.ZERO_DBL) > 0) {
+				if (sb.length() > 0) {
+					sb.append(", ");
+				}
+				sb.append(payplanVO.getPk_order());
+				return;
+			}
+		}
+
 	}
 
 	// 采购退库回写付款计划

@@ -3,9 +3,12 @@ package nc.bs.hr.wa.adjust.plugin;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import nc.bs.framework.common.InvocationInfoProxy;
 import nc.bs.framework.common.NCLocator;
 import nc.bs.pfxx.ISwapContext;
+import nc.bs.uap.lock.PKLock;
 import nc.itf.hr.wa.IWaAdjustManageService;
+import nc.itf.hr.wa.IWaAdjustQueryService;
 import nc.itf.uap.pf.IPFBusiAction;
 import nc.vo.pfxx.auxiliary.AggxsysregisterVO;
 import nc.vo.pfxx.util.PfxxPluginUtils;
@@ -17,24 +20,21 @@ import nc.vo.pubapp.pflow.PfUserObject;
 import nc.vo.wa.adjust.AggPsnappaproveVO;
 import nc.vo.wa.adjust.PsnappaproveVO;
 
-
-
-
 /**
- * 定调资申请
+ * 定调资申请增加
  */
-public class BpmAdjustExpPfxxPlugin< T extends AggPsnappaproveVO> extends
-nc.bs.pfxx.plugin.AbstractPfxxPlugin {	
-	
-	
+public class BpmAdjustExpPfxxPlugin<T extends AggPsnappaproveVO> extends
+		nc.bs.pfxx.plugin.AbstractPfxxPlugin {
+
 	private PfUserObject[] userObjs;
-	
+
 	/**
 	 * 将由XML转换过来的VO导入NC系统。业务插件实现此方法即可。<br>
 	 * 请注意，业务方法的校验一定要充分
 	 * 
 	 * @param vo
-	 *            转换后的vo数据，在NC系统中可能为ValueObject,SuperVO,AggregatedValueObject,IExAggVO等。
+	 *            转换后的vo数据，在NC系统中可能为ValueObject,SuperVO,AggregatedValueObject,
+	 *            IExAggVO等。
 	 * @param swapContext
 	 *            各种交换参数，组织，接受方，发送方，帐套等等
 	 * @param aggxsysvo
@@ -42,14 +42,16 @@ nc.bs.pfxx.plugin.AbstractPfxxPlugin {
 	 * @return
 	 * @throws BusinessException
 	 */
-	protected Object processBill(Object vo, ISwapContext swapContext, AggxsysregisterVO aggxsysvo) throws BusinessException {
+	protected Object processBill(Object vo, ISwapContext swapContext,
+			AggxsysregisterVO aggxsysvo) throws BusinessException {
 
-		//1.得到转换后的VO数据,取决于向导第一步注册的VO信息
- 		AggPsnappaproveVO bill = (AggPsnappaproveVO)vo;
- 		PsnappaproveVO head = setHeaderDefault((PsnappaproveVO) bill.getParentVO());
-//		if (head.getBilltype() == null) {
-//			throw new BusinessException("单据的单据类型编码字段不能为空，请输入值");
-//		}
+		// 1.得到转换后的VO数据,取决于向导第一步注册的VO信息
+		AggPsnappaproveVO bill = (AggPsnappaproveVO) vo;
+		PsnappaproveVO head = setHeaderDefault((PsnappaproveVO) bill
+				.getParentVO());
+		// if (head.getBilltype() == null) {
+		// throw new BusinessException("单据的单据类型编码字段不能为空，请输入值");
+		// }
 
 		if (head.getPk_group() == null) {
 			throw new BusinessException("单据的所属集团字段不能为空，请输入值");
@@ -57,7 +59,7 @@ nc.bs.pfxx.plugin.AbstractPfxxPlugin {
 		if (head.getPk_org() == null) {
 			throw new BusinessException("单据的财务组织字段不能为空，请输入值");
 		}
-		
+
 		if (head.getBillcode() == null) {
 			throw new BusinessException("单据的单据编号字段不能为空，请输入值");
 		}
@@ -65,23 +67,23 @@ nc.bs.pfxx.plugin.AbstractPfxxPlugin {
 		// 2.查询此单据是否已经被导入过
 		String oldPk = PfxxPluginUtils.queryBillPKBeforeSaveOrUpdate(
 				swapContext.getBilltype(), swapContext.getDocID());
-//		if (oldPk != null) {
-//
-//			// 这个判断，好像平台已经过，如果单据已导入，且replace="N"，那么平台就会抛出异常，提示不可重复
-//			if (swapContext.getReplace().equalsIgnoreCase("N"))
-//				throw new BusinessException(
-//						"不允许重复导入单据，请检查是否是操作错误；如果想更新已导入单据，请把数据文件的replace标志设为‘Y’");
-//
-//			IWaAdjustQueryService voucherbo = (IWaAdjustQueryService) NCLocator
-//					.getInstance().lookup(IWaAdjustQueryService.class.getName());
-//			AggPsnappaproveVO preVO = voucherbo.queryPsnappaproveVOByPk(oldPk);
-//
-//			if (preVO != null && preVO.getParentVO() != null) {
-//
-//				throw new BusinessException("单据已存在，不允许重复导入单据。");
-//
-//			}
-//		}
+		// if (oldPk != null) {
+		//
+		// // 这个判断，好像平台已经过，如果单据已导入，且replace="N"，那么平台就会抛出异常，提示不可重复
+		// if (swapContext.getReplace().equalsIgnoreCase("N"))
+		// throw new BusinessException(
+		// "不允许重复导入单据，请检查是否是操作错误；如果想更新已导入单据，请把数据文件的replace标志设为‘Y’");
+		//
+		// IWaAdjustQueryService voucherbo = (IWaAdjustQueryService) NCLocator
+		// .getInstance().lookup(IWaAdjustQueryService.class.getName());
+		// AggPsnappaproveVO preVO = voucherbo.queryPsnappaproveVOByPk(oldPk);
+		//
+		// if (preVO != null && preVO.getParentVO() != null) {
+		//
+		// throw new BusinessException("单据已存在，不允许重复导入单据。");
+		//
+		// }
+		// }
 
 		SimpleDateFormat formatter = new SimpleDateFormat("yyMMddHHmmssSSS");
 		String strCode = formatter.format(new Date());
@@ -100,25 +102,42 @@ nc.bs.pfxx.plugin.AbstractPfxxPlugin {
 				swapContext.getDocID(), pk);
 		return pk;
 	}
-	
-	private AggPsnappaproveVO insertBill(AggPsnappaproveVO bill, PsnappaproveVO head)
-			throws BusinessException {
+
+	private AggPsnappaproveVO insertBill(AggPsnappaproveVO bill,
+			PsnappaproveVO head) throws BusinessException {
 
 		IWaAdjustManageService voucherbo = (IWaAdjustManageService) NCLocator
 				.getInstance().lookup(IWaAdjustManageService.class.getName());
-
+		if (head.getCreator() == null)
+			throw new BusinessException("创建人不能为空。");
+		InvocationInfoProxy.getInstance().setUserId(head.getCreator());
 		AggPsnappaproveVO res = voucherbo.insert(bill);
+
+		res = (AggPsnappaproveVO) NCLocator
+				.getInstance()
+				.lookup(IPFBusiAction.class)
+				.processAction(IPFActionName.SAVE, head.getBilltype(),
+						new WorkflownoteVO(), res, getUserObj(), null);
+
+		IWaAdjustQueryService voucherbo1 = (IWaAdjustQueryService) NCLocator
+				.getInstance().lookup(IWaAdjustQueryService.class.getName());
+		AggPsnappaproveVO preVO = voucherbo1.queryPsnappaproveVOByPk(res
+				.getParentVO().getPrimaryKey());
+		PKLock.getInstance().releaseLock(res.getParentVO().getPrimaryKey(),
+				InvocationInfoProxy.getInstance().getUserId(),
+				InvocationInfoProxy.getInstance().getUserDataSource());
+		if (head.getApprover() != null)
+			InvocationInfoProxy.getInstance().setUserId(head.getApprover());
+		preVO.getParentVO().setAttributeValue("approve_note ", "外部导入审批");
 		
 		res = (AggPsnappaproveVO) NCLocator
-        .getInstance()
-        .lookup(IPFBusiAction.class).processAction(IPFActionName.SAVE, head.getBilltype(), new WorkflownoteVO(), res, getUserObj(), null);
-		
-		res = (AggPsnappaproveVO) NCLocator
-        .getInstance()
-        .lookup(IPFBusiAction.class).processAction(IPFActionName.APPROVE, head.getBilltype(), null, res, getUserObj(), null);
+				.getInstance()
+				.lookup(IPFBusiAction.class)
+				.processAction(IPFActionName.APPROVE, head.getBilltype(), null,
+						preVO, getUserObj(), null);
 		return res;
 	}
-	
+
 	public PfUserObject[] getUserObj() {
 		if (userObjs == null) {
 			userObjs = new PfUserObject[] { new PfUserObject() };
@@ -143,5 +162,5 @@ nc.bs.pfxx.plugin.AbstractPfxxPlugin {
 		header.setBilltype("6301");
 		return header;
 	}
-	
+
 }

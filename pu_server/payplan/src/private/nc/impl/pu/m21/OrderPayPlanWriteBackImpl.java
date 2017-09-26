@@ -229,6 +229,9 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 					IOrderPayPlanQuery.class);
 			AggPayPlanVO[] vos = service.queryPayPlanVOs(orderids);
 
+			if(vos == null || vos.length==0)
+				continue;
+			
 			PayPeriodVO periodvo = getPayPeriodVO(name);
 			for (AggPayPlanVO aggvo : vos) {
 				// if(view.getfe)
@@ -760,6 +763,9 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 			IOrderPayPlanQuery service = NCLocator.getInstance().lookup(
 					IOrderPayPlanQuery.class);
 			AggPayPlanVO[] vos = service.queryPayPlanVOs(orderids);
+			
+			if(vos == null || vos.length==0)
+				continue;
 
 			PayPeriodVO periodvo = getPayPeriodVO(name);
 

@@ -81,6 +81,10 @@ public class FilterBillTypeRef extends CMFilterDefaultRefUtils {
             // 定额取存货核算的产品成入库单
             sqlwhere.append(" and pk_billtypecode in('I3') ");
         }
+        else if (ifetchtype.equals(String.valueOf(FetchTypeEnum.CHUYUN.value()))) {
+            // 定额取存货核算的产品成入库单
+            sqlwhere.append(" and pk_billtypecode like '4%' ");
+        }
         UIRefPane refPane = (UIRefPane) this.billItem.getComponent();
         if (refPane == null) {
             return;

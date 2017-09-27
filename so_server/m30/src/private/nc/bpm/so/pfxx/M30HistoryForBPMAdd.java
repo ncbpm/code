@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import nc.bs.framework.common.InvocationInfoProxy;
+//import nc.bs.framework.common.InvocationInfoProxy;
 import nc.bs.framework.common.NCLocator;
 import nc.bs.pfxx.ISwapContext;
 import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
@@ -41,6 +42,11 @@ public class M30HistoryForBPMAdd extends AbstractPfxxPlugin {
 		SaleOrderHistoryVO bill = (SaleOrderHistoryVO) vo;
 		// 2. 校验数据的合法性:1.数据结构完整 2.根据组织+单据号校验是否重复.
 		checkData(bill);
+		
+		if (!StringUtils.isEmpty(bill.getParentVO().getCreviserid())) {
+			InvocationInfoProxy.getInstance().setUserId(
+					bill.getParentVO().getCreviserid());
+		}
 		// 具体业务处理
 		String vrevisereason = bill.getParentVO().getVrevisereason();
 		// 如果存在，则执行采购订单修订或者关闭打开
@@ -194,12 +200,7 @@ public class M30HistoryForBPMAdd extends AbstractPfxxPlugin {
 		cal.calculate(rows, "norigtaxmny");
 		IM30ReviseMaintain maintainsrv = NCLocator.getInstance().lookup(
 				IM30ReviseMaintain.class);
-		if (!StringUtils.isEmpty(
-				bill.getParentVO().getCreator())) {
-			InvocationInfoProxy.getInstance().setUserId(
-					bill.getParentVO().getCreator());
-		}
-		// ReviseSaveSaleOrderAction action = new ReviseSaveSaleOrderAction();
+
 		// 调用新的方法，传入的bills 是销售订单修订历史vo
 		SaleOrderHistoryVO[] ret = maintainsrv
 				.reviseOrderHisVOSave(new SaleOrderHistoryVO[] { bill });

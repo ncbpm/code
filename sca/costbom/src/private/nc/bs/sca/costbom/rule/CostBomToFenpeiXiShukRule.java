@@ -85,7 +85,7 @@ public class CostBomToFenpeiXiShukRule implements IRule<CostBomAggVO> {
 		}
 		// 根据核算要素查询 核心要素与分配系数对照表，是否有对应
 		Factorofinv[] factor_fenpeixishu = queryFenPeixi(
-				parentVO.getPk_group(), parentVO.getPk_org(),null);
+				parentVO.getPk_group(), parentVO.getPk_org(), null);
 		if (factor_fenpeixishu == null || factor_fenpeixishu.length == 0) {
 			return;
 		}
@@ -94,7 +94,8 @@ public class CostBomToFenpeiXiShukRule implements IRule<CostBomAggVO> {
 			fator_map.put(vo.getPk_factor(), vo.getPk_allocfac());
 		}
 		// 根据对照表维护的分配系数主键 查询分配系数VO
-		Map<String, AllocfacAggVO> allocfac = queryAlloffac(fator_map.values());
+		// Map<String, AllocfacAggVO> allocfac =
+		// queryAlloffac(fator_map.values());
 
 		// 判断成本BOM的表体核算要素是否 有对应的在对照表。
 		// 如果是新增行，则判断如果在对照表中则讲成本BOM表头的VO对应的产品增加分配系数的表体产品
@@ -133,11 +134,12 @@ public class CostBomToFenpeiXiShukRule implements IRule<CostBomAggVO> {
 
 					}
 
-					if (fator_map.containsKey(pk_factorasoa)) {
-						addXiShu((CostBomHeadVO) aggvo.getParentVO(),
-								fator_map.get(pk_factorasoa));
 
-					}
+				}
+
+				if (fator_map.containsKey(pk_factorasoa)) {
+					addXiShu((CostBomHeadVO) aggvo.getParentVO(),
+							fator_map.get(pk_factorasoa));
 
 				}
 			}
@@ -151,6 +153,25 @@ public class CostBomToFenpeiXiShukRule implements IRule<CostBomAggVO> {
 
 		}
 
+	}
+
+	private boolean isEqualses(AllocfacItemVO body, CostBomHeadVO head) {
+
+		String[] cmaterialinfor = new String[] { CMAssInfoItemVO.CPROJECTID,
+				CMAssInfoItemVO.CVENDORID, CMAssInfoItemVO.CPRODUCTORID,
+				CMAssInfoItemVO.CCUSTOMERID };
+
+		String key1 = body.getCmaterialid();
+		String key2 = head.getCmaterialid();
+		for (String free : cmaterialinfor) {
+			key1 = key1 + body.getAttributeValue(free);
+			key2 = key2 + head.getAttributeValue(free);
+		}
+		for (int i = 1; i <= 10; i++) {
+			key1 = key1 + body.getAttributeValue("vbfree" + i);
+			key2 = key2 + head.getAttributeValue("vfree" + i);
+		}
+		return key1.equalsIgnoreCase(key2);
 	}
 
 	/**
@@ -168,9 +189,7 @@ public class CostBomToFenpeiXiShukRule implements IRule<CostBomAggVO> {
 		AllocfacItemVO[] itemVOS = allocfacAggVO.getItemVO();
 		for (AllocfacItemVO body : itemVOS) {
 			// 如果已经存在，则跳过
-			if (body.getCmaterialid() != null
-					&& body.getCmaterialid().equalsIgnoreCase(
-							head.getCmaterialid())) {
+			if (body.getCmaterialid() != null && isEqualses(body, head)) {
 				body.setStatus(VOStatus.DELETED);
 			}
 		}
@@ -194,45 +213,47 @@ public class CostBomToFenpeiXiShukRule implements IRule<CostBomAggVO> {
 		// TODO 自动生成的方法存根
 		AllocfacAggVO allocfacAggVO = queryAlloffac(pk_alloffac);
 		AllocfacItemVO[] itemVOS = allocfacAggVO.getItemVO();
+		boolean isEXist = false;
 		for (AllocfacItemVO body : itemVOS) {
 			// 如果已经存在，则跳过
-			if (body.getCmaterialid() != null
-					&& body.getCmaterialid().equalsIgnoreCase(
-							head.getCmaterialid())) {
-				return;
+			if (body.getCmaterialid() != null && isEqualses(body, head)) {
+				body.setStatus(VOStatus.UPDATED);
+				body.setNfactor(UFDouble.ONE_DBL);
+				isEXist = true;
+				break;
+
 			}
 		}
+		if (!isEXist) {
+			List<AllocfacItemVO> asList = new ArrayList<AllocfacItemVO>();
+			for (AllocfacItemVO item : itemVOS) {
+				asList.add(item);
+			}
+			AllocfacItemVO item = new AllocfacItemVO();
+			item.setPk_group(allocfacAggVO.getParentVO().getPk_group());
+			item.setPk_org(allocfacAggVO.getParentVO().getPk_org());
+			item.setPk_org_v(allocfacAggVO.getParentVO().getPk_org_v());
 
-		List<AllocfacItemVO> asList = new ArrayList<AllocfacItemVO>();
-		for (AllocfacItemVO item : itemVOS) {
+			item.setCallocfacid(allocfacAggVO.getParentVO().getCallocfacid());
+			// 物料新
+			item.setCmaterialid(head.getCmaterialid());
+			String[] cmaterialinfor = new String[] {
+					CMAssInfoItemVO.CPROJECTID, CMAssInfoItemVO.CVENDORID,
+					CMAssInfoItemVO.CPRODUCTORID, CMAssInfoItemVO.CCUSTOMERID };
+			for (String name : cmaterialinfor) {
+				item.setAttributeValue(name, head.getAttributeValue(name));
+			}
+
+			for (int i = 1; i <= 10; i++) {
+				item.setAttributeValue("vbfree" + i,
+						head.getAttributeValue("vfree" + i));
+			}
+			item.setStatus(VOStatus.NEW);
+			item.setNfactor(UFDouble.ONE_DBL);
 			asList.add(item);
+			allocfacAggVO.setChildrenVO(asList.toArray(new AllocfacItemVO[0]));
+
 		}
-		AllocfacItemVO item = new AllocfacItemVO();
-		item.setPk_group(allocfacAggVO.getParentVO().getPk_group());
-		item.setPk_org(allocfacAggVO.getParentVO().getPk_org());
-		item.setPk_org_v(allocfacAggVO.getParentVO().getPk_org_v());
-
-		item.setCallocfacid(allocfacAggVO.getParentVO().getCallocfacid());
-		// 物料新
-		item.setCmaterialid(head.getCmaterialid());
-		String[] cmaterialinfor = new String[] { CMAssInfoItemVO.CPROJECTID,
-				CMAssInfoItemVO.CVENDORID, CMAssInfoItemVO.CPRODUCTORID,
-				CMAssInfoItemVO.CCUSTOMERID, CMAssInfoItemVO.VBFREE1,
-				CMAssInfoItemVO.VBFREE2, CMAssInfoItemVO.VBFREE3,
-				CMAssInfoItemVO.VBFREE4, CMAssInfoItemVO.VBFREE5,
-				CMAssInfoItemVO.VBFREE6, CMAssInfoItemVO.VBFREE7,
-				CMAssInfoItemVO.VBFREE8, CMAssInfoItemVO.VBFREE9,
-				CMAssInfoItemVO.VBFREE10 };
-		for (String name : cmaterialinfor) {
-			item.setAttributeValue(name, head.getAttributeValue(name));
-		}
-
-		item.setStatus(VOStatus.NEW);
-		item.setNfactor(UFDouble.ONE_DBL);
-
-		asList.add(item);
-
-		allocfacAggVO.setChildrenVO(asList.toArray(new AllocfacItemVO[0]));
 
 		NCLocator.getInstance().lookup(IAllocfacMaintainService.class)
 				.update(new AllocfacAggVO[] { allocfacAggVO });
@@ -327,7 +348,7 @@ public class CostBomToFenpeiXiShukRule implements IRule<CostBomAggVO> {
 		sql.append(" and nvl(dr,0)=0   ");
 		sql.append(" and pk_group", pk_group);
 		sql.append(" and pk_org", pk_org);
-//		sql.append(" and pk_factor", factorAsoaList.toArray(new String[0]));
+		// sql.append(" and pk_factor", factorAsoaList.toArray(new String[0]));
 		return queyr.query(sql.toString(), null);
 	}
 

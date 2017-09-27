@@ -47,6 +47,7 @@ import nc.vo.pub.SuperVOUtil;
 import nc.vo.pub.VOStatus;
 import nc.vo.pub.lang.UFBoolean;
 import nc.vo.pub.lang.UFDate;
+import nc.vo.pub.lang.UFDateTime;
 import nc.vo.pub.lang.UFDouble;
 import nc.vo.pubapp.pattern.exception.ExceptionUtils;
 import nc.vo.pubapp.util.VORowNoUtils;
@@ -81,7 +82,7 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 			"btriatradeflag", "ctaxcodeid", "nnosubtaxrate", "nnosubtax" };
 
 	String[] headattributeNames = new String[] { "pk_order", "pk_group",
-			"vmemo", "pk_org", "pk_org_v", "vbillcode", "dbilldate",
+			"vmemo", "pk_org", "pk_org_v",  "dbilldate",
 			"pk_supplier", "pk_dept_v", "pk_dept", "vtrantypecode",
 			"pk_invcsupllier", "pk_payterm", "billmaker", "approver",
 			"bisreplenish", "breturn", "iprintcount", "creationtime",
@@ -89,7 +90,7 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 			"ntotalorigmny", "bfrozen", "pk_busitype", "fhtaxtypeflag",
 			"corigcurrencyid", "brefwhenreturn", "ntotalweight",
 			"ntotalvolume", "ntotalpiece", "bfinalclose", "creator",
-			"ctrantypeid", "bpublish" };
+			"ctrantypeid", "bpublish","modifiedtime","crevisepsn","trevisiontime" };
 
 	@Override
 	protected Object processBill(Object vo, ISwapContext swapContext,
@@ -132,7 +133,9 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 			}
 			// 处理变更订单明细
 			delOrderItem(queryVo, bpmOrder);
-
+			if(queryVo.getHVO().getModifier() != null){
+				InvocationInfoProxy.getInstance().setUserId(queryVo.getHVO().getModifier());
+			}
 			NCLocator.getInstance().lookup(IOrderRevise.class)
 					.reviseSave(new OrderVO[] { queryVo }, null);
 
@@ -380,7 +383,11 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 		for (String attr : headattributeNames) {
 			hvo.setAttributeValue(attr, hvo_bpm.getAttributeValue(attr));
 		}
-
+		hvo.setStatus(VOStatus.UPDATED);
+		UFDateTime ufDateTime = new UFDateTime();
+		UFDateTime trevisiontime = new UFDateTime(hvo_bpm.getTrevisiontime()== null?ufDateTime.toString():hvo_bpm.getTrevisiontime().toString());
+		hvo.setModifiedtime(trevisiontime);
+		hvo.setModifier(hvo_bpm.getCrevisepsn());	
 		hvo.setNversion(++nversion);
 		hvo.setBislatest(UFBoolean.TRUE);
 	}

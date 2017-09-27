@@ -46,14 +46,14 @@ public class DeptHandler extends CMBasedocAbstractHandler {
 
 		// where.append(FactorAsoaVO.ENDFLAG + " = 'Y' ");
 
-		// 过滤重复
-		if (list.size() != 0) {
-			// where.append(" and ");
-			where.appendNot(DeptVO.PK_DEPT,
-					list.toArray(new String[0]));
-		}
-	
-		ref.setWhereString(where.toString());
+//		// 过滤重复
+//		if (list.size() != 0) {
+//			// where.append(" and ");
+//			where.appendNot(DeptVO.PK_DEPT,
+//					list.toArray(new String[0]));
+//		}
+//	
+//		ref.setWhereString(where.toString());
 		// 财务组织
 		ref.getRefModel().setPk_org(pk_factory);
 		// 设置非末级要素不可选

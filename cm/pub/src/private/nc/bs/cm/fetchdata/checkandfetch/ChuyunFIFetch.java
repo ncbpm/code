@@ -13,7 +13,6 @@ import nc.bd.framework.db.CMSqlBuilder;
 import nc.bs.cm.fetchdata.factory.FetchPersistentFactory;
 import nc.bs.cm.fetchdata.fetchPersistent.AbstractFetchPersistent;
 import nc.bs.cm.fetchdata.fetchcheck.AbstractCheckStrategy;
-import nc.bs.cm.fetchdata.fetchcheck.MMFetchCheckStrategy;
 import nc.bs.cm.fetchdata.groupdata.IGroupStrategy;
 import nc.bs.dao.BaseDAO;
 import nc.bs.framework.common.NCLocator;
@@ -64,7 +63,6 @@ public class ChuyunFIFetch extends AbstractCheckAndFetch<IMMFetchData> {
 	@Override
 	public CircularlyAccessibleValueObject[] getData4OutSystem(
 			FetchParamVO paramvo, boolean isCheckFlag) throws BusinessException {
-		// 得到mm生产制造的完工单或者工序完工单据
 		return this.getFinishOrGxFinish(paramvo);
 	}
 	
@@ -148,8 +146,6 @@ public class ChuyunFIFetch extends AbstractCheckAndFetch<IMMFetchData> {
 	protected void saveFetchStatus(FetchParamVO paramvo, boolean isCheckFlag)
 			throws BusinessException {
         if (!isCheckFlag) {
-            // modify by zhangchdV65 2015.01.21
-            // 查询数据库表【pccm_fetchinfo】中的数据
             // 要保存的状态
             Set<PullDataStateVO> savePullDataStateSet = new HashSet<PullDataStateVO>();
             // 要更新的状态

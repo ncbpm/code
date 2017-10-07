@@ -196,7 +196,7 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 		Object value = null;
 		for (WaDataBodyVO data : bodyvos) {
 			sqlBuffer.setLength(0);
-			sqlBuffer.append(" update wa_data set caculateflag ='N'"); // 1
+			sqlBuffer.append(" update wa_data set caculateflag ='N',vdef1 = '"+loginContext.getPk_loginUser()+"'"); // 1
 			for (String key : getMap().keySet()) {
 				String name = getMap().get(key);
 				if (name == null)

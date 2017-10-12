@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding='utf-8'?>
+﻿<?xml version="1.0" encoding='utf-8'?>
 <ufinterface roottag="bill">
     <record displayName="转正申请" metadataid="05ec8321-49b2-49d4-8ffb-0356c12ea3af" stabletag="header" tablename="billhead" tabletag="billhead" tabletype="head" typeName="表头">
         <field desc="转正主键">
@@ -47,9 +47,72 @@
             <needexport>yes</needexport>
             <checkTranslatedPK>no</checkTranslatedPK>
         </field>
-        <field desc="old岗位系数">
+	<field desc="old上班模式">
+            <matchtag>oldjobglbdef1</matchtag>
+            <name>oldjobglbdef1</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>128</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="new上班模式">
             <matchtag>newjobglbdef1</matchtag>
             <name>newjobglbdef1</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>128</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+	<field desc="old岗位级别">
+            <matchtag>oldjobglbdef2</matchtag>
+            <name>oldjobglbdef2</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>128</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="new岗位级别">
+            <matchtag>newjobglbdef2</matchtag>
+            <name>newjobglbdef2</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>128</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+	<field desc="old岗位等级1">
+            <matchtag>oldjobglbdef3</matchtag>
+            <name>oldjobglbdef3</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>128</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+        <field desc="new岗位等级1">
+            <matchtag>newjobglbdef3</matchtag>
+            <name>newjobglbdef3</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>128</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+	<field desc="old岗位等级">
+            <matchtag>oldjobglbdef4</matchtag>
+            <name>oldjobglbdef4</name>
+            <type>String</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>128</maxLength>
+            <needexport>yes</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+	<field desc="old岗位等级">
+            <matchtag>newjobglbdef4</matchtag>
+            <name>newjobglbdef4</name>
             <type>String</type>
             <nullallowed>yes</nullallowed>
             <maxLength>128</maxLength>
@@ -64,15 +127,6 @@
             <maxLength>20</maxLength>
             <needexport>yes</needexport>
             <basdoc>b0fa41cd-a649-4309-b685-d341a5d1b0ed</basdoc>
-            <checkTranslatedPK>no</checkTranslatedPK>
-        </field>
-        <field desc="old岗位系数">
-            <matchtag>oldjobglbdef1</matchtag>
-            <name>oldjobglbdef1</name>
-            <type>String</type>
-            <nullallowed>yes</nullallowed>
-            <maxLength>128</maxLength>
-            <needexport>yes</needexport>
             <checkTranslatedPK>no</checkTranslatedPK>
         </field>
         <field desc="单据状态">

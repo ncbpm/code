@@ -108,7 +108,7 @@ public class CostBomToFenpeiXiShukRule implements IRule<CostBomAggVO> {
 			if (vo.getStatus() == VOStatus.NEW) {
 				if (fator_map.containsKey(pk_factorasoa)) {
 					addXiShu((CostBomHeadVO) aggvo.getParentVO(),
-							fator_map.get(pk_factorasoa));
+							fator_map.get(pk_factorasoa), vo);
 				}
 			}
 			if (vo.getStatus() == VOStatus.DELETED) {
@@ -134,12 +134,11 @@ public class CostBomToFenpeiXiShukRule implements IRule<CostBomAggVO> {
 
 					}
 
-
 				}
 
 				if (fator_map.containsKey(pk_factorasoa)) {
 					addXiShu((CostBomHeadVO) aggvo.getParentVO(),
-							fator_map.get(pk_factorasoa));
+							fator_map.get(pk_factorasoa), vo);
 
 				}
 			}
@@ -147,7 +146,7 @@ public class CostBomToFenpeiXiShukRule implements IRule<CostBomAggVO> {
 			if (vo.getStatus() == VOStatus.UNCHANGED) {
 				if (fator_map.containsKey(pk_factorasoa)) {
 					addXiShu((CostBomHeadVO) aggvo.getParentVO(),
-							fator_map.get(pk_factorasoa));
+							fator_map.get(pk_factorasoa), vo);
 				}
 			}
 
@@ -198,18 +197,31 @@ public class CostBomToFenpeiXiShukRule implements IRule<CostBomAggVO> {
 
 	}
 
+	private void setNfactor(AllocfacItemVO body,
+			CircularlyAccessibleValueObject bvo) {
+		// / 1. 分配系数，费用的取金额，材料取数量
+		if (bvo instanceof CostBomStuffItemVO) {
+			body.setNfactor(((CostBomStuffItemVO) bvo).getNnum());
+
+		} else {
+			body.setNfactor((UFDouble) bvo.getAttributeValue("nmoney"));
+
+		}
+	}
+
 	/***
 	 * 将陈本BOM对应的表头物料增加成分配系数的表体 如果物料已经存在，则跳过
 	 * 
 	 * 
 	 * @param head
 	 *            核算要素A对应的成本BOM
+	 * @param bvo
 	 * @param allocfacAggVO
 	 *            核算要素A对应的 分配系数
 	 * @throws BusinessException
 	 */
-	private void addXiShu(CostBomHeadVO head, String pk_alloffac)
-			throws BusinessException {
+	private void addXiShu(CostBomHeadVO head, String pk_alloffac,
+			CircularlyAccessibleValueObject bvo) throws BusinessException {
 		// TODO 自动生成的方法存根
 		AllocfacAggVO allocfacAggVO = queryAlloffac(pk_alloffac);
 		AllocfacItemVO[] itemVOS = allocfacAggVO.getItemVO();
@@ -218,7 +230,7 @@ public class CostBomToFenpeiXiShukRule implements IRule<CostBomAggVO> {
 			// 如果已经存在，则跳过
 			if (body.getCmaterialid() != null && isEqualses(body, head)) {
 				body.setStatus(VOStatus.UPDATED);
-				body.setNfactor(UFDouble.ONE_DBL);
+				setNfactor(body, bvo);
 				isEXist = true;
 				break;
 
@@ -249,7 +261,8 @@ public class CostBomToFenpeiXiShukRule implements IRule<CostBomAggVO> {
 						head.getAttributeValue("vfree" + i));
 			}
 			item.setStatus(VOStatus.NEW);
-			item.setNfactor(UFDouble.ONE_DBL);
+			// 1. 分配系数，费用的取金额，材料取数量
+			setNfactor(item, bvo);
 			asList.add(item);
 			allocfacAggVO.setChildrenVO(asList.toArray(new AllocfacItemVO[0]));
 

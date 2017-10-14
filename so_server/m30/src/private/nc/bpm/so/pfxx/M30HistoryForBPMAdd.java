@@ -268,10 +268,10 @@ public class M30HistoryForBPMAdd extends AbstractPfxxPlugin {
 						: bpm.getNorigtaxmny();
 				UFDouble norigtaxmny = orderItemVO.getNorigtaxmny() == null ? UFDouble.ZERO_DBL
 						: orderItemVO.getNorigtaxmny();
-				if (bpm_norigtaxmny.sub(norigtaxmny).doubleValue() != 0) {
+				if (bpm_norigtaxmny.sub(ntotalinvoicenum).doubleValue() < 0) {
 					throw new BusinessException("操作不合法 :行" + bpm.getVbdef20()
-							+ "已经开发票，不允许修订金额,请删除发票后重新修订。 本次修订后的金额:"
-							+ bpm_norigtaxmny + ",修订前金额：" + bpm_norigtaxmny);
+							+ "已经开发票，不允许修订后的金额小于累计开票金额。 本次修订后的金额:"
+							+ bpm_norigtaxmny + ",累计开票金额：" + ntotalinvoicenum);
 				}
 
 			}

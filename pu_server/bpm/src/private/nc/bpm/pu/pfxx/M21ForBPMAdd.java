@@ -291,23 +291,14 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 			bvo.setCqtunitid(bvo.getCunitid());
 			bvo.setVqtunitrate(bvo.getVchangerate());
 			// --表体默认值
-			// <fisactive>0</fisactive>
 			bvo.setFisactive(0);
-			// <btriatradeflag>N</btriatradeflag>
 			bvo.setBtriatradeflag(UFBoolean.FALSE);
-			// <bborrowpur>N</bborrowpur>
 			bvo.setBborrowpur(UFBoolean.FALSE);
-			// <binvoiceclose>N</binvoiceclose>
 			bvo.setBinvoiceclose(UFBoolean.FALSE);
-			// <barriveclose>N</barriveclose>
 			bvo.setBarriveclose(UFBoolean.FALSE);
-			// <bpayclose>N</bpayclose>
 			bvo.setBpayclose(UFBoolean.FALSE);
-			// <breceiveplan>N</breceiveplan>
 			bvo.setBreceiveplan(UFBoolean.FALSE);
-			// <blargess>N</blargess>
 			bvo.setBlargess(UFBoolean.FALSE);
-			// <btransclosed>N</btransclosed>
 			bvo.setBtransclosed(UFBoolean.FALSE);
 
 			// 润丰同步的业务源只有请购和协同销售订单
@@ -381,7 +372,9 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 		Integer nversion = hvo.getNversion();
 		OrderHeaderVO hvo_bpm = order.getHVO();
 		for (String attr : headattributeNames) {
-			hvo.setAttributeValue(attr, hvo_bpm.getAttributeValue(attr));
+			if(hvo_bpm.getAttributeValue(attr)!=null){
+				hvo.setAttributeValue(attr, hvo_bpm.getAttributeValue(attr));
+			}
 		}
 		hvo.setStatus(VOStatus.UPDATED);
 		UFDateTime ufDateTime = new UFDateTime();
@@ -641,7 +634,6 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 	}
 
 	private void fillupRowNo(OrderVO bill) {
-
 		// 为行号为空的行补充行号。
 		OrderItemVO[] items = bill.getBVO();
 		List<OrderItemVO> bvos = new ArrayList<OrderItemVO>();
@@ -684,14 +676,18 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 		for (OrderItemVO bvo : items) {
 			bvo.setCqtunitid(bvo.getCunitid());
 			bvo.setVqtunitrate(bvo.getVqtunitrate());
+			
 			for (String attname : attributeNames) {
 				if (attname.endsWith("price")) {
 					bvo.setAttributeValue(attname, null);
 				}
-			}
+				if(attname.startsWith("nqt")){
+					bvo.setAttributeValue(attname, null);
+				}
+			}			
 		}
 		//
-//		cal.calculate(vo, "nnum");
+		cal.calculate(vo, "nnum");
 		cal.calculate(vo, "norigtaxmny");
 	}
 

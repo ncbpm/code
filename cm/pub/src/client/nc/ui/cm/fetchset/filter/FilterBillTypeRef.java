@@ -78,8 +78,8 @@ public class FilterBillTypeRef extends CMFilterDefaultRefUtils {
         }
         //2017-09-02 
         else if (ifetchtype.equals(String.valueOf(FetchTypeEnum.DINGE.value()))) {
-            // 定额取存货核算的产品成入库单
-            sqlwhere.append(" and pk_billtypecode in('I3') ");
+            // 定额取完工单
+            sqlwhere.append(" and pk_billtypecode in('CM03') ");
         }
         else if (ifetchtype.equals(String.valueOf(FetchTypeEnum.CHUYUN.value()))) {
             // 定额取存货核算的产品成入库单

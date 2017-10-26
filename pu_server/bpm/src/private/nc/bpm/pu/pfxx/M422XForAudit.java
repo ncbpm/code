@@ -69,7 +69,9 @@ public class M422XForAudit extends AbstractPfxxPlugin {
 			clientVO.getHVO().setApprover(bpmVO.getHVO().getApprover());
 			clientVO.getHVO().setFbillstatus(bpmVO.getHVO().getFbillstatus());
 			clientVO.getHVO().setTaudittime(AppContext.getInstance().getBusiDate());
+			clientVO.getHVO().setVmemo(bpmVO.getHVO().getVmemo());
 			clientVO.getParentVO().setStatus(VOStatus.UPDATED);
+			
 			BillUpdate<StoreReqAppVO> update = new BillUpdate<StoreReqAppVO>();
 			
 			StoreReqAppVO[] vos = update.update(new StoreReqAppVO[] { clientVO },

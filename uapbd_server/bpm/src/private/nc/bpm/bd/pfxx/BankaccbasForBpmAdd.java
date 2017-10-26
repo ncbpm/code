@@ -1,11 +1,16 @@
 package nc.bpm.bd.pfxx;
 
+import java.util.Collection;
+
 import nc.bs.dao.BaseDAO;
 import nc.bs.framework.common.NCLocator;
+import nc.bs.logging.Logger;
 import nc.bs.pfxx.ISwapContext;
 import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
+import nc.bs.sec.esapi.NCESAPI;
 import nc.itf.bd.bankacc.base.IBankAccBaseInfoQueryService;
 import nc.itf.bd.bankacc.cust.ICustBankaccService;
+import nc.itf.uap.IUAPQueryBS;
 import nc.vo.bd.bankaccount.BankAccSubVO;
 import nc.vo.bd.bankaccount.BankAccbasVO;
 import nc.vo.bd.bankaccount.IBankAccConstant;
@@ -17,6 +22,7 @@ import nc.vo.pub.BusinessException;
 import nc.vo.pub.VOStatus;
 import nc.vo.pub.lang.UFBoolean;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -36,19 +42,34 @@ public class BankaccbasForBpmAdd extends AbstractPfxxPlugin {
 		fillData(resvo);
 		// 组装合并VO
 		CustBankaccUnionVO unitvo = getCustBankaccUnionVO(resvo);
+		//根据账号查询是否存在
+		BankAccbasVO queryBankaccInfor = queryBankaccInfor(unitvo);
+		if(queryBankaccInfor !=null){
+			resvo.setPk_bankaccbas(queryBankaccInfor.getPk_bankaccbas());
+		}
 		ICustBankaccService service = NCLocator.getInstance().lookup(
 				ICustBankaccService.class);
 		CustBankaccUnionVO bankvo = null;
 		String vopk = resvo.getPk_bankaccbas();
-		if (StringUtils.isEmpty(vopk)) {
+		if (queryBankaccInfor ==null) {
 			setVOStatus(swapContext, resvo, VOStatus.NEW);
 			bankvo = service.insertCustBankacc(unitvo);
-
 			vopk = bankvo.getPrimaryKey();
-
 		} else {
+			// enablestate 启用状态 enablestate int 启用状态 1=未启用，2=已启用，3=已停用，
+			if (resvo.getEnablestate() == 3  ) {
+				if(queryBankaccInfor.getEnablestate() !=3){
+					service.disableCustBankacc(unitvo);
+				}
+				return "已停用";
+			}
+			//先启用
+			if (resvo.getEnablestate() == 2) {
+				if( queryBankaccInfor.getEnablestate() !=2){
+					service.enableCustBankacc(unitvo);
+				}
+			}
 			setVOStatus(swapContext, resvo, VOStatus.UPDATED);
-			resvo.setPrimaryKey(vopk);
 			bankvo = service.updateCustBankacc(unitvo);
 		}
 		// 更新与档案的关联关系
@@ -66,6 +87,11 @@ public class BankaccbasForBpmAdd extends AbstractPfxxPlugin {
 		if (StringUtils.isEmpty(pk_cust)) {
 			throw new BusinessException("memo字段必须必须指定对应档案主键.");
 		}
+		BankAccSubVO[] subs = resvo.getBankaccsub();
+		if(subs == null || subs.length ==0){
+			throw new BusinessException("银行账户子账不能为空");
+
+		}
 		BaseDAO dao = new BaseDAO();
 		SupplierVO vo = (SupplierVO) dao
 				.retrieveByPK(SupplierVO.class, pk_cust);
@@ -75,7 +101,8 @@ public class BankaccbasForBpmAdd extends AbstractPfxxPlugin {
 
 	}
 
-	private CustBankaccUnionVO getCustBankaccUnionVO(BankAccbasVO bankvo) {
+	private CustBankaccUnionVO getCustBankaccUnionVO(BankAccbasVO bankvo)
+			throws BusinessException {
 		// TODO 自动生成的方法存根
 		CustBankaccUnionVO unitvo = new CustBankaccUnionVO();
 		unitvo.setBankaccbasVO(bankvo);
@@ -114,7 +141,6 @@ public class BankaccbasForBpmAdd extends AbstractPfxxPlugin {
 			subs[i].setStatus(VOStatus.NEW);
 		}
 		if (VOStatus.NEW == status) {
-			
 
 		} else {
 			IBankAccBaseInfoQueryService query = NCLocator.getInstance()
@@ -126,9 +152,10 @@ public class BankaccbasForBpmAdd extends AbstractPfxxPlugin {
 						+ "未查询银行账户信息");
 			}
 			BankAccSubVO[] oldSubs = vos[0].getBankaccsub();
-			for(BankAccSubVO vo:subs){
-				for(BankAccSubVO osubs:oldSubs){
-					if(vo.getPk_currtype().equalsIgnoreCase(osubs.getPk_currtype())){
+			for (BankAccSubVO vo : subs) {
+				for (BankAccSubVO osubs : oldSubs) {
+					if (vo.getPk_currtype().equalsIgnoreCase(
+							osubs.getPk_currtype())) {
 						vo.setPk_bankaccsub(osubs.getPk_bankaccsub());
 						vo.setPk_bankaccbas(osubs.getPk_bankaccbas());
 						vo.setStatus(VOStatus.UPDATED);
@@ -140,18 +167,104 @@ public class BankaccbasForBpmAdd extends AbstractPfxxPlugin {
 	}
 
 	/**
-	 * 判断传入的属性是否正确
 	 * 
-	 * @param pk_cust
-	 * @param accclass
-	 * @return
+	 * 传过来银行账户编码+银行类别，不传主键，需要先查询一遍
+	 * 
+	 * @param unionVO
 	 * @throws BusinessException
 	 */
-	private boolean isCustSupplier(String pk_cust, int accclass)
+	private BankAccbasVO queryBankaccInfor(CustBankaccUnionVO unionVO)
 			throws BusinessException {
-		boolean iscustsup = false;
+		BankAccbasVO bankAccbasVO = unionVO.getBankaccbasVO();
+		String accnum = bankAccbasVO.getAccnum();
+		String pk_banktype = bankAccbasVO.getPk_banktype();
+		int accclass = 3;
+		if (accnum == null) {
+			throw new BusinessException("accnum不能为空,请检查");
+		}
+		if (pk_banktype == null) {
+			throw new BusinessException("pk_banktype不能为空,请检查");
+		}
 
-		return iscustsup;
+		// 在当前客商下账号唯一
+		String where = " accnum = '" + accnum + "' and pk_banktype = '"
+				+ pk_banktype + "' and accclass = " + accclass + " ";
+
+		Collection<BankAccbasVO> col = getQuerySer().retrieveByClause(
+				BankAccbasVO.class, where);
+		if (CollectionUtils.isEmpty(col)) {
+			return null;
+		}
+		return col.toArray(new BankAccbasVO[0])[0];
+		// 检查银行账户对应的供应商
+
+	}
+
+	// 银行账户在客户或者供应商范围内唯一
+	private boolean isCustBankAccUnique(CustBankaccUnionVO unionVO) {
+		BankAccbasVO bankAccbasVO = unionVO.getBankaccbasVO();
+		String accnum = bankAccbasVO.getAccnum();
+		String pk_banktype = bankAccbasVO.getPk_banktype();
+		int accclass = bankAccbasVO.getAccclass().intValue();
+		String pk_bankaccbas = bankAccbasVO.getPrimaryKey();
+		if (accnum != null && pk_banktype != null) {
+			// 在当前客商下账号唯一
+			String where = " accnum = '" + accnum + "' and pk_banktype = '"
+					+ pk_banktype + "' and accclass = " + accclass + " ";
+			if (pk_bankaccbas != null) {
+				where += " and pk_bankaccbas <>'" + pk_bankaccbas + "'";
+			}
+			try {
+				Collection<BankAccbasVO> col = getQuerySer().retrieveByClause(
+						BankAccbasVO.class, where);
+				if (CollectionUtils.isNotEmpty(col)) {
+					return false;
+				}
+			} catch (BusinessException e) {
+				Logger.error(e.getMessage(), e);
+			}
+		}
+		return true;
+	}
+
+	@SuppressWarnings("unchecked")
+	private boolean isAccountUnique(CustBankaccUnionVO unionVO) {
+		BankAccbasVO bankAccbasVO = unionVO.getBankaccbasVO();
+		CustbankVO custbankVO = unionVO.getCustbankVO();
+		String pk_cust = NCESAPI.sqlEncode(custbankVO.getPk_cust());
+		String accnum = NCESAPI.sqlEncode(bankAccbasVO.getAccnum());
+		String pk_banktype = NCESAPI.sqlEncode(bankAccbasVO.getPk_banktype());
+		String pk_bankaccbas = NCESAPI.sqlEncode(bankAccbasVO.getPrimaryKey());
+		int accclass = bankAccbasVO.getAccclass().intValue();
+		if (accnum != null && pk_banktype != null) {
+			// 在当前客商下账号唯一
+			String where = " accnum = '"
+					+ accnum
+					+ "' and pk_banktype = '"
+					+ pk_banktype
+					+ "' and accclass = "
+					+ accclass
+					+ " and pk_bankaccbas in ( select distinct pk_bankaccbas from bd_custbank where pk_cust = '"
+					+ pk_cust + "' )";
+			if (pk_bankaccbas != null) {
+				where += " and pk_bankaccbas <>'" + pk_bankaccbas + "'";
+			}
+			try {
+				Collection<BankAccbasVO> col = getQuerySer().retrieveByClause(
+						BankAccbasVO.class, where);
+				if (CollectionUtils.isNotEmpty(col)) {
+					return false;
+				}
+			} catch (BusinessException e) {
+				Logger.error(e.getMessage(), e);
+			}
+		}
+		return true;
+	}
+
+	private IUAPQueryBS getQuerySer() {
+		return (IUAPQueryBS) NCLocator.getInstance().lookup(
+				IUAPQueryBS.class.getName());
 	}
 
 }

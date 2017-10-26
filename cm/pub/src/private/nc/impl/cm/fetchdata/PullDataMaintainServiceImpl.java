@@ -460,14 +460,13 @@ public class PullDataMaintainServiceImpl extends CMAlgorithmBaseFramework
 
 	private PullDataStateVO getPullParamVO(String pk_group, String pk_org,
 			String cperiod) {
-
 		PullDataStateVO paramvo = new PullDataStateVO();
 		paramvo.setPk_group(pk_group);
 		paramvo.setPk_org(pk_org);
 		// 根据财务组织查询所有关联工厂
 		paramvo.setPk_orgs(new String[] { paramvo.getPk_org() });
 		paramvo.setIfetchobjtype(FetchDataObjEnum.ALL); // 取数对象： 1 材料出，2产成品入 3
-														// 废品 4 作业
+											// 废品 4 作业
 		paramvo.setCperiod(cperiod); // 期间
 		paramvo.setBusiDate(AppContext.getInstance().getBusiDate());// 业务日期
 		return paramvo;

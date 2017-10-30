@@ -69,8 +69,8 @@ public class BankaccbasForBpmAdd extends AbstractPfxxPlugin {
 					service.enableCustBankacc(unitvo);
 				}
 			}
-			setVOStatus(swapContext, resvo, VOStatus.UPDATED);
-			bankvo = service.updateCustBankacc(unitvo);
+//			setVOStatus(swapContext, resvo, VOStatus.UPDATED);
+//			bankvo = service.updateCustBankacc(unitvo);
 		}
 		// 更新与档案的关联关系
 		return vopk;

@@ -379,16 +379,16 @@ public class PullDataMaintainServiceImpl extends CMAlgorithmBaseFramework
 				keyVO.setIfetchobjtype(ifetchType);
 
 				// 2017-06-18
-				keyVO.setFator1(entry.getKey().getFator1());
-				keyVO.setFator2(entry.getKey().getFator2());
-				keyVO.setFator3(entry.getKey().getFator3());
-				keyVO.setFator4(entry.getKey().getFator4());
-				keyVO.setFator5(entry.getKey().getFator5());
-				keyVO.setFator6(entry.getKey().getFator6());
-				keyVO.setFator7(entry.getKey().getFator7());
-				keyVO.setFator8(entry.getKey().getFator8());
-				keyVO.setFator9(entry.getKey().getFator9());
-				keyVO.setFator10(entry.getKey().getFator10());
+//				keyVO.setFator1(entry.getKey().getFator1());
+//				keyVO.setFator2(entry.getKey().getFator2());
+//				keyVO.setFator3(entry.getKey().getFator3());
+//				keyVO.setFator4(entry.getKey().getFator4());
+//				keyVO.setFator5(entry.getKey().getFator5());
+//				keyVO.setFator6(entry.getKey().getFator6());
+//				keyVO.setFator7(entry.getKey().getFator7());
+//				keyVO.setFator8(entry.getKey().getFator8());
+//				keyVO.setFator9(entry.getKey().getFator9());
+//				keyVO.setFator10(entry.getKey().getFator10());
 
 				if (CMCollectionUtil.isEmpty(lst)) {
 					continue;

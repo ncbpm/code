@@ -3,13 +3,18 @@ package nc.bs.cm.fetchdata.checkandfetch;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import nc.bd.framework.base.CMArrayUtil;
 import nc.bd.framework.base.CMCollectionUtil;
 import nc.bd.framework.base.CMNumberUtil2;
 import nc.bd.framework.base.CMValueCheck;
+import nc.bd.framework.db.CMSqlBuilder;
+import nc.bs.cm.fetchdata.factory.FetchPersistentFactory;
+import nc.bs.cm.fetchdata.fetchPersistent.AbstractFetchPersistent;
 import nc.bs.cm.fetchdata.fetchcheck.CLCKCheckStrategy;
 import nc.cmpub.business.adapter.BDAdapter;
 import nc.cmpub.business.enumeration.CMSourceTypeEnum;
@@ -73,6 +78,70 @@ public class DingeFIFetch extends MaterialOutFIFetch {
 				new PullDataErroInfoVO[totalErrorMap.size()]);
 
 	}
+	
+	@Override
+	protected void saveFetchStatus(FetchParamVO paramvo, boolean isCheckFlag)
+			throws BusinessException {
+        if (!isCheckFlag) {
+            // modify by zhangchdV65 2015.01.21
+            // 查询数据库表【pccm_fetchinfo】中的数据
+            Set<String> cbillTypeSet = new HashSet<String>();
+            // 要保存的状态
+            Set<PullDataStateVO> savePullDataStateSet = new HashSet<PullDataStateVO>();
+            // 要更新的状态 	
+            Set<PullDataStateVO> updatePullDataStateSet = new HashSet<PullDataStateVO>();
+            CMSqlBuilder sb = new CMSqlBuilder();
+            sb.select();
+            sb.append(nc.vo.cmpub.fetchdata.PullDataStateVO.CBILLTYPE);
+            sb.from(PullDataStateVO.getDefaultTableName());
+            sb.where();
+            sb.append(nc.vo.cmpub.fetchdata.PullDataStateVO.PK_GROUP, paramvo.getPk_group());
+            sb.append(" and ");
+            sb.append(nc.vo.cmpub.fetchdata.PullDataStateVO.PK_ORG, paramvo.getPk_org());
+            sb.append(" and ");
+            sb.append(nc.vo.cmpub.fetchdata.PullDataStateVO.IFETCHOBJTYPE, paramvo.getIfetchobjtype());
+            sb.append(" and ");
+            sb.append(nc.vo.cmpub.fetchdata.PullDataStateVO.CPERIOD, paramvo.getPullDataStateVOArr()[0].getCperiod());
+            sb.append(" and ");
+            sb.append(" dr = 0 ");
+            DataAccessUtils dataAccessUtils = new DataAccessUtils();
+            IRowSet result = dataAccessUtils.query(sb.toString());
+            while (result.next()) {
+                cbillTypeSet.add(result.getString(0));
+            }
+
+            for (PullDataStateVO pullDataStateVOArr : paramvo.getPullDataStateVOArr()) {
+                // 保存状态
+                String cbilltype =
+                        pullDataStateVOArr.getCbilltype() == null ? "" : pullDataStateVOArr.getCbilltype().toString();
+                if (!cbillTypeSet.contains(cbilltype)) {
+                    savePullDataStateSet.add(pullDataStateVOArr);
+                }
+                // 更新状态
+                else {
+                    updatePullDataStateSet.add(pullDataStateVOArr);
+                }
+            }
+
+            if (CMValueCheck.isNotEmpty(savePullDataStateSet)) {
+                this.saveStatusDB(paramvo.getAllFetchParamVo(), paramvo.getPullDataStateVOArr());
+            }
+
+            if (CMValueCheck.isNotEmpty(updatePullDataStateSet)) {
+                AbstractFetchPersistent.updateFetchStates(updatePullDataStateSet
+                        .toArray(new PullDataStateVO[savePullDataStateSet.size()]));
+            }
+        }
+    }
+	
+	 /**
+     * 插入取数状态表
+     */
+    private void saveStatusDB(FetchParamVO paramvo, PullDataStateVO[] pullDataStateVOArr) throws BusinessException {
+        Integer pullDataType = paramvo == null ? null : paramvo.getPulldatatype();
+        AbstractFetchPersistent tsp = FetchPersistentFactory.createFetchPersistentFactory(pullDataType);
+        tsp.saveStatus(paramvo, pullDataStateVOArr);
+    }
 
 	@Override
 	protected GetDataPara getFIDataParamVO(FetchParamVO paramvo,

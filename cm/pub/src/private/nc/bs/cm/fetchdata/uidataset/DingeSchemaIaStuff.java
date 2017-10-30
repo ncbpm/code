@@ -40,7 +40,8 @@ public class DingeSchemaIaStuff extends AbstractDataSet {
         FetchSetItemVO[] bodys = (FetchSetItemVO[]) fetchSetAggVo.getChildrenVO();
         for (FetchSetItemVO body : bodys) {
             PullDataStateVO outvo = new PullDataStateVO();          
-            outvo.setCbilltype(CMBillEnum.PRODUCTIN.toIntValue());
+            outvo.setCbilltype(21);//
+            outvo.setPulldatatype(21);
             outvo.setCtranstypeid(body.getPk_billtypeid());
             outvo.setPk_workitem(body.getPk_workitem());
             outvo.setPk_costobject(body.getPk_costobject());

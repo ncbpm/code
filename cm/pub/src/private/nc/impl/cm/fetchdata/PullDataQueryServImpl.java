@@ -143,7 +143,7 @@ public class PullDataQueryServImpl implements IPullDataQueryService {
     }
 
     /**
-     * 查询初始化数据 key=工厂+取数对象,1 材料出，2产成品入 3 废品 4 作业 5 工序委外 6其他出入库
+     * 得到该组织下所有成本中心，并根据成本中心，会计月份，取数对象，取数类型，进行判断是否取过数
      */
     @Override
     public Map<FetchKeyVO, UIAllDataVO> getVos4UiDataSet(PullDataStateVO pullDataParamVos) throws BusinessException {
@@ -158,29 +158,26 @@ public class PullDataQueryServImpl implements IPullDataQueryService {
                 // 获取会计期间
                 accountPriod = BDAdapter.getAccountPriod(pullDataParamVos.getPk_org(), pullDataParamVos.getBusiDate());
                 pullDataParamVos.setCperiod(accountPriod);
-
             }
             UFDate[] beginEndDate =
                     BDAdapter.getBeginAndEndDateByPeriod(pullDataParamVos.getPk_org(), pullDataParamVos.getCperiod());
-
-            // 根据取数对象得到外系统取数方案vo
-            // key=工厂+取数对象{1 材料出，2产成品入 3 废品 4 作业 5 工序委外 6 其它出入库}
+            // 根据取数对象得到外系统取数方案vo:工厂+对象的维度，设置fetchkeyvo，未按照单据类型和交易类型来展开
             Map<FetchKeyVO, AggFetchSetVO> fetchSetAggVoMap = this.getFetchSetAggVo(pullDataParamVos);
-
-            // 外系统取数设置的修改只影响未来，如果会计期间已经取过数，
-            // 修改外系统取数方案时，只影响未取数的期间（从没有执行过取数的期间）
-            // key=工厂+取数对象{1 材料出，2产成品入 3 废品 4 作业 5 工序委外 6 其它出入库}
+            //查询已经取过数的方案明细 :工厂+对象的维度，设置fetchkeyvo，未按照单据类型和交易类型来展开
             Map<FetchKeyVO, List<PullDataStateVO>> pullDataStateMap = this.getAlreadyExistFetchInfos(pullDataParamVos);
-
+            
             for (Entry<FetchKeyVO, AggFetchSetVO> entry : fetchSetAggVoMap.entrySet()) {
-                // key=工厂+取数对象
                 FetchKeyVO keyVO = entry.getKey();
-                // 根据取数对象得到外系统取数方案vo
                 AggFetchSetVO fetchSetAggVo = fetchSetAggVoMap.get(keyVO);
                 String pk_org = keyVO.getPk_org();
                 Integer ifetchobjtype = keyVO.getIfetchobjtype();
+                
+                UIAllDataVO allVO = new UIAllDataVO();
+                allVO.setPk_accperiodscheme(pk_accperiodscheme);
+                allVO.setDaccountperiod(accountPriod);
+                allVO.setPk_org(pk_org);
 
-                // 根据取数设置构造取数状态信息
+                // 取数据设置：按照单据类型+交易类型展开
                 List<PullDataStateVO> constructItemLst =
                         this.getPullDataStateVOByFetchSet(pullDataParamVos, fetchSetAggVo, beginEndDate, keyVO);
                 // 根据数据库表加载取数状态信息
@@ -188,12 +185,8 @@ public class PullDataQueryServImpl implements IPullDataQueryService {
                 if (CMMapUtil.isNotEmpty(pullDataStateMap)) {
                     dbItemLst = pullDataStateMap.get(entry.getKey());
                 }
-
-                UIAllDataVO allVO = new UIAllDataVO();
-                allVO.setPk_accperiodscheme(pk_accperiodscheme);
-                allVO.setDaccountperiod(accountPriod);
-                allVO.setPk_org(pk_org);
-                // 已经取过值
+                         
+                // 工厂+对象的维度已经存在外系统取数中，则展开单据类型+交易类型的明细维度，检查是否存在
                 if (CMCollectionUtil.isNotEmpty(dbItemLst)) {
                     List<PullDataStateVO> resultItemLst = new ArrayList<PullDataStateVO>();
                     Map<String, Boolean> resultItemStatusMap = new HashMap<String, Boolean>();
@@ -321,13 +314,13 @@ public class PullDataQueryServImpl implements IPullDataQueryService {
                 FetchKeyVO keyVO = new FetchKeyVO();
                 keyVO.setPk_org(vo.getPk_org());
                 keyVO.setIfetchobjtype(vo.getIfetchobjtype());
-            	keyVO.setFator1(vo.getCtranstypeid());
-                keyVO.setFator2(vo.getPk_qcdept());
-                keyVO.setFator3(vo.getPk_costobject());
-                keyVO.setFator4(vo.getPk_serverdept());
-                keyVO.setFator5(vo.getPk_largeritem());
-                keyVO.setFator6(vo.getPk_factor());
-                keyVO.setFator7(vo.getPk_workitem());
+//            	keyVO.setFator1(vo.getCtranstypeid());
+//                keyVO.setFator2(vo.getPk_qcdept());
+//                keyVO.setFator3(vo.getPk_costobject());
+//                keyVO.setFator4(vo.getPk_serverdept());
+//                keyVO.setFator5(vo.getPk_largeritem());
+//                keyVO.setFator6(vo.getPk_factor());
+//                keyVO.setFator7(vo.getPk_workitem());
 
 
                 if (result.containsKey(keyVO)) {

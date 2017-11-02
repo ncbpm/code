@@ -381,6 +381,36 @@ public class SettleListVOBuildPubUtils {
     itemvo.setDsrcbilldate(viewvo.getDbizdate());
     itemvo.setDfirstbilldate(viewvo.getDfirstbilldate());
 
+    itemvo.setVfree1(viewvo.getVfree1());
+    itemvo.setVfree2(viewvo.getVfree2());
+    itemvo.setVfree3(viewvo.getVfree3());
+    itemvo.setVfree4(viewvo.getVfree4());
+    itemvo.setVfree5(viewvo.getVfree5());
+    itemvo.setVfree6(viewvo.getVfree6());
+    itemvo.setVfree7(viewvo.getVfree7());
+    itemvo.setVfree8(viewvo.getVfree8());
+    itemvo.setVfree9(viewvo.getVfree9());
+    itemvo.setVfree10(viewvo.getVfree10());
+    itemvo.setVbdef1(viewvo.getVbdef1());
+    itemvo.setVbdef2(viewvo.getVbdef2());
+    itemvo.setVbdef3(viewvo.getVbdef3());
+    itemvo.setVbdef4(viewvo.getVbdef4());
+    itemvo.setVbdef5(viewvo.getVbdef5());
+    itemvo.setVbdef6(viewvo.getVbdef6());
+    itemvo.setVbdef7(viewvo.getVbdef7());
+    itemvo.setVbdef8(viewvo.getVbdef8());
+    itemvo.setVbdef9(viewvo.getVbdef9());
+    itemvo.setVbdef10(viewvo.getVbdef10());
+    itemvo.setVbdef11(viewvo.getVbdef11());
+    itemvo.setVbdef12(viewvo.getVbdef12());
+    itemvo.setVbdef13(viewvo.getVbdef13());
+    itemvo.setVbdef14(viewvo.getVbdef14());
+    itemvo.setVbdef15(viewvo.getVbdef15());
+    itemvo.setVbdef16(viewvo.getVbdef16());
+    itemvo.setVbdef17(viewvo.getVbdef17());
+    itemvo.setVbdef18(viewvo.getVbdef18());
+    itemvo.setVbdef19(viewvo.getVbdef19());
+    itemvo.setVbdef20(viewvo.getVbdef20());
     if (dispvo != null) {
       itemvo.setNorigmny(dispvo.getNorigmny());
       itemvo.setNmny(dispvo.getNmny());
@@ -427,7 +457,6 @@ public class SettleListVOBuildPubUtils {
       itemvo.setAttributeValue("vbdef16", dispvo.getAttributeValue("vbdef16"));
       itemvo.setAttributeValue("vbdef17", dispvo.getAttributeValue("vbdef17"));
       itemvo.setAttributeValue("vbdef18", dispvo.getAttributeValue("vbdef18"));
-      
       itemvo.setAttributeValue("vbdef13", dispvo.getAttributeValue("vbdef13"));
       itemvo.setAttributeValue("vbdef19", dispvo.getAttributeValue("vbdef19"));
 
@@ -490,17 +519,6 @@ public class SettleListVOBuildPubUtils {
     itemvo.setCffileid(viewvo.getCffileid());// panfengc
     itemvo.setCvendorid(viewvo.getCvendorid());
     itemvo.setCasscustid(viewvo.getCasscustid());
-
-    itemvo.setVfree1(viewvo.getVfree1());
-    itemvo.setVfree2(viewvo.getVfree2());
-    itemvo.setVfree3(viewvo.getVfree3());
-    itemvo.setVfree4(viewvo.getVfree4());
-    itemvo.setVfree5(viewvo.getVfree5());
-    itemvo.setVfree6(viewvo.getVfree6());
-    itemvo.setVfree7(viewvo.getVfree7());
-    itemvo.setVfree8(viewvo.getVfree8());
-    itemvo.setVfree9(viewvo.getVfree9());
-    itemvo.setVfree10(viewvo.getVfree10());
 
     itemvo.setOutItemTs(viewvo.getTs());
 

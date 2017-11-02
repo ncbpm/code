@@ -48,6 +48,9 @@ public class AskPriceM5ForTrans {
 		view.setAttributeValue("vbdef16", askvo.getAttributeValue("vbdef16"));
 		view.setAttributeValue("vbdef17", askvo.getAttributeValue("vbdef17"));
 		view.setAttributeValue("vbdef18", askvo.getAttributeValue("vbdef18"));
+		view.setAttributeValue("vbdef13", askvo.getAttributeValue("vbdef13"));
+		view.setAttributeValue("vbdef19", askvo.getAttributeValue("vbdef19"));
+
 		UFDouble price = new UFDouble(askvo.getVbdef5());
 		view.setNorigtaxprice(price);
 		CalCulateM5fViewPriceMny calTool = new CalCulateM5fViewPriceMny(

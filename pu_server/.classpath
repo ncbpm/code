@@ -33,7 +33,11 @@
 	<classpathentry kind="con" path="com.yonyou.studio.udt.core.container/Framework_Library"/>
 	<classpathentry kind="con" path="com.yonyou.studio.udt.core.container/Module_Public_Library"/>
 	<classpathentry kind="con" path="com.yonyou.studio.udt.core.container/Module_Client_Library"/>
-	<classpathentry kind="con" path="com.yonyou.studio.udt.core.container/Module_Private_Library"/>
+	<classpathentry kind="con" path="com.yonyou.studio.udt.core.container/Module_Private_Library">
+		<accessrules>
+			<accessrule kind="accessible" pattern="**"/>
+		</accessrules>
+	</classpathentry>
 	<classpathentry kind="con" path="com.yonyou.studio.udt.core.container/Module_Lang_Library"/>
 	<classpathentry kind="con" path="com.yonyou.studio.udt.core.container/Generated_EJB"/>
 	<classpathentry kind="output" path="bin"/>

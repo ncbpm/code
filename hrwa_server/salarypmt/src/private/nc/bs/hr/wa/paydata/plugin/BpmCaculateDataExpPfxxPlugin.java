@@ -21,6 +21,7 @@ import nc.itf.hr.wa.IPaydataManageService;
 import nc.itf.hr.wa.IPaydataQueryService;
 import nc.jdbc.framework.SQLParameter;
 import nc.ui.wa.pub.WADelegator;
+import nc.vo.bd.pub.NODE_TYPE;
 import nc.vo.hr.caculate.CaculateTypeVO;
 import nc.vo.hrwa.impwadata.AggImpWaDataVO;
 import nc.vo.hrwa.impwadata.WaDataBodyVO;
@@ -32,6 +33,7 @@ import nc.vo.pub.lang.UFDate;
 import nc.vo.sm.UserVO;
 import nc.vo.wa.classitem.WaClassItemVO;
 import nc.vo.wa.paydata.AggPayDataVO;
+import nc.vo.wa.paydata.DataVO;
 import nc.vo.wa.payfile.PayfileVO;
 import nc.vo.wa.pub.PeriodStateVO;
 import nc.vo.wa.pub.WaLoginContext;
@@ -94,7 +96,7 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 		String pk_org = headvo.getPk_org();
 
 		CaculateTypeVO caculateTypeVO = new CaculateTypeVO();
-		caculateTypeVO.setRange(UFBoolean.TRUE);
+		caculateTypeVO.setRange(UFBoolean.FALSE);
 		caculateTypeVO.setType(UFBoolean.TRUE);
 
 		WaDataBodyVO[] bodyvos = (WaDataBodyVO[]) bill.getChildrenVO();
@@ -109,15 +111,15 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 		if (list == null || list.size() == 0)
 			throw new BusinessException("人员信息不能为空");
 		
-		WaLoginContext loginContext = createContext(waPeriod, pk_wa_class,
-				pk_group, pk_org);
-
 		if (headvo.getCuserid() == null) {
 			InvocationInfoProxy.getInstance().setUserId(getCuserid(USERCODE));
 			InvocationInfoProxy.getInstance().setUserCode(USERCODE);
 		} else {
 			InvocationInfoProxy.getInstance().setUserId(headvo.getCuserid());
 		}
+		
+		WaLoginContext loginContext = createContext(waPeriod, pk_wa_class,
+				pk_group, pk_org,InvocationInfoProxy.getInstance().getUserId());
 
 		updateDataVO(headvo, bodyvos, loginContext);
 
@@ -128,8 +130,9 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 		AggPayDataVO aggPayDataVO = getPaydataQuery()
 				.queryAggPayDataVOByCondition(loginContext, conditon, null);
 
-		getManageService().onCaculate(loginContext, caculateTypeVO, conditon,
-				aggPayDataVO.getDataVOs());
+		
+		DataVO[] datas =getPaydataQuery().queryDataVOByPks(aggPayDataVO.getDataPKs());
+		getManageService().onCaculate(loginContext, caculateTypeVO, conditon,datas);
 		return null;
 	}
 
@@ -140,6 +143,7 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 		}
 		return manageService;
 	}
+	
 
 	public IPaydataQueryService getPaydataQuery() {
 		if (paydataQuery == null) {
@@ -150,7 +154,7 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 	}
 
 	private WaLoginContext createContext(String waPeriod, String pk_wa_class,
-			String pk_group, String pk_org) throws BusinessException {
+			String pk_group, String pk_org,String cuserid) throws BusinessException {
 
 		WaLoginContext context = new WaLoginContext();
 		WaLoginVO waLoginVO = new WaLoginVO();
@@ -170,6 +174,8 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 				waLoginVO);
 		context.setWaLoginVO(waLoginVO);
 		context.setNodeCode("60130paydata");
+		context.setPk_loginUser(cuserid);
+		context.setNodeType(NODE_TYPE.ORG_NODE);
 		return context;
 	}
 
@@ -190,7 +196,7 @@ public class BpmCaculateDataExpPfxxPlugin<T extends PayfileVO> extends
 		Object value = null;
 		for (WaDataBodyVO data : bodyvos) {
 			sqlBuffer.setLength(0);
-			sqlBuffer.append(" update wa_data set caculateflag ='N'"); // 1
+			sqlBuffer.append(" update wa_data set caculateflag ='N',vdef1 = '"+loginContext.getPk_loginUser()+"'"); // 1
 			for (String key : getMap().keySet()) {
 				String name = getMap().get(key);
 				if (name == null)

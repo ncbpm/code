@@ -1,6 +1,7 @@
 package nc.bs.hr.wa.adjust.plugin;
 
 import nc.bs.dao.BaseDAO;
+import nc.bs.framework.common.InvocationInfoProxy;
 import nc.bs.framework.common.NCLocator;
 import nc.bs.pfxx.ISwapContext;
 import nc.itf.hr.wa.IWaAdjustQueryService;
@@ -16,6 +17,7 @@ import nc.vo.pubapp.pflow.PfUserObject;
 import nc.vo.wa.adjust.AggPsnappaproveVO;
 import nc.vo.wa.adjust.PsnappaproveVO;
 
+//定调资申请单审批
 public class BpmAdjustApproveExpPfxxPlugin<T extends AggPsnappaproveVO> extends
 		nc.bs.pfxx.plugin.AbstractPfxxPlugin {
 
@@ -54,7 +56,9 @@ public class BpmAdjustApproveExpPfxxPlugin<T extends AggPsnappaproveVO> extends
 		if (preVO == null) {
 			throw new BusinessException("单据的单据信息不存在，请检查单据主键");
 		}
-
+		if (head.getApprover() == null)
+			throw new BusinessException("审批人不能为空。");
+		InvocationInfoProxy.getInstance().setUserId(head.getApprover());
 		AggPsnappaproveVO res = (AggPsnappaproveVO) NCLocator
 				.getInstance()
 				.lookup(IPFBusiAction.class)

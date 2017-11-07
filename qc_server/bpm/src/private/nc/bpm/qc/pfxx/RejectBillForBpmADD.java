@@ -155,7 +155,7 @@ public class RejectBillForBpmADD extends AbstractPfxxPlugin {
 	}
 
 	/**
-	 * 更新质检报告的判定入库方式
+	 * .更新不合格品处理单判定入库方式
 	 * 
 	 * @param bpmVO
 	 * @param originVO
@@ -175,12 +175,13 @@ public class RejectBillForBpmADD extends AbstractPfxxPlugin {
 				.getChildrenVO();
 		RejectBillItemVO[] clientItems = (RejectBillItemVO[]) bill
 				.getChildrenVO();
+		//
+		bill.getHVO().setVmemo(bpmVO.getHVO().getVmemo());
 		for (RejectBillItemVO ele : modifyItems) {
 			boolean ismached = false;
 			for (RejectBillItemVO org : clientItems) {
 				if (ele.getPk_rejectbill_b().equals(org.getPk_rejectbill_b())) {
 					org.setFprocessjudge(ele.getFprocessjudge());
-
 					org.setStatus(VOStatus.UPDATED);
 					ismached = true;
 					break;

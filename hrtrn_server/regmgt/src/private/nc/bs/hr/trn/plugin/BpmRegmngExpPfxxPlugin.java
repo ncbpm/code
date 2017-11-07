@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.naming.NamingException;
 
+import nc.bs.framework.common.InvocationInfoProxy;
 import nc.bs.framework.common.NCLocator;
 import nc.bs.logging.Logger;
 import nc.bs.pfxx.ISwapContext;
@@ -164,18 +165,19 @@ public class BpmRegmngExpPfxxPlugin<T extends AggRegapplyVO> extends
 
 		IRegmngManageService voucherbo = (IRegmngManageService) NCLocator
 				.getInstance().lookup(IRegmngManageService.class.getName());
-
+		
+		if (head.getCreator() == null)
+			throw new BusinessException("创建人不能为空。");
+		InvocationInfoProxy.getInstance().setUserId(head.getCreator());
 		AggRegapplyVO res = voucherbo.insertBill(bill);
+		
 		res = (AggRegapplyVO) ArrayUtil
 				.getFirstInArrays((Object[]) NCPfServiceUtils.processBatch(
 						IPFActionName.SAVE, head.getPk_billtype(),
 						new AggRegapplyVO[] { (AggRegapplyVO) bill },
 						getUserObj(), new WorkflownoteVO()));
 
-		// IRegmngQueryService voucherbo1 = (IRegmngQueryService) NCLocator
-		// .getInstance().lookup(IRegmngQueryService.class.getName());
-		// AggRegapplyVO preVO = voucherbo1.queryByPk(res.getParentVO()
-		// .getPrimaryKey());
+		
 		IFlowBizItf itf = NCObject.newInstance(res).getBizInterface(
 				IFlowBizItf.class);
 		// 校验必输项
@@ -199,7 +201,11 @@ public class BpmRegmngExpPfxxPlugin<T extends AggRegapplyVO> extends
 		WorkflownoteVO worknoteVO = buildWorkflownoteVO(itf,
 				PubEnv.getPk_user(), "外部导入审批", blPassed, itf.getBilltype());
 		getIPersistenceUpdate().insertVO(null, worknoteVO, null);
+		
+		if (head.getApprover() != null)
+			InvocationInfoProxy.getInstance().setUserId(head.getApprover());
 		((RegapplyVO) bill.getParentVO()).setApprove_state(1);
+		((RegapplyVO) bill.getParentVO()).setApprover(PubEnv.getPk_user());
 		res = voucherbo.updateBill(res, false);
 
 		LoginContext context = new LoginContext();
@@ -506,26 +512,30 @@ public class BpmRegmngExpPfxxPlugin<T extends AggRegapplyVO> extends
 		result.put(TRNConst.RESULT_BILLS, passBills);
 		return result;
 	}
-    public void doPushBill_RequiresNew(AggRegapplyVO aggVO) throws BusinessException
-    {
-        
-        HashMap<String, String> hashPara = new HashMap<String, String>();
-        hashPara.put(PfUtilBaseTools.PARAM_NOFLOW, PfUtilBaseTools.PARAM_NOFLOW);
-        NCLocator.getInstance().lookup(IplatFormEntry.class).processAction("PUSH", TRNConst.BillTYPE_REG, null, aggVO, null, hashPara);
-    }
-	 
-    private boolean isExit(AggregatedValueObject[] retVOs, AggRegapplyVO billVO) throws BusinessException
-    {
-        for (int i = 0; retVOs != null && i < retVOs.length; i++)
-        {
-            if (billVO.getParentVO().getPrimaryKey().equals(retVOs[i].getParentVO().getPrimaryKey()))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-    
+
+	public void doPushBill_RequiresNew(AggRegapplyVO aggVO)
+			throws BusinessException {
+
+		HashMap<String, String> hashPara = new HashMap<String, String>();
+		hashPara.put(PfUtilBaseTools.PARAM_NOFLOW, PfUtilBaseTools.PARAM_NOFLOW);
+		NCLocator
+				.getInstance()
+				.lookup(IplatFormEntry.class)
+				.processAction("PUSH", TRNConst.BillTYPE_REG, null, aggVO,
+						null, hashPara);
+	}
+
+	private boolean isExit(AggregatedValueObject[] retVOs, AggRegapplyVO billVO)
+			throws BusinessException {
+		for (int i = 0; retVOs != null && i < retVOs.length; i++) {
+			if (billVO.getParentVO().getPrimaryKey()
+					.equals(retVOs[i].getParentVO().getPrimaryKey())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * 处理单据信息_执行
 	 */
@@ -559,24 +569,25 @@ public class BpmRegmngExpPfxxPlugin<T extends AggRegapplyVO> extends
 		// 更新单据状态为已执行
 		aggVO.getParentVO().setAttributeValue(RegapplyVO.APPROVE_STATE,
 				HRConstEnum.EXECUTED);
-//		IRegmngManageService regService = NCLocator.getInstance().lookup(
-//				IRegmngManageService.class);
-//		regService.updateBill(aggVO, false);
-		
+		// IRegmngManageService regService = NCLocator.getInstance().lookup(
+		// IRegmngManageService.class);
+		// regService.updateBill(aggVO, false);
+
 		aggVO.getParentVO().setStatus(VOStatus.UPDATED);
-//         setAuditInfoAndTs((SuperVO) billvo.getParentVO(), blChangeAuditInfo);
-        getMDPersistenceService().saveBill(aggVO);
-//		getServiceTemplate().update(aggVO, false);
+		// setAuditInfoAndTs((SuperVO) billvo.getParentVO(), blChangeAuditInfo);
+		getMDPersistenceService().saveBill(aggVO);
+		// getServiceTemplate().update(aggVO, false);
 	}
 
-	  /***************************************************************************
-     * 返回元数据持久化服务对象
-     * @return IMDPersistenceService
-     *****************************************************************************/
-    protected static IMDPersistenceService getMDPersistenceService()
-    {
-        return MDPersistenceService.lookupPersistenceService();
-    }
+	/***************************************************************************
+	 * 返回元数据持久化服务对象
+	 * 
+	 * @return IMDPersistenceService
+	 *****************************************************************************/
+	protected static IMDPersistenceService getMDPersistenceService() {
+		return MDPersistenceService.lookupPersistenceService();
+	}
+
 	/**
 	 * 延长试用期限
 	 */

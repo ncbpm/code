@@ -1,6 +1,8 @@
 package nc.impl.pu.m21;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -18,12 +20,14 @@ import nc.itf.pu.m21.IOrderQuery;
 import nc.jdbc.framework.processor.ColumnProcessor;
 import nc.pubitf.uapbd.CurrencyRateUtil;
 import nc.vo.bd.meta.BatchOperateVO;
+import nc.vo.bd.payment.PaymentChVO;
 import nc.vo.bd.payperiod.PayPeriodVO;
 import nc.vo.ic.m45.entity.PurchaseInBodyVO;
 import nc.vo.ic.m45.entity.PurchaseInVO;
 import nc.vo.ic.pub.util.StringUtil;
 import nc.vo.pu.m21.entity.AggPayPlanVO;
 import nc.vo.pu.m21.entity.OrderItemVO;
+import nc.vo.pu.m21.entity.OrderPaymentVO;
 import nc.vo.pu.m21.entity.OrderVO;
 import nc.vo.pu.m21.entity.PayPlanVO;
 import nc.vo.pu.m21.entity.PayPlanViewVO;
@@ -35,10 +39,13 @@ import nc.vo.pub.lang.UFBoolean;
 import nc.vo.pub.lang.UFDate;
 import nc.vo.pub.lang.UFDateTime;
 import nc.vo.pub.lang.UFDouble;
+import nc.vo.pubapp.pattern.data.ValueUtils;
 import nc.vo.pubapp.pattern.pub.MathTool;
 import nc.vo.pubapp.util.VORowNoUtils;
 import nc.vo.scmpub.payterm.pay.AbstractPayPlanVO;
 import nc.vo.trade.voutils.SafeCompute;
+
+import org.apache.commons.lang.ArrayUtils;
 
 public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 
@@ -81,6 +88,7 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 				list.toArray(new String[list.size()]), UFBoolean.FALSE);
 
 		Map<String, UFDouble> pmap = new HashMap<>();
+		Map<String, OrderPaymentVO> pmmap = new HashMap<>();
 		for (OrderVO order : orders) {
 			OrderItemVO[] items = order.getBVO();
 			if (items == null || items.length == 0) {
@@ -88,6 +96,15 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 			}
 			for (OrderItemVO item : items) {
 				pmap.put(item.getPrimaryKey(), item.getNtaxprice());
+			}
+
+			OrderPaymentVO[] items1 = order.getPaymentVO();
+
+			if (items1 == null || items1.length == 0) {
+				continue;
+			}
+			for (OrderPaymentVO item : items1) {
+				pmmap.put(item.getPrimaryKey(), item);
 			}
 		}
 
@@ -111,7 +128,7 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 		}
 		UFDate dbegindate = invo.getHead().getTaudittime();
 		dealPayPlanViewVO(map, "入库签字日期", invo.getHead().getPrimaryKey(),
-				dbegindate);
+				dbegindate, pmmap);
 
 	}
 
@@ -148,6 +165,7 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 				list.toArray(new String[list.size()]), UFBoolean.FALSE);
 
 		Map<String, UFDouble> pmap = new HashMap<>();
+		Map<String, OrderPaymentVO> pmmap = new HashMap<>();
 		for (OrderVO order : orders) {
 			OrderItemVO[] items = order.getBVO();
 			if (items == null || items.length == 0) {
@@ -155,6 +173,15 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 			}
 			for (OrderItemVO item : items) {
 				pmap.put(item.getPrimaryKey(), item.getNtaxprice());
+			}
+
+			OrderPaymentVO[] items1 = order.getPaymentVO();
+
+			if (items1 == null || items1.length == 0) {
+				continue;
+			}
+			for (OrderPaymentVO item : items1) {
+				pmmap.put(item.getPrimaryKey(), item);
 			}
 		}
 
@@ -174,7 +201,7 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 		}
 		UFDate dbegindate = invo.getParentVO().getTaudittime();
 		dealPayPlanViewVO(map, "采购发票审核日期", invo.getParentVO().getPrimaryKey(),
-				dbegindate);
+				dbegindate, pmmap);
 	}
 
 	/**
@@ -188,7 +215,8 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 	 * @throws BusinessException
 	 */
 	private void dealPayPlanViewVO(Map<String, UFDouble> map, String name,
-			String sourceid, UFDate dbegindate) throws BusinessException {
+			String sourceid, UFDate dbegindate,
+			Map<String, OrderPaymentVO> pmmap) throws BusinessException {
 
 		if (map == null || map.size() == 0)
 			return;
@@ -201,6 +229,9 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 					IOrderPayPlanQuery.class);
 			AggPayPlanVO[] vos = service.queryPayPlanVOs(orderids);
 
+			if(vos == null || vos.length==0)
+				continue;
+			
 			PayPeriodVO periodvo = getPayPeriodVO(name);
 			for (AggPayPlanVO aggvo : vos) {
 				// if(view.getfe)
@@ -223,21 +254,48 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 					if (StringUtil.isSEmptyOrNull(feffdatetype)) {
 						updatelist1.add(plan);
 					} else {
-						// 如果是入库 或是发票行 找到需要更新的行数据
+						// 如果起算依据是入库 或是发票行 找到需要更新的行数据
 						if (!feffdatetype.equalsIgnoreCase(periodvo
 								.getPrimaryKey())) {
 							updatelist1.add(plan);
 						} else {
 							String def1 = getPayPlanDef1(plan.getPrimaryKey());
 							// def1 存的来源信息 如果存在来源 证明是回写行 不需要更新
-							if (!StringUtil.isSEmptyOrNull(def1)) {
+							if (plan.getIsdeposit() != null
+									&& plan.getIsdeposit().booleanValue()) {
+								// 如果是质保金行 不参与计算 订单的最后一笔入库 直接更新日期
+								VOQuery query = new VOQuery(OrderItemVO.class);
+								OrderItemVO[] items = (OrderItemVO[]) query
+										.query("and pk_order = '"
+												+ plan.getPk_order() + "' ",
+												null);
+
+								if (items != null && items.length > 0) {
+									boolean isupdate = true;
+
+									for (OrderItemVO item : items) {
+										if (item.getBstockclose() == null
+												|| !item.getBstockclose()
+														.booleanValue()) {
+											isupdate = false;
+											break;
+										}
+									}
+									if (isupdate) {
+										setDate(plan, dbegindate, pmmap);
+									}
+								}
 								updatelist1.add(plan);
 							} else {
-								list.add(plan);
-								totalNmny = SafeCompute.add(totalNmny,
-										plan.getNorigmny());
+								if (!StringUtil.isSEmptyOrNull(def1)) {
+									updatelist1.add(plan);
+								} else {
+									list.add(plan);
+									totalNmny = SafeCompute.add(totalNmny,
+											plan.getNorigmny());
+								}
+								fkbl = SafeCompute.add(fkbl, plan.getNrate());
 							}
-							fkbl = SafeCompute.add(fkbl, plan.getNrate());
 						}
 					}
 				}
@@ -251,7 +309,7 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 					for (PayPlanVO plan : list) {
 						// 更新def1
 						updatePayPlanDef1(plan.getPrimaryKey(), sourceid, plan);
-						setDate(plan, dbegindate);
+						setDate(plan, dbegindate, pmmap);
 						updatelist1.add(plan);
 					}
 				} else if (purinNmny.compareTo(totalNmny) > 0) { // // 超量入库
@@ -270,7 +328,7 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 					for (PayPlanVO plan : list) {
 						// 更新def1
 						updatePayPlanDef1(plan.getPrimaryKey(), sourceid, plan);
-						setDate(plan, dbegindate);
+						setDate(plan, dbegindate, pmmap);
 						updatelist1.add(plan);
 					}
 					if (flag) {// 有修订
@@ -294,7 +352,7 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 							if (norigmny.compareTo(purinNmny) <= 0) {
 								updatePayPlanDef1(plan.getPrimaryKey(),
 										sourceid, plan);
-								setDate(plan, dbegindate);
+								setDate(plan, dbegindate, pmmap);
 								updatelist1.add(plan);
 								purinNmny = SafeCompute
 										.sub(purinNmny, norigmny);
@@ -309,7 +367,7 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 								PayPlanVO planclone = (PayPlanVO) plan.clone();
 								planclone.setPrimaryKey(null);
 								planclone.setNorigmny(purinNmny);
-								setDate(planclone, dbegindate);
+								setDate(planclone, dbegindate, pmmap);
 								setRowNo(planclone, updatelist1);
 								updatelist1.add(planclone);
 								// 入库金额为零 不在继续拆分
@@ -511,16 +569,94 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 	}
 
 	// 设置账期
-	private void setDate(PayPlanVO plan, UFDate dbegindate) {
+	private void setDate(PayPlanVO plan, UFDate dbegindate,
+			Map<String, OrderPaymentVO> pmmap) {
+
+		OrderPaymentVO ptchvo = pmmap.get(plan.getPk_paymentch());
 		if (dbegindate == null)
 			dbegindate = new UFDate();
-		int iitermdays = 0;
-		if(plan.getIitermdays() !=null){
-			iitermdays = plan.getIitermdays().intValue();
+
+		// 账期天数
+		Integer paymentday = 0;
+		if (plan.getIitermdays() != null) {
+			paymentday = plan.getIitermdays().intValue();
 		}
-		UFDate denddate = dbegindate.getDateAfter(iitermdays);
-		plan.setDbegindate(dbegindate);
-		plan.setDenddate(denddate);
+
+		if (ptchvo == null) {
+			UFDate denddate = dbegindate.getDateAfter(paymentday);
+			plan.setDbegindate(dbegindate);
+			plan.setDenddate(denddate);
+			
+		} else {
+			// 起效日期延迟天数
+			Integer effectdateadddate = (Integer) ptchvo
+					.getAttributeValue(PaymentChVO.EFFECTDATEADDDATE);
+			if (dbegindate != null && effectdateadddate != null) {
+				dbegindate = dbegindate.getDateAfter(effectdateadddate
+						.intValue());
+			}
+			plan.setDbegindate(dbegindate);
+
+			/** 账期到期日 **********************************/
+			if (dbegindate != null) {
+				UFDate denddate = null;
+				// 固定结账日
+				Integer checkdata = ValueUtils.getInteger(ptchvo
+						.getAttributeValue(PaymentChVO.CHECKDATA));
+				// 固定结账日模式
+				if (checkdata != null) {
+					Integer effectaddmonth = ValueUtils.getInteger(ptchvo
+							.getAttributeValue(PaymentChVO.EFFECTADDMONTH));
+					int ieffectaddmonth = 0;
+					if (effectaddmonth != null) {
+						ieffectaddmonth = effectaddmonth.intValue();
+					}
+					// 生效月方式
+					String effectmonth = ValueUtils.getString(ptchvo
+							.getAttributeValue(PaymentChVO.EFFECTMONTH));
+					int year = dbegindate.getYear();
+					int month = dbegindate.getMonth();
+					int day = dbegindate.getDay();
+					Calendar carlendar;
+					// 当月生效
+					if (effectmonth.equals("0")) {
+						// 如果固定结账日为0，则表示账期起算日当天
+						if (Integer.valueOf(0).equals(checkdata)) {
+							carlendar = new GregorianCalendar(year, month - 1
+									+ ieffectaddmonth, day, 0, 0, 0);
+						} else if (day <= checkdata.intValue()) {
+							carlendar = new GregorianCalendar(year, month - 1
+									+ ieffectaddmonth, checkdata.intValue(), 0,
+									0, 0);
+						} else {
+							carlendar = new GregorianCalendar(year, month
+									+ ieffectaddmonth, checkdata.intValue(), 0,
+									0, 0);
+						}
+						denddate = UFDate.getDate(carlendar.getTime());
+					}
+					// 下月生效
+					else if (effectmonth.equals("1")) {
+						// 如果固定结账日为0，则表示账期起算日当天
+						if (Integer.valueOf(0).equals(checkdata)) {
+							carlendar = new GregorianCalendar(year, month
+									+ ieffectaddmonth, day, 0, 0, 0);
+						} else {
+							carlendar = new GregorianCalendar(year, month
+									+ ieffectaddmonth, checkdata.intValue(), 0,
+									0, 0);
+						}
+						denddate = UFDate.getDate(carlendar.getTime());
+					}
+				}
+				// 账期天数模式
+				else if (paymentday != null) {
+					denddate = dbegindate.getDateAfter(paymentday.intValue());
+				}
+				plan.setDenddate(denddate);
+			}
+			/** 账期到期日 **********************************/
+		}
 	}
 
 	public void setRowNo(PayPlanVO toVO, List<PayPlanVO> list) {
@@ -549,29 +685,33 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 	public void writeBackCancelSignFor25(InvoiceVO invo)
 			throws BusinessException {
 
-		// if (invo == null)
-		// return;
-		//
-		// try {
-		// cancelWriteBackPayPlan("采购发票审核日期",
-		// invo.getParentVO().getPrimaryKey());
-		// } catch (BusinessException e) {
-		// ExceptionUtils.wrappException(e);
-		// }
+		if (invo == null)
+			return;
+
+		InvoiceItemVO[] bodys = invo.getChildrenVO();
+		if (bodys == null || bodys.length == 0)
+			return;
+
+		List<String> list = new ArrayList<String>();
+		for (InvoiceItemVO body : bodys) {
+
+			String sourceid = body.getPk_order();
+			if (StringUtil.isSEmptyOrNull(sourceid))
+				continue;
+			if (!list.contains(sourceid)) {
+				list.add(sourceid);
+			}
+		}
+
+		if (list == null || list.size() == 0)
+			return;
+		cancelWriteBackPayPlan(list, "采购发票审核日期", invo.getParentVO()
+				.getPrimaryKey());
 	}
 
 	@Override
 	public void writeBackCancelSignFor45(PurchaseInVO invo)
 			throws BusinessException {
-
-		// if (invo == null)
-		// return;
-		//
-		// try {
-		// cancelWriteBackPayPlan("入库签字日期", invo.getHead().getPrimaryKey());
-		// } catch (BusinessException e) {
-		// ExceptionUtils.wrappException(e);
-		// }
 
 		if (invo == null)
 			return;
@@ -623,14 +763,16 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 			IOrderPayPlanQuery service = NCLocator.getInstance().lookup(
 					IOrderPayPlanQuery.class);
 			AggPayPlanVO[] vos = service.queryPayPlanVOs(orderids);
+			
+			if(vos == null || vos.length==0)
+				continue;
 
 			PayPeriodVO periodvo = getPayPeriodVO(name);
 
 			// 按照账期记录未回写行
-			Map<Integer, List<PayPlanVO>> nomap = new HashMap<>();
+			Map<String, List<PayPlanVO>> nomap = new HashMap<>();
 			// 按照账期记录回写行
-
-			Map<Integer, List<PayPlanVO>> map = new HashMap<>();
+			Map<String, List<PayPlanVO>> map = new HashMap<>();
 
 			// 汇总该定下的所有数据
 			List<PayPlanVO> updatelist1 = new ArrayList<>();
@@ -645,54 +787,64 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 					if (StringUtil.isSEmptyOrNull(feffdatetype)) {
 						updatelist1.add(plan);
 					} else {
-						// 如果是入库 或是发票行 找到需要更新的行数据（根据起算依据判断）
+						// 如果是起算依据入库 或是发票行 找到需要更新的行数据（根据起算依据判断）
 						if (!feffdatetype.equalsIgnoreCase(periodvo
 								.getPrimaryKey())) {
 							updatelist1.add(plan);
 						} else {
-							// def1 存的来源信息
-							String def1 = getPayPlanDef1(plan.getPrimaryKey());
-							// 账期 根据账期分组
-							Integer def12 = plan.getIitermdays();
-							// def1 存的来源信息 如果存在来源 证明是回写行
-							if (!StringUtil.isSEmptyOrNull(def1)) {
-								if (def1.equalsIgnoreCase(sourceid)) {
-									// 回写行
-									List<PayPlanVO> writelist = null;
-									if (map.containsKey(def12)) {
-										writelist = map.get(def12);
-									} else {
-										writelist = new ArrayList<>();
-									}
-									writelist.add(plan);
-									map.put(def12, writelist);
-								} else {
-									updatelist1.add(plan);
-								}
+							if (plan.getIsdeposit() != null
+									&& plan.getIsdeposit().booleanValue()) {
+								// 如果是质保金行 入库取消清空质保
+								plan.setDbegindate(null);
+								plan.setDenddate(null);
+								updatelist1.add(plan);
 							} else {
-								// 未回写行
-								List<PayPlanVO> nowritelist = null;
-								if (nomap.containsKey(def12)) {
-									nowritelist = nomap.get(def12);
+								// def1 存的来源信息
+								String def1 = getPayPlanDef1(plan
+										.getPrimaryKey());
+								// 账期 根据账期分组
+								String pk_paymentch = plan.getPk_paymentch();
+								// def1 存的来源信息 如果存在来源 证明是回写行
+								if (!StringUtil.isSEmptyOrNull(def1)) {
+									if (def1.equalsIgnoreCase(sourceid)) {
+										// 回写行
+										List<PayPlanVO> writelist = null;
+										if (map.containsKey(pk_paymentch)) {
+											writelist = map.get(pk_paymentch);
+										} else {
+											writelist = new ArrayList<>();
+										}
+										writelist.add(plan);
+										map.put(pk_paymentch, writelist);
+									} else {
+										updatelist1.add(plan);
+									}
 								} else {
-									nowritelist = new ArrayList<>();
+									// 未回写行
+									List<PayPlanVO> nowritelist = null;
+									if (nomap.containsKey(pk_paymentch)) {
+										nowritelist = nomap.get(pk_paymentch);
+									} else {
+										nowritelist = new ArrayList<>();
+									}
+									nowritelist.add(plan);
+									nomap.put(pk_paymentch, nowritelist);
 								}
-								nowritelist.add(plan);
-								nomap.put(def12, nowritelist);
 							}
 						}
 					}
 				}
 
 				PayPlanVO planclone = null;
-				UFDouble norigmny = UFDouble.ZERO_DBL;// 回写金额
+
 				List<PayPlanVO> writelisttotal = new ArrayList<>();
 				// 无回写行
 				if (map == null || map.size() == 0)
 					continue;
 
 				// 回写行账期数据处理
-				for (Map.Entry<Integer, List<PayPlanVO>> entry : map.entrySet()) {
+				for (Map.Entry<String, List<PayPlanVO>> entry : map.entrySet()) {
+					UFDouble norigmny = UFDouble.ZERO_DBL;// 回写金额
 					List<PayPlanVO> writelist = entry.getValue();
 					if (writelist == null || writelist.size() == 0) {
 						continue;
@@ -709,6 +861,7 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 
 					// 不存在未回写 增新建一条数据 然后 汇总 入库单金额 如果有未回写的 则合并
 					if (nowritelist == null || nowritelist.size() == 0) {
+						nowritelist = new ArrayList<>();
 						planclone.setPrimaryKey(null);
 						planclone.setNorigmny(norigmny);
 						planclone.setDbegindate(null);
@@ -727,10 +880,10 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 				}
 
 				// 取出账期不在 回写行账期的数据
-				for (Map.Entry<Integer, List<PayPlanVO>> entry : nomap
+				for (Map.Entry<String, List<PayPlanVO>> entry : nomap
 						.entrySet()) {
 
-					Integer key = entry.getKey();
+					String key = entry.getKey();
 					if (!map.containsKey(key)) {
 						List<PayPlanVO> nowritelist = entry.getValue();
 						for (PayPlanVO plan : nowritelist) {
@@ -744,14 +897,41 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 				calcMnyByRate(plans);
 				aggvo.setParentVO(aggvo.getParentVO());
 				aggvo.setPayPlanVO(plans);
+				PayPlanVO[] delplans = writelisttotal
+						.toArray(new PayPlanVO[writelisttotal.size()]);
+				// StringBuilder sb = new StringBuilder();
+				// this.check(delplans, sb);
+				// if (sb.length() > 0) {
+				// ExceptionUtils.wrappBusinessException("付款计划已经生成后续单据 ，不允许弃审");
+				// return;
+				// }
 
 				AggPayPlanVO aggvo1 = new AggPayPlanVO();
 				aggvo1.setParentVO(aggvo.getParentVO());
-				aggvo1.setPayPlanVO(writelisttotal
-						.toArray(new PayPlanVO[writelisttotal.size()]));
+				aggvo1.setPayPlanVO(delplans);
 				savePayPlanViewVO(aggvo, aggvo1);
 			}
 		}
+	}
+
+	private void check(PayPlanVO[] payplanVOs, StringBuilder sb) {
+
+		if (ArrayUtils.isEmpty(payplanVOs)) {
+			return;
+		}
+		for (PayPlanVO payplanVO : payplanVOs) {
+			if (MathTool.compareTo(payplanVO.getNaccumpayapporgmny(),
+					UFDouble.ZERO_DBL) > 0
+					|| MathTool.compareTo(payplanVO.getNaccumpayorgmny(),
+							UFDouble.ZERO_DBL) > 0) {
+				if (sb.length() > 0) {
+					sb.append(", ");
+				}
+				sb.append(payplanVO.getPk_order());
+				return;
+			}
+		}
+
 	}
 
 	// 采购退库回写付款计划
@@ -938,7 +1118,7 @@ public class OrderPayPlanWriteBackImpl implements IOrderPayPlanWriteBack {
 						planclone.setNorigmny(entry.getValue());
 						planclone.setNrate(UFDouble.ZERO_DBL);
 						planclone.setNmny(entry.getValue());
-						setDate(planclone, dbegindate);
+						// setDate(planclone, dbegindate);
 						setRowNo(planclone, updatelist1);
 						updatelist1.add(planclone);
 						// 计算比例

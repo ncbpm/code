@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import nc.bs.framework.common.InvocationInfoProxy;
+//import nc.bs.framework.common.InvocationInfoProxy;
 import nc.bs.framework.common.NCLocator;
 import nc.bs.pfxx.ISwapContext;
 import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
@@ -40,6 +42,11 @@ public class M30HistoryForBPMAdd extends AbstractPfxxPlugin {
 		SaleOrderHistoryVO bill = (SaleOrderHistoryVO) vo;
 		// 2. 校验数据的合法性:1.数据结构完整 2.根据组织+单据号校验是否重复.
 		checkData(bill);
+		
+		if (!StringUtils.isEmpty(bill.getParentVO().getCreviserid())) {
+			InvocationInfoProxy.getInstance().setUserId(
+					bill.getParentVO().getCreviserid());
+		}
 		// 具体业务处理
 		String vrevisereason = bill.getParentVO().getVrevisereason();
 		// 如果存在，则执行采购订单修订或者关闭打开
@@ -147,60 +154,60 @@ public class M30HistoryForBPMAdd extends AbstractPfxxPlugin {
 		if (add_row.size() > 0) {
 			addBody(hisvo, add_row);
 		}
-		
+
 		SaleOrderHistoryVO historyVO = saveAndApproveHistory(hisvo);
-	
-		
-		return "销售订单修订完成:最新版本"+historyVO.getParentVO().getIversion();
+
+		return "销售订单修订完成:最新版本" + historyVO.getParentVO().getIversion();
 	}
-	
-	
-	private SaleOrderHistoryVO saveAndApproveHistory(SaleOrderHistoryVO oldbill) throws BusinessException {
+
+	private SaleOrderHistoryVO saveAndApproveHistory(SaleOrderHistoryVO oldbill)
+			throws BusinessException {
 		// TODO 自动生成的方法存根
 		SaleOrderHistoryVO bill = new SaleOrderHistoryVO();
 		bill.setParentVO(oldbill.getParentVO());
 		bill.setChildrenVO(oldbill.getChildrenVO());
-		//重现计算单价等》
+		// 重现计算单价等》
 		int rows[] = new int[bill.getChildrenVO().length];
-		for (int i = 0; i <bill.getChildrenVO().length; i++) {
+		for (int i = 0; i < bill.getChildrenVO().length; i++) {
 			rows[i] = i;
 			bill.getChildrenVO()[i].setCorderhistorybid(null);
 			bill.getChildrenVO()[i].setStatus(VOStatus.NEW);
 		}
-		//设置伪列
+		// 设置伪列
 		bill.getParentVO().setAttributeValue("pseudocolumn", 0);
-		
-		//清空单价：根据金额和数量重算
-		String[] attributeNames =bill.getChildrenVO()[0].getAttributeNames();
-		//报价信息
-		for(SaleOrderBVO bvo:bill.getChildrenVO()){
-			for(String attname:attributeNames){
-				if(attname.endsWith("price")){
+
+		// 清空单价：根据金额和数量重算
+		String[] attributeNames = bill.getChildrenVO()[0].getAttributeNames();
+		// 报价信息
+		for (SaleOrderBVO bvo : bill.getChildrenVO()) {
+			for (String attname : attributeNames) {
+				if (attname.endsWith("price")) {
 					bvo.setAttributeValue(attname, null);
 				}
 			}
 		}
-		//计算税码信息
-	    IKeyValue keyValue = new VOKeyValue<IBill>(bill);
-	    // 询税
-	    SOTaxInfoRule taxInfo = new SOTaxInfoRule(keyValue);
-	    taxInfo.setOnlyTaxCodeByBodyPos(rows);
-	    //国外销售-设置税率
-	    if( bill.getChildrenVO()[0].getNtaxrate() == null || bill.getChildrenVO()[0].getNtaxrate().doubleValue() == 0){
-	    	taxInfo.setTaxTypeAndRate(rows);
-	    }
+		// 计算税码信息
+		IKeyValue keyValue = new VOKeyValue<IBill>(bill);
+		// 询税
+		SOTaxInfoRule taxInfo = new SOTaxInfoRule(keyValue);
+		taxInfo.setOnlyTaxCodeByBodyPos(rows);
+		// 国外销售-设置税率
+		if (bill.getChildrenVO()[0].getNtaxrate() == null
+				|| bill.getChildrenVO()[0].getNtaxrate().doubleValue() == 0) {
+			taxInfo.setTaxTypeAndRate(rows);
+		}
 		SaleOrderVOCalculator cal = new SaleOrderVOCalculator(bill);
-		cal.calculate(rows, "norigtaxmny");			
+		cal.calculate(rows, "norigtaxmny");
 		IM30ReviseMaintain maintainsrv = NCLocator.getInstance().lookup(
 				IM30ReviseMaintain.class);
-		// ReviseSaveSaleOrderAction action = new ReviseSaveSaleOrderAction();
-		// 调用新的方法，传入的bills 是销售订单修订历史vo
-		SaleOrderHistoryVO[] ret = maintainsrv.reviseOrderHisVOSave(new SaleOrderHistoryVO[]{bill});
-		//审批
-		approve(ret[0]);
-		return  ret[0];
-	}
 
+		// 调用新的方法，传入的bills 是销售订单修订历史vo
+		SaleOrderHistoryVO[] ret = maintainsrv
+				.reviseOrderHisVOSave(new SaleOrderHistoryVO[] { bill });
+		// 审批
+		approve(ret[0]);
+		return ret[0];
+	}
 
 	protected AggregatedValueObject approve(AggregatedValueObject billvo)
 			throws BusinessException {
@@ -211,7 +218,6 @@ public class M30HistoryForBPMAdd extends AbstractPfxxPlugin {
 				billvo, null, null);
 		return null;
 	}
-
 
 	private void addBody(SaleOrderHistoryVO bill,
 			List<SaleOrderHistoryBVO> add_row) {
@@ -224,9 +230,8 @@ public class M30HistoryForBPMAdd extends AbstractPfxxPlugin {
 			bvo.setStatus(VOStatus.NEW);
 			asList.add(bvo);
 		}
-		
+
 		bill.setChildrenVO(asList.toArray(new SaleOrderHistoryBVO[0]));
-	
 
 	}
 
@@ -263,10 +268,10 @@ public class M30HistoryForBPMAdd extends AbstractPfxxPlugin {
 						: bpm.getNorigtaxmny();
 				UFDouble norigtaxmny = orderItemVO.getNorigtaxmny() == null ? UFDouble.ZERO_DBL
 						: orderItemVO.getNorigtaxmny();
-				if (bpm_norigtaxmny.sub(norigtaxmny).doubleValue() != 0) {
+				if (bpm_norigtaxmny.sub(ntotalinvoicenum).doubleValue() < 0) {
 					throw new BusinessException("操作不合法 :行" + bpm.getVbdef20()
-							+ "已经开发票，不允许修订金额,请删除发票后重新修订。 本次修订后的金额:"
-							+ bpm_norigtaxmny + ",修订前金额：" + bpm_norigtaxmny);
+							+ "已经开发票，不允许修订后的金额小于累计开票金额。 本次修订后的金额:"
+							+ bpm_norigtaxmny + ",累计开票金额：" + ntotalinvoicenum);
 				}
 
 			}
@@ -278,29 +283,29 @@ public class M30HistoryForBPMAdd extends AbstractPfxxPlugin {
 			}
 
 			for (String attr : attributeNames) {
-				if("ts".equalsIgnoreCase(attr)){
+				if ("ts".equalsIgnoreCase(attr)) {
 					continue;
 				}
-				if("csaleorderid".equalsIgnoreCase(attr)){
+				if ("csaleorderid".equalsIgnoreCase(attr)) {
 					continue;
 				}
-				if("csaleorderbid".equalsIgnoreCase(attr)){
+				if ("csaleorderbid".equalsIgnoreCase(attr)) {
 					continue;
 				}
-				if("ctaxcodeid".equalsIgnoreCase(attr)){
+				if ("ctaxcodeid".equalsIgnoreCase(attr)) {
 					continue;
 				}
-				//清空非主数量的信息
-				if(attr.endsWith("nnum") && ! attr.equalsIgnoreCase("nnum")){
+				// 清空非主数量的信息
+				if (attr.endsWith("nnum") && !attr.equalsIgnoreCase("nnum")) {
 					continue;
 				}
-				if(bpm.getAttributeValue(attr) == null){
+				if (bpm.getAttributeValue(attr) == null) {
 					continue;
 				}
 				orderItemVO
 						.setAttributeValue(attr, bpm.getAttributeValue(attr));
 			}
-	
+
 		}
 
 	}
@@ -312,16 +317,16 @@ public class M30HistoryForBPMAdd extends AbstractPfxxPlugin {
 		Integer nversion = hvo.getIversion();
 		SaleOrderHistoryHVO hvo_bpm = bill.getParentVO();
 		for (String attr : attributeNames) {
-			if("ts".equalsIgnoreCase(attr)){
+			if ("ts".equalsIgnoreCase(attr)) {
 				continue;
 			}
-			if("iversion".equalsIgnoreCase(attr)){
+			if ("iversion".equalsIgnoreCase(attr)) {
 				continue;
 			}
-			if("fstatusflag".equalsIgnoreCase(attr)){
+			if ("fstatusflag".equalsIgnoreCase(attr)) {
 				continue;
 			}
-			if(hvo_bpm.getAttributeValue(attr) == null){
+			if (hvo_bpm.getAttributeValue(attr) == null) {
 				continue;
 			}
 			hvo.setAttributeValue(attr, hvo_bpm.getAttributeValue(attr));

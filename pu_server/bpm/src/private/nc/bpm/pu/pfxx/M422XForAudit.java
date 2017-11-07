@@ -1,5 +1,6 @@
 package nc.bpm.pu.pfxx;
 
+import nc.bs.framework.common.InvocationInfoProxy;
 import nc.bs.framework.common.NCLocator;
 import nc.bs.pfxx.ISwapContext;
 import nc.bs.pfxx.plugin.AbstractPfxxPlugin;
@@ -64,11 +65,15 @@ public class M422XForAudit extends AbstractPfxxPlugin {
 		StoreReqAppVO[] clientVOS = queryService.queryVOByIDs(new String[] { headVO.getPk_storereq() });
 		StoreReqAppVO clientVO = clientVOS[0];
 		if(3 == bpmVO.getHVO().getFbillstatus() || 4 == bpmVO.getHVO().getFbillstatus()){
+			InvocationInfoProxy.getInstance().setUserId(bpmVO.getHVO().getApprover());
 			clientVO.getHVO().setApprover(bpmVO.getHVO().getApprover());
 			clientVO.getHVO().setFbillstatus(bpmVO.getHVO().getFbillstatus());
 			clientVO.getHVO().setTaudittime(AppContext.getInstance().getBusiDate());
+			clientVO.getHVO().setVmemo(bpmVO.getHVO().getVmemo());
 			clientVO.getParentVO().setStatus(VOStatus.UPDATED);
+			
 			BillUpdate<StoreReqAppVO> update = new BillUpdate<StoreReqAppVO>();
+			
 			StoreReqAppVO[] vos = update.update(new StoreReqAppVO[] { clientVO },
 					new StoreReqAppVO[] { originVO });
 		}else if(5 == bpmVO.getHVO().getFbillstatus() ){

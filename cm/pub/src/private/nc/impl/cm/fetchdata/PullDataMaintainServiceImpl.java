@@ -379,16 +379,16 @@ public class PullDataMaintainServiceImpl extends CMAlgorithmBaseFramework
 				keyVO.setIfetchobjtype(ifetchType);
 
 				// 2017-06-18
-				keyVO.setFator1(entry.getKey().getFator1());
-				keyVO.setFator2(entry.getKey().getFator2());
-				keyVO.setFator3(entry.getKey().getFator3());
-				keyVO.setFator4(entry.getKey().getFator4());
-				keyVO.setFator5(entry.getKey().getFator5());
-				keyVO.setFator6(entry.getKey().getFator6());
-				keyVO.setFator7(entry.getKey().getFator7());
-				keyVO.setFator8(entry.getKey().getFator8());
-				keyVO.setFator9(entry.getKey().getFator9());
-				keyVO.setFator10(entry.getKey().getFator10());
+//				keyVO.setFator1(entry.getKey().getFator1());
+//				keyVO.setFator2(entry.getKey().getFator2());
+//				keyVO.setFator3(entry.getKey().getFator3());
+//				keyVO.setFator4(entry.getKey().getFator4());
+//				keyVO.setFator5(entry.getKey().getFator5());
+//				keyVO.setFator6(entry.getKey().getFator6());
+//				keyVO.setFator7(entry.getKey().getFator7());
+//				keyVO.setFator8(entry.getKey().getFator8());
+//				keyVO.setFator9(entry.getKey().getFator9());
+//				keyVO.setFator10(entry.getKey().getFator10());
 
 				if (CMCollectionUtil.isEmpty(lst)) {
 					continue;
@@ -460,14 +460,13 @@ public class PullDataMaintainServiceImpl extends CMAlgorithmBaseFramework
 
 	private PullDataStateVO getPullParamVO(String pk_group, String pk_org,
 			String cperiod) {
-
 		PullDataStateVO paramvo = new PullDataStateVO();
 		paramvo.setPk_group(pk_group);
 		paramvo.setPk_org(pk_org);
 		// 根据财务组织查询所有关联工厂
 		paramvo.setPk_orgs(new String[] { paramvo.getPk_org() });
 		paramvo.setIfetchobjtype(FetchDataObjEnum.ALL); // 取数对象： 1 材料出，2产成品入 3
-														// 废品 4 作业
+											// 废品 4 作业
 		paramvo.setCperiod(cperiod); // 期间
 		paramvo.setBusiDate(AppContext.getInstance().getBusiDate());// 业务日期
 		return paramvo;

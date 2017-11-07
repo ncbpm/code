@@ -434,17 +434,17 @@ public class FetchSetPubQueryServiceImpl implements IFetchSetPubQueryService {
                         FetchKeyVO keyVO = new FetchKeyVO();
                         keyVO.setPk_org(headVO.getPk_org());
                         keyVO.setIfetchobjtype(relationMap.get(headVO.getIfetchtype()));
-                        if(vo.getChildrenVO()!=null && vo.getChildrenVO().length >0){
-                        	FetchSetItemVO item = (FetchSetItemVO) vo.getChildrenVO()[0];
-                        	keyVO.setFator1(item.getPk_billtypeid());
-                            keyVO.setFator2(item.getPk_qcdept());
-                            keyVO.setFator3(item.getPk_costobject());
-                            keyVO.setFator4(item.getPk_serverdept());
-                            keyVO.setFator5(item.getPk_largeritem());
-                            keyVO.setFator6(item.getPk_factor());
-                        	keyVO.setFator7(item.getPk_workitem());
-
-                        }
+//                        if(vo.getChildrenVO()!=null && vo.getChildrenVO().length >0){
+//                        	FetchSetItemVO item = (FetchSetItemVO) vo.getChildrenVO()[0];
+//                        	keyVO.setFator1(item.getPk_billtypeid());
+//                            keyVO.setFator2(item.getPk_qcdept());
+//                            keyVO.setFator3(item.getPk_costobject());
+//                            keyVO.setFator4(item.getPk_serverdept());
+//                            keyVO.setFator5(item.getPk_largeritem());
+//                            keyVO.setFator6(item.getPk_factor());
+//                        	keyVO.setFator7(item.getPk_workitem());
+//
+//                        }
                         
 
                         if (!resultMap.containsKey(keyVO)) {

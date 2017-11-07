@@ -30,11 +30,14 @@ public final class CSSFacade {
 	 * @return
 	 */
 	public static int initCard(int comNum) {
+		/*
 		ByteByReference cmd = new ByteByReference(ISSProxy.CMD_INIPORT);
 		IntByReference port = new IntByReference(comNum);
 		IntByReference parg1 = new IntByReference(ISSProxy.parg1);
 		int nRet = ISSProxy.Instance.UCommand1(cmd, port, parg1, ISSProxy.parg2);
 		return nRet == ISSProxy.SUCCESS ? 0 : nRet;
+		*/
+		return 0;
 	}
 
 	/**
@@ -52,6 +55,7 @@ public final class CSSFacade {
 	}
 
 	public static int getCardInfo(int comNum, CardInfo obj) {
+		/*
 		//check card valid
 		int code = checkCardValid(comNum);
 		if(code == 0){
@@ -60,6 +64,33 @@ public final class CSSFacade {
 		}else{
 			return code;
 		}
+		*/
+		obj.CardNo = "123456789012345";
+		obj.Name = "小明";
+		obj.Address = "山东省潍坊市";
+		obj.Birthday = "1990-01-01";
+		obj.Department = "山东省潍坊市公安局";
+		obj.EndDate = "2020-01-02";
+		obj.Nation = "汉族";
+		obj.Sex = "男";
+		obj.StartDate = "2001-01-01";
+		obj.PhotoPath = "e:\\abc.jpg";
+		FileImageInputStream input = null;
+		try {
+			input = new FileImageInputStream(new File(obj.PhotoPath));
+			ByteArrayOutputStream output = new ByteArrayOutputStream();
+			byte[] buf = new byte[1024];
+			int numBytesRead = 0;
+			while ((numBytesRead = input.read(buf)) != -1) {
+				output.write(buf, 0, numBytesRead);
+			}
+			obj.ArrPhotoByte = output.toByteArray();
+		} catch (Exception e) {
+			// TODO 自动生成的 catch 块
+			e.printStackTrace();
+		}
+		
+		return 0;
 	}
 
 	private static int checkCardValid(int comNum) {

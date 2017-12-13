@@ -18,6 +18,7 @@ import nc.vo.qc.c003.entity.ReportHeaderVO;
 import nc.vo.qc.c003.entity.ReportItemVO;
 import nc.vo.qc.c003.entity.ReportVO;
 import nc.vo.qc.c003.rule.RejectAfterCheckRule;
+import nc.vo.qc.c003.rule.RejectBeforCheckRule;
 import nc.vo.qc.c003.rule.ReportItemsCheckRule;
 import nc.vo.qc.c003.rule.ReportNumCheckRule;
 import nc.vo.qc.c003.util.ReportVOInfoUtils;
@@ -115,5 +116,7 @@ public class ReportUpdateBP {
     processer.addBeforeRule(new NoPassUpdateRule<ReportVO>());
     // // 合生元保存-->新增时（对应还有更新时也需要做）
 //    processer.addBeforeRule(new ReportAddStockStateRule());
+    // 1. 保存判断表体合格品没有勾选，则认为是不合格品，需要自动将表头的需要不合格品处理 勾选
+    processer.addBeforeRule(new RejectBeforCheckRule());
   }
 }

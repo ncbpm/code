@@ -132,19 +132,19 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 				return vopk;
 			}
 			// 处理变更订单明细
-			delOrderItem(queryVo, bpmOrder);
+			OrderVO dealOrder = delOrderItem(queryVo, bpmOrder);
 			if(queryVo.getHVO().getModifier() != null){
 				InvocationInfoProxy.getInstance().setUserId(queryVo.getHVO().getModifier());
 			}
 			NCLocator.getInstance().lookup(IOrderRevise.class)
-					.reviseSave(new OrderVO[] { queryVo }, null);
+					.reviseSave(new OrderVO[] { dealOrder }, null);
 
 			return vopk;
 		}
 
 	}
 
-	private void delOrderItem(OrderVO queryVo, OrderVO bpmOrder)
+	private OrderVO delOrderItem(OrderVO queryVo, OrderVO bpmOrder)
 			throws BusinessException {
 		// TODO 自动生成的方法存根
 		String vopk = bpmOrder.getPrimaryKey();
@@ -241,6 +241,8 @@ public class M21ForBPMAdd extends AbstractPfxxPlugin {
 			addBody(queryVo, add_row);
 		}
 		calculateForModify(queryVo);
+		
+		return queryVo;
 	}
 
 	private void addBody(OrderVO queryVo, List<OrderItemVO> add_row) {

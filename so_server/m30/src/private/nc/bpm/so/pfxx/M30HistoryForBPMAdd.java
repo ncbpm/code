@@ -111,8 +111,8 @@ public class M30HistoryForBPMAdd extends AbstractPfxxPlugin {
 					add_row.add(body);
 				}
 			} else {
-				// throw new BusinessException("采购订单变更，未支持的变更行操作类:"
-				// + body.getVbmemo());
+				 throw new BusinessException("采购订单变更，未支持的变更行操作类:"
+				 + body.getVbrevisereason());
 			}
 		}
 		// 行关闭

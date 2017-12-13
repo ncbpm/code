@@ -55,6 +55,11 @@ public class BankaccbasForBpmAdd extends AbstractPfxxPlugin {
 			setVOStatus(swapContext, resvo, VOStatus.NEW);
 			bankvo = service.insertCustBankacc(unitvo);
 			vopk = bankvo.getPrimaryKey();
+			//先启用
+			resvo.setEnablestate(2);
+//			resvo.setEnableuser(enableuser);
+			service.enableCustBankacc(unitvo);
+			
 		} else {
 			// enablestate 启用状态 enablestate int 启用状态 1=未启用，2=已启用，3=已停用，
 			if (resvo.getEnablestate() == 3  ) {
@@ -69,8 +74,8 @@ public class BankaccbasForBpmAdd extends AbstractPfxxPlugin {
 					service.enableCustBankacc(unitvo);
 				}
 			}
-//			setVOStatus(swapContext, resvo, VOStatus.UPDATED);
-//			bankvo = service.updateCustBankacc(unitvo);
+			setVOStatus(swapContext, resvo, VOStatus.UPDATED);
+			bankvo = service.updateCustBankacc(unitvo);
 		}
 		// 更新与档案的关联关系
 		return vopk;

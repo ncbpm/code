@@ -3,6 +3,25 @@
     <vars>
     </vars>
     <record displayName="银行账户" metadataid="611652ad-177f-4d3e-9ae7-ef8f96930b78" stabletag="header" tablename="billhead" tabletag="billhead" tabletype="head">
+       <field desc="创建人">
+            <matchtag>creator </matchtag>
+            <name>creator </name>
+            <type>UFID</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>no</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+       <field desc="启用人">
+            <matchtag>enableuser </matchtag>
+            <name>enableuser </name>
+            <type>UFID</type>
+            <nullallowed>yes</nullallowed>
+            <maxLength>20</maxLength>
+            <needexport>no</needexport>
+            <checkTranslatedPK>no</checkTranslatedPK>
+        </field>
+       
         <field desc="银行账户主键">
             <matchtag>pk_bankaccbas</matchtag>
             <name>pk_bankaccbas</name>
@@ -372,7 +391,7 @@
             <maxLength>1</maxLength>
             <needexport>yes</needexport>
             <checkTranslatedPK>no</checkTranslatedPK>
-            <rule>未启用=1;已启用=2;已停用=3;</rule>
+            <rule>1=1;2=2;3=3;未启用=1;已启用=2;已停用=3;</rule>
         </field>
         <field desc="联行网点名称">
             <matchtag>combineaccname</matchtag>

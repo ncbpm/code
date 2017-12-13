@@ -244,13 +244,13 @@ public class BpmArapExpPfxxPlugin<T extends BaseAggVO> extends
 									.getHeadVO().getPk_billtype(),
 							new AggPayBillVO[] { (AggPayBillVO) bill },
 							getUserObj(), new WorkflownoteVO()));
-			res = (AggPayBillVO) ArrayUtil
-					.getFirstInArrays((Object[]) NCPfServiceUtils.processBatch(
-							ArapFlowUtil.getApproveActionCode(res.getHeadVO()
-									.getPk_org(), IArapBillTypeCons.F3), res
-									.getHeadVO().getPk_billtype(),
-							new AggPayBillVO[] { (AggPayBillVO) res },
-							getUserObj(), null));
+//			res = (AggPayBillVO) ArrayUtil
+//					.getFirstInArrays((Object[]) NCPfServiceUtils.processBatch(
+//							ArapFlowUtil.getApproveActionCode(res.getHeadVO()
+//									.getPk_org(), IArapBillTypeCons.F3), res
+//									.getHeadVO().getPk_billtype(),
+//							new AggPayBillVO[] { (AggPayBillVO) res },
+//							getUserObj(), null));
 		}
 
 		return res;
